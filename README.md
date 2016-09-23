@@ -8,3 +8,6 @@ ART is open source software. You may freely redistribute it and/or
 modify it under the terms of the license agreement found in
 LICENSE.txt.
 
+Please see the documentation provided in docs/ for further
+assistance with ART.
+

@@ -1,0 +1,13 @@
+How to build:
+
+git clone https://github.com/F8LEFT/ART
+
+cd ART
+
+mkdir build
+
+cd build
+
+cmake ..
+
+make
