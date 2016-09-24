@@ -1,1 +1,11 @@
 .idea/
+gui/ARTGUI.pro
+gui/ARTGUI.pro.user
+gui/CMakeLists.txt
+gui/include/
+gui/lib/
+gui/main.cpp
+include/
+lib/
+test/
+thirdparty/
