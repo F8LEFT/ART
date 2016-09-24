@@ -14,7 +14,7 @@ INCLUDEPATH += \
         include
 
 
-SOURCES += main.cpp\
+SOURCES += lib/MainWindow/main.cpp\
     lib/MainWindow/MainWindow.cpp
 
 

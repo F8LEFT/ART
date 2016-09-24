@@ -1,26 +1,48 @@
 cmake_minimum_required(VERSION 3.5)
 project(ARTGUI)
 
-set(CMAKE_PREFIX_PATH /home/f8left/CodeProgram/QT/5.7/gcc_64)
+SET(CMAKE_PREFIX_PATH /home/f8left/CodeProgram/QT/5.7/gcc_64)
 
-set(CMAKE_C_COMPILER "g++")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror")
+SET(CMAKE_C_COMPILER "g++")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror")
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+SET(CMAKE_AUTOMOC ON)
+SET(CMAKE_VERBOSE_MAKEFILE ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-#查找Qt的库
-find_package(Qt5Widgets)
-find_package(Qt5Xml)
+SET(CMAKE_SUPPRESS_REGENERATION 1)
+SET(CMAKE_USE_RELATIVE_PATHS ON)
+SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
-include_directories(include)
+SET(PROJDIR ${CMAKE_CURRENT_SOURCE_DIR})
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-aux_source_directory(lib/MainWindow MainWindow_SRC)
+SET(CMAKE_INSTALL_PREFIX ${PROJDIR}/bin)
 
-set(SOURCE_FILES main.cpp ${MainWindow_SRC} include/MainWindow/MainWindow.h)
+SET(GUI_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(ARTGUI ${SOURCE_FILES})
+INCLUDE_DIRECTORIES(${GUI_INCLUDE_DIR})
+FIND_PACKAGE(Qt5Widgets REQUIRED)
 
-target_link_libraries(ARTGUI Qt5::Widgets Qt5::Xml)
+macro(source_group_by_dir source_files)
+    if(MSVC)
+        set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})
+        foreach(sgbd_file ${${source_files}})
+            string(REGEX REPLACE ${sgbd_cur_dir}//(.*/) //1 sgbd_fpath ${sgbd_file})
+            string(REGEX REPLACE "/(.*/)/.*" //1 sgbd_group_name ${sgbd_fpath})
+            string(COMPARE EQUAL ${sgbd_fpath} ${sgbd_group_name} sgbd_nogroup)
+            string(REPLACE "/" "//" sgbd_group_name ${sgbd_group_name})
+            if(sgbd_nogroup)
+                set(sgbd_group_name "//")
+            endif(sgbd_nogroup)
+            source_group(${sgbd_group_name} FILES ${sgbd_file})
+        endforeach(sgbd_file)
+    endif(MSVC)
+endmacro(source_group_by_dir)
+
+ADD_SUBDIRECTORY(lib)
+
+SET(LIBS ${LIBRARY_OUTPUT_PATH})
+LINK_DIRECTORIES(${LIBS})
+

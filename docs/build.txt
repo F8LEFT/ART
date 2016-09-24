@@ -1,5 +1,11 @@
 How to build:
 
+Important: Building has only been tested in Ubuntu 15 so far.
+
+Before building this project, you must conform that you have installed
+the latest Qt program and cmake. Then set CMAKE_PREFIX_PATH variable
+in lib/gui/CMakeLists.txt to your Qt build tool path.
+
 git clone https://github.com/F8LEFT/ART
 
 cd ART
@@ -11,3 +17,4 @@ cd build
 cmake ..
 
 make
+
