@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(ARTGUI)
 
+
+add_definitions(-DARTGUI_MAJOR=${ART_VERSION_MAJOR})
+add_definitions(-DARTGUI_MINOR=${ART_VERSION_MINOR})
+add_definitions(-DARTGUI_PATCH=${ART_VERSION_PATCH})
+add_definitions(-DARTGUI_VERSION="${ART_VERSION}")
+
 SET(CMAKE_PREFIX_PATH /home/f8left/CodeProgram/QT/5.7/gcc_64)
 
 SET(CMAKE_C_COMPILER "g++")
