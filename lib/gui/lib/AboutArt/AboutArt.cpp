@@ -16,7 +16,9 @@ AboutArt::AboutArt(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle ("About Android Reverse ToolKit");
-    setWindowFlags(Qt::Window | Qt::WindowMinimizeButtonHint);
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
+
     ui->lAboutTitle->setText("About ART v"
                              + QString::number (GetCompileMajor ()));
     ui->lAboutText->setText(

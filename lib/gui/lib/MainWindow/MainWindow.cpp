@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mCenterWidget = new WorkSpace(this);
+    setCentralWidget(mCenterWidget);
     // connect Menu signal/slots
     // File Menu
     connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(actionExit()));

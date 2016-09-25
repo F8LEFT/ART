@@ -14,6 +14,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "WorkSpace/WorkSpace.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,8 @@ protected slots:
     void actionAboutArt();
 private:
     Ui::MainWindow *ui;
+
+    WorkSpace* mCenterWidget;
 };
 
 #endif // MAINWINDOW_H

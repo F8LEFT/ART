@@ -17,14 +17,17 @@ INCLUDEPATH += \
 SOURCES += lib/MainWindow/main.cpp\
     lib/MainWindow/MainWindow.cpp \
     lib/AboutArt/AboutArt.cpp \
-    lib/utils/StringUtil.cpp
+    lib/utils/StringUtil.cpp \
+    lib/WorkSpace/WorkSpace.cpp
 
 
 HEADERS  += \
     include/MainWindow/MainWindow.h \
     include/AboutArt/AboutArt.h \
-    include/utils/StringUtil.h
+    include/utils/StringUtil.h \
+    lib/WorkSpace/WorkSpace.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
-    lib/AboutArt/AboutArt.ui
+    lib/AboutArt/AboutArt.ui \
+    lib/WorkSpace/WorkSpace.ui

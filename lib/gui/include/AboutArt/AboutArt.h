@@ -7,7 +7,8 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file defines ART-GUI AboutArt dialog's behaviour.
+// This file defines ART-GUI AboutArt dialog's behaviour. AboutArt dialog will
+// show message about this sofeware.
 //
 //===----------------------------------------------------------------------===//
 #ifndef ABOUTART_H

@@ -1,5 +1,5 @@
-SET(TARGET_NAME MainWindow)
-SET(GUI_UIS MainWindow.ui)
+SET(TARGET_NAME WorkSpace)
+SET(GUI_UIS WorkSpace.ui)
 
 FILE(GLOB_RECURSE GUI_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.c* ${CMAKE_CURRENT_SOURCE_DIR}/*.h* ${GUI_INCLUDE_DIR}/${TARGET_NAME}/*.h)
 
@@ -7,7 +7,6 @@ QT5_WRAP_UI(GUI_UIS_H ${GUI_UIS})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 source_group_by_dir(GUI_SRCS)
 
-add_executable(${TARGET_NAME} ${GUI_SRCS} ${GUI_UIS_H})
-target_link_libraries(${TARGET_NAME} AboutArt WorkSpace)
+add_library(${TARGET_NAME} STATIC ${GUI_SRCS} ${GUI_UIS_H})
 
 qt5_use_modules(${TARGET_NAME} Widgets)
