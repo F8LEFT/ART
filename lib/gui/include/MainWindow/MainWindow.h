@@ -12,14 +12,16 @@
 //===----------------------------------------------------------------------===//
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include "WorkSpace/WorkSpace.h"
+
 
 #include <QMainWindow>
-#include "WorkSpace/WorkSpace.h"
 
 namespace Ui {
 class MainWindow;
 }
 class StatusLabel;
+class CommandLineEdit;
 
 class MainWindow : public QMainWindow
 {
@@ -33,6 +35,7 @@ public:
     void loadFromConfig();
     void saveToConfig();
 
+    void setupCommandBar();
     void setupStatusBar();
 protected:
     void dragEnterEvent(QDragEnterEvent* event) Q_DECL_OVERRIDE;
@@ -56,6 +59,7 @@ private:
 
     StatusLabel* mStatusLabel;
     StatusLabel* mLastLogLabel;
+    CommandLineEdit* mCmdLineEdit;
 };
 
 #endif // MAINWINDOW_H

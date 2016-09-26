@@ -10,6 +10,7 @@
 #include "ui_MainWindow.h"
 
 #include "StatusLabel.h"
+#include "CommandLineEdit.h"
 #include "AboutArt/AboutArt.h"
 #include "OpenApk/OpenApk.h"
 
@@ -32,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mCenterWidget = new WorkSpace(this);
     setCentralWidget(mCenterWidget);
 
+    setupCommandBar();
     setupStatusBar();
     // connect Menu signal/slots
     // File Menu
@@ -76,6 +78,13 @@ void MainWindow::saveToConfig()
     QSize s = size ();
     config->setUint ("MainWindow","width",s.width ());
     config->setUint ("MainWindow","height",s.height ());
+}
+
+void MainWindow::setupCommandBar()
+{
+    mCmdLineEdit = new CommandLineEdit(ui->cmdBar);
+    ui->cmdBar->addWidget(mCmdLineEdit->selectorWidget());
+    ui->cmdBar->addWidget(mCmdLineEdit);
 }
 
 void MainWindow::setupStatusBar()

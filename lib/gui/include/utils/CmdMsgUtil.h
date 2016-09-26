@@ -19,6 +19,7 @@
 #include <QtCore/QObject>
 
 #define cmdmsg() CmdMsg::instance()
+#define cmdexec cmdmsg()->executeCommand
 
 class CmdMsg: public QObject {
     Q_OBJECT
@@ -48,8 +49,14 @@ signals:
     void addCmdMsg(QString s);
     void setStatusMsg(QString s);
     void setLastLogMsg(QString s);
-public slots:
+    void onExecuteCommand(ProcInfo info);
+public:
+    void executeCommand(QString cmd, ProcType t = ProcType::script, bool silence = true);
+    void executeCommand(QString proc, QString args, ProcType t = ProcType::script, bool silence = true);
+    void executeCommand(QString proc, QStringList args, ProcType t = ProcType::script, bool silence = true);
 
+    static QString procTypeDescription(ProcType t);
+    static ProcType getProcType(QString p);
 };
 
 
