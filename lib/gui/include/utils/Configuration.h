@@ -80,13 +80,6 @@ public:
     const Shortcut getShortcut(const QString key_id) const;
     void setShortcut(const QString key_id, const QKeySequence key_sequence);
 
-    //default setting maps
-    QMap<QString, QColor> defaultColors;
-    QMap<QString, QMap<QString, bool>> defaultBools;
-    QMap<QString, QMap<QString, unsigned>> defaultUints;
-    QMap<QString, QFont> defaultFonts;
-    QMap<QString, Shortcut> defaultShortcuts;
-
     //public variables
     QMap<QString, QColor> Colors;                   //[Colors]
     QMap<QString, QMap<QString, bool>> Bools;       //[Bools]

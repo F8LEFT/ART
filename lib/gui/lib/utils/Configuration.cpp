@@ -27,10 +27,8 @@ Configuration::Configuration(QObject* mParent) : QObject(mParent)
                               QSettings::IniFormat, this);
 
     // hotkeys settings
-    defaultShortcuts.insert("FileOpen", Shortcut(tr("File -> Open"), "F3", true));
-    defaultShortcuts.insert("FileExit", Shortcut(tr("File -> Exit"), "Alt+X", true));
-
-    Shortcuts = defaultShortcuts;
+//    Shortcuts.insert("FileOpen", Shortcut(tr("File -> Open"), "F3", true));
+//    Shortcuts.insert("FileExit", Shortcut(tr("File -> Exit"), "Alt+X", true));
 
     load();
 }
@@ -66,8 +64,6 @@ void Configuration::save()
 
 void Configuration::readColors()
 {
-    Colors = defaultColors;
-    //read config
     mSettings->beginGroup("Colors");
     QStringList keys = mSettings->allKeys();
     foreach(QString id, keys) {
@@ -78,7 +74,6 @@ void Configuration::readColors()
 
 void Configuration::writeColors()
 {
-    //write config
     mSettings->beginGroup("Colors");
     for(int i = 0; i < Colors.size(); i++)
     {
@@ -101,10 +96,6 @@ void Configuration::emitTokenizerConfigUpdated()
 
 void Configuration::readBools()
 {
-    Bools = defaultBools;
-
-    //read config
-
     QStringList allCategory = mSettings->childGroups();
     foreach(QString category, allCategory) {
         if (category.endsWith("_Bools")) {
@@ -123,8 +114,6 @@ void Configuration::readBools()
 
 void Configuration::writeBools()
 {
-
-    //write config
     for(int i = 0; i < Bools.size(); i++)
     {
         QString category = Bools.keys().at(i);
@@ -141,8 +130,6 @@ void Configuration::writeBools()
 
 void Configuration::readUints()
 {
-    Uints = defaultUints;
-    //read config
     QStringList allCategory = mSettings->childGroups();
     foreach(QString category, allCategory) {
         if (category.endsWith("Uints")) {
@@ -161,8 +148,6 @@ void Configuration::readUints()
 
 void Configuration::writeUints()
 {
-    //write config
-
     for(int i = 0; i < Uints.size(); i++)
     {
         QString category = Uints.keys().at(i);
@@ -181,8 +166,6 @@ void Configuration::writeUints()
 
 void Configuration::readFonts()
 {
-    Fonts = defaultFonts;
-    //read config
     mSettings->beginGroup("Fonts");
     QStringList keys = mSettings->allKeys();
 
@@ -197,7 +180,6 @@ void Configuration::readFonts()
 
 void Configuration::writeFonts()
 {
-    //write config
     mSettings->beginGroup("Fonts");
     for(int i = 0; i < Fonts.size(); i++)
     {
@@ -215,8 +197,6 @@ void Configuration::emitFontsUpdated()
 
 void Configuration::readShortcuts()
 {
-    Shortcuts = defaultShortcuts;
-    //read config
     mSettings->beginGroup("Shortcuts");
     QStringList keys = mSettings->allKeys();
 
@@ -261,7 +241,7 @@ const QColor Configuration::getColor(const QString id) const
 
 void Configuration::setColor(const QString id, QColor c)
 {
-    defaultColors[id] = c;
+    Colors[id] = c;
     return;
 }
 
@@ -309,7 +289,7 @@ const QFont Configuration::getFont(const QString id) const
 
 void Configuration::setFont(const QString id, QFont f)
 {
-    defaultFonts[id] = f;
+    Fonts[id] = f;
 }
 
 const Configuration::Shortcut Configuration::getShortcut(const QString key_id) const
