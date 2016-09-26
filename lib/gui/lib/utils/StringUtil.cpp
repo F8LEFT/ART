@@ -31,3 +31,21 @@ QString ToDateString (const QDate &date)
             };
     return QString().sprintf("%s %d %d", months[date.month() - 1], date.day(), date.year());
 }
+
+QString GetProjectsPath (const QString& expend)
+{
+    if(expend.isEmpty ()) {
+        return GetSoftPath() + "/Projects";
+    } else {
+        return GetSoftPath() + "/Projects/" + expend;
+    }
+}
+
+QString GetThirdPartyPath (const QString& expend)
+{
+    if(expend.isEmpty ()) {
+        return GetSoftPath() + "/thirdparty";
+    } else {
+        return GetSoftPath() + "/thirdparty/" + expend;
+    }
+}

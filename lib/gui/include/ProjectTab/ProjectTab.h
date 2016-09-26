@@ -15,6 +15,7 @@
 #define PROJECTTAB_H
 
 #include <QStackedWidget>
+#include <QtWidgets/QFileSystemModel>
 
 namespace Ui {
 class ProjectTab;
@@ -30,6 +31,8 @@ public:
 
 private:
     Ui::ProjectTab *ui;
+
+    QFileSystemModel* mFileSystemModel;
 };
 
 #endif // PROJECTTAB_H

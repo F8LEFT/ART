@@ -127,19 +127,19 @@ void OpenApk::accept()
     QString genApk = "./Projects/" + mFileName + "/Bin/unsigned.apk";
 
     QString cmd = ui->mDecompileEdit->text();
-//    cmd.replace("$(tool)", toolPath);
+    cmd.replace("$(tool)", apkToolPath);
     cmd.replace("$(target)", mFilePath);
     cmd += " -f -o " + projectPath;
     mDecCmd = cmd;
 
     cmd = ui->mCompileEdit->text();
-//    cmd.replace("$(tool)", toolPath);
+    cmd.replace("$(tool)", apkToolPath);
     cmd.replace("$(target)", projectPath);
     cmd += " -o " + genApk;
     mComCmd = cmd;
 
     auto pProject = ProjectInfo::instance ();
-    pProject->setInfo ("apkToolPath", apkToolPath);
+//    pProject->setInfo ("apkToolPath", apkToolPath);
     pProject->setInfo ("compileCmd", mComCmd);
     pProject->setInfo ("decompileCmd", mDecCmd);
 
