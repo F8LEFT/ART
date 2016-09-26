@@ -1,5 +1,5 @@
-SET(TARGET_NAME WorkSpace)
-SET(GUI_UIS WorkSpace.ui)
+SET(TARGET_NAME ProjectTab)
+SET(GUI_UIS ProjectTab.ui)
 
 FILE(GLOB_RECURSE GUI_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.c* ${CMAKE_CURRENT_SOURCE_DIR}/*.h* ${GUI_INCLUDE_DIR}/${TARGET_NAME}/*.h)
 
@@ -8,5 +8,5 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 source_group_by_dir(GUI_SRCS)
 
 add_library(${TARGET_NAME} STATIC ${GUI_SRCS} ${GUI_UIS_H})
-target_link_libraries(${TARGET_NAME} ProjectTab)
+target_link_libraries(${TARGET_NAME} utils)
 qt5_use_modules(${TARGET_NAME} Widgets)

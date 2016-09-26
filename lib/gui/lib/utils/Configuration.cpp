@@ -19,8 +19,7 @@
 
 Configuration::Configuration(QObject* mParent) : QObject(mParent)
 {
-    mSettings = new QSettings(GetSoftPath() + "/" + mSetName,
-                              QSettings::IniFormat, this);
+    mSettings = new QSettings(mSetName, QSettings::IniFormat, this);
 
     // hotkeys settings
 //    Shortcuts.insert("FileOpen", Shortcut(tr("File -> Open"), "F3", true));

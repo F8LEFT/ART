@@ -19,13 +19,26 @@ WorkSpace::WorkSpace(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // init Tabs
+    mProjectTab = new ProjectTab;
+    mProjectTab->setWindowTitle(tr("Project"));
+
     // init Tab widget
     mTabWidget = new MHTabWidget(this);
     ui->mRightTopFrameLayout->addWidget(mTabWidget);
+
+    mWidgetList.push_back(mProjectTab);
+    mWidgetNativeNameList.push_back("ProjectTab");
+    // connect signal / slots
+    connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)), this, SLOT(tabMovedSlot(int, int)));
+
+    loadFromConfig();
+    showQWidgetTab(mProjectTab);
 }
 
 WorkSpace::~WorkSpace()
 {
+    saveToConfig();
     delete ui;
 }
 
@@ -58,6 +71,48 @@ void WorkSpace::loadTabOrder()
     // Setup tabs
     for(auto & widget : tabIndexToWidget)
         addQWidgetTab(widget.first, widget.second);
+}
+
+
+void WorkSpace::loadFromConfig()
+{
+    Configuration *config = Config();
+
+    QList<int> lSplitter;
+    lSplitter << config->getUint("WorkSpace", "LeftSplitterWidth")
+              << config->getUint("WorkSpace", "RightSplitterWidth");
+    ui->mHSplitter->setSizes(lSplitter);
+
+    QList<int> lLeftSplitter;
+    lLeftSplitter << config->getUint("WorkSpace", "LeftTopSplitterHeight")
+                  << config->getUint("WorkSpace", "LeftBotSplitterHeight");
+    ui->mLeftVSplitter->setSizes(lLeftSplitter);
+
+
+    QList<int> lRightSplitter;
+    lRightSplitter << config->getUint("WorkSpace", "RightTopSplitterHeight")
+                   << config->getUint("WorkSpace", "RightBotSplitterHeight");
+    ui->mRightVSplitter->setSizes(lRightSplitter);
+
+    loadTabOrder();
+}
+
+void WorkSpace::saveToConfig()
+{
+    Configuration *config = Config();
+
+    QList<int> lSplitter = ui->mHSplitter->sizes();
+    config->setUint("WorkSpace", "LeftSplitterWidth", lSplitter[0]);
+    config->setUint("WorkSpace", "RightSplitterWidth", lSplitter[1]);
+
+    QList<int> lLeftSplitter = ui->mLeftVSplitter->sizes();
+    config->setUint("WorkSpace", "LeftTopSplitterHeight", lLeftSplitter[0]);
+    config->setUint("WorkSpace", "LeftBotSplitterHeight", lLeftSplitter[1]);
+
+    QList<int> lRightSplitter = ui->mRightVSplitter->sizes();
+    config->setUint("WorkSpace", "RightTopSplitterHeight", lRightSplitter[0]);
+    config->setUint("WorkSpace", "RightBotSplitterHeight", lRightSplitter[1]);
+
 }
 
 void WorkSpace::addQWidgetTab(QWidget *qWidget, QString nativeName)

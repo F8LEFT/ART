@@ -15,6 +15,7 @@
 #ifndef WORKSPACE_H
 #define WORKSPACE_H
 
+#include "ProjectTab/ProjectTab.h"
 
 #include <QWidget>
 
@@ -33,6 +34,10 @@ public:
 
     void setTab(QWidget* widget);
     void loadTabOrder();
+
+    // configuration
+    void loadFromConfig();
+    void saveToConfig();
 public slots:
     // WidgetTab
     void addQWidgetTab(QWidget* qWidget, QString nativeName);
@@ -47,6 +52,8 @@ private:
     MHTabWidget* mTabWidget;
     QVector<QWidget*> mWidgetList;
     QVector<QString> mWidgetNativeNameList;
+
+    ProjectTab* mProjectTab;
 };
 
 #endif // WORKSPACE_H
