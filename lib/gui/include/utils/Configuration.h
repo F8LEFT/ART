@@ -50,8 +50,11 @@ public:
     };
 
     //Functions
+private:
     explicit Configuration(QObject* mParent = nullptr);
+public:
     ~Configuration();
+
     static Configuration* instance();
     void load();
     void save();

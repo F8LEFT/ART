@@ -9,14 +9,18 @@
 #include "MainWindow/MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include "StatusLabel.h"
 #include "AboutArt/AboutArt.h"
 #include "OpenApk/OpenApk.h"
+
+#include "utils/CmdMsgUtil.h"
 
 #include <QMimeData>
 #include <QMessageBox>
 #include <QDragEnterEvent>
 #include <QFileDialog>
 #include <utils/Configuration.h>
+#include <utils/StringUtil.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mCenterWidget = new WorkSpace(this);
     setCentralWidget(mCenterWidget);
+
+    setupStatusBar();
     // connect Menu signal/slots
     // File Menu
     connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(actionExit()));
@@ -34,6 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // About Menu
     connect(ui->actionAbout_ART, SIGNAL(triggered(bool))
             , this, SLOT(actionAboutArt()));
+
+    cmdmsg()->addCmdMsg("Android Reverse Toolkit v"
+                        + GetCompileVersion () + " by f8left");
+    cmdmsg()->setStatusMsg("ready");
+    cmdmsg()->setLastLogMsg("init complete");
 }
 
 MainWindow::~MainWindow()
@@ -65,6 +76,22 @@ void MainWindow::saveToConfig()
     QSize s = size ();
     config->setUint ("MainWindow","width",s.width ());
     config->setUint ("MainWindow","height",s.height ());
+}
+
+void MainWindow::setupStatusBar()
+{
+    CmdMsg* cmdMsgUtil = CmdMsg::instance ();
+
+    // Status label (Ready, Paused, ...)
+    mStatusLabel = new StatusLabel(ui->statusBar);
+    ui->statusBar->addWidget(mStatusLabel);
+
+    // Log line
+    mLastLogLabel = new StatusLabel();
+    ui->statusBar->addPermanentWidget(mLastLogLabel, 1);
+
+    connect(cmdMsgUtil, SIGNAL(setStatusMsg(QString)), mStatusLabel, SLOT(logUpdate(QString)));
+    connect(cmdMsgUtil, SIGNAL(setLastLogMsg(QString)), mLastLogLabel, SLOT(logUpdate(QString)));
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)

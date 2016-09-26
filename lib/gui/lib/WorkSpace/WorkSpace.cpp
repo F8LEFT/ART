@@ -12,6 +12,7 @@
 #include "TabWidget.h"
 
 #include <utils/Configuration.h>
+#include <utils/CmdMsgUtil.h>
 
 WorkSpace::WorkSpace(QWidget *parent) :
     QWidget(parent),
@@ -31,6 +32,9 @@ WorkSpace::WorkSpace(QWidget *parent) :
     mWidgetNativeNameList.push_back("ProjectTab");
     // connect signal / slots
     connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)), this, SLOT(tabMovedSlot(int, int)));
+
+    auto *cmdMsgUtil = CmdMsg::instance ();
+    connect(cmdMsgUtil, SIGNAL(addCmdMsg(QString)), this, SLOT(onCmdMessage(QString)));
 
     loadFromConfig();
     showQWidgetTab(mProjectTab);
@@ -152,4 +156,17 @@ void WorkSpace::tabMovedSlot(int from, int to)
         QString tabName = mTabWidget->getNativeName(i);
         Config()->setUint("TabOrder", tabName, i);
     }
+}
+
+void WorkSpace::onCmdMessage(QString msg)
+{
+    QStringList lineList = msg.split(QRegExp("\\n+"), QString::SkipEmptyParts);
+    foreach(QString m, lineList) {
+        ui->mCmdTextBrowser->append(m);
+    }
+}
+
+void WorkSpace::onCmdClear()
+{
+    ui->mCmdTextBrowser->clear();
 }

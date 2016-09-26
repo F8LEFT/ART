@@ -44,8 +44,11 @@ public slots:
     void addQWidgetTab(QWidget* qWidget);
     void showQWidgetTab(QWidget* qWidget);
     void closeQWidgetTab(QWidget* qWidget);
-
     void tabMovedSlot(int from, int to);
+
+    // cmdLine Message
+    void onCmdMessage(QString msg);
+    void onCmdClear();
 
 private:
     Ui::WorkSpace *ui;

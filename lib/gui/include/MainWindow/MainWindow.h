@@ -19,6 +19,7 @@
 namespace Ui {
 class MainWindow;
 }
+class StatusLabel;
 
 class MainWindow : public QMainWindow
 {
@@ -31,9 +32,14 @@ public:
 // configuration
     void loadFromConfig();
     void saveToConfig();
+
+    void setupStatusBar();
 protected:
     void dragEnterEvent(QDragEnterEvent* event) Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent* event) Q_DECL_OVERRIDE;
+
+signals:
+    void addCmdMessge(QString msg);
 protected slots:
     // File Menu
     void actionExit();
@@ -47,6 +53,9 @@ private:
     Ui::MainWindow *ui;
 
     WorkSpace* mCenterWidget;
+
+    StatusLabel* mStatusLabel;
+    StatusLabel* mLastLogLabel;
 };
 
 #endif // MAINWINDOW_H
