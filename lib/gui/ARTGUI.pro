@@ -21,7 +21,9 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/WorkSpace/WorkSpace.cpp \
     lib/OpenApk/OpenApk.cpp \
     lib/utils/ProjectInfo.cpp \
-    lib/utils/Configuration.cpp
+    lib/utils/Configuration.cpp \
+    lib/WorkSpace/TabWidget.cpp \
+    lib/WorkSpace/TabBar.cpp
 
 
 HEADERS  += \
@@ -32,7 +34,9 @@ HEADERS  += \
     lib/OpenApk/OpenApk.h \
     include/utils/ProjectInfo.h \
     include/utils/Configuration.h \
-    include/WorkSpace/WorkSpace.h
+    include/WorkSpace/WorkSpace.h \
+    lib/WorkSpace/TabWidget.h \
+    lib/WorkSpace/TabBar.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \

@@ -15,11 +15,13 @@
 #ifndef WORKSPACE_H
 #define WORKSPACE_H
 
+
 #include <QWidget>
 
 namespace Ui {
 class WorkSpace;
 }
+class MHTabWidget;
 
 class WorkSpace : public QWidget
 {
@@ -29,8 +31,22 @@ public:
     explicit WorkSpace(QWidget *parent = 0);
     ~WorkSpace();
 
+    void setTab(QWidget* widget);
+    void loadTabOrder();
+public slots:
+    // WidgetTab
+    void addQWidgetTab(QWidget* qWidget, QString nativeName);
+    void addQWidgetTab(QWidget* qWidget);
+    void showQWidgetTab(QWidget* qWidget);
+    void closeQWidgetTab(QWidget* qWidget);
+
+    void tabMovedSlot(int from, int to);
+
 private:
     Ui::WorkSpace *ui;
+    MHTabWidget* mTabWidget;
+    QVector<QWidget*> mWidgetList;
+    QVector<QString> mWidgetNativeNameList;
 };
 
 #endif // WORKSPACE_H

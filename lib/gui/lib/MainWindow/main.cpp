@@ -12,12 +12,15 @@
 //===----------------------------------------------------------------------===//
 #include "MainWindow/MainWindow.h"
 #include <QApplication>
+#include <utils/Configuration.h>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    auto conf = Configuration::instance ();
     MainWindow w;
     w.show();
-
-    return a.exec();
+    int ret = a.exec();
+    conf->deleteLater ();
+    return ret;
 }

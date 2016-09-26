@@ -48,6 +48,6 @@ static int GetCompilePatch ()
     return ARTGUI_PATCH;
 }
 
-QString GetSoftPath();
+#define GetSoftPath QApplication::applicationDirPath
 
 #endif //PROJECT_STRINGUTIL_H_H

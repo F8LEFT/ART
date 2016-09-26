@@ -87,8 +87,6 @@ public:
     QMap<QString, QFont> Fonts;                     //[Fonts]
     QMap<QString, Shortcut> Shortcuts;              //[Shortcuts]
 
-    static Configuration* mPtr;
-
 signals:
     void colorsUpdated();
     void fontsUpdated();

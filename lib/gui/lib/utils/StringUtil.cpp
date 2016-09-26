@@ -31,8 +31,3 @@ QString ToDateString (const QDate &date)
             };
     return QString().sprintf("%s %d %d", months[date.month() - 1], date.day(), date.year());
 }
-
-QString GetSoftPath ()
-{
-    return QApplication::applicationDirPath();
-}

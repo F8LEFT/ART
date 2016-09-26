@@ -16,13 +16,9 @@
 #include <QIcon>
 #include <QtGlobal>
 
-Configuration* Configuration::mPtr = nullptr;
-Configuration ins;
 
 Configuration::Configuration(QObject* mParent) : QObject(mParent)
 {
-    Q_ASSERT(mPtr == nullptr);
-    mPtr = this;
     mSettings = new QSettings(GetSoftPath() + "/" + mSetName,
                               QSettings::IniFormat, this);
 
@@ -40,7 +36,10 @@ Configuration::~Configuration()
 
 Configuration* Configuration::instance()
 {
-    Q_ASSERT(mPtr != nullptr);
+    static  Configuration* mPtr;
+    if(mPtr == nullptr) {
+        mPtr = new Configuration;
+    }
     return mPtr;
 }
 
