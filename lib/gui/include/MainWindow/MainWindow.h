@@ -28,11 +28,18 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void dragEnterEvent(QDragEnterEvent* event) Q_DECL_OVERRIDE;
+    void dropEvent(QDropEvent* event) Q_DECL_OVERRIDE;
 protected slots:
     // File Menu
     void actionExit();
+    void actionOpen();
     // Help Menu
     void actionAboutArt();
+
+private:
+    void openFile(QString fileName);
 private:
     Ui::MainWindow *ui;
 

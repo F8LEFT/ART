@@ -11,7 +11,6 @@
 // decompile option for target apk/dex file.
 //
 //===----------------------------------------------------------------------===//
-#ifndef MAINWINDOW_H
 #ifndef OPENAPK_H
 #define OPENAPK_H
 
@@ -28,6 +27,9 @@ class OpenApk : public QDialog
 public:
     explicit OpenApk(QString file, QWidget *parent = 0);
     ~OpenApk();
+    QString getDecompileCmd();
+    QString getCompileCmd();
+    QString getFileName();
 protected slots:
     void accept();
     void decompileOptionChanged();

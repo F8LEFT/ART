@@ -14,15 +14,14 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="0">
-    <widget class="QLabel" name="mTargetFileLabel">
-     <property name="text">
-      <string>target file:</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="mToolSelectLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>select decompile tool</string>
      </property>
@@ -164,6 +163,19 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="mTargetFileLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>target file:</string>
+     </property>
+    </widget>
+   </item>
   </layout>
   <zorder>compileGroup</zorder>
   <zorder>mTargetFileLabel</zorder>
@@ -173,5 +185,38 @@
   <zorder>decompileGroup</zorder>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>OpenApk</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>218</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>OpenApk</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>218</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

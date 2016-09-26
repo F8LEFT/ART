@@ -12,6 +12,8 @@
 #include "utils/StringUtil.h"
 #include "utils/ProjectInfo.h"
 
+#include <QDir>
+
 OpenApk::OpenApk(QString file, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::OpenApk)
@@ -99,11 +101,26 @@ OpenApk::~OpenApk()
     delete ui;
 }
 
+QString OpenApk::getDecompileCmd()
+{
+    return mDecCmd;
+}
+
+QString OpenApk::getCompileCmd()
+{
+    return mComCmd;
+}
+
+QString OpenApk::getFileName()
+{
+    return mFileName;
+}
+
 void OpenApk::accept()
 {
     QString apkToolName = ui->mApkToolListWidget->count() ?
                     ui->mApkToolListWidget->currentItem()->text()
-                    : "apktool.jar";
+                    : "";
     QString exePath = QApplication::applicationDirPath();
     QString apkToolPath = "./thirdparty/apktool/" + apkToolName;
     QString projectPath = "./Projects/" + mFileName + "/Project";
@@ -115,14 +132,13 @@ void OpenApk::accept()
     cmd += " -f -o " + projectPath;
     mDecCmd = cmd;
 
-    cmd = ui->compileEdit->text();
+    cmd = ui->mCompileEdit->text();
 //    cmd.replace("$(tool)", toolPath);
     cmd.replace("$(target)", projectPath);
     cmd += " -o " + genApk;
     mComCmd = cmd;
 
     auto pProject = ProjectInfo::instance ();
-    pProject->setInfo ("projectName", mFileName);
     pProject->setInfo ("apkToolPath", apkToolPath);
     pProject->setInfo ("compileCmd", mComCmd);
     pProject->setInfo ("decompileCmd", mDecCmd);

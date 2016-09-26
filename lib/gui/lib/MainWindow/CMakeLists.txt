@@ -10,6 +10,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 source_group_by_dir(GUI_SRCS)
 
 add_executable(${TARGET_NAME} ${GUI_SRCS} ${GUI_UIS_H})
-target_link_libraries(${TARGET_NAME} AboutArt WorkSpace)
+target_link_libraries(${TARGET_NAME} AboutArt WorkSpace OpenApk)
 
 qt5_use_modules(${TARGET_NAME} Widgets)
