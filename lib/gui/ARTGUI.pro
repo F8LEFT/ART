@@ -20,7 +20,8 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/utils/StringUtil.cpp \
     lib/WorkSpace/WorkSpace.cpp \
     lib/OpenApk/OpenApk.cpp \
-    lib/utils/ProjectInfo.cpp
+    lib/utils/ProjectInfo.cpp \
+    lib/utils/Configuration.cpp
 
 
 HEADERS  += \
@@ -29,7 +30,9 @@ HEADERS  += \
     include/utils/StringUtil.h \
     lib/WorkSpace/WorkSpace.h \
     lib/OpenApk/OpenApk.h \
-    include/utils/ProjectInfo.h
+    include/utils/ProjectInfo.h \
+    include/utils/Configuration.h \
+    include/WorkSpace/WorkSpace.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \

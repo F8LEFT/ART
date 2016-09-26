@@ -1,0 +1,406 @@
+//===- Configuration.cpp - ART-GUI utilpart ---------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===----------------------------------------------------------------------===//
+#include "utils/Configuration.h"
+
+#include "utils/StringUtil.h"
+
+#include <QApplication>
+#include <QFontInfo>
+#include <QMessageBox>
+#include <QIcon>
+#include <QtGlobal>
+
+Configuration* Configuration::mPtr = nullptr;
+Configuration ins;
+
+Configuration::Configuration(QObject* mParent) : QObject(mParent)
+{
+    Q_ASSERT(mPtr == nullptr);
+    mPtr = this;
+    mSettings = new QSettings(GetSoftPath() + "/" + mSetName,
+                              QSettings::IniFormat, this);
+
+    // hotkeys settings
+    defaultShortcuts.insert("FileOpen", Shortcut(tr("File -> Open"), "F3", true));
+    defaultShortcuts.insert("FileExit", Shortcut(tr("File -> Exit"), "Alt+X", true));
+
+    Shortcuts = defaultShortcuts;
+
+    load();
+}
+
+Configuration::~Configuration()
+{
+    save();
+}
+
+Configuration* Configuration::instance()
+{
+    Q_ASSERT(mPtr != nullptr);
+    return mPtr;
+}
+
+void Configuration::load()
+{
+    readColors();
+    readBools();
+    readUints();
+    readFonts();
+    readShortcuts();
+}
+
+void Configuration::save()
+{
+    writeColors();
+    writeBools();
+    writeUints();
+    writeFonts();
+    writeShortcuts();
+}
+
+void Configuration::readColors()
+{
+    Colors = defaultColors;
+    //read config
+    mSettings->beginGroup("Colors");
+    QStringList keys = mSettings->allKeys();
+    foreach(QString id, keys) {
+        Colors[id] = colorFromConfig(id);
+    }
+    mSettings->endGroup();
+}
+
+void Configuration::writeColors()
+{
+    //write config
+    mSettings->beginGroup("Colors");
+    for(int i = 0; i < Colors.size(); i++)
+    {
+        QString id = Colors.keys().at(i);
+        colorToConfig(id, Colors[id]);
+    }
+    mSettings->endGroup();
+    emit colorsUpdated();
+}
+
+void Configuration::emitColorsUpdated()
+{
+    emit colorsUpdated();
+}
+
+void Configuration::emitTokenizerConfigUpdated()
+{
+    emit tokenizerConfigUpdated();
+}
+
+void Configuration::readBools()
+{
+    Bools = defaultBools;
+
+    //read config
+
+    QStringList allCategory = mSettings->childGroups();
+    foreach(QString category, allCategory) {
+        if (category.endsWith("_Bools")) {
+            mSettings->beginGroup(category);
+            category = category.left(category.length() - 6);
+
+            QStringList keys = mSettings->childKeys();
+            foreach(QString id, keys) {
+                Bools[category][id] = boolFromConfig(id);
+            }
+            mSettings->endGroup();
+        }
+    }
+
+}
+
+void Configuration::writeBools()
+{
+
+    //write config
+    for(int i = 0; i < Bools.size(); i++)
+    {
+        QString category = Bools.keys().at(i);
+        QMap<QString, bool>* currentBool = &Bools[category];
+        mSettings->beginGroup(category + "_Bools");
+        for(int j = 0; j < currentBool->size(); j++)
+        {
+            QString id = (*currentBool).keys().at(j);
+            boolToConfig(id, (*currentBool)[id]);
+        }
+        mSettings->endGroup();
+    }
+}
+
+void Configuration::readUints()
+{
+    Uints = defaultUints;
+    //read config
+    QStringList allCategory = mSettings->childGroups();
+    foreach(QString category, allCategory) {
+        if (category.endsWith("Uints")) {
+            mSettings->beginGroup(category);
+            category = category.left(category.length() - 6);
+
+            QStringList keys = mSettings->childKeys();
+            foreach(QString id, keys) {
+                Uints[category][id] = uintFromConfig(id);
+            }
+            mSettings->endGroup();
+        }
+
+    }
+}
+
+void Configuration::writeUints()
+{
+    //write config
+
+    for(int i = 0; i < Uints.size(); i++)
+    {
+        QString category = Uints.keys().at(i);
+        QMap<QString, unsigned>* currentUint = &Uints[category];
+
+        mSettings->beginGroup(category + "_Uints");
+        for(int j = 0; j < currentUint->size(); j++)
+        {
+            QString id = (*currentUint).keys().at(j);
+            uintToConfig(id, (*currentUint)[id]);
+        }
+        mSettings->endGroup();
+    }
+
+}
+
+void Configuration::readFonts()
+{
+    Fonts = defaultFonts;
+    //read config
+    mSettings->beginGroup("Fonts");
+    QStringList keys = mSettings->allKeys();
+
+    foreach(QString id, keys) {
+        QFont font = fontFromConfig(id);
+        QFontInfo fontInfo(font);
+        if(fontInfo.fixedPitch())
+            Fonts[id] = font;
+    }
+    mSettings->endGroup();
+}
+
+void Configuration::writeFonts()
+{
+    //write config
+    mSettings->beginGroup("Fonts");
+    for(int i = 0; i < Fonts.size(); i++)
+    {
+        QString id = Fonts.keys().at(i);
+        fontToConfig(id, Fonts[id]);
+    }
+    mSettings->endGroup();
+    emit fontsUpdated();
+}
+
+void Configuration::emitFontsUpdated()
+{
+    emit fontsUpdated();
+}
+
+void Configuration::readShortcuts()
+{
+    Shortcuts = defaultShortcuts;
+    //read config
+    mSettings->beginGroup("Shortcuts");
+    QStringList keys = mSettings->allKeys();
+
+    foreach(QString id, keys) {
+        QString key = shortcutFromConfig(id);
+        if(key != "")
+        {
+            if(key == "NOT_SET")
+                Shortcuts[id].Hotkey = QKeySequence();
+            else
+            {
+                QKeySequence KeySequence(key);
+                Shortcuts[id].Hotkey = KeySequence;
+            }
+        }
+    }
+    mSettings->endGroup();
+    emit shortcutsUpdated();
+}
+
+void Configuration::writeShortcuts()
+{
+    mSettings->beginGroup("Shortcuts");
+    QMap<QString, Shortcut>::const_iterator it = Shortcuts.begin();
+
+    while(it != Shortcuts.end())
+    {
+        shortcutToConfig(it.key(), it.value().Hotkey);
+        it++;
+    }
+    mSettings->endGroup();
+    emit shortcutsUpdated();
+}
+
+const QColor Configuration::getColor(const QString id) const
+{
+    if(Colors.contains(id))
+        return Colors.constFind(id).value();
+
+    return Qt::black;
+}
+
+void Configuration::setColor(const QString id, QColor c)
+{
+    defaultColors[id] = c;
+    return;
+}
+
+const bool Configuration::getBool(const QString category, const QString id) const
+{
+    if(Bools.contains(category))
+    {
+        if(Bools[category].contains(id))
+            return Bools[category][id];
+    }
+    return false;
+}
+
+void Configuration::setBool(const QString category, const QString id, const bool b)
+{
+    Bools[category][id] = b;
+    return;
+}
+
+const unsigned Configuration::getUint(const QString category, const QString id) const
+{
+    if(Uints.contains(category))
+    {
+        if(Uints[category].contains(id))
+            return Uints[category][id];
+    }
+    return 0;
+}
+
+void Configuration::setUint(const QString category, const QString id, const unsigned i)
+{
+    Uints[category][id] = i;
+    return;
+}
+
+const QFont Configuration::getFont(const QString id) const
+{
+    if(Fonts.contains(id))
+        return Fonts.constFind(id).value();
+    QFont ret("Lucida Console", 8, QFont::Normal, false);
+    ret.setFixedPitch(true);
+    ret.setStyleHint(QFont::Monospace);
+    return ret;
+}
+
+void Configuration::setFont(const QString id, QFont f)
+{
+    defaultFonts[id] = f;
+}
+
+const Configuration::Shortcut Configuration::getShortcut(const QString key_id) const
+{
+    if(Shortcuts.contains(key_id))
+        return Shortcuts.constFind(key_id).value();
+    return Shortcut();
+}
+
+void Configuration::setShortcut(const QString key_id, const QKeySequence key_sequence)
+{
+    Shortcuts[key_id].Hotkey = key_sequence;
+    return;
+}
+
+QColor Configuration::colorFromConfig(const QString id)
+{
+    QString setting = mSettings->value(id, QVariant("#FFFFFF")).toString();
+    QColor color(setting);
+    if (!color.isValid())
+    {
+        return Qt::black;
+    }
+    return color;
+}
+
+bool Configuration::colorToConfig(const QString id, const QColor color)
+{
+    QString colorName = color.name().toUpper();
+    if(!color.alpha())
+        colorName = "#XXXXXX";
+    mSettings->setValue(id, colorName);
+    return true;
+}
+
+bool Configuration::boolFromConfig(const QString id)
+{
+    return mSettings->value(id, false).toBool();
+}
+
+bool Configuration::boolToConfig(const QString id, bool bBool)
+{
+    mSettings->setValue(id, bBool);
+    return true;
+}
+
+unsigned Configuration::uintFromConfig(const QString id)
+{
+    return mSettings->value(id, 0).toUInt();
+}
+
+bool Configuration::uintToConfig(const QString id, unsigned i)
+{
+    mSettings->setValue(id, i);
+    return true;
+}
+
+QFont Configuration::fontFromConfig(const QString id)
+{
+    QString setting = mSettings->value(id, "Lucida Console").toString();
+    QFont font;
+    if (!font.fromString(setting))
+    {
+        QFont ret("Lucida Console", 8, QFont::Normal, false);
+        ret.setFixedPitch(true);
+        ret.setStyleHint(QFont::Monospace);
+        return ret;
+    }
+    return font;
+}
+
+bool Configuration::fontToConfig(const QString id, const QFont font)
+{
+    mSettings->setValue(id, font.toString());
+    return true;
+}
+
+QString Configuration::shortcutFromConfig(const QString id)
+{
+    QString _id = QString("%1").arg(id);
+    return mSettings->value(_id, "").toString();
+}
+
+bool Configuration::shortcutToConfig(const QString id, const QKeySequence shortcut)
+{
+    QString _id = QString("%1").arg(id);
+    QString _key = "";
+    if(!shortcut.isEmpty())
+        _key = shortcut.toString(QKeySequence::NativeText);
+    else
+        _key = "NOT_SET";
+    mSettings->setValue(_id, _key);
+    return true;
+}
