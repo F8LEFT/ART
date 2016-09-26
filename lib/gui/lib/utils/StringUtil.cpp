@@ -49,3 +49,15 @@ QString GetThirdPartyPath (const QString& expend)
         return GetSoftPath() + "/thirdparty/" + expend;
     }
 }
+
+QString GetSystemType ()
+{
+    return "linux";        // for debug only
+#if defined(LINUX)
+    return "linux";
+#elif defined(MAC)
+    return "mac";
+#else
+    return "win";
+#endif
+}

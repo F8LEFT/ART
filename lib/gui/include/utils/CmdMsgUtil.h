@@ -26,9 +26,9 @@ class CmdMsg: public QObject {
 
 public:
     enum ProcType {
-        cmd,
-        python,
-        script,
+        cmd,            // shell
+        python,         // python script
+        script,         // ART script, see ScriptEngine
         unknown,
     };
 
@@ -36,7 +36,8 @@ public:
         QString proc;
         QStringList args;
         ProcType t;
-        bool silence;
+        bool silence;       // no message hint
+        bool toqueue;       // add to queue, wait for last proc finish
     };
 private:
     CmdMsg(QObject *parent = 0);
@@ -51,9 +52,12 @@ signals:
     void setLastLogMsg(QString s);
     void onExecuteCommand(ProcInfo info);
 public:
-    void executeCommand(QString cmd, ProcType t = ProcType::script, bool silence = true);
-    void executeCommand(QString proc, QString args, ProcType t = ProcType::script, bool silence = true);
-    void executeCommand(QString proc, QStringList args, ProcType t = ProcType::script, bool silence = true);
+    void executeCommand(QString cmd, ProcType t = script,
+                        bool silence = true, bool toqueue = true);
+    void executeCommand(QString proc, QString args, ProcType t = script,
+                        bool silence = true, bool toqueue = true);
+    void executeCommand(QString proc, QStringList args, ProcType t = script,
+                        bool silence = true, bool toqueue = true);
 
     static QString procTypeDescription(ProcType t);
     static ProcType getProcType(QString p);

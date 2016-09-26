@@ -1,0 +1,48 @@
+//===- ScriptEngine.h - ART-GUI utilpart ------------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===----------------------------------------------------------------------===//
+//
+// The file defines script for this soft.
+//
+//===----------------------------------------------------------------------===//
+#ifndef SCRIPTENGINE_H
+#define SCRIPTENGINE_H
+
+#include <QObject>
+#include <QString>
+#include <QStringList>
+#include <QMap>
+#include <QProcess>
+class MainWindow;
+
+class ScriptEngine : public QObject
+{
+    Q_OBJECT
+
+    typedef void (ScriptEngine::*scriptHandle)(QStringList);
+public:
+    explicit ScriptEngine(MainWindow *parent = 0);
+    ~ScriptEngine();
+    static ScriptEngine* instance();
+
+    void exec(QString proc, QStringList args);
+
+signals:
+    void finished();
+    void errorOccurred(QProcess::ProcessError error);
+signals:
+    void adb(QStringList);                  // use default adb
+public slots:
+    void adbShell(QStringList);
+private:
+
+private:
+    QMap<QString, scriptHandle> scripts;
+};
+
+#endif // SCRIPTENGINE_H
