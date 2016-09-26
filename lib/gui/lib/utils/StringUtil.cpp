@@ -8,6 +8,8 @@
 //===----------------------------------------------------------------------===//
 #include "utils/StringUtil.h"
 
+#include <QApplication>
+
 #include <stdint.h>
 
 QString ToDateString (const QDate &date)
@@ -28,4 +30,13 @@ QString ToDateString (const QDate &date)
                     "Dec"
             };
     return QString().sprintf("%s %d %d", months[date.month() - 1], date.day(), date.year());
+}
+
+QString GetSoftPath ()
+{
+#ifdef RELEASE
+    return QApplication::applicationDirPath();
+#else
+    return "/home/f8left/CodeSrc/ART/lib/gui/bin";
+#endif
 }

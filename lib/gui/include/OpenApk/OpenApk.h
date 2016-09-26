@@ -1,3 +1,17 @@
+//===- OpenApk.h - ART-GUI OpenApk dialog ----------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===---------------------------------------------------------------------===//
+//
+// This file defines ART-GUI OpenApk dialog's behaviour. It ask for compile or
+// decompile option for target apk/dex file.
+//
+//===----------------------------------------------------------------------===//
+#ifndef MAINWINDOW_H
 #ifndef OPENAPK_H
 #define OPENAPK_H
 

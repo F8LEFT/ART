@@ -1,4 +1,4 @@
-//===- AboutArt.cpp - ART-GUI MainWindow ------------------------*- C++ -*-===//
+//===- AboutArt.cpp - ART-GUI About Dialog ----------------------*- C++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //

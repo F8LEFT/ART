@@ -47,4 +47,7 @@ static int GetCompilePatch ()
 {
     return ARTGUI_PATCH;
 }
+
+QString GetSoftPath();
+
 #endif //PROJECT_STRINGUTIL_H_H

@@ -18,16 +18,21 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/MainWindow/MainWindow.cpp \
     lib/AboutArt/AboutArt.cpp \
     lib/utils/StringUtil.cpp \
-    lib/WorkSpace/WorkSpace.cpp
+    lib/WorkSpace/WorkSpace.cpp \
+    lib/OpenApk/OpenApk.cpp \
+    lib/utils/ProjectInfo.cpp
 
 
 HEADERS  += \
     include/MainWindow/MainWindow.h \
     include/AboutArt/AboutArt.h \
     include/utils/StringUtil.h \
-    lib/WorkSpace/WorkSpace.h
+    lib/WorkSpace/WorkSpace.h \
+    lib/OpenApk/OpenApk.h \
+    include/utils/ProjectInfo.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
     lib/AboutArt/AboutArt.ui \
-    lib/WorkSpace/WorkSpace.ui
+    lib/WorkSpace/WorkSpace.ui \
+    lib/OpenApk/OpenApk.ui
