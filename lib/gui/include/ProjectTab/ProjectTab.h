@@ -14,13 +14,13 @@
 #ifndef PROJECTTAB_H
 #define PROJECTTAB_H
 
-#include <QWidget>
+#include <QStackedWidget>
 
 namespace Ui {
 class ProjectTab;
 }
 
-class ProjectTab : public QWidget
+class ProjectTab : public QStackedWidget
 {
     Q_OBJECT
 

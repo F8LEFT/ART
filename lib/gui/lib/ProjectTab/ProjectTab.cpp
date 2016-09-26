@@ -10,7 +10,7 @@
 #include "ui_ProjectTab.h"
 
 ProjectTab::ProjectTab(QWidget *parent) :
-    QWidget(parent),
+    QStackedWidget(parent),
     ui(new Ui::ProjectTab)
 {
     ui->setupUi(this);

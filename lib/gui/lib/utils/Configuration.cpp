@@ -19,12 +19,11 @@
 
 Configuration::Configuration(QObject* mParent) : QObject(mParent)
 {
-    mSettings = new QSettings(GetSoftPath() + "\\" + mSetName,
+    mSettings = new QSettings(GetSoftPath() + "/" + mSetName,
                               QSettings::IniFormat, this);
 
     // hotkeys settings
 //    Shortcuts.insert("FileOpen", Shortcut(tr("File -> Open"), "F3", true));
-//    Shortcuts.insert("FileExit", Shortcut(tr("File -> Exit"), "Alt+X", true));
 
     load();
 }
@@ -219,12 +218,9 @@ void Configuration::readShortcuts()
 void Configuration::writeShortcuts()
 {
     mSettings->beginGroup("Shortcuts");
-    QMap<QString, Shortcut>::const_iterator it = Shortcuts.begin();
-
-    while(it != Shortcuts.end())
-    {
+    for(auto it = Shortcuts.begin(), iEnd = Shortcuts.end();
+            it != iEnd; it++) {
         shortcutToConfig(it.key(), it.value().Hotkey);
-        it++;
     }
     mSettings->endGroup();
     emit shortcutsUpdated();

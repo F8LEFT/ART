@@ -16,12 +16,14 @@
 #include <QMessageBox>
 #include <QDragEnterEvent>
 #include <QFileDialog>
+#include <utils/Configuration.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    loadFromConfig();
 
     mCenterWidget = new WorkSpace(this);
     setCentralWidget(mCenterWidget);
@@ -36,7 +38,33 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    saveToConfig ();
     delete ui;
+}
+
+void MainWindow::loadFromConfig()
+{
+    Configuration *config = Config();
+    QPoint p;
+    p.setX (config->getUint ("MainWindow","x"));
+    p.setY (config->getUint ("MainWindow","y"));
+    move(p);
+    QSize s;
+    s.setWidth (config->getUint ("MainWindow","width"));
+    s.setHeight (config->getUint ("MainWindow","height"));
+    resize (s);
+}
+
+void MainWindow::saveToConfig()
+{
+    Configuration *config = Config();
+
+    QPoint p = pos();
+    config->setUint ("MainWindow","x",p.x ());
+    config->setUint ("MainWindow","y",p.y ());
+    QSize s = size ();
+    config->setUint ("MainWindow","width",s.width ());
+    config->setUint ("MainWindow","height",s.height ());
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)

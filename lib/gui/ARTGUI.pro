@@ -24,6 +24,7 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/utils/Configuration.cpp \
     lib/WorkSpace/TabWidget.cpp \
     lib/WorkSpace/TabBar.cpp \
+    lib/ProjectTab/ProjectTab.cpp \
     lib/ProjectTab/ProjectTab.cpp
 
 
@@ -39,11 +40,14 @@ HEADERS  += \
     lib/WorkSpace/TabWidget.h \
     lib/WorkSpace/TabBar.h \
     lib/ProjectTab/ProjectTab.h \
-    include/ProjectTab/ProjectTab.h
+    include/ProjectTab/ProjectTab.h \
+    lib/ProjectTab/ProjectTab.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
     lib/AboutArt/AboutArt.ui \
     lib/WorkSpace/WorkSpace.ui \
     lib/OpenApk/OpenApk.ui \
+    lib/ProjectTab/ProjectTab.ui \
+    lib/ProjectTab/projecttab.ui \
     lib/ProjectTab/ProjectTab.ui
