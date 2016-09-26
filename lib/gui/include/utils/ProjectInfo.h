@@ -27,7 +27,10 @@ public:
     void setInfo(QString key, QString value);
     void reset();
     // such key can be used (key, set by)
-    //
+    //projectName       OpenApk.cpp
+    //apkToolPath       OpenApk.cpp
+    //compileCmd        OpenApk.cpp
+    //decompileCmd      OpenApk.cpp
 
 private:
     ProjectInfo();

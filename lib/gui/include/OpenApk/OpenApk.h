@@ -26,11 +26,18 @@ class OpenApk : public QDialog
     Q_OBJECT
 
 public:
-    explicit OpenApk(QWidget *parent = 0);
+    explicit OpenApk(QString file, QWidget *parent = 0);
     ~OpenApk();
-
+protected slots:
+    void accept();
+    void decompileOptionChanged();
+    void compileOptionChanged();
 private:
     Ui::OpenApk *ui;
+    QString mFilePath;
+    QString mFileName;
+    QString mDecCmd;
+    QString mComCmd;
 };
 
 #endif // OPENAPK_H
