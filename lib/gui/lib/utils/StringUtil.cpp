@@ -34,9 +34,5 @@ QString ToDateString (const QDate &date)
 
 QString GetSoftPath ()
 {
-#ifdef RELEASE
     return QApplication::applicationDirPath();
-#else
-    return "/home/f8left/CodeSrc/ART/lib/gui/bin";
-#endif
 }
