@@ -20,14 +20,30 @@ namespace Ui {
 class EditorTab;
 }
 
+class Editor;
 class EditorTab : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit EditorTab(QWidget *parent = 0);
+    EditorTab(QWidget *parent = 0);
     ~EditorTab();
 
+    void showEditor(Editor* e);
+    bool openFile(QString filePath, QString fileName);
+    bool closeFile(QString filePath);
+    bool saveFile(QString filePath);
+
+public slots:
+    void documentCloseClick(bool );
+
+    void fileChanged(QString path);
+
+    bool saveAll();
+    bool closeAll();
+    void saveFile(QStringList files);
+    void closeFile(QStringList files);
+    void openFile(QStringList args);
 private:
     Ui::EditorTab *ui;
 };

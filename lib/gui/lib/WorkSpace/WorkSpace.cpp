@@ -42,14 +42,19 @@ WorkSpace::WorkSpace(QWidget *parent) :
 
 
     // connect signal / slots
+    // file tree view signal
+    connect(ui->mFileTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(treeFileOpen(QModelIndex)));
+
+    // tab signal
     connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)), this, SLOT(tabMovedSlot(int, int)));
 
+    // command line signal
     auto *cmdMsgUtil = CmdMsg::instance ();
     connect(cmdMsgUtil, SIGNAL(addCmdMsg(QString)), this, SLOT(onCmdMessage(QString)));
-
-    ScriptEngine* engine = ScriptEngine::instance();
-    connect(engine, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-    connect(engine, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClose()));
+    // script signal
+    ScriptEngine* script = ScriptEngine::instance();
+    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
+    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClose()));
 
 
 
@@ -187,6 +192,15 @@ void WorkSpace::onCmdMessage(QString msg)
 void WorkSpace::onCmdClear()
 {
     ui->mCmdTextBrowser->clear();
+}
+
+void WorkSpace::treeFileOpen(const QModelIndex &index)
+{
+    if (mFileModel->fileInfo(index).isFile()) {
+        if(!mEditorTab->openFile(mFileModel->filePath(index), mFileModel->fileName(index))) {
+            // TODO Error happened in open file
+        }
+    }
 }
 
 void WorkSpace::onProjectOpened(QStringList args)

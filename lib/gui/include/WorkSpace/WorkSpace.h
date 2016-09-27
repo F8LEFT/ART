@@ -51,6 +51,9 @@ public slots:
     void onCmdMessage(QString msg);
     void onCmdClear();
 
+    // fileTree
+    void treeFileOpen(const QModelIndex &index);
+
     // script Message
     void onProjectOpened(QStringList args);
     void onProjectClose();

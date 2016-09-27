@@ -21,6 +21,12 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
     scripts.insert ("CloseProject", &ScriptEngine::closeProject);
     scripts.insert ("ProjectOpened", &ScriptEngine::projectOpened);
     scripts.insert ("ProjectClosed", &ScriptEngine::projectClosed);
+
+    scripts.insert("OpenFile", &ScriptEngine::openFile);
+    scripts.insert("CloseFile", &ScriptEngine::closeFile);
+    scripts.insert("SaveFile", &ScriptEngine::saveFile);
+    scripts.insert("SaveAll", &ScriptEngine::saveAllFile);
+    scripts.insert("CloseAll", &ScriptEngine::closeAllFile);
 }
 
 ScriptEngine::~ScriptEngine()

@@ -25,7 +25,7 @@ class Editor : public QWidget
     Q_OBJECT
 
 public:
-    explicit Editor(QWidget *parent = 0);
+    Editor(QWidget *parent = 0);
     ~Editor();
 
     bool openFile(QString filePath, QString fileName);

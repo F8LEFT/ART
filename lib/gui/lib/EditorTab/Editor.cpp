@@ -12,6 +12,7 @@
 
 #include <QTextStream>
 #include <QtConcurrent/QtConcurrent>
+#include <QtWidgets/QGridLayout>
 
 void readFileThread(Editor* e, QString filePath);
 void saveFileThread(QString text, QString  filePath);
@@ -19,8 +20,13 @@ void saveFileThread(QString text, QString  filePath);
 Editor::Editor(QWidget *parent) :
         QWidget(parent)
 {
+    QLayout* layout = new QGridLayout();
+
     mFileChangedTimer = new QTimer(this);
     mFileEdit = allocTextEditorWidget ();
+    layout->addWidget (mFileEdit);
+
+    setLayout (layout);
 
     connect(this, SIGNAL(readLine(QString)), this, SLOT(appendLine(QString)));
     connect(this, SIGNAL(readEnd()), this, SLOT(readFileEnd()));
