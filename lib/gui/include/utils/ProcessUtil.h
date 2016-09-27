@@ -25,13 +25,13 @@ class ProcessUtil : public QProcess
 
 public:
     ProcessUtil(QObject *parent = Q_NULLPTR);
-    void addProc(CmdMsg::ProcInfo info);
 
 signals:
     void ProcFinish(CmdMsg::ProcInfo info);
     void onExecNext();
 
 protected slots:
+    void addProc(CmdMsg::ProcInfo info);
     void onProcFinish();
     void onProcError(QProcess::ProcessError error);
 

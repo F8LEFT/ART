@@ -52,10 +52,9 @@ QString GetThirdPartyPath (const QString& expend)
 
 QString GetSystemType ()
 {
-    return "linux";        // for debug only
-#if defined(LINUX)
-    return "linux";
-#elif defined(MAC)
+#if defined(UNIX)
+    return "unix";
+#elif defined(APPLE)
     return "mac";
 #else
     return "win";

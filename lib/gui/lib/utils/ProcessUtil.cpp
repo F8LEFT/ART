@@ -24,6 +24,8 @@ ProcessUtil::ProcessUtil(QObject *parent):
 
     connect(this, SIGNAL (onExecNext ()), this, SLOT (execNext ()));
 
+    auto cmdutil = cmdmsg ();
+    connect(cmdutil, SIGNAL(onExecuteCommand()), this, SLOT(addProc()));
     setWorkingDirectory(GetSoftPath());
 }
 
@@ -83,8 +85,8 @@ void ProcessUtil::exec(const CmdMsg::ProcInfo &info)
     case CmdMsg::cmd:
         start(info.proc, info.args);
         break;
-    //case cmdMsg::python:
-    //    break;
+    case CmdMsg::python:
+        break;
     case CmdMsg::script:
         script->exec(info.proc, info.args);
         break;
@@ -119,8 +121,8 @@ ProcessOneTime::ProcessOneTime (CmdMsg::ProcInfo info,QObject *parent)
         case CmdMsg::cmd:
             start(info.proc, info.args);
             break;
-            //case cmdMsg::python:
-            //    break;
+        case CmdMsg::python:
+            break;
         case CmdMsg::script:
             script->exec(info.proc, info.args);
             break;
