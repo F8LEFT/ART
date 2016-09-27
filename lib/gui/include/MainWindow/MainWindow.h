@@ -50,6 +50,10 @@ protected slots:
     // Help Menu
     void actionAboutArt();
 
+    // script
+    void onProjectOpened(QStringList projName);
+    void onProjectClosed();
+
 private:
     void openFile(QString fileName);
 private:

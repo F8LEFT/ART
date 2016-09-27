@@ -22,12 +22,15 @@
 #include <QFileDialog>
 #include <utils/Configuration.h>
 #include <utils/StringUtil.h>
+#include <utils/ProjectInfo.h>
+#include <utils/ScriptEngine.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("Android Reverse Toolkit");
     loadFromConfig();
 
     mCenterWidget = new WorkSpace(this);
@@ -42,6 +45,13 @@ MainWindow::MainWindow(QWidget *parent) :
     // About Menu
     connect(ui->actionAbout_ART, SIGNAL(triggered(bool))
             , this, SLOT(actionAboutArt()));
+
+    // script
+    auto* script = ScriptEngine::instance();
+    connect(script, SIGNAL(projectOpened(QStringList)),
+                this, SLOT(onProjectOpened(QStringList)));
+    connect(script, SIGNAL(projectClosed(QStringList)),
+                this, SLOT(onProjectClosed()));
 
     cmdmsg()->addCmdMsg("Android Reverse Toolkit v"
                         + GetCompileVersion () + " by f8left");
@@ -99,8 +109,10 @@ void MainWindow::setupStatusBar()
     mLastLogLabel = new StatusLabel();
     ui->statusBar->addPermanentWidget(mLastLogLabel, 1);
 
-    connect(cmdMsgUtil, SIGNAL(setStatusMsg(QString)), mStatusLabel, SLOT(logUpdate(QString)));
-    connect(cmdMsgUtil, SIGNAL(setLastLogMsg(QString)), mLastLogLabel, SLOT(logUpdate(QString)));
+    connect(cmdMsgUtil, SIGNAL(setStatusMsg(QString)),
+            mStatusLabel, SLOT(logUpdate(QString)));
+    connect(cmdMsgUtil, SIGNAL(setLastLogMsg(QString)),
+            mLastLogLabel, SLOT(logUpdate(QString)));
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
@@ -126,7 +138,8 @@ void MainWindow::actionExit()
 
 void MainWindow::actionOpen()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", "apk File (*.apk *.dex)");
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                tr("Open File"), "", "apk File (*.apk *.dex)");
     openFile(fileName);
 }
 
@@ -136,17 +149,32 @@ void MainWindow::actionAboutArt()
     about.exec ();
 }
 
+void MainWindow::onProjectOpened(QStringList projName)
+{
+    if(projName.empty())
+        return;
+    setWindowTitle("Android Reverse Toolkit - " + projName.front());
+}
+
+void MainWindow::onProjectClosed()
+{
+    setWindowTitle("Android Reverse Toolkit");
+}
+
 void MainWindow::openFile(QString fileName)
 {
-    //if (mWorkSpace->isProjectOpened()) {
-    //    QMessageBox msg(QMessageBox::Warning, "已存在打开的项目", "是否关闭现有项目", QMessageBox::Ok | QMessageBox::Cancel);
+    if(!projinfo ("projectName").isEmpty ()) {
+        QMessageBox msg(QMessageBox::Warning,
+                        tr("an opened project has been found"),
+                        tr("do you want to close current project?"),
+                        QMessageBox::Ok | QMessageBox::Cancel);
 //        msg.setWindowIcon(QIcon(":/icons/images/compile-warning.png"));
-        //msg.setWindowFlags(msg.windowFlags() & (~Qt::WindowContextHelpButtonHint));
-        //if(msg.exec() == QMessageBox::Cancel)
-        //    return;
-        //else
-        //    cmdMsg::executeCommand("CloseProject", cmdMsg::script);
-    //}
+        msg.setWindowFlags(msg.windowFlags() & (~Qt::WindowContextHelpButtonHint));
+        if(msg.exec() == QMessageBox::Cancel)
+            return;
+        else
+            cmdexec("CloseProject");
+    }
 
     if (fileName.isEmpty()) {
         return;
@@ -161,8 +189,8 @@ void MainWindow::openFile(QString fileName)
         QString cmd = openWidget->getDecompileCmd();
         cmdexec(cmd, CmdMsg::cmd);
 //         openProject
-         QStringList args;
-         args << openWidget->getFileName ();
+        QStringList args;
+        args << openWidget->getFileName ();
         cmdexec("OpenProject", args);
     }
     delete openWidget;

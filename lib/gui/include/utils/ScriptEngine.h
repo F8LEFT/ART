@@ -41,17 +41,16 @@ signals:
     // adb(args) ScriptEngine.cpp
     void adb(QStringList);
 
-    // OpenProject(projectName) ProjectTab.cpp
+    // OpenProject(projectName)   ProjectTab.cpp
     void openProject(QStringList);
-    // CloseProject() ProjectTab.cpp
+    // CloseProject()             ProjectTab.cpp
     void closeProject(QStringList);
     // ProjectOpened(projectName) ProjectTab.cpp, WorkSpace.cpp
-    void projectOpened(QStringList);    // should not used by user
+    void projectOpened(QStringList);    // reserved by ART
     // ProjectClosed()            ProjectTab.cpp, WorkSpace.cpp
-    void projectClosed(QStringList);
+    void projectClosed(QStringList);     // reserved by ART
 public slots:
     void adbShell(QStringList);
-private:
 
 private:
     QMap<QString, scriptHandle> scripts;

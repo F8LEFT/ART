@@ -209,11 +209,6 @@ void WorkSpace::initProjectDocumentTreeView()
     pHeader->setSortIndicator(0, Qt::AscendingOrder);
 
     mFileModel = new QFileSystemModel;
-    //mFileModel->setRootPath(".");
-    //ui->mFileTreeView->setRootIndex(mFileModel->index("."));
-    for (int i = 1; i < mFileModel->columnCount(); i++) {   // hide size date
-        ui->mFileTreeView->hideColumn(i);
-    }
 }
 
 void WorkSpace::setProjectDocumentTree(QString path)
@@ -221,6 +216,10 @@ void WorkSpace::setProjectDocumentTree(QString path)
     mFileModel->setRootPath(path);
     ui->mFileTreeView->setModel(mFileModel);
     ui->mFileTreeView->setRootIndex(mFileModel->index(path));
+
+    for (int i = 1; i < mFileModel->columnCount(); i++) {   // hide size date
+        ui->mFileTreeView->hideColumn(i);
+    }
 }
 
 void WorkSpace::clearProjectDocumentTree()

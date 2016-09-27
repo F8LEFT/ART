@@ -91,8 +91,7 @@ void ProjectTab::openProject (QString projectName)
         cmdmsg ()->addCmdMsg("project " + projectName + " not exist");
         return;
     }
-    auto projMsg = ProjectInfo::instance ();
-    projMsg->setInfo ("projectName", projectName);
+    projinfoset ("projectName", projectName);
     mProjectName = projectName;
 
     cmdexec("ProjectOpened", projectName);
@@ -104,6 +103,8 @@ void ProjectTab::closeProject()
         return;
     mHasProject = false;
     cmdmsg ()->addCmdMsg ("closing project " + mProjectName);
+
+    projinfoset("projectName", QString());
 
     cmdexec("ProjectClosed");
 }
