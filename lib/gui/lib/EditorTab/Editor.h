@@ -28,7 +28,7 @@ public:
     Editor(QWidget *parent = 0);
     ~Editor();
 
-    bool openFile(QString filePath, QString fileName);
+    bool openFile(QString filePath, int iLine = 1);
     bool saveFile();
     bool reload();
     void closeFile();
@@ -61,6 +61,7 @@ protected:
     bool isUpdated = false;
     QTimer* mFileChangedTimer;
     TextEditorWidget* mFileEdit;
+    int mLine;
 };
 
 

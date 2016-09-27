@@ -197,7 +197,7 @@ void WorkSpace::onCmdClear()
 void WorkSpace::treeFileOpen(const QModelIndex &index)
 {
     if (mFileModel->fileInfo(index).isFile()) {
-        if(!mEditorTab->openFile(mFileModel->filePath(index), mFileModel->fileName(index))) {
+        if(!mEditorTab->openFile(mFileModel->filePath(index), -1)) {
             // TODO Error happened in open file
         }
     }

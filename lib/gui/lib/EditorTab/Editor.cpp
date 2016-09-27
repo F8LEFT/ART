@@ -49,17 +49,19 @@ Editor::~Editor()
     saveToConfig();
 }
 
-bool Editor::openFile(QString filePath, QString fileName)
+bool Editor::openFile(QString filePath, int iLine)
 {
     fp = filePath;
-    fn = fileName;
     QFile file(fp);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
+        fn = file.fileName ();
+
         mFileEdit->setReadOnly(true);
-        mFileEdit->setDocumentTitle(fileName);
+        mFileEdit->setDocumentTitle(fn);
         mFileEdit->setDocumentPath(filePath);
         file.close();
 
+        mLine = iLine;
         QtConcurrent::run(readFileThread, this, filePath);
         return true;
     }
@@ -112,7 +114,7 @@ void Editor::readFileEnd()
     mFileEdit->setReadOnly(false);
     mFileEdit->setFocus();
     connect(mFileEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
-    mFileEdit->gotoLine(1);
+    mFileEdit->gotoLine(mLine);
 }
 
 void Editor::textChanged()

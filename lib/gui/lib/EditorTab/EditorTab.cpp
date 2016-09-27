@@ -37,17 +37,24 @@ EditorTab::~EditorTab()
     delete ui;
 }
 
-bool EditorTab::openFile(QString filePath, QString fileName)
+bool EditorTab::openFile(QString filePath, int iLine)
 {
+    // find wether the file has been opened
     int iComIdx = ui->mDocumentCombo->findData(filePath);
     if (iComIdx != -1) {
         ui->mDocumentCombo->setCurrentIndex(iComIdx);
+        if(iLine != -1) {
+            Editor* p = (Editor*)ui->mEditStackedWidget->widget(iLine);
+            p->gotoLine (iLine);
+        }
         return true;
     }
-    // find wether the file is opened
     if (!filePath.isEmpty()) {
         auto p = new Editor(this);
-        if (p->openFile(filePath, fileName)) {
+        iLine = (iLine == -1) ? 1 : iLine;
+        if (p->openFile(filePath, iLine)) {
+            QString fileName = QFile(filePath).fileName ();
+
             ui->mEditStackedWidget->insertWidget(0, p);
             ui->mDocumentCombo->insertItem(0, fileName, filePath);
             ui->mDocumentCombo->setCurrentIndex(0);
@@ -97,15 +104,14 @@ void EditorTab::closeFile(QStringList files)
 
 void EditorTab::openFile(QStringList args)
 {
-    if (args.size() == 1) {     // filepath
+    if (args.size() > 0) {     // filepath
         QString path = args.at(0);
         QFile file(path);
-        openFile(path, file.fileName());
-        if (args.size() > 1) {
-
+        int iLine = 1;
+        if (args.size () > 1) {
+            iLine = args.at (1).toInt ();
         }
-    } else if (args.size() > 1) {        // filepath, iLine (How?)
-
+        openFile(path, iLine);
     }
 }
 
