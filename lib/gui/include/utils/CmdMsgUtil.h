@@ -50,7 +50,7 @@ signals:
     void addCmdMsg(QString s);
     void setStatusMsg(QString s);
     void setLastLogMsg(QString s);
-    void onExecuteCommand(ProcInfo info);
+    void onExecuteCommand(CmdMsg::ProcInfo info);
 public:
     void executeCommand(QString cmd, ProcType t = script,
                         bool silence = true, bool toqueue = true);

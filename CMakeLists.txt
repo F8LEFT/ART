@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 set(ART_VERSION_MAJOR 0)
-set(ART_VERSION_MINOR 1)
+set(ART_VERSION_MINOR 3)
 set(ART_VERSION_PATCH 0)
 set(ART_VERSION ${ART_VERSION_MAJOR}.${ART_VERSION_MINOR}.${ART_VERSION_PATCH})
 
@@ -18,5 +18,7 @@ ELSE()
     MESSAGE("Building DEFAULT(UNIX) version.")
     ADD_DEFINITIONS(-DUNIX)
 ENDIF ()
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror")
 
 add_subdirectory(lib/gui)

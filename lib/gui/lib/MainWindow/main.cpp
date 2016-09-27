@@ -13,15 +13,22 @@
 #include "MainWindow/MainWindow.h"
 #include <QApplication>
 #include <utils/Configuration.h>
+#include <utils/ProcessUtil.h>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    // init global class
     auto conf = Configuration::instance ();
+    ProcessUtil process;
+
     MainWindow* w = new MainWindow;
     w->show();
     int ret = a.exec();
     delete w;
+
+    // auto save config
     delete conf;
+
     return ret;
 }

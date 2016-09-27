@@ -35,8 +35,12 @@ protected slots:
     void onProcFinish();
     void onProcError(QProcess::ProcessError error);
 
-private:
+private slots:
     void execNext();
+    void onProcessStdRead();
+    void onProcessErrRead();
+private:
+
     void exec(const CmdMsg::ProcInfo& info);
 
     QList<CmdMsg::ProcInfo> mProcList;
@@ -52,6 +56,8 @@ public:
 protected slots:
     void onProcFinish();
     void onProcError(QProcess::ProcessError error);
+    void onProcessStdRead();
+    void onProcessErrRead();
 };
 
 #endif // PROCESSUTIL_H
