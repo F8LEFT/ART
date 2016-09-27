@@ -43,10 +43,12 @@ signals:
 
     // OpenProject(projectName) ProjectTab.cpp
     void openProject(QStringList);
-    // CloseProject() ProjectTab.cpp, WorkSpace.cpp
+    // CloseProject() ProjectTab.cpp
     void closeProject(QStringList);
-    // projectOpened(projectName) ProjectTab.cpp, WorkSpace.cpp
-    void projectOpened(QStringList);
+    // ProjectOpened(projectName) ProjectTab.cpp, WorkSpace.cpp
+    void projectOpened(QStringList);    // should not used by user
+    // ProjectClosed()            ProjectTab.cpp, WorkSpace.cpp
+    void projectClosed(QStringList);
 public slots:
     void adbShell(QStringList);
 private:

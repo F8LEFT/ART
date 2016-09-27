@@ -31,13 +31,18 @@ public:
 
 protected slots:
     void onProjectOpenClick(const QModelIndex &index);
+    void openProject(QStringList args);
     void openProject(QString projectName);
+    void closeProject();
 
     void onProjectOpened(QStringList projName);
+    void onProjectClosed();
 private:
     Ui::ProjectTab *ui;
 
     QFileSystemModel* mFileSystemModel;
+    QString mProjectName;
+    bool mHasProject;
 };
 
 #endif // PROJECTTAB_H

@@ -41,6 +41,12 @@ QString GetProjectsPath (const QString& expend)
     }
 }
 
+QString GetProjectsProjectPath (const QString &expend)
+{
+    Q_ASSERT (!expend.isEmpty () && "expend should be empty");
+    return GetSoftPath() + "/Projects/" + expend + "/Project";
+}
+
 QString GetThirdPartyPath (const QString& expend)
 {
     if(expend.isEmpty ()) {
@@ -60,3 +66,5 @@ QString GetSystemType ()
     return "win";
 #endif
 }
+
+

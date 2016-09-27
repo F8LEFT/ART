@@ -6,17 +6,20 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===---------------------------------------------------------------------===//
-#include <QtCore/QDir>
+#include "ProjectTab/ProjectTab.h"
+#include "ui_ProjectTab.h"
+
 #include <utils/StringUtil.h>
 #include <utils/CmdMsgUtil.h>
 #include <utils/ProjectInfo.h>
 #include <utils/ScriptEngine.h>
-#include "ProjectTab/ProjectTab.h"
-#include "ui_ProjectTab.h"
+
+#include <QtCore/QDir>
 
 ProjectTab::ProjectTab(QWidget *parent) :
     QStackedWidget(parent),
-    ui(new Ui::ProjectTab)
+    ui(new Ui::ProjectTab),
+    mHasProject(false)
 {
     ui->setupUi(this);
 
@@ -43,8 +46,17 @@ ProjectTab::ProjectTab(QWidget *parent) :
     }
 
     auto* script = ScriptEngine::instance();
-    connect(ui->mProjectList, SIGNAL(doubleClicked(QModelIndex)), SLOT(onProjectOpenClick(QModelIndex)));
+    connect(ui->mProjectList, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(onProjectOpenClick(QModelIndex)));
 
+    connect(script, SIGNAL(openProject (QStringList)),
+            this, SLOT(openProject (QStringList)));
+    connect(script, SIGNAL(closeProject (QStringList)),
+            this, SLOT(closeProject ()));
+    connect(script, SIGNAL(projectOpened(QStringList)),
+            this, SLOT(onProjectOpened(QStringList)));
+    connect(script, SIGNAL(projectClosed(QStringList)),
+            this, SLOT(onProjectClosed()));
 }
 
 ProjectTab::~ProjectTab()
@@ -58,21 +70,54 @@ void ProjectTab::onProjectOpenClick(const QModelIndex &index)
             index(index.row(), 0, ui->mProjectList->rootIndex()).data().toString());
 }
 
+void ProjectTab::openProject (QStringList args)
+{
+    if(args.empty ())
+        return;
+    openProject (args.front ());
+}
+
 void ProjectTab::openProject (QString projectName)
 {
-    auto projPath = GetProjectsPath (projectName);
+    if(mHasProject)
+        return;
+    mHasProject = true;
+    cmdmsg ()->addCmdMsg ("opening project " + projectName);
 
-    QDir dir(QApplication::applicationDirPath() + "/Projects/" + projectName + "/Project");
+    auto projPath = GetProjectsProjectPath (projectName);
+
+    QDir dir(projPath);
     if (!dir.exists()) {
         cmdmsg ()->addCmdMsg("project " + projectName + " not exist");
         return;
     }
     auto projMsg = ProjectInfo::instance ();
     projMsg->setInfo ("projectName", projectName);
-    cmdexec("ProjectOpened");
+    mProjectName = projectName;
+
+    cmdexec("ProjectOpened", projectName);
+}
+
+void ProjectTab::closeProject()
+{
+    if(!mHasProject)
+        return;
+    mHasProject = false;
+    cmdmsg ()->addCmdMsg ("closing project " + mProjectName);
+
+    cmdexec("ProjectClosed");
 }
 
 void ProjectTab::onProjectOpened (QStringList projName)
 {
+    cmdmsg ()->addCmdMsg ("project " + mProjectName + " opened.");
+    setCurrentIndex(1);
 
 }
+
+void ProjectTab::onProjectClosed()
+{
+    cmdmsg ()->addCmdMsg ("project " + mProjectName + " closed");
+    setCurrentIndex(0);
+}
+

@@ -50,13 +50,24 @@ public slots:
     void onCmdMessage(QString msg);
     void onCmdClear();
 
+    // script Message
+    void onProjectOpened(QStringList args);
+    void onProjectClose();
+private:
+    void initProjectDocumentTreeView();
+    void setProjectDocumentTree(QString path);
+    void clearProjectDocumentTree();
 private:
     Ui::WorkSpace *ui;
     MHTabWidget* mTabWidget;
     QVector<QWidget*> mWidgetList;
     QVector<QString> mWidgetNativeNameList;
 
+    // Tab Widget
     ProjectTab* mProjectTab;
+
+    // FileTreeView
+    QFileSystemModel *mFileModel = nullptr;
 };
 
 #endif // WORKSPACE_H

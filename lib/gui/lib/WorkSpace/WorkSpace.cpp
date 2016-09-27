@@ -13,12 +13,17 @@
 
 #include <utils/Configuration.h>
 #include <utils/CmdMsgUtil.h>
+#include <utils/ScriptEngine.h>
+#include <utils/ProjectInfo.h>
+#include <utils/StringUtil.h>
 
 WorkSpace::WorkSpace(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WorkSpace)
 {
     ui->setupUi(this);
+
+    initProjectDocumentTreeView();
 
     // init Tabs
     mProjectTab = new ProjectTab;
@@ -30,11 +35,21 @@ WorkSpace::WorkSpace(QWidget *parent) :
 
     mWidgetList.push_back(mProjectTab);
     mWidgetNativeNameList.push_back("ProjectTab");
+
+
+
     // connect signal / slots
     connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)), this, SLOT(tabMovedSlot(int, int)));
 
     auto *cmdMsgUtil = CmdMsg::instance ();
     connect(cmdMsgUtil, SIGNAL(addCmdMsg(QString)), this, SLOT(onCmdMessage(QString)));
+
+    ScriptEngine* engine = ScriptEngine::instance();
+    connect(engine, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
+    connect(engine, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClose()));
+
+
+
 
     loadFromConfig();
     showQWidgetTab(mProjectTab);
@@ -169,4 +184,46 @@ void WorkSpace::onCmdMessage(QString msg)
 void WorkSpace::onCmdClear()
 {
     ui->mCmdTextBrowser->clear();
+}
+
+void WorkSpace::onProjectOpened(QStringList args)
+{
+    if(args.empty())
+        return;
+
+    QString projName = args.front();
+    setProjectDocumentTree(GetProjectsProjectPath(projName));
+}
+
+void WorkSpace::onProjectClose()
+{
+    clearProjectDocumentTree();
+}
+
+void WorkSpace::initProjectDocumentTreeView()
+{
+    ui->mFileTreeView->setModel(nullptr);
+    auto *pHeader= ui->mFileTreeView->header();
+    pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+    pHeader->setStretchLastSection(false);
+    pHeader->setSortIndicator(0, Qt::AscendingOrder);
+
+    mFileModel = new QFileSystemModel;
+    //mFileModel->setRootPath(".");
+    //ui->mFileTreeView->setRootIndex(mFileModel->index("."));
+    for (int i = 1; i < mFileModel->columnCount(); i++) {   // hide size date
+        ui->mFileTreeView->hideColumn(i);
+    }
+}
+
+void WorkSpace::setProjectDocumentTree(QString path)
+{
+    mFileModel->setRootPath(path);
+    ui->mFileTreeView->setModel(mFileModel);
+    ui->mFileTreeView->setRootIndex(mFileModel->index(path));
+}
+
+void WorkSpace::clearProjectDocumentTree()
+{
+    ui->mFileTreeView->setModel(nullptr);
 }

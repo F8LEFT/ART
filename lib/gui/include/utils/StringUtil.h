@@ -51,7 +51,9 @@ static int GetCompilePatch ()
 #define GetSoftPath QApplication::applicationDirPath
 
 QString GetProjectsPath(const QString& expend = QString());
+QString GetProjectsProjectPath(const QString& expend);
 QString GetThirdPartyPath(const QString& expend = QString());
+
 QString GetSystemType();
 
 #endif //PROJECT_STRINGUTIL_H_H

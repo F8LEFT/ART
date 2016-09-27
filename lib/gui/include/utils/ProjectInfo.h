@@ -18,6 +18,9 @@
 #include <QMap>
 #include <QString>
 
+#define projinfoset(x,y) ProjectInfo::instance()->setInfo(x, y)
+#define projinfo(x) ProjectInfo::instance()->getInfo(x)
+
 class ProjectInfo {
 public:
     // make sure this has only one instance
