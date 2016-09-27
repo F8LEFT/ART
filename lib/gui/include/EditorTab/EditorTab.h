@@ -1,4 +1,4 @@
-//===- EditorTab.h - ART-GUI Project Tab ----------------------*- C++ -*-===//
+//===- EditorTab.h - ART-GUI Editor Tab ----------------------*- C++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
