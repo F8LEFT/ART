@@ -133,7 +133,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::actionExit()
 {
-    exit(0);
+    close ();
 }
 
 void MainWindow::actionOpen()

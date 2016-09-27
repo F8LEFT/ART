@@ -26,8 +26,10 @@ WorkSpace::WorkSpace(QWidget *parent) :
     initProjectDocumentTreeView();
 
     // init Tabs
-    mProjectTab = new ProjectTab;
+    mProjectTab = new ProjectTab(this);
     mProjectTab->setWindowTitle(tr("Project"));
+    mEditorTab = new EditorTab(this);
+    mEditorTab->setWindowTitle (tr ("Editor"));
 
     // init Tab widget
     mTabWidget = new MHTabWidget(this);
@@ -35,7 +37,8 @@ WorkSpace::WorkSpace(QWidget *parent) :
 
     mWidgetList.push_back(mProjectTab);
     mWidgetNativeNameList.push_back("ProjectTab");
-
+    mWidgetList.push_back (mEditorTab);
+    mWidgetNativeNameList.push_back ("EditorTab");
 
 
     // connect signal / slots

@@ -25,7 +25,8 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/WorkSpace/TabWidget.cpp \
     lib/WorkSpace/TabBar.cpp \
     lib/ProjectTab/ProjectTab.cpp \
-    lib/ProjectTab/ProjectTab.cpp
+    lib/ProjectTab/ProjectTab.cpp \
+    lib/EditorTab/EditorTab.cpp
 
 
 HEADERS  += \
@@ -41,7 +42,8 @@ HEADERS  += \
     lib/WorkSpace/TabBar.h \
     lib/ProjectTab/ProjectTab.h \
     include/ProjectTab/ProjectTab.h \
-    lib/ProjectTab/ProjectTab.h
+    lib/ProjectTab/ProjectTab.h \
+    include/EditorTab/EditorTab.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
@@ -50,4 +52,10 @@ FORMS    += \
     lib/OpenApk/OpenApk.ui \
     lib/ProjectTab/ProjectTab.ui \
     lib/ProjectTab/projecttab.ui \
-    lib/ProjectTab/ProjectTab.ui
+    lib/ProjectTab/ProjectTab.ui \
+    include/EditorTab/EditorTab.ui \
+    lib/EditorTab/EditorTab.ui
+
+RESOURCES += \
+    ART.qrc \
+    lib/Res/ART.qrc

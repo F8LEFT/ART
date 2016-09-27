@@ -9,7 +9,7 @@ QT5_WRAP_UI(GUI_UIS_H ${GUI_UIS})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 source_group_by_dir(GUI_SRCS)
 
-add_executable(${TARGET_NAME} ${GUI_SRCS} ${GUI_UIS_H})
+add_executable(${TARGET_NAME} ${GUI_SRCS} ${GUI_UIS_H} ${ART_RSCS})
 target_link_libraries(${TARGET_NAME} AboutArt WorkSpace OpenApk)
-
+ADD_DEPENDENCIES(${TARGET_NAME} ART_RES)
 qt5_use_modules(${TARGET_NAME} Widgets)

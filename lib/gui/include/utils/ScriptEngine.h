@@ -48,7 +48,7 @@ signals:
     // ProjectOpened(projectName) ProjectTab.cpp, WorkSpace.cpp
     void projectOpened(QStringList);    // reserved by ART
     // ProjectClosed()            ProjectTab.cpp, WorkSpace.cpp
-    void projectClosed(QStringList);     // reserved by ART
+    void projectClosed(QStringList);    // reserved by ART
 public slots:
     void adbShell(QStringList);
 

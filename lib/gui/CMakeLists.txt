@@ -45,6 +45,9 @@ macro(source_group_by_dir source_files)
     endif(MSVC)
 endmacro(source_group_by_dir)
 
+QT5_ADD_RESOURCES (ART_RSCS ART.qrc)
+ADD_CUSTOM_TARGET(ART_RES DEPENDS ${ART_RSCS})
+
 ADD_SUBDIRECTORY(lib)
 
 SET(LIBS ${LIBRARY_OUTPUT_PATH})

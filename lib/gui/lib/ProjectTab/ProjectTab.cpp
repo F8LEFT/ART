@@ -113,7 +113,6 @@ void ProjectTab::onProjectOpened (QStringList projName)
 {
     cmdmsg ()->addCmdMsg ("project " + mProjectName + " opened.");
     setCurrentIndex(1);
-
 }
 
 void ProjectTab::onProjectClosed()

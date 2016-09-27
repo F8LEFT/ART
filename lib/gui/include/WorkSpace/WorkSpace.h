@@ -16,6 +16,7 @@
 #define WORKSPACE_H
 
 #include "ProjectTab/ProjectTab.h"
+#include "EditorTab/EditorTab.h"
 
 #include <QWidget>
 
@@ -65,6 +66,7 @@ private:
 
     // Tab Widget
     ProjectTab* mProjectTab;
+    EditorTab* mEditorTab;
 
     // FileTreeView
     QFileSystemModel *mFileModel = nullptr;
