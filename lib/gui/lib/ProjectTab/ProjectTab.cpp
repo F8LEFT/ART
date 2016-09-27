@@ -8,6 +8,9 @@
 //===---------------------------------------------------------------------===//
 #include <QtCore/QDir>
 #include <utils/StringUtil.h>
+#include <utils/CmdMsgUtil.h>
+#include <utils/ProjectInfo.h>
+#include <utils/ScriptEngine.h>
 #include "ProjectTab/ProjectTab.h"
 #include "ui_ProjectTab.h"
 
@@ -38,9 +41,38 @@ ProjectTab::ProjectTab(QWidget *parent) :
         hHeader->hide();
         ui->mProjectList->verticalHeader()->hide();
     }
+
+    auto* script = ScriptEngine::instance();
+    connect(ui->mProjectList, SIGNAL(doubleClicked(QModelIndex)), SLOT(onProjectOpenClick(QModelIndex)));
+
 }
 
 ProjectTab::~ProjectTab()
 {
     delete ui;
+}
+
+void ProjectTab::onProjectOpenClick(const QModelIndex &index)
+{
+    openProject (ui->mProjectList->model()->
+            index(index.row(), 0, ui->mProjectList->rootIndex()).data().toString());
+}
+
+void ProjectTab::openProject (QString projectName)
+{
+    auto projPath = GetProjectsPath (projectName);
+
+    QDir dir(QApplication::applicationDirPath() + "/Projects/" + projectName + "/Project");
+    if (!dir.exists()) {
+        cmdmsg ()->addCmdMsg("project " + projectName + " not exist");
+        return;
+    }
+    auto projMsg = ProjectInfo::instance ();
+    projMsg->setInfo ("projectName", projectName);
+    cmdexec("ProjectOpened");
+}
+
+void ProjectTab::onProjectOpened (QStringList projName)
+{
+
 }

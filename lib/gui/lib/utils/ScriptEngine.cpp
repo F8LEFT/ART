@@ -16,7 +16,10 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
     connect(this, SIGNAL(adb(QStringList)), this, SLOT(adbShell(QStringList)));
 
     // command list
-    scripts.insert("adb", &ScriptEngine::adb);
+    scripts.insert ("adb", &ScriptEngine::adb);
+    scripts.insert ("OpenProject", &ScriptEngine::openProject);
+    scripts.insert ("CloseProject", &ScriptEngine::closeProject);
+    scripts.insert ("ProjectOpened", &ScriptEngine::projectOpened);
 }
 
 ScriptEngine::~ScriptEngine()

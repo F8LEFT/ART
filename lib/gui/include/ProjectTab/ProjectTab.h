@@ -29,6 +29,11 @@ public:
     explicit ProjectTab(QWidget *parent = 0);
     ~ProjectTab();
 
+protected slots:
+    void onProjectOpenClick(const QModelIndex &index);
+    void openProject(QString projectName);
+
+    void onProjectOpened(QStringList projName);
 private:
     Ui::ProjectTab *ui;
 

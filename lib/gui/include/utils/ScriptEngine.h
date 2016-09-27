@@ -20,6 +20,7 @@
 #include <QProcess>
 class MainWindow;
 
+
 class ScriptEngine : public QObject
 {
     Q_OBJECT
@@ -36,7 +37,16 @@ signals:
     void finished();
     void errorOccurred(QProcess::ProcessError error);
 signals:
-    void adb(QStringList);                  // use default adb
+    // script(args) handleby
+    // adb(args) ScriptEngine.cpp
+    void adb(QStringList);
+
+    // OpenProject(projectName) ProjectTab.cpp
+    void openProject(QStringList);
+    // CloseProject() ProjectTab.cpp, WorkSpace.cpp
+    void closeProject(QStringList);
+    // projectOpened(projectName) ProjectTab.cpp, WorkSpace.cpp
+    void projectOpened(QStringList);
 public slots:
     void adbShell(QStringList);
 private:

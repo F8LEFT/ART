@@ -158,19 +158,12 @@ void MainWindow::openFile(QString fileName)
     OpenApk* openWidget = new OpenApk(fileName, this);
     if (openWidget->exec() == QDialog::Accepted) {
         // decompile
-        // QString cmd = openWidget->getDecompileCmd();
-        // cmdMsg::executeCommand(cmd, cmdMsg::cmd);
-        // openProject
-        // QStringList args;
-        // args << openWidget->getProjectName();
-        // cmdMsg::executeCommand("OpenProject", args, cmdMsg::script);
-        // setConfig
-        // args.clear();
-        //args  << "compileCmd" << openWidget->getCompileCmd();
-        // cmdMsg::executeCommand("SetConfig", args, cmdMsg::script);
-        // UpdateProject
-//        args.clear();
-//        cmdMsg::executeCommand("UpdateProject", args, cmdMsg::script);
+        QString cmd = openWidget->getDecompileCmd();
+        cmdexec(cmd, CmdMsg::cmd);
+//         openProject
+         QStringList args;
+         args << openWidget->getFileName ();
+        cmdexec("OpenProject", args);
     }
     delete openWidget;
 }
