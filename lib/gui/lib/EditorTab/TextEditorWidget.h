@@ -16,6 +16,7 @@
 #include <QPlainTextEdit>
 #include <QAction>
 #include <QList>
+#include <BookMark/BookMark.h>
 
 class LineNumberArea;
 class TextEditorWidget: public QPlainTextEdit
@@ -49,11 +50,14 @@ private slots:
 
     void updateLineNumberArea (const QRect &,int);
 
+private:
+    void updateCurrentLineBookMark();       // add or delete bookmark for currentline
 
 private:
     QWidget *lineNumberArea;
 
     QString mDocumentPath;
+
 };
 
 // LineNumberArea show linenumber in the TextEditorWidget

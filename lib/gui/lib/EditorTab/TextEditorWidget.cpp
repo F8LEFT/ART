@@ -10,12 +10,14 @@
 #include <QPainter>
 #include <QTextBlock>
 #include <QDebug>
+#include <BookMark/BookMarkManager.h>
 
 TextEditorWidget::TextEditorWidget(QWidget *parent):
         QPlainTextEdit(parent)
 {
-    lineNumberArea = allocLineArea();
+    setLineWrapMode(QPlainTextEdit::NoWrap);
 
+    lineNumberArea = allocLineArea();
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
@@ -102,7 +104,10 @@ void TextEditorWidget::gotoLine(int line, int column, bool centerLine)
 
 int TextEditorWidget::currentLine ()
 {
-    return textCursor ().columnNumber ();
+    QTextCursor cursor = textCursor();
+    QTextLayout *pLayout = cursor.block().layout();
+    int nCurpos = cursor.position() - cursor.block().position();
+    return pLayout->lineForTextPosition(nCurpos).lineNumber() + cursor.block().firstLineNumber() + 1;
 }
 
 void TextEditorWidget::resizeEvent(QResizeEvent *e)
@@ -118,6 +123,7 @@ void TextEditorWidget::keyPressEvent(QKeyEvent *e)
     if (e->modifiers() == (Qt::ControlModifier)) {
         switch (e->key()) {
             case Qt::Key_M:           // BookMark
+                updateCurrentLineBookMark();
                 return;
             default:
                 break;
@@ -163,4 +169,18 @@ QWidget *TextEditorWidget::allocLineArea ()
     return new LineNumberArea(this);
 }
 
+void TextEditorWidget::updateCurrentLineBookMark()
+{
+    QTextCursor cursor = textCursor();
+    int nTextLine = currentLine ();
+
+    // TODO DELETE current line Bookmark
+
+    // alloc new bookmark
+    BookMark* nBook = BookMarkManager::addBookMark();
+    nBook->setHint(cursor.block().text());
+    nBook->setFileName(documentTitle());
+    nBook->setLine(nTextLine);
+    nBook->setFilePath (documentPath ());
+}
 

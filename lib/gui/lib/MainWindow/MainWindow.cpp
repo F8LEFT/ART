@@ -135,7 +135,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    switch( QMessageBox::information( this, tr("Android Reverse Toolkitt"),
+    switch( QMessageBox::information( this, tr("Close ART"),
                                       tr("Do you really want to close ART?"),
                                       tr("No"), tr("Yes"),
                                       0, 1 ))

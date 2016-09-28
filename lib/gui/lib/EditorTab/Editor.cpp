@@ -102,7 +102,7 @@ void Editor::saveToConfig()
 
 void Editor::gotoLine(int line, int column, bool centerLine)
 {
-    mFileEdit->gotoLine(1, column, centerLine);
+    mFileEdit->gotoLine(line, column, centerLine);
 }
 int Editor::currentLine ()
 {

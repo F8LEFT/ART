@@ -19,6 +19,7 @@
 #include <QWidget>
 #include <QThread>
 #include <QTimer>
+#include <BookMark/BookMark.h>
 
 class Editor : public QWidget
 {

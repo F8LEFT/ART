@@ -46,7 +46,8 @@ public slots:
     void openFile(QStringList args);
 
     void onProjectOpened(QStringList args);
-    void onProjectClose();
+    void onProjectClosed ();
+
 private:
     Ui::EditorTab *ui;
 };

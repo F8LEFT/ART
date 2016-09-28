@@ -36,7 +36,7 @@ EditorTab::EditorTab(QWidget *parent) :
     connect(script, SIGNAL(openFile(QStringList)), this, SLOT(openFile(QStringList)));
 
     connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClose()));
+    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
 }
 
 EditorTab::~EditorTab()
@@ -46,12 +46,19 @@ EditorTab::~EditorTab()
 
 bool EditorTab::openFile(QString filePath, int iLine)
 {
+    QFileInfo fileInfo(filePath);
+    if(!fileInfo.exists () && !fileInfo.isFile ()) {
+        return false;
+    }
+    filePath = fileInfo.canonicalFilePath ();
+    QString fileName = fileInfo.fileName ();
+
     // find wether the file has been opened
     int iComIdx = ui->mDocumentCombo->findData(filePath);
     if (iComIdx != -1) {
         ui->mDocumentCombo->setCurrentIndex(iComIdx);
         if(iLine != -1) {
-            Editor* p = (Editor*)ui->mEditStackedWidget->widget(iLine);
+            Editor* p = (Editor*)ui->mEditStackedWidget->widget(iComIdx);
             p->gotoLine (iLine);
         }
         return true;
@@ -60,7 +67,6 @@ bool EditorTab::openFile(QString filePath, int iLine)
         auto p = new Editor(this);
         iLine = (iLine == -1) ? 1 : iLine;
         if (p->openFile(filePath, iLine)) {
-            QString fileName = QFileInfo(QFile(filePath)).fileName ();
 
             ui->mEditStackedWidget->insertWidget(0, p);
             ui->mDocumentCombo->insertItem(0, fileName, filePath);
@@ -169,7 +175,7 @@ void EditorTab::onProjectOpened (QStringList args)
     //}
 }
 
-void EditorTab::onProjectClose ()
+void EditorTab::onProjectClosed ()
 {
     // TODO Record all opened file
     //QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();

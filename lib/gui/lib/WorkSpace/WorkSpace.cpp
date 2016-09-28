@@ -24,6 +24,7 @@ WorkSpace::WorkSpace(QWidget *parent) :
     ui->setupUi(this);
 
     initProjectDocumentTreeView();
+    mBookMarkManager = BookMarkManager::instance(this);
 
     // init Tabs
     mProjectTab = new ProjectTab(this);
@@ -43,21 +44,29 @@ WorkSpace::WorkSpace(QWidget *parent) :
 
     // connect signal / slots
     // file tree view signal
-    connect(ui->mFileTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(treeFileOpen(QModelIndex)));
+    connect(ui->mFileTreeView, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(treeFileOpen(QModelIndex)));
 
     // tab signal
-    connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)), this, SLOT(tabMovedSlot(int, int)));
+    connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)),
+            this, SLOT(tabMovedSlot(int, int)));
+
+    // BookMark signal
+    connect(mBookMarkManager, SIGNAL(addBookMark(BookMark*,QListWidgetItem*)),
+            this, SLOT(addBookMark(BookMark*,QListWidgetItem*)));
+    connect(mBookMarkManager, SIGNAL(delBookMark(QListWidgetItem*)),
+            this, SLOT(delBookMark(QListWidgetItem*)));
+    connect(ui->mBookMarkListWidget, SIGNAL(itemClicked(QListWidgetItem*)),
+            this, SLOT(bookmarkClick(QListWidgetItem*)));
 
     // command line signal
     auto *cmdMsgUtil = CmdMsg::instance ();
     connect(cmdMsgUtil, SIGNAL(addCmdMsg(QString)), this, SLOT(onCmdMessage(QString)));
+
     // script signal
     ScriptEngine* script = ScriptEngine::instance();
     connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClose()));
-
-
-
+    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
 
     loadFromConfig();
     showQWidgetTab(mProjectTab);
@@ -212,10 +221,36 @@ void WorkSpace::onProjectOpened(QStringList args)
     setProjectDocumentTree(GetProjectsProjectPath(projName));
 }
 
-void WorkSpace::onProjectClose()
+void WorkSpace::onProjectClosed ()
 {
     clearProjectDocumentTree();
 }
+
+
+void WorkSpace::addBookMark(BookMark *pBook, QListWidgetItem *pItem)
+{
+    pItem->setSizeHint(QSize(0, pBook->height()));
+
+    ui->mBookMarkListWidget->addItem(pItem);
+    ui->mBookMarkListWidget->setItemWidget(pItem, pBook);
+}
+
+void WorkSpace::delBookMark(QListWidgetItem *pItem)
+{
+    Q_ASSERT(pItem != nullptr);
+    BookMark* pBook = (BookMark*)ui->mBookMarkListWidget->itemWidget(pItem);
+    Q_ASSERT(pBook != nullptr);
+    delete pBook;
+    delete pItem;
+}
+
+void WorkSpace::bookmarkClick(QListWidgetItem *item)
+{
+    BookMark* pBook = (BookMark*)ui->mBookMarkListWidget->itemWidget(item);
+    Q_ASSERT(pBook != nullptr);
+    emit pBook->onClicked(pBook);
+}
+
 
 void WorkSpace::initProjectDocumentTreeView()
 {

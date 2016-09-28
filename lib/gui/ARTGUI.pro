@@ -26,7 +26,8 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/WorkSpace/TabBar.cpp \
     lib/ProjectTab/ProjectTab.cpp \
     lib/ProjectTab/ProjectTab.cpp \
-    lib/EditorTab/EditorTab.cpp
+    lib/EditorTab/EditorTab.cpp \
+    lib/BookMark/BookMark.cpp
 
 
 HEADERS  += \
@@ -43,7 +44,9 @@ HEADERS  += \
     lib/ProjectTab/ProjectTab.h \
     include/ProjectTab/ProjectTab.h \
     lib/ProjectTab/ProjectTab.h \
-    include/EditorTab/EditorTab.h
+    include/EditorTab/EditorTab.h \
+    lib/BookMark/BookMark.h \
+    include/BookMark/BookMark.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
@@ -54,7 +57,8 @@ FORMS    += \
     lib/ProjectTab/projecttab.ui \
     lib/ProjectTab/ProjectTab.ui \
     include/EditorTab/EditorTab.ui \
-    lib/EditorTab/EditorTab.ui
+    lib/EditorTab/EditorTab.ui \
+    lib/BookMark/BookMark.ui
 
 RESOURCES += \
     ART.qrc \

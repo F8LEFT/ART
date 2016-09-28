@@ -17,7 +17,7 @@
 
 #include "ProjectTab/ProjectTab.h"
 #include "EditorTab/EditorTab.h"
-
+#include "BookMark/BookMarkManager.h"
 #include <QWidget>
 
 namespace Ui {
@@ -56,7 +56,13 @@ public slots:
 
     // script Message
     void onProjectOpened(QStringList args);
-    void onProjectClose();
+    void onProjectClosed ();
+
+    // BookMark message
+    void addBookMark(BookMark* pBook, QListWidgetItem *pItem);
+    void delBookMark(QListWidgetItem *pItem);
+    void bookmarkClick(QListWidgetItem* item);
+
 private:
     void initProjectDocumentTreeView();
     void setProjectDocumentTree(QString path);
@@ -73,6 +79,9 @@ private:
 
     // FileTreeView
     QFileSystemModel *mFileModel = nullptr;
+
+    // BookMark
+    BookMarkManager* mBookMarkManager;
 };
 
 #endif // WORKSPACE_H
