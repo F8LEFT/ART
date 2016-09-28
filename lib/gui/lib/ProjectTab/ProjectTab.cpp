@@ -92,7 +92,7 @@ void ProjectTab::openProject (QString projectName)
         return;
     }
     projinfoset ("projectName", projectName);
-    projinfoset ("projectCur", mProjectName);
+    projinfoset ("projectCur", projectName);
 
     mProjectName = projectName;
 

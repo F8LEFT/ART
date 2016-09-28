@@ -35,24 +35,24 @@ QString ToDateString (const QDate &date)
 QString GetProjectsPath (const QString& expend)
 {
     if(expend.isEmpty ()) {
-        return GetSoftPath() + "/Projects";
+        return "./Projects";
     } else {
-        return GetSoftPath() + "/Projects/" + expend;
+        return "./Projects/" + expend;
     }
 }
 
 QString GetProjectsProjectPath (const QString &expend)
 {
     Q_ASSERT (!expend.isEmpty () && "expend should be empty");
-    return GetSoftPath() + "/Projects/" + expend + "/Project";
+    return "./Projects/" + expend + "/Project";
 }
 
 QString GetThirdPartyPath (const QString& expend)
 {
     if(expend.isEmpty ()) {
-        return GetSoftPath() + "/thirdparty";
+        return "./thirdparty";
     } else {
-        return GetSoftPath() + "/thirdparty/" + expend;
+        return "./thirdparty/" + expend;
     }
 }
 

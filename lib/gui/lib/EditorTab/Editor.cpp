@@ -13,6 +13,7 @@
 #include <QTextStream>
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets/QGridLayout>
+#include <QFileInfo>
 
 void readFileThread(Editor* e, QString filePath);
 void saveFileThread(QString text, QString  filePath);
@@ -54,7 +55,7 @@ bool Editor::openFile(QString filePath, int iLine)
     fp = filePath;
     QFile file(fp);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
-        fn = file.fileName ();
+        fn = QFileInfo(file).fileName ();
 
         mFileEdit->setReadOnly(true);
         mFileEdit->setDocumentTitle(fn);

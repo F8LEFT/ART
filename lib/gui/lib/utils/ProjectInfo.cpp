@@ -40,11 +40,16 @@ ProjectInfo::ProjectInfo()
 
 QString ProjectInfo::getProjectCfgLastPath ()
 {
-    return GetThirdPartyPath (mMap["projectLast"]) + "/Config.ini";
+    return GetProjectsPath (mMap["projectLast"]) + "/Config.ini";
 }
 
 QString ProjectInfo::getProjectCfgCurPath ()
 {
-    return GetThirdPartyPath (mMap["projectCur"]) + "/Config.ini";
+    return GetProjectsPath (mMap["projectCur"]) + "/Config.ini";
+}
+
+bool ProjectInfo::isProjectOpened ()
+{
+    return !mMap["projectName"].isEmpty ();
 }
 

@@ -14,10 +14,12 @@
 #include <QApplication>
 #include <utils/Configuration.h>
 #include <utils/ProcessUtil.h>
+#include <utils/StringUtil.h>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QDir::setCurrent (GetSoftPath());
     // init global class
     auto conf = Configuration::instance ();
     ProcessUtil process;

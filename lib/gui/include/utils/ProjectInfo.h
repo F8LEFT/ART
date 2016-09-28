@@ -35,6 +35,7 @@ public:
     //decompileCmd      OpenApk.cpp
     QString getProjectCfgLastPath();
     QString getProjectCfgCurPath();
+    bool isProjectOpened();
 private:
     ProjectInfo();
     QMap<QString, QString> mMap;

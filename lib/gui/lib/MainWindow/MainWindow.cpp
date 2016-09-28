@@ -133,6 +133,24 @@ void MainWindow::dropEvent(QDropEvent *event)
     openFile(fileName);
 }
 
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    switch( QMessageBox::information( this, tr("Android Reverse Toolkitt"),
+                                      tr("Do you really want to close ART?"),
+                                      tr("No"), tr("Yes"),
+                                      0, 1 ))
+    {
+        case 1:
+            cmdexec("CloseProject");
+            event->accept();
+            break;
+        default:
+            event->ignore();
+            break;
+    }
+}
+
+
 void MainWindow::actionExit()
 {
     close ();
@@ -165,12 +183,12 @@ void MainWindow::onProjectClosed()
 
 void MainWindow::openFile(QString fileName)
 {
-    if(!projinfo ("projectName").isEmpty ()) {
+    if(ProjectInfo::instance ()->isProjectOpened ()) {
         QMessageBox msg(QMessageBox::Warning,
                         tr("an opened project has been found"),
                         tr("do you want to close current project?"),
                         QMessageBox::Ok | QMessageBox::Cancel);
-//        msg.setWindowIcon(QIcon(":/icons/images/compile-warning.png"));
+        msg.setWindowIcon(QIcon(":/icons/images/compile-warning.png"));
         msg.setWindowFlags(msg.windowFlags() & (~Qt::WindowContextHelpButtonHint));
         if(msg.exec() == QMessageBox::Cancel)
             return;
@@ -197,3 +215,4 @@ void MainWindow::openFile(QString fileName)
     }
     delete openWidget;
 }
+

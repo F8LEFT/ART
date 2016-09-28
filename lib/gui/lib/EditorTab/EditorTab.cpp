@@ -13,10 +13,12 @@
 #include "Editor.h"
 
 #include <utils/ScriptEngine.h>
-#include <QStackedWidget>
-#include <QFile>
 #include <utils/ProjectInfo.h>
 #include <utils/Configuration.h>
+
+#include <QStackedWidget>
+#include <QFile>
+#include <QFileInfo>
 
 EditorTab::EditorTab(QWidget *parent) :
         QWidget(parent),
@@ -58,7 +60,7 @@ bool EditorTab::openFile(QString filePath, int iLine)
         auto p = new Editor(this);
         iLine = (iLine == -1) ? 1 : iLine;
         if (p->openFile(filePath, iLine)) {
-            QString fileName = QFile(filePath).fileName ();
+            QString fileName = QFileInfo(QFile(filePath)).fileName ();
 
             ui->mEditStackedWidget->insertWidget(0, p);
             ui->mDocumentCombo->insertItem(0, fileName, filePath);
@@ -158,24 +160,25 @@ void EditorTab::fileChanged(QString path)
 
 void EditorTab::onProjectOpened (QStringList args)
 {
-    QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
-    Configuration cfg(cfgPath);
-
-    auto openMap = cfg.Uints["EditorTab"];
-    for (auto it = openMap.begin (), end = openMap.end (); it != end; it++) {
-        openFile (it.key (), it.value ());
-    }
+    //QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
+    //Configuration cfg(cfgPath);
+    //
+    //auto &openMap = cfg.Uints["EditorTab"];
+    //for (auto it = openMap.begin (), end = openMap.end (); it != end; it++) {
+    //    openFile (it.key (), it.value ());
+    //}
 }
 
 void EditorTab::onProjectClose ()
 {
-    QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
-    Configuration cfg (cfgPath);
-
-    for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {
-        Editor* p = (Editor*)ui->mEditStackedWidget->widget(i);
-        cfg.setUint ("EditorTab", p->getFilePath (), p->currentLine ());
-    }
+    // TODO Record all opened file
+    //QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
+    //Configuration cfg (cfgPath);
+    //
+    //for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {
+    //    Editor* p = (Editor*)ui->mEditStackedWidget->widget(i);
+    //    cfg.setUint ("EditorTab", p->getFilePath (), p->currentLine ());
+    //}
     closeAll ();
 }
 

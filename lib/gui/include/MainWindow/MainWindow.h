@@ -16,6 +16,7 @@
 
 
 #include <QMainWindow>
+#include <QCloseEvent>
 
 namespace Ui {
 class MainWindow;
@@ -40,7 +41,7 @@ public:
 protected:
     void dragEnterEvent(QDragEnterEvent* event) Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent* event) Q_DECL_OVERRIDE;
-
+    void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE;
 signals:
     void addCmdMessge(QString msg);
 protected slots:

@@ -36,7 +36,7 @@ Configuration* Configuration::instance()
 {
     static  Configuration* mPtr = nullptr;
     if(mPtr == nullptr) {
-        mPtr = new Configuration(GetSoftPath() + "/Configs.ini");
+        mPtr = new Configuration("./Configs.ini");
     }
     return mPtr;
 }
