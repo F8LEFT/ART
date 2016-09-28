@@ -33,7 +33,8 @@ public:
     //projectName       ProjectTab.cpp
     //compileCmd        OpenApk.cpp, ProjectTab.cpp
     //decompileCmd      OpenApk.cpp
-
+    QString getProjectCfgLastPath();
+    QString getProjectCfgCurPath();
 private:
     ProjectInfo();
     QMap<QString, QString> mMap;

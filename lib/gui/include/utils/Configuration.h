@@ -50,9 +50,8 @@ public:
     };
 
     //Functions
-private:
-    explicit Configuration(QObject* mParent = nullptr);
 public:
+    explicit Configuration(QString cfgPath, QObject* mParent = nullptr);
     ~Configuration();
 
     static Configuration* instance();
@@ -108,7 +107,6 @@ private:
     QString shortcutFromConfig(const QString id);
     bool shortcutToConfig(const QString id, const QKeySequence shortcut);
 
-    QString mSetName = "Configs.ini";
     QSettings* mSettings;
 };
 #endif // CONFIGURATION_H

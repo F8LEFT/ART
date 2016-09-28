@@ -7,6 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 #include "utils/ProjectInfo.h"
+#include "utils/StringUtil.h"
 
 ProjectInfo *ProjectInfo::instance ()
 {
@@ -36,3 +37,14 @@ ProjectInfo::ProjectInfo()
 {
 
 }
+
+QString ProjectInfo::getProjectCfgLastPath ()
+{
+    return GetThirdPartyPath (mMap["projectLast"]) + "/Config.ini";
+}
+
+QString ProjectInfo::getProjectCfgCurPath ()
+{
+    return GetThirdPartyPath (mMap["projectCur"]) + "/Config.ini";
+}
+

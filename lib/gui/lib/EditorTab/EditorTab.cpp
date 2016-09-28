@@ -15,6 +15,8 @@
 #include <utils/ScriptEngine.h>
 #include <QStackedWidget>
 #include <QFile>
+#include <utils/ProjectInfo.h>
+#include <utils/Configuration.h>
 
 EditorTab::EditorTab(QWidget *parent) :
         QWidget(parent),
@@ -30,6 +32,9 @@ EditorTab::EditorTab(QWidget *parent) :
     connect(script, SIGNAL(saveFile(QStringList)), this, SLOT(saveFile(QStringList)));
     connect(script, SIGNAL(closeFile(QStringList)), this, SLOT(closeFile(QStringList)));
     connect(script, SIGNAL(openFile(QStringList)), this, SLOT(openFile(QStringList)));
+
+    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
+    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClose()));
 }
 
 EditorTab::~EditorTab()
@@ -149,5 +154,28 @@ void EditorTab::fileChanged(QString path)
         Editor* p = (Editor*)ui->mEditStackedWidget->widget(idx);
         p->reload();
     }
+}
+
+void EditorTab::onProjectOpened (QStringList args)
+{
+    QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
+    Configuration cfg(cfgPath);
+
+    auto openMap = cfg.Uints["EditorTab"];
+    for (auto it = openMap.begin (), end = openMap.end (); it != end; it++) {
+        openFile (it.key (), it.value ());
+    }
+}
+
+void EditorTab::onProjectClose ()
+{
+    QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
+    Configuration cfg (cfgPath);
+
+    for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {
+        Editor* p = (Editor*)ui->mEditStackedWidget->widget(i);
+        cfg.setUint ("EditorTab", p->getFilePath (), p->currentLine ());
+    }
+    closeAll ();
 }
 

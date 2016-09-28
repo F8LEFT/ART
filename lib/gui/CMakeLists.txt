@@ -12,6 +12,8 @@ SET(CMAKE_PREFIX_PATH /home/f8left/CodeProgram/QT/5.7/gcc_64)
 
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 SET(CMAKE_SUPPRESS_REGENERATION 1)
@@ -44,9 +46,6 @@ macro(source_group_by_dir source_files)
         endforeach(sgbd_file)
     endif(MSVC)
 endmacro(source_group_by_dir)
-
-QT5_ADD_RESOURCES (ART_RSCS ART.qrc)
-ADD_CUSTOM_TARGET(ART_RES DEPENDS ${ART_RSCS})
 
 ADD_SUBDIRECTORY(lib)
 

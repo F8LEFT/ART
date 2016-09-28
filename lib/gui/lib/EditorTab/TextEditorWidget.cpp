@@ -100,6 +100,11 @@ void TextEditorWidget::gotoLine(int line, int column, bool centerLine)
     }
 }
 
+int TextEditorWidget::currentLine ()
+{
+    return textCursor ().columnNumber ();
+}
+
 void TextEditorWidget::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);
@@ -157,3 +162,5 @@ QWidget *TextEditorWidget::allocLineArea ()
 {
     return new LineNumberArea(this);
 }
+
+

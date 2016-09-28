@@ -40,6 +40,7 @@ public:
     void saveToConfig();
 
     void gotoLine(int line, int column = 0, bool centerLine = true);
+    int currentLine();
 
     virtual TextEditorWidget* allocTextEditorWidget();
 

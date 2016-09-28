@@ -92,6 +92,8 @@ void ProjectTab::openProject (QString projectName)
         return;
     }
     projinfoset ("projectName", projectName);
+    projinfoset ("projectCur", mProjectName);
+
     mProjectName = projectName;
 
     cmdexec("ProjectOpened", projectName);
@@ -104,7 +106,13 @@ void ProjectTab::closeProject()
     mHasProject = false;
     cmdmsg ()->addCmdMsg ("closing project " + mProjectName);
 
-    projinfoset("projectName", QString());
+    projinfoset ("projectName", QString());
+    projinfoset ("projectLast", mProjectName);
+
+    QFile cfgFile(ProjectInfo::instance ()->getProjectCfgLastPath ());
+    if(cfgFile.exists ()) {
+        cfgFile.remove ();
+    }
 
     cmdexec("ProjectClosed");
 }

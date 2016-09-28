@@ -17,10 +17,9 @@
 #include <QtGlobal>
 
 
-Configuration::Configuration(QObject* mParent) : QObject(mParent)
+Configuration::Configuration(QString cfgPath, QObject* mParent) : QObject(mParent)
 {
-    mSettings = new QSettings(GetSoftPath() + "/" + mSetName,
-                              QSettings::IniFormat, this);
+    mSettings = new QSettings(cfgPath, QSettings::IniFormat, this);
 
     // hotkeys settings
 //    Shortcuts.insert("FileOpen", Shortcut(tr("File -> Open"), "F3", true));
@@ -37,7 +36,7 @@ Configuration* Configuration::instance()
 {
     static  Configuration* mPtr = nullptr;
     if(mPtr == nullptr) {
-        mPtr = new Configuration;
+        mPtr = new Configuration(GetSoftPath() + "/Configs.ini");
     }
     return mPtr;
 }
@@ -379,3 +378,4 @@ bool Configuration::shortcutToConfig(const QString id, const QKeySequence shortc
     mSettings->setValue(_id, _key);
     return true;
 }
+

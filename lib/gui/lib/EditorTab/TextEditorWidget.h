@@ -34,7 +34,7 @@ public:
     int lineNumberAreaWidth ();
 
     void gotoLine (int line,int column = 0,bool centerLine = true);
-
+    int currentLine();
 protected:
     void resizeEvent (QResizeEvent *e) Q_DECL_OVERRIDE;
 

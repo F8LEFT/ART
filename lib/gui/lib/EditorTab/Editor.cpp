@@ -103,6 +103,10 @@ void Editor::gotoLine(int line, int column, bool centerLine)
 {
     mFileEdit->gotoLine(1, column, centerLine);
 }
+int Editor::currentLine ()
+{
+    return mFileEdit->currentLine ();
+}
 
 void Editor::appendLine(QString line)
 {
@@ -132,6 +136,7 @@ TextEditorWidget *Editor::allocTextEditorWidget ()
 {
     return new TextEditorWidget(this);
 }
+
 
 void readFileThread(Editor* e, QString filePath) {
     QFile file(filePath);

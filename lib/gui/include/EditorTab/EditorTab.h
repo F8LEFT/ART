@@ -44,6 +44,9 @@ public slots:
     void saveFile(QStringList files);
     void closeFile(QStringList files);
     void openFile(QStringList args);
+
+    void onProjectOpened(QStringList args);
+    void onProjectClose();
 private:
     Ui::EditorTab *ui;
 };
