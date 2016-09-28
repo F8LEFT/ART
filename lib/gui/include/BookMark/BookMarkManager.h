@@ -27,11 +27,12 @@ public:
     BookMarkManager(QObject* parnet = nullptr);
     static BookMarkManager* instance(QWidget* parent = nullptr);
 
-    static BookMark* addBookMark();
-    static bool delBookMark(BookMark* bookMark);
+    BookMark* addBookMark(QString file);
+    bool delBookMark(QString file, BookMark* bookMark);
+    QMap<BookMark*, QListWidgetItem*> &getFileBookMark(QString file);
 
-    BookMark* findBookMark(QString filePath, int iLine);
-
+    static BookMark* findBookMark(
+            const QMap<BookMark*, QListWidgetItem*> & map,int iLine);
 signals:
     void addBookMark(BookMark* bookMark, QListWidgetItem* listItem);
     void delBookMark(QListWidgetItem* listItem);
@@ -41,7 +42,7 @@ public slots:
 private:
     const QIcon m_bookmarkIcon;
 
-    QMap<BookMark*, QListWidgetItem*> mBookMap;
+    QMap<QString, QMap<BookMark*, QListWidgetItem*>> mBookMap;
 };
 
 

@@ -30,28 +30,46 @@ BookMarkManager *BookMarkManager::instance(QWidget* parent)
     return mPtr;
 }
 
-BookMark *BookMarkManager::addBookMark()
+// INFO BookMark* and QListWidgetItem* will be deleted in WorkSpace.cpp
+// when delBookMark invoked.
+BookMark *BookMarkManager::addBookMark(QString file)
 {
-    BookMarkManager* mPtr = BookMarkManager::instance ();
 
-    BookMark* pBook = new BookMark;
+    BookMark* pBook = new BookMark(file);
     QListWidgetItem* pItem = new QListWidgetItem;
 
+    auto& pFileBookMap = mBookMap[file];
+    pFileBookMap[pBook] = pItem;
 
-    mPtr->mBookMap.insert(pBook, pItem);
-    emit mPtr->addBookMark(pBook, pItem);
+    emit addBookMark(pBook, pItem);
     return pBook;
 }
 
-bool BookMarkManager::delBookMark(BookMark *bookMark)
+bool BookMarkManager::delBookMark(QString file, BookMark *bookMark)
 {
-    BookMarkManager* mPtr = BookMarkManager::instance ();
+    auto &pFileBookMap = mBookMap[file];
 
-    auto it = mPtr->mBookMap.find(bookMark);
-    if (it != mPtr->mBookMap.end()) {
-        emit mPtr->delBookMark(it.value());
-        mPtr->mBookMap.erase(it);
+    auto it = pFileBookMap.find(bookMark);
+    if (it != pFileBookMap.end()) {
+        emit delBookMark(it.value());
+        pFileBookMap.erase(it);
     }
+}
+
+QMap<BookMark *,QListWidgetItem *> &BookMarkManager::getFileBookMark (QString file)
+{
+    return mBookMap[file];;
+}
+
+BookMark * BookMarkManager::findBookMark (
+        const QMap<BookMark *,QListWidgetItem *> &map,int iLine)
+{
+    for(auto it = map.begin (), itEnd = map.end (); it != itEnd; it++) {
+        if(it.key ()->line () == iLine) {
+            return it.key ();
+        }
+    }
+    return nullptr;
 }
 
 void BookMarkManager::onProjectOpened (QStringList args)
@@ -61,9 +79,16 @@ void BookMarkManager::onProjectOpened (QStringList args)
 
 void BookMarkManager::onProjectClosed()
 {
-    for(auto it = mBookMap.begin(); it != mBookMap.end(); it++) {
-        emit delBookMark(it.value());
+    for(auto it = mBookMap.begin(), itEnd = mBookMap.end(); it != itEnd; it++) {
+        for(auto fileMap = it.value ().begin (), fileMapEnd = it.value ().end ();
+                fileMap != fileMapEnd; fileMap++) {
+            emit delBookMark(fileMap.value());
+        }
+        it->clear ();
     }
     mBookMap.clear();
 }
+
+
+
 

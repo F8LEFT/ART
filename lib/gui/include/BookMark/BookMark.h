@@ -25,11 +25,10 @@ class BookMark : public QWidget
     Q_OBJECT
 
 public:
-    explicit BookMark(QWidget *parent = 0);
+    explicit BookMark(QString file, QWidget *parent = 0);
     ~BookMark();
 
     void setFileName(QString fp);
-    void setFilePath(QString fp);
     void setHint(QString hint);
     void setLine(int line);
 

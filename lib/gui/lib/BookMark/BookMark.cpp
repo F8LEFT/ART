@@ -11,11 +11,12 @@
 #include "ui_BookMark.h"
 
 
-BookMark::BookMark(QWidget *parent) :
+BookMark::BookMark(QString file, QWidget *parent) :
         QWidget(parent),
         ui(new Ui::BookMark)
 {
     ui->setupUi(this);
+    mFilePath = file;
 }
 
 BookMark::~BookMark()
@@ -27,11 +28,6 @@ void BookMark::setFileName(QString fp)
 {
     mFileName = fp;
     ui->mFileLabel->setText(mFileName);
-}
-
-void BookMark::setFilePath(QString fp)
-{
-    mFilePath = fp;
 }
 
 void BookMark::setHint(QString hint)

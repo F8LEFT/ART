@@ -174,13 +174,20 @@ void TextEditorWidget::updateCurrentLineBookMark()
     QTextCursor cursor = textCursor();
     int nTextLine = currentLine ();
 
-    // TODO DELETE current line Bookmark
+    auto* pBookMarkManager = BookMarkManager::instance ();
+
+    // find existing bookmark
+    auto &fileMap = pBookMarkManager->getFileBookMark (documentPath ());
+    auto pBookMark = pBookMarkManager->findBookMark (fileMap, nTextLine);
+    if(pBookMark != nullptr) {
+        pBookMarkManager->delBookMark (documentPath (), pBookMark);
+        return;;
+    }
 
     // alloc new bookmark
-    BookMark* nBook = BookMarkManager::addBookMark();
+    BookMark* nBook = pBookMarkManager->addBookMark(documentPath ());
     nBook->setHint(cursor.block().text());
     nBook->setFileName(documentTitle());
     nBook->setLine(nTextLine);
-    nBook->setFilePath (documentPath ());
 }
 
