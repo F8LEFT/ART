@@ -140,8 +140,8 @@ void OpenApk::accept()
 
     auto pProject = ProjectInfo::instance ();
 //    pProject->setInfo ("apkToolPath", apkToolPath);
-    pProject->setInfo ("compileCmd", mComCmd);
-    pProject->setInfo ("decompileCmd", mDecCmd);
+    pProject->setInfo ("CompileCmd", mComCmd);
+    pProject->setInfo ("DecompileCmd", mDecCmd);
 
     QDialog::accept();
 }

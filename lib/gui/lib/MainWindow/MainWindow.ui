@@ -40,7 +40,22 @@
     </property>
     <addaction name="actionAbout_ART"/>
    </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="title">
+     <string>Run</string>
+    </property>
+    <addaction name="actionBuild"/>
+    <addaction name="actionInstall"/>
+    <addaction name="separator"/>
+    <addaction name="actionRun"/>
+    <addaction name="actionDebug"/>
+    <addaction name="actionStop"/>
+    <addaction name="separator"/>
+    <addaction name="actionDevices"/>
+    <addaction name="actionRestart_adb"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuRun"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -93,6 +108,41 @@
    </property>
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionBuild">
+   <property name="text">
+    <string>Build</string>
+   </property>
+  </action>
+  <action name="actionInstall">
+   <property name="text">
+    <string>Install</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="text">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionDebug">
+   <property name="text">
+    <string>Debug</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionDevices">
+   <property name="text">
+    <string>Devices</string>
+   </property>
+  </action>
+  <action name="actionRestart_adb">
+   <property name="text">
+    <string>Restart adb</string>
    </property>
   </action>
  </widget>

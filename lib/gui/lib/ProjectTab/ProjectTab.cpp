@@ -91,8 +91,8 @@ void ProjectTab::openProject (QString projectName)
         cmdmsg ()->addCmdMsg("project " + projectName + " not exist");
         return;
     }
-    projinfoset ("projectName", projectName);
-    projinfoset ("projectCur", projectName);
+    projinfoset ("ProjectName", projectName);
+    projinfoset ("ProjectCur", projectName);
 
     mProjectName = projectName;
 
@@ -106,8 +106,8 @@ void ProjectTab::closeProject()
     mHasProject = false;
     cmdmsg ()->addCmdMsg ("closing project " + mProjectName);
 
-    projinfoset ("projectName", QString());
-    projinfoset ("projectLast", mProjectName);
+    projinfoset ("ProjectName", QString());
+    projinfoset ("ProjectLast", mProjectName);
 
     QFile cfgFile(ProjectInfo::instance ()->getProjectCfgLastPath ());
     if(cfgFile.exists ()) {

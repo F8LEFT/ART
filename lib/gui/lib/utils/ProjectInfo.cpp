@@ -38,18 +38,25 @@ ProjectInfo::ProjectInfo()
 
 }
 
+QString ProjectInfo::getProjectPath ()
+{
+    return GetProjectsPath (mMap["ProjectName"]);
+}
+
 QString ProjectInfo::getProjectCfgLastPath ()
 {
-    return GetProjectsPath (mMap["projectLast"]) + "/Config.ini";
+    return GetProjectsPath (mMap["ProjectLast"]) + "/Config.ini";
 }
 
 QString ProjectInfo::getProjectCfgCurPath ()
 {
-    return GetProjectsPath (mMap["projectCur"]) + "/Config.ini";
+    return GetProjectsPath (mMap["ProjectCur"]) + "/Config.ini";
 }
 
 bool ProjectInfo::isProjectOpened ()
 {
-    return !mMap["projectName"].isEmpty ();
+    return !mMap["ProjectName"].isEmpty ();
 }
+
+
 

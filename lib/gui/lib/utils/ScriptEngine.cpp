@@ -27,6 +27,13 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
     scripts.insert("SaveFile", &ScriptEngine::saveFile);
     scripts.insert("SaveAll", &ScriptEngine::saveAllFile);
     scripts.insert("CloseAll", &ScriptEngine::closeAllFile);
+
+    scripts.insert("Build", &ScriptEngine::build);
+    scripts.insert("Install", &ScriptEngine::install);
+    scripts.insert("Run", &ScriptEngine::run);
+    scripts.insert("Debug", &ScriptEngine::debug);
+    scripts.insert("Stop", &ScriptEngine::stop);
+    scripts.insert("Devices", &ScriptEngine::devices);
 }
 
 ScriptEngine::~ScriptEngine()

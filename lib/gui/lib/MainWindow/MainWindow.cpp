@@ -13,18 +13,18 @@
 #include "CommandLineEdit.h"
 #include "AboutArt/AboutArt.h"
 #include "OpenApk/OpenApk.h"
+#include "RunDevice/RunDevice.h"
 
 #include "utils/CmdMsgUtil.h"
-
-#include <QMimeData>
-#include <QMessageBox>
-#include <QDragEnterEvent>
-#include <QFileDialog>
 #include <utils/Configuration.h>
 #include <utils/StringUtil.h>
 #include <utils/ProjectInfo.h>
 #include <utils/ScriptEngine.h>
 
+#include <QMimeData>
+#include <QMessageBox>
+#include <QDragEnterEvent>
+#include <QFileDialog>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -40,10 +40,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupCommandBar();
     setupStatusBar();
+    mRunDevice = RunDevice::instance (this);
+    
     // connect Menu signal/slots
     // File Menu
     connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(actionExit()));
     connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(actionOpen()));
+
+    // run
+    connect(ui->actionBuild, SIGNAL(triggered(bool)), this, SLOT(actionBuild()));
+    connect(ui->actionInstall, SIGNAL(triggered(bool)), this, SLOT(actionInstall()));
+    connect(ui->actionRun, SIGNAL(triggered(bool)), this, SLOT(actionRun()));
+    connect(ui->actionDebug, SIGNAL(triggered(bool)), this, SLOT(actionDebug()));
+    connect(ui->actionStop, SIGNAL(triggered(bool)), this, SLOT(actionStop()));
+    connect(ui->actionDevices, SIGNAL(triggered(bool)), this, SLOT(actionDevices()));
+
     // About Menu
     connect(ui->actionAbout_ART, SIGNAL(triggered(bool))
             , this, SLOT(actionAboutArt()));
@@ -167,6 +178,37 @@ void MainWindow::actionAboutArt()
 {
     AboutArt about(this);
     about.exec ();
+}
+
+
+void MainWindow::actionBuild()
+{
+    cmdexec("Build");
+}
+
+void MainWindow::actionInstall()
+{
+    cmdexec("Install");
+}
+
+void MainWindow::actionRun()
+{
+    cmdexec("Run");
+}
+
+void MainWindow::actionDebug()
+{
+    cmdexec("Debug");
+}
+
+void MainWindow::actionStop()
+{
+    cmdexec("Stop");
+}
+
+void MainWindow::actionDevices()
+{
+    cmdexec("Devices");
 }
 
 void MainWindow::onProjectOpened(QStringList projName)

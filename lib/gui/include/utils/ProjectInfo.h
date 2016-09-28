@@ -33,6 +33,7 @@ public:
     //projectName       ProjectTab.cpp
     //compileCmd        OpenApk.cpp, ProjectTab.cpp
     //decompileCmd      OpenApk.cpp
+    QString getProjectPath();
     QString getProjectCfgLastPath();
     QString getProjectCfgCurPath();
     bool isProjectOpened();

@@ -41,6 +41,7 @@ signals:
     // adb(args) ScriptEngine.cpp
     void adb(QStringList);
 
+    // ProjectManager
     // OpenProject(projectName)   ProjectTab.cpp
     void openProject(QStringList);
     // CloseProject()             ProjectTab.cpp
@@ -50,6 +51,7 @@ signals:
     // ProjectClosed()            ProjectTab.cpp, WorkSpace.cpp
     void projectClosed(QStringList);    // reserved by ART
 
+    // Editor Manager
     // OpenFile(filePath1, ...)
     void openFile(QStringList);
     // CloseFile(filePath1, ...)
@@ -61,6 +63,19 @@ signals:
     // CloseAllFile()
     void closeAllFile(QStringList);
 
+    // project build, install, run, debug, stop
+    // Build()      build and signed apk
+    void build(QStringList);
+    // Install()    install signed.apk
+    void install(QStringList);
+    // Run()        run target apk
+    void run(QStringList);
+    // Debug()      debug apk
+    void debug(QStringList);
+    // Stop()       force stop apk
+    void stop(QStringList);
+    // Devices()    open device window
+    void devices(QStringList);
 public slots:
     void adbShell(QStringList);
 

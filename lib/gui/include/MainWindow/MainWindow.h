@@ -23,6 +23,7 @@ class MainWindow;
 }
 class StatusLabel;
 class CommandLineEdit;
+class RunDevice;
 
 class MainWindow : public QMainWindow
 {
@@ -51,6 +52,14 @@ protected slots:
     // Help Menu
     void actionAboutArt();
 
+    // Run Menu
+    void actionBuild();
+    void actionInstall();
+    void actionRun();
+    void actionDebug();
+    void actionStop();
+    void actionDevices();
+
     // script
     void onProjectOpened(QStringList projName);
     void onProjectClosed();
@@ -65,6 +74,8 @@ private:
     StatusLabel* mStatusLabel;
     StatusLabel* mLastLogLabel;
     CommandLineEdit* mCmdLineEdit;
+
+    RunDevice* mRunDevice;
 };
 
 #endif // MAINWINDOW_H
