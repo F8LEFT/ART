@@ -49,6 +49,10 @@ protected slots:
     // File Menu
     void actionExit();
     void actionOpen();
+    void actionCloseProject();
+
+    void actionSaveAll();
+
     // Help Menu
     void actionAboutArt();
 

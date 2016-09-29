@@ -46,6 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // File Menu
     connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(actionExit()));
     connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(actionOpen()));
+    connect(ui->actionClose_Project, SIGNAL(triggered(bool)),
+            this, SLOT(actionCloseProject()));
+    connect(ui->actionSave_All, SIGNAL(triggered(bool)), this, SLOT(actionSaveAll()));
 
     // run
     connect(ui->actionBuild, SIGNAL(triggered(bool)), this, SLOT(actionBuild()));
@@ -172,6 +175,16 @@ void MainWindow::actionOpen()
     QString fileName = QFileDialog::getOpenFileName(this,
                                 tr("Open File"), "", "apk File (*.apk *.dex)");
     openFile(fileName);
+}
+
+void MainWindow::actionCloseProject()
+{
+    cmdexec("CloseProject");
+}
+
+void MainWindow::actionSaveAll()
+{
+    cmdexec("SaveAll");
 }
 
 void MainWindow::actionAboutArt()
