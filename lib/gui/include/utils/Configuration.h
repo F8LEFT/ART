@@ -27,6 +27,7 @@ class Configuration;
 #define ConfigUint(x,y) (Config()->getUint(x,y))
 #define ConfigFont(x) (Config()->getFont(x))
 #define ConfigShortcut(x) (Config()->getShortcut(x).Hotkey)
+#define ConfigString(x,y) (Config()->getString(x,y))
 #define ConfigHScrollBarStyle() "QScrollBar:horizontal{border:1px solid grey;background:#f1f1f1;height:10px}QScrollBar::handle:horizontal{background:#aaa;min-width:20px;margin:1px}QScrollBar::add-line:horizontal,QScrollBar::sub-line:horizontal{width:0;height:0}"
 #define ConfigVScrollBarStyle() "QScrollBar:vertical{border:1px solid grey;background:#f1f1f1;width:10px}QScrollBar::handle:vertical{background:#aaa;min-height:20px;margin:1px}QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical{width:0;height:0}"
 
@@ -59,17 +60,16 @@ public:
     void save();
     void readColors();
     void writeColors();
-    void emitColorsUpdated();
-    void emitTokenizerConfigUpdated();
     void readBools();
     void writeBools();
     void readUints();
     void writeUints();
     void readFonts();
     void writeFonts();
-    void emitFontsUpdated();
     void readShortcuts();
     void writeShortcuts();
+    void readStrings();
+    void writeStrings();
 
     const QColor getColor(const QString id) const;
     void setColor(const QString id, QColor c);
@@ -81,6 +81,8 @@ public:
     void setFont(const QString id, QFont f);
     const Shortcut getShortcut(const QString key_id) const;
     void setShortcut(const QString key_id, const QKeySequence key_sequence);
+    const QString getString(const QString category, const QString id) const;
+    void setString(const QString category, const QString id, const QString s);
 
     //public variables
     QMap<QString, QColor> Colors;                   //[Colors]
@@ -88,6 +90,7 @@ public:
     QMap<QString, QMap<QString, unsigned>> Uints;   //[Uints]
     QMap<QString, QFont> Fonts;                     //[Fonts]
     QMap<QString, Shortcut> Shortcuts;              //[Shortcuts]
+    QMap<QString, QMap<QString, QString>> Strings;  //[Strings]
 
 signals:
     void colorsUpdated();
@@ -106,6 +109,8 @@ private:
     bool fontToConfig(const QString id, const QFont font);
     QString shortcutFromConfig(const QString id);
     bool shortcutToConfig(const QString id, const QKeySequence shortcut);
+    QString stringFromConfig(const QString id);
+    bool stringToConfig(const QString id, const QString s);
 
     QSettings* mSettings;
 };

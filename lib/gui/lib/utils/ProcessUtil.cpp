@@ -44,7 +44,6 @@ void ProcessUtil::addProc(CmdMsg::ProcInfo info)
     } else {
         new ProcessOneTime(info);
     }
-
 }
 
 void ProcessUtil::onProcFinish()

@@ -48,6 +48,7 @@ void Configuration::load()
     readUints();
     readFonts();
     readShortcuts();
+    readStrings();
 }
 
 void Configuration::save()
@@ -57,6 +58,7 @@ void Configuration::save()
     writeUints();
     writeFonts();
     writeShortcuts();
+    writeStrings();
 }
 
 void Configuration::readColors()
@@ -79,16 +81,6 @@ void Configuration::writeColors()
     }
     mSettings->endGroup();
     emit colorsUpdated();
-}
-
-void Configuration::emitColorsUpdated()
-{
-    emit colorsUpdated();
-}
-
-void Configuration::emitTokenizerConfigUpdated()
-{
-    emit tokenizerConfigUpdated();
 }
 
 void Configuration::readBools()
@@ -187,11 +179,6 @@ void Configuration::writeFonts()
     emit fontsUpdated();
 }
 
-void Configuration::emitFontsUpdated()
-{
-    emit fontsUpdated();
-}
-
 void Configuration::readShortcuts()
 {
     mSettings->beginGroup("Shortcuts");
@@ -223,6 +210,40 @@ void Configuration::writeShortcuts()
     }
     mSettings->endGroup();
     emit shortcutsUpdated();
+}
+
+void Configuration::readStrings()
+{
+    QStringList allCategory = mSettings->childGroups();
+    foreach(QString category, allCategory) {
+        if (category.endsWith("Strings")) {
+            mSettings->beginGroup(category);
+            category = category.left(category.length() - 8);
+
+            QStringList keys = mSettings->childKeys();
+            foreach(QString id, keys) {
+                Strings[category][id] = stringFromConfig(id);
+            }
+            mSettings->endGroup();
+        }
+    }
+}
+
+void Configuration::writeStrings()
+{
+    for(int i = 0; i < Strings.size(); i++)
+    {
+        QString category = Strings.keys().at(i);
+        QMap<QString, QString>* currentString = &Strings[category];
+
+        mSettings->beginGroup(category + "_Strings");
+        for(int j = 0; j < currentString->size(); j++)
+        {
+            QString id = (*currentString).keys().at(j);
+            stringToConfig(id, (*currentString)[id]);
+        }
+        mSettings->endGroup();
+    }
 }
 
 const QColor Configuration::getColor(const QString id) const
@@ -296,6 +317,22 @@ const Configuration::Shortcut Configuration::getShortcut(const QString key_id) c
 void Configuration::setShortcut(const QString key_id, const QKeySequence key_sequence)
 {
     Shortcuts[key_id].Hotkey = key_sequence;
+    return;
+}
+
+const QString Configuration::getString(const QString category, const QString id) const
+{
+    if(Strings.contains(category))
+    {
+        if(Strings[category].contains(id))
+            return Strings[category][id];
+    }
+    return "";
+}
+
+void Configuration::setString(const QString category, const QString id, const QString s)
+{
+    Strings[category][id] = s;
     return;
 }
 
@@ -376,6 +413,17 @@ bool Configuration::shortcutToConfig(const QString id, const QKeySequence shortc
     else
         _key = "NOT_SET";
     mSettings->setValue(_id, _key);
+    return true;
+}
+
+QString Configuration::stringFromConfig(const QString id)
+{
+    return mSettings->value(id, "").toString();
+}
+
+bool Configuration::stringToConfig(const QString id, const QString s)
+{
+    mSettings->setValue(id, s);
     return true;
 }
 

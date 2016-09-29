@@ -1,6 +1,11 @@
+//===- AdbUtil.cpp - ART-GUI  ----------------------------------*- C++ -*-===//
 //
-// Created by f8left on 16-9-28.
+//                     ANDROID REVERSE TOOLKIT
 //
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===---------------------------------------------------------------------===//
 #include "utils/AdbUtil.h"
 #include "utils/StringUtil.h"
 

@@ -1,3 +1,11 @@
+//===- RunDevice.cpp - ART-GUI  --------------------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===---------------------------------------------------------------------===//
 #include "RunDevice/RunDevice.h"
 #include "ui_RunDevice.h"
 
@@ -82,8 +90,8 @@ void RunDevice::onBuildAction ()
              << "./thirdparty/signapk/signapk.jar"
              << "./cfgs/keystore/FDA.x509.pem"
              << "./cfgs/keystore/FDA.pk8"
-             << project->getProjectPath() + "/bin/unsigned.apk"
-             << project->getProjectPath() + "/bin/signed.apk";
+             << project->getProjectPath() + "/Bin/unsigned.apk"
+             << project->getProjectPath() + "/Bin/signed.apk";
     cmdexec("java", signArgs, CmdMsg::cmd);
 }
 
@@ -104,7 +112,7 @@ void RunDevice::onInstallAction()
          << mDeviceId
          << "install"
          << "-r"
-         << projectRoot + "/bin/signed.apk";
+         << projectRoot + "/Bin/signed.apk";
     cmdexec("adb", args);
 }
 

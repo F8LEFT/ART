@@ -13,6 +13,7 @@
 #include "utils/ProjectInfo.h"
 
 #include <QDir>
+#include <utils/Configuration.h>
 
 OpenApk::OpenApk(QString file, QWidget *parent) :
     QDialog(parent),
@@ -138,10 +139,19 @@ void OpenApk::accept()
     cmd += " -o " + genApk;
     mComCmd = cmd;
 
-    auto pProject = ProjectInfo::instance ();
-//    pProject->setInfo ("apkToolPath", apkToolPath);
-    pProject->setInfo ("CompileCmd", mComCmd);
-    pProject->setInfo ("DecompileCmd", mDecCmd);
+
+    // set information
+    QString projectsRoot = GetProjectsPath ();
+    QDir dir(projectsRoot);
+    if(!dir.exists (mFileName)) {
+        dir.mkdir (mFileName);
+    } 
+
+    QString cfgPath = GetProjectsPath (mFileName) + "/Config.ini" ;
+
+    Configuration cfg(cfgPath);
+    cfg.setString ("ProjectInfo", "CompileCmd", mComCmd);
+    cfg.setString ("ProjectInfo", "DecompileCmd", mDecCmd);
 
     QDialog::accept();
 }

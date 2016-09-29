@@ -1,3 +1,15 @@
+//===- RunDevice.h - ART-GUI  ----------------------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===---------------------------------------------------------------------===//
+//
+// RunDevice will check connected device, and display a dialog.
+//
+//===----------------------------------------------------------------------===//
 #ifndef RUNDEVICE_H
 #define RUNDEVICE_H
 #include <QDialog>

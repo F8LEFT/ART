@@ -15,6 +15,7 @@
 #include <utils/ScriptEngine.h>
 
 #include <QtCore/QDir>
+#include <utils/Configuration.h>
 
 ProjectTab::ProjectTab(QWidget *parent) :
     QStackedWidget(parent),
@@ -94,6 +95,12 @@ void ProjectTab::openProject (QString projectName)
     projinfoset ("ProjectName", projectName);
     projinfoset ("ProjectCur", projectName);
 
+    QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
+
+    Configuration cfg(cfgPath);
+    projinfoset ("CompileCmd", cfg.getString ("ProjectInfo", "CompileCmd"));
+    projinfoset ("DecompileCmd", cfg.getString ("ProjectInfo", "DecompileCmd"));
+
     mProjectName = projectName;
 
     cmdexec("ProjectOpened", projectName);
@@ -109,10 +116,15 @@ void ProjectTab::closeProject()
     projinfoset ("ProjectName", QString());
     projinfoset ("ProjectLast", mProjectName);
 
-    QFile cfgFile(ProjectInfo::instance ()->getProjectCfgLastPath ());
+    QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
+    QFile cfgFile(cfgPath);
     if(cfgFile.exists ()) {
         cfgFile.remove ();
     }
+
+    Configuration cfg(cfgPath);
+    cfg.setString ("ProjectInfo", "CompileCmd", projinfo ("CompileCmd"));
+    cfg.setString ("ProjectInfo", "DecompileCmd", projinfo ("DecompileCmd"));
 
     cmdexec("ProjectClosed");
 }
