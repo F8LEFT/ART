@@ -30,7 +30,7 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 // //                    "%code top" blocks.
-#line 38 "Parser.yy" // lalr1.cc:391
+#line 37 "Parser.yy" // lalr1.cc:391
 
     #include <iostream>
     #include "Lexer.h"
@@ -40,7 +40,7 @@
     static Analysis::Parser::symbol_type yylex(Analysis::Lexer &lexer) {
         return lexer.get_next_token();
     }
-
+    using namespace std;
     using namespace Analysis;
 
 #line 47 "Parser.cpp" // lalr1.cc:391
@@ -250,6 +250,23 @@ namespace  Analysis  {
   {
       switch (that.type_get ())
     {
+      case 18: // "flag"
+      case 276: // "v(p)x"
+        value.move< int > (that.value);
+        break;
+
+      case 4: // "c type string"
+      case 5: // "name string"
+      case 6: // "comment"
+      case 7: // "class name"
+      case 8: // "class type"
+        value.move< std::string > (that.value);
+        break;
+
+      case 277: // "number"
+        value.move< uint64_t > (that.value);
+        break;
+
       default:
         break;
     }
@@ -265,6 +282,23 @@ namespace  Analysis  {
     state = that.state;
       switch (that.type_get ())
     {
+      case 18: // "flag"
+      case 276: // "v(p)x"
+        value.copy< int > (that.value);
+        break;
+
+      case 4: // "c type string"
+      case 5: // "name string"
+      case 6: // "comment"
+      case 7: // "class name"
+      case 8: // "class type"
+        value.copy< std::string > (that.value);
+        break;
+
+      case 277: // "number"
+        value.copy< uint64_t > (that.value);
+        break;
+
       default:
         break;
     }
@@ -496,6 +530,23 @@ namespace  Analysis  {
        variants.  */
       switch (yyr1_[yyn])
     {
+      case 18: // "flag"
+      case 276: // "v(p)x"
+        yylhs.value.build< int > ();
+        break;
+
+      case 4: // "c type string"
+      case 5: // "name string"
+      case 6: // "comment"
+      case 7: // "class name"
+      case 8: // "class type"
+        yylhs.value.build< std::string > ();
+        break;
+
+      case 277: // "number"
+        yylhs.value.build< uint64_t > ();
+        break;
+
       default:
         break;
     }
@@ -514,15 +565,15 @@ namespace  Analysis  {
         switch (yyn)
           {
   case 2:
-#line 65 "Parser.yy" // lalr1.cc:846
+#line 349 "Parser.yy" // lalr1.cc:846
     {
                 ;
             }
-#line 522 "Parser.cpp" // lalr1.cc:846
+#line 573 "Parser.cpp" // lalr1.cc:846
     break;
 
 
-#line 526 "Parser.cpp" // lalr1.cc:846
+#line 577 "Parser.cpp" // lalr1.cc:846
           default:
             break;
           }
@@ -819,16 +870,16 @@ namespace  Analysis  {
        0,     1,     3,     3
   };
 
-  const unsigned char
+  const unsigned short int
    Parser ::yystos_[] =
   {
-       0,     5,     0,     1,     3,     3
+       0,   287,     0,     1,     3,     3
   };
 
-  const unsigned char
+  const unsigned short int
    Parser ::yyr1_[] =
   {
-       0,     4,     5,     5,     5
+       0,   286,   287,   287,   287
   };
 
   const unsigned char
@@ -844,15 +895,98 @@ namespace  Analysis  {
   const char*
   const  Parser ::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\"end of line\"", "$accept",
-  "program", YY_NULL
+  "\"end of file\"", "error", "$undefined", "\"end of line\"",
+  "\"c type string\"", "\"name string\"", "\"comment\"", "\"class name\"",
+  "\"class type\"", "\".class\"", "\".super\"", "\".source\"",
+  "\".field\"", "\".method\"", "\".endmethod\"", "\".registers\"",
+  "\".prologue\"", "\".line\"", "\"flag\"", "\"nop\"", "\"move\"",
+  "\"move/from16\"", "\"move/16\"", "\"move-wide\"",
+  "\"move-wide/from16\"", "\"move-wide/16\"", "\"move-object\"",
+  "\"move-object/from16\"", "\"move-object/16\"", "\"move-result\"",
+  "\"move-result-wide\"", "\"move-result-object\"", "\"move-exception\"",
+  "\"return-void\"", "\"return\"", "\"return-wide\"", "\"return-object\"",
+  "\"const/4\"", "\"const/16\"", "\"const\"", "\"const/high16\"",
+  "\"const-wide/16\"", "\"const-wide/32\"", "\"const-wide\"",
+  "\"const-wide/high16\"", "\"const-string\"", "\"const-string/jumbo\"",
+  "\"const-class\"", "\"monitor-enter\"", "\"monitor-exit\"",
+  "\"check-cast\"", "\"instance-of\"", "\"array-length\"",
+  "\"new-instance\"", "\"new-array\"", "\"filled-new-array\"",
+  "\"filled-new-array/range\"", "\"fill-array-data\"", "\"throw\"",
+  "\"goto\"", "\"goto/16\"", "\"goto/32\"", "\"packed-switch\"",
+  "\"sparse-switch\"", "\"cmpl-float\"", "\"cmpg-float\"",
+  "\"cmpl-double\"", "\"cmpg-double\"", "\"cmp-long\"", "\"if-eq\"",
+  "\"if-ne\"", "\"if-lt\"", "\"if-ge\"", "\"if-gt\"", "\"if-le\"",
+  "\"if-eqz\"", "\"if-nez\"", "\"if-ltz\"", "\"if-gez\"", "\"if-gtz\"",
+  "\"if-lez\"", "\"unused-3e\"", "\"unused-3f\"", "\"unused-40\"",
+  "\"unused-41\"", "\"unused-42\"", "\"unused-43\"", "\"aget\"",
+  "\"aget-wide\"", "\"aget-object\"", "\"aget-boolean\"", "\"aget-byte\"",
+  "\"aget-char\"", "\"aget-short\"", "\"aput\"", "\"aput-wide\"",
+  "\"aput-object\"", "\"aput-boolean\"", "\"aput-byte\"", "\"aput-char\"",
+  "\"aput-short\"", "\"iget\"", "\"iget-wide\"", "\"iget-object\"",
+  "\"iget-boolean\"", "\"iget-byte\"", "\"iget-char\"", "\"iget-short\"",
+  "\"iput\"", "\"iput-wide\"", "\"iput-object\"", "\"iput-boolean\"",
+  "\"iput-byte\"", "\"iput-char\"", "\"iput-short\"", "\"sget\"",
+  "\"sget-wide\"", "\"sget-object\"", "\"sget-boolean\"", "\"sget-byte\"",
+  "\"sget-char\"", "\"sget-short\"", "\"sput\"", "\"sput-wide\"",
+  "\"sput-object\"", "\"sput-boolean\"", "\"sput-byte\"", "\"sput-char\"",
+  "\"sput-short\"", "\"invoke-virtual\"", "\"invoke-super\"",
+  "\"invoke-direct\"", "\"invoke-static\"", "\"invoke-interface\"",
+  "\"unused-73\"", "\"invoke-virtual/range\"", "\"invoke-super/range\"",
+  "\"invoke-direct/range\"", "\"invoke-static/range\"",
+  "\"invoke-interface/range\"", "\"unused-79\"", "\"unused-7a\"",
+  "\"neg-int\"", "\"not-int\"", "\"neg-long\"", "\"not-long\"",
+  "\"neg-float\"", "\"neg-double\"", "\"int-to-long\"", "\"int-to-float\"",
+  "\"int-to-double\"", "\"long-to-int\"", "\"long-to-float\"",
+  "\"long-to-double\"", "\"float-to-int\"", "\"float-to-long\"",
+  "\"float-to-double\"", "\"double-to-int\"", "\"double-to-long\"",
+  "\"double-to-float\"", "\"int-to-byte\"", "\"int-to-char\"",
+  "\"int-to-short\"", "\"add-int\"", "\"sub-int\"", "\"mul-int\"",
+  "\"div-int\"", "\"rem-int\"", "\"and-int\"", "\"or-int\"", "\"xor-int\"",
+  "\"shl-int\"", "\"shr-int\"", "\"ushr-int\"", "\"add-long\"",
+  "\"sub-long\"", "\"mul-long\"", "\"div-long\"", "\"rem-long\"",
+  "\"and-long\"", "\"or-long\"", "\"xor-long\"", "\"shl-long\"",
+  "\"shr-long\"", "\"ushr-long\"", "\"add-float\"", "\"sub-float\"",
+  "\"mul-float\"", "\"div-float\"", "\"rem-float\"", "\"add-double\"",
+  "\"sub-double\"", "\"mul-double\"", "\"div-double\"", "\"rem-double\"",
+  "\"add-int/2addr\"", "\"sub-int/2addr\"", "\"mul-int/2addr\"",
+  "\"div-int/2addr\"", "\"rem-int/2addr\"", "\"and-int/2addr\"",
+  "\"or-int/2addr\"", "\"xor-int/2addr\"", "\"shl-int/2addr\"",
+  "\"shr-int/2addr\"", "\"ushr-int/2addr\"", "\"add-long/2addr\"",
+  "\"sub-long/2addr\"", "\"mul-long/2addr\"", "\"div-long/2addr\"",
+  "\"rem-long/2addr\"", "\"and-long/2addr\"", "\"or-long/2addr\"",
+  "\"xor-long/2addr\"", "\"shl-long/2addr\"", "\"shr-long/2addr\"",
+  "\"ushr-long/2addr\"", "\"add-float/2addr\"", "\"sub-float/2addr\"",
+  "\"mul-float/2addr\"", "\"div-float/2addr\"", "\"rem-float/2addr\"",
+  "\"add-double/2addr\"", "\"sub-double/2addr\"", "\"mul-double/2addr\"",
+  "\"div-double/2addr\"", "\"rem-double/2addr\"", "\"add-int/lit16\"",
+  "\"rsub-int\"", "\"mul-int/lit16\"", "\"div-int/lit16\"",
+  "\"rem-int/lit16\"", "\"and-int/lit16\"", "\"or-int/lit16\"",
+  "\"xor-int/lit16\"", "\"add-int/lit8\"", "\"rsub-int/lit8\"",
+  "\"mul-int/lit8\"", "\"div-int/lit8\"", "\"rem-int/lit8\"",
+  "\"and-int/lit8\"", "\"or-int/lit8\"", "\"xor-int/lit8\"",
+  "\"shl-int/lit8\"", "\"shr-int/lit8\"", "\"ushr-int/lit8\"",
+  "\"+iget-volatile\"", "\"+iput-volatile\"", "\"+sget-volatile\"",
+  "\"+sput-volatile\"", "\"+iget-object-volatile\"",
+  "\"+iget-wide-volatile\"", "\"+iput-wide-volatile\"",
+  "\"+sget-wide-volatile\"", "\"+sput-wide-volatile\"", "\"^breakpoint\"",
+  "\"^throw-verification-error\"", "\"+execute-inline\"",
+  "\"+execute-inline/range\"", "\"+invoke-object-init/range\"",
+  "\"+return-void-barrier\"", "\"+iget-quick\"", "\"+iget-wide-quick\"",
+  "\"+iget-object-quick\"", "\"+iput-quick\"", "\"+iput-wide-quick\"",
+  "\"+iput-object-quick\"", "\"+invoke-virtual-quick\"",
+  "\"+invoke-virtual-quick/range\"", "\"+invoke-super-quick\"",
+  "\"+invoke-super-quick/range\"", "\"+iput-object-volatile\"",
+  "\"+sget-object-volatile\"", "\"+sput-object-volatile\"",
+  "\"unused-ff\"", "\".catch\"", "\"v(p)x\"", "\"number\"", "\":\"",
+  "\"(\"", "\")\"", "\",\"", "\"->\"", "\"{\"", "\"}\"", "\"..\"",
+  "$accept", "program", YY_NULL
   };
 
 #if YYDEBUG
-  const unsigned char
+  const unsigned short int
    Parser ::yyrline_[] =
   {
-       0,    65,    65,    68,    69
+       0,   349,   349,   352,   353
   };
 
   // Print the state stack on the debug stream.
@@ -887,11 +1021,11 @@ namespace  Analysis  {
 
 #line 9 "Parser.yy" // lalr1.cc:1156
 } //  Analysis 
-#line 891 "Parser.cpp" // lalr1.cc:1156
-#line 71 "Parser.yy" // lalr1.cc:1157
+#line 1025 "Parser.cpp" // lalr1.cc:1156
+#line 355 "Parser.yy" // lalr1.cc:1157
 
 
-void Analysis::Parser::error(const location &loc , const std::string &message) {
+void Analysis::Parser::error(const location &loc, const std::string &message) {
 	cout << "Parse error: " << message << endl
 	    << "Error location: " << loc << endl << endl;
 }

@@ -28,7 +28,7 @@
 namespace Analysis {
     class Lexer : public yyFlexLexer {
     public:
-        Lexer() {}
+        Lexer():mColumn(1), mLine(1) {}
         virtual ~Lexer() {}
         virtual Analysis::Parser::symbol_type get_next_token();
 
@@ -37,6 +37,11 @@ namespace Analysis {
         const std::string& curTokenText() {return mCurTokenText;}
         int column() {return mColumn;}
         int line() {return mLine;}
+
+    public:
+        void beginInitial();
+        void beginMethodDef();
+        void beginArgsDef();
 
     private:
         void acceptToken(const char* text, int len) {
@@ -56,6 +61,20 @@ namespace Analysis {
         std::string mCurTokenText;  // current token
         int mColumn;
         int mLine;
+
+    public:
+        void switch_streams( FLEX_STD istream* new_in,
+                                     FLEX_STD ostream* new_out ) {
+            mColumn = 1; mLine = 1;
+            mText.clear (); mCurTokenText.clear ();
+            yyFlexLexer::switch_streams (new_in,new_out);
+        }
+        void switch_streams( FLEX_STD istream& new_in,
+                                     FLEX_STD ostream& new_out ) {
+            mColumn = 1; mLine = 1;
+            mText.clear (); mCurTokenText.clear ();
+            yyFlexLexer::switch_streams (new_in,new_out);
+        }
     };
 }
 

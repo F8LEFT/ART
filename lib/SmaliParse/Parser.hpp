@@ -64,9 +64,8 @@
     namespace Analysis {
         class Lexer;
     }
-    using namespace std;
 
-#line 70 "Parser.hpp" // lalr1.cc:371
+#line 69 "Parser.hpp" // lalr1.cc:371
 
 # include <cassert>
 # include <vector>
@@ -89,7 +88,7 @@
 
 #line 9 "Parser.yy" // lalr1.cc:371
 namespace  Analysis  {
-#line 93 "Parser.hpp" // lalr1.cc:371
+#line 92 "Parser.hpp" // lalr1.cc:371
 
 
 
@@ -256,7 +255,21 @@ namespace  Analysis  {
 #ifndef YYSTYPE
     /// An auxiliary type to compute the largest semantic type.
     union union_type
-    {};
+    {
+      // "flag"
+      // "v(p)x"
+      char dummy1[sizeof(int)];
+
+      // "c type string"
+      // "name string"
+      // "comment"
+      // "class name"
+      // "class type"
+      char dummy2[sizeof(std::string)];
+
+      // "number"
+      char dummy3[sizeof(uint64_t)];
+};
 
     /// Symbol semantic values.
     typedef variant<sizeof(union_type)> semantic_type;
@@ -279,7 +292,289 @@ namespace  Analysis  {
       enum yytokentype
       {
         TOKEN_END = 0,
-        TOKEN_EOL = 258
+        TOKEN_EOL = 258,
+        TOKEN_CSTRING = 259,
+        TOKEN_NAMESTRING = 260,
+        TOKEN_COMMENT = 261,
+        TOKEN_CLASSNAME = 262,
+        TOKEN_CLASSTYPE = 263,
+        TOKEN_CLASSBEG = 264,
+        TOKEN_SUPERBEG = 265,
+        TOKEN_SRCBEG = 266,
+        TOKEN_FIELDBEG = 267,
+        TOKEN_METHODBEG = 268,
+        TOKEN_METHODEND = 269,
+        TOKEN_REGISTERS = 270,
+        TOKEN_PROLOGUE = 271,
+        TOKEN_LINE = 272,
+        TOKEN_FLAG = 273,
+        TOKEN_OP_NOP = 274,
+        TOKEN_OP_MOVE = 275,
+        TOKEN_OP_MOVE_FROM16 = 276,
+        TOKEN_OP_MOVE_16 = 277,
+        TOKEN_OP_MOVE_WIDE = 278,
+        TOKEN_OP_MOVE_WIDE_FROM16 = 279,
+        TOKEN_OP_MOVE_WIDE_16 = 280,
+        TOKEN_OP_MOVE_OBJECT = 281,
+        TOKEN_OP_MOVE_OBJECT_FROM16 = 282,
+        TOKEN_OP_MOVE_OBJECT_16 = 283,
+        TOKEN_OP_MOVE_RESULT = 284,
+        TOKEN_OP_MOVE_RESULT_WIDE = 285,
+        TOKEN_OP_MOVE_RESULT_OBJECT = 286,
+        TOKEN_OP_MOVE_EXCEPTION = 287,
+        TOKEN_OP_RETURN_VOID = 288,
+        TOKEN_OP_RETURN = 289,
+        TOKEN_OP_RETURN_WIDE = 290,
+        TOKEN_OP_RETURN_OBJECT = 291,
+        TOKEN_OP_CONST_4 = 292,
+        TOKEN_OP_CONST_16 = 293,
+        TOKEN_OP_CONST = 294,
+        TOKEN_OP_CONST_HIGH16 = 295,
+        TOKEN_OP_CONST_WIDE_16 = 296,
+        TOKEN_OP_CONST_WIDE_32 = 297,
+        TOKEN_OP_CONST_WIDE = 298,
+        TOKEN_OP_CONST_WIDE_HIGH16 = 299,
+        TOKEN_OP_CONST_STRING = 300,
+        TOKEN_OP_CONST_STRING_JUMBO = 301,
+        TOKEN_OP_CONST_CLASS = 302,
+        TOKEN_OP_MONITOR_ENTER = 303,
+        TOKEN_OP_MONITOR_EXIT = 304,
+        TOKEN_OP_CHECK_CAST = 305,
+        TOKEN_OP_INSTANCE_OF = 306,
+        TOKEN_OP_ARRAY_LENGTH = 307,
+        TOKEN_OP_NEW_INSTANCE = 308,
+        TOKEN_OP_NEW_ARRAY = 309,
+        TOKEN_OP_FILLED_NEW_ARRAY = 310,
+        TOKEN_OP_FILLED_NEW_ARRAY_RANGE = 311,
+        TOKEN_OP_FILL_ARRAY_DATA = 312,
+        TOKEN_OP_THROW = 313,
+        TOKEN_OP_GOTO = 314,
+        TOKEN_OP_GOTO_16 = 315,
+        TOKEN_OP_GOTO_32 = 316,
+        TOKEN_OP_PACKED_SWITCH = 317,
+        TOKEN_OP_SPARSE_SWITCH = 318,
+        TOKEN_OP_CMPL_FLOAT = 319,
+        TOKEN_OP_CMPG_FLOAT = 320,
+        TOKEN_OP_CMPL_DOUBLE = 321,
+        TOKEN_OP_CMPG_DOUBLE = 322,
+        TOKEN_OP_CMP_LONG = 323,
+        TOKEN_OP_IF_EQ = 324,
+        TOKEN_OP_IF_NE = 325,
+        TOKEN_OP_IF_LT = 326,
+        TOKEN_OP_IF_GE = 327,
+        TOKEN_OP_IF_GT = 328,
+        TOKEN_OP_IF_LE = 329,
+        TOKEN_OP_IF_EQZ = 330,
+        TOKEN_OP_IF_NEZ = 331,
+        TOKEN_OP_IF_LTZ = 332,
+        TOKEN_OP_IF_GEZ = 333,
+        TOKEN_OP_IF_GTZ = 334,
+        TOKEN_OP_IF_LEZ = 335,
+        TOKEN_OP_UNUSED_3E = 336,
+        TOKEN_OP_UNUSED_3F = 337,
+        TOKEN_OP_UNUSED_40 = 338,
+        TOKEN_OP_UNUSED_41 = 339,
+        TOKEN_OP_UNUSED_42 = 340,
+        TOKEN_OP_UNUSED_43 = 341,
+        TOKEN_OP_AGET = 342,
+        TOKEN_OP_AGET_WIDE = 343,
+        TOKEN_OP_AGET_OBJECT = 344,
+        TOKEN_OP_AGET_BOOLEAN = 345,
+        TOKEN_OP_AGET_BYTE = 346,
+        TOKEN_OP_AGET_CHAR = 347,
+        TOKEN_OP_AGET_SHORT = 348,
+        TOKEN_OP_APUT = 349,
+        TOKEN_OP_APUT_WIDE = 350,
+        TOKEN_OP_APUT_OBJECT = 351,
+        TOKEN_OP_APUT_BOOLEAN = 352,
+        TOKEN_OP_APUT_BYTE = 353,
+        TOKEN_OP_APUT_CHAR = 354,
+        TOKEN_OP_APUT_SHORT = 355,
+        TOKEN_OP_IGET = 356,
+        TOKEN_OP_IGET_WIDE = 357,
+        TOKEN_OP_IGET_OBJECT = 358,
+        TOKEN_OP_IGET_BOOLEAN = 359,
+        TOKEN_OP_IGET_BYTE = 360,
+        TOKEN_OP_IGET_CHAR = 361,
+        TOKEN_OP_IGET_SHORT = 362,
+        TOKEN_OP_IPUT = 363,
+        TOKEN_OP_IPUT_WIDE = 364,
+        TOKEN_OP_IPUT_OBJECT = 365,
+        TOKEN_OP_IPUT_BOOLEAN = 366,
+        TOKEN_OP_IPUT_BYTE = 367,
+        TOKEN_OP_IPUT_CHAR = 368,
+        TOKEN_OP_IPUT_SHORT = 369,
+        TOKEN_OP_SGET = 370,
+        TOKEN_OP_SGET_WIDE = 371,
+        TOKEN_OP_SGET_OBJECT = 372,
+        TOKEN_OP_SGET_BOOLEAN = 373,
+        TOKEN_OP_SGET_BYTE = 374,
+        TOKEN_OP_SGET_CHAR = 375,
+        TOKEN_OP_SGET_SHORT = 376,
+        TOKEN_OP_SPUT = 377,
+        TOKEN_OP_SPUT_WIDE = 378,
+        TOKEN_OP_SPUT_OBJECT = 379,
+        TOKEN_OP_SPUT_BOOLEAN = 380,
+        TOKEN_OP_SPUT_BYTE = 381,
+        TOKEN_OP_SPUT_CHAR = 382,
+        TOKEN_OP_SPUT_SHORT = 383,
+        TOKEN_OP_INVOKE_VIRTUAL = 384,
+        TOKEN_OP_INVOKE_SUPER = 385,
+        TOKEN_OP_INVOKE_DIRECT = 386,
+        TOKEN_OP_INVOKE_STATIC = 387,
+        TOKEN_OP_INVOKE_INTERFACE = 388,
+        TOKEN_OP_UNUSED_73 = 389,
+        TOKEN_OP_INVOKE_VIRTUAL_RANGE = 390,
+        TOKEN_OP_INVOKE_SUPER_RANGE = 391,
+        TOKEN_OP_INVOKE_DIRECT_RANGE = 392,
+        TOKEN_OP_INVOKE_STATIC_RANGE = 393,
+        TOKEN_OP_INVOKE_INTERFACE_RANGE = 394,
+        TOKEN_OP_UNUSED_79 = 395,
+        TOKEN_OP_UNUSED_7A = 396,
+        TOKEN_OP_NEG_INT = 397,
+        TOKEN_OP_NOT_INT = 398,
+        TOKEN_OP_NEG_LONG = 399,
+        TOKEN_OP_NOT_LONG = 400,
+        TOKEN_OP_NEG_FLOAT = 401,
+        TOKEN_OP_NEG_DOUBLE = 402,
+        TOKEN_OP_INT_TO_LONG = 403,
+        TOKEN_OP_INT_TO_FLOAT = 404,
+        TOKEN_OP_INT_TO_DOUBLE = 405,
+        TOKEN_OP_LONG_TO_INT = 406,
+        TOKEN_OP_LONG_TO_FLOAT = 407,
+        TOKEN_OP_LONG_TO_DOUBLE = 408,
+        TOKEN_OP_FLOAT_TO_INT = 409,
+        TOKEN_OP_FLOAT_TO_LONG = 410,
+        TOKEN_OP_FLOAT_TO_DOUBLE = 411,
+        TOKEN_OP_DOUBLE_TO_INT = 412,
+        TOKEN_OP_DOUBLE_TO_LONG = 413,
+        TOKEN_OP_DOUBLE_TO_FLOAT = 414,
+        TOKEN_OP_INT_TO_BYTE = 415,
+        TOKEN_OP_INT_TO_CHAR = 416,
+        TOKEN_OP_INT_TO_SHORT = 417,
+        TOKEN_OP_ADD_INT = 418,
+        TOKEN_OP_SUB_INT = 419,
+        TOKEN_OP_MUL_INT = 420,
+        TOKEN_OP_DIV_INT = 421,
+        TOKEN_OP_REM_INT = 422,
+        TOKEN_OP_AND_INT = 423,
+        TOKEN_OP_OR_INT = 424,
+        TOKEN_OP_XOR_INT = 425,
+        TOKEN_OP_SHL_INT = 426,
+        TOKEN_OP_SHR_INT = 427,
+        TOKEN_OP_USHR_INT = 428,
+        TOKEN_OP_ADD_LONG = 429,
+        TOKEN_OP_SUB_LONG = 430,
+        TOKEN_OP_MUL_LONG = 431,
+        TOKEN_OP_DIV_LONG = 432,
+        TOKEN_OP_REM_LONG = 433,
+        TOKEN_OP_AND_LONG = 434,
+        TOKEN_OP_OR_LONG = 435,
+        TOKEN_OP_XOR_LONG = 436,
+        TOKEN_OP_SHL_LONG = 437,
+        TOKEN_OP_SHR_LONG = 438,
+        TOKEN_OP_USHR_LONG = 439,
+        TOKEN_OP_ADD_FLOAT = 440,
+        TOKEN_OP_SUB_FLOAT = 441,
+        TOKEN_OP_MUL_FLOAT = 442,
+        TOKEN_OP_DIV_FLOAT = 443,
+        TOKEN_OP_REM_FLOAT = 444,
+        TOKEN_OP_ADD_DOUBLE = 445,
+        TOKEN_OP_SUB_DOUBLE = 446,
+        TOKEN_OP_MUL_DOUBLE = 447,
+        TOKEN_OP_DIV_DOUBLE = 448,
+        TOKEN_OP_REM_DOUBLE = 449,
+        TOKEN_OP_ADD_INT_2ADDR = 450,
+        TOKEN_OP_SUB_INT_2ADDR = 451,
+        TOKEN_OP_MUL_INT_2ADDR = 452,
+        TOKEN_OP_DIV_INT_2ADDR = 453,
+        TOKEN_OP_REM_INT_2ADDR = 454,
+        TOKEN_OP_AND_INT_2ADDR = 455,
+        TOKEN_OP_OR_INT_2ADDR = 456,
+        TOKEN_OP_XOR_INT_2ADDR = 457,
+        TOKEN_OP_SHL_INT_2ADDR = 458,
+        TOKEN_OP_SHR_INT_2ADDR = 459,
+        TOKEN_OP_USHR_INT_2ADDR = 460,
+        TOKEN_OP_ADD_LONG_2ADDR = 461,
+        TOKEN_OP_SUB_LONG_2ADDR = 462,
+        TOKEN_OP_MUL_LONG_2ADDR = 463,
+        TOKEN_OP_DIV_LONG_2ADDR = 464,
+        TOKEN_OP_REM_LONG_2ADDR = 465,
+        TOKEN_OP_AND_LONG_2ADDR = 466,
+        TOKEN_OP_OR_LONG_2ADDR = 467,
+        TOKEN_OP_XOR_LONG_2ADDR = 468,
+        TOKEN_OP_SHL_LONG_2ADDR = 469,
+        TOKEN_OP_SHR_LONG_2ADDR = 470,
+        TOKEN_OP_USHR_LONG_2ADDR = 471,
+        TOKEN_OP_ADD_FLOAT_2ADDR = 472,
+        TOKEN_OP_SUB_FLOAT_2ADDR = 473,
+        TOKEN_OP_MUL_FLOAT_2ADDR = 474,
+        TOKEN_OP_DIV_FLOAT_2ADDR = 475,
+        TOKEN_OP_REM_FLOAT_2ADDR = 476,
+        TOKEN_OP_ADD_DOUBLE_2ADDR = 477,
+        TOKEN_OP_SUB_DOUBLE_2ADDR = 478,
+        TOKEN_OP_MUL_DOUBLE_2ADDR = 479,
+        TOKEN_OP_DIV_DOUBLE_2ADDR = 480,
+        TOKEN_OP_REM_DOUBLE_2ADDR = 481,
+        TOKEN_OP_ADD_INT_LIT16 = 482,
+        TOKEN_OP_RSUB_INT = 483,
+        TOKEN_OP_MUL_INT_LIT16 = 484,
+        TOKEN_OP_DIV_INT_LIT16 = 485,
+        TOKEN_OP_REM_INT_LIT16 = 486,
+        TOKEN_OP_AND_INT_LIT16 = 487,
+        TOKEN_OP_OR_INT_LIT16 = 488,
+        TOKEN_OP_XOR_INT_LIT16 = 489,
+        TOKEN_OP_ADD_INT_LIT8 = 490,
+        TOKEN_OP_RSUB_INT_LIT8 = 491,
+        TOKEN_OP_MUL_INT_LIT8 = 492,
+        TOKEN_OP_DIV_INT_LIT8 = 493,
+        TOKEN_OP_REM_INT_LIT8 = 494,
+        TOKEN_OP_AND_INT_LIT8 = 495,
+        TOKEN_OP_OR_INT_LIT8 = 496,
+        TOKEN_OP_XOR_INT_LIT8 = 497,
+        TOKEN_OP_SHL_INT_LIT8 = 498,
+        TOKEN_OP_SHR_INT_LIT8 = 499,
+        TOKEN_OP_USHR_INT_LIT8 = 500,
+        TOKEN_OP_IGET_VOLATILE = 501,
+        TOKEN_OP_IPUT_VOLATILE = 502,
+        TOKEN_OP_SGET_VOLATILE = 503,
+        TOKEN_OP_SPUT_VOLATILE = 504,
+        TOKEN_OP_IGET_OBJECT_VOLATILE = 505,
+        TOKEN_OP_IGET_WIDE_VOLATILE = 506,
+        TOKEN_OP_IPUT_WIDE_VOLATILE = 507,
+        TOKEN_OP_SGET_WIDE_VOLATILE = 508,
+        TOKEN_OP_SPUT_WIDE_VOLATILE = 509,
+        TOKEN_OP_BREAKPOINT = 510,
+        TOKEN_OP_THROW_VERIFICATION_ERROR = 511,
+        TOKEN_OP_EXECUTE_INLINE = 512,
+        TOKEN_OP_EXECUTE_INLINE_RANGE = 513,
+        TOKEN_OP_INVOKE_OBJECT_INIT_RANGE = 514,
+        TOKEN_OP_RETURN_VOID_BARRIER = 515,
+        TOKEN_OP_IGET_QUICK = 516,
+        TOKEN_OP_IGET_WIDE_QUICK = 517,
+        TOKEN_OP_IGET_OBJECT_QUICK = 518,
+        TOKEN_OP_IPUT_QUICK = 519,
+        TOKEN_OP_IPUT_WIDE_QUICK = 520,
+        TOKEN_OP_IPUT_OBJECT_QUICK = 521,
+        TOKEN_OP_INVOKE_VIRTUAL_QUICK = 522,
+        TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE = 523,
+        TOKEN_OP_INVOKE_SUPER_QUICK = 524,
+        TOKEN_OP_INVOKE_SUPER_QUICK_RANGE = 525,
+        TOKEN_OP_IPUT_OBJECT_VOLATILE = 526,
+        TOKEN_OP_SGET_OBJECT_VOLATILE = 527,
+        TOKEN_OP_SPUT_OBJECT_VOLATILE = 528,
+        TOKEN_OP_UNUSED_FF = 529,
+        TOKEN_OP_CATCH = 530,
+        TOKEN_REGD = 531,
+        TOKEN_NUMBER = 532,
+        TOKEN_COLON = 533,
+        TOKEN_LEFTPAR = 534,
+        TOKEN_RIGHTPAR = 535,
+        TOKEN_COMMA = 536,
+        TOKEN_POINT = 537,
+        TOKEN_INIBRACE = 538,
+        TOKEN_CLOBRACE = 539,
+        TOKEN_ELLIPSIS = 540
       };
     };
 
@@ -290,7 +585,7 @@ namespace  Analysis  {
     typedef int symbol_number_type;
 
     /// Internal symbol number for tokens (subsumed by symbol_number_type).
-    typedef unsigned char token_number_type;
+    typedef unsigned short int token_number_type;
 
     /// A complete symbol.
     ///
@@ -313,6 +608,12 @@ namespace  Analysis  {
       /// Constructor for valueless symbols, and symbols from each type.
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const uint64_t v, const location_type& l);
 
 
       /// Constructor for symbols with semantic value.
@@ -379,6 +680,1134 @@ namespace  Analysis  {
     static inline
     symbol_type
     make_EOL (const location_type& l);
+
+    static inline
+    symbol_type
+    make_CSTRING (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_NAMESTRING (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_COMMENT (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_CLASSNAME (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_CLASSTYPE (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_CLASSBEG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SUPERBEG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SRCBEG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FIELDBEG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_METHODBEG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_METHODEND (const location_type& l);
+
+    static inline
+    symbol_type
+    make_REGISTERS (const location_type& l);
+
+    static inline
+    symbol_type
+    make_PROLOGUE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_LINE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FLAG (const int& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NOP (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_FROM16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_WIDE_FROM16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_WIDE_16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_OBJECT_FROM16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_OBJECT_16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_RESULT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_RESULT_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_RESULT_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MOVE_EXCEPTION (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_RETURN_VOID (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_RETURN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_RETURN_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_RETURN_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_4 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_HIGH16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_WIDE_16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_WIDE_32 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_WIDE_HIGH16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_STRING (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_STRING_JUMBO (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CONST_CLASS (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MONITOR_ENTER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MONITOR_EXIT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CHECK_CAST (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INSTANCE_OF (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ARRAY_LENGTH (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NEW_INSTANCE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NEW_ARRAY (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_FILLED_NEW_ARRAY (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_FILLED_NEW_ARRAY_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_FILL_ARRAY_DATA (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_THROW (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_GOTO (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_GOTO_16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_GOTO_32 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_PACKED_SWITCH (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPARSE_SWITCH (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CMPL_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CMPG_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CMPL_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CMPG_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CMP_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_EQ (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_NE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_LT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_GE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_GT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_LE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_EQZ (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_NEZ (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_LTZ (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_GEZ (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_GTZ (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IF_LEZ (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_3E (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_3F (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_40 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_41 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_42 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_43 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AGET (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AGET_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AGET_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AGET_BOOLEAN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AGET_BYTE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AGET_CHAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AGET_SHORT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_APUT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_APUT_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_APUT_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_APUT_BOOLEAN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_APUT_BYTE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_APUT_CHAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_APUT_SHORT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_BOOLEAN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_BYTE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_CHAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_SHORT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_BOOLEAN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_BYTE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_CHAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_SHORT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_BOOLEAN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_BYTE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_CHAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_SHORT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_WIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_OBJECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_BOOLEAN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_BYTE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_CHAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_SHORT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_VIRTUAL (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_SUPER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_DIRECT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_STATIC (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_INTERFACE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_73 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_VIRTUAL_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_SUPER_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_DIRECT_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_STATIC_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_INTERFACE_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_79 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_7A (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NEG_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NOT_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NEG_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NOT_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NEG_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_NEG_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INT_TO_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INT_TO_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INT_TO_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_LONG_TO_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_LONG_TO_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_LONG_TO_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_FLOAT_TO_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_FLOAT_TO_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_FLOAT_TO_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DOUBLE_TO_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DOUBLE_TO_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DOUBLE_TO_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INT_TO_BYTE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INT_TO_CHAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INT_TO_SHORT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AND_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_OR_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_XOR_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHL_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHR_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_USHR_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AND_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_OR_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_XOR_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHL_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHR_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_USHR_LONG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_FLOAT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_DOUBLE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AND_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_OR_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_XOR_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHL_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHR_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_USHR_INT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AND_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_OR_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_XOR_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHL_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHR_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_USHR_LONG_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_FLOAT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_FLOAT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_FLOAT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_FLOAT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_FLOAT_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_DOUBLE_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SUB_DOUBLE_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_DOUBLE_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_DOUBLE_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_DOUBLE_2ADDR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_INT_LIT16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_RSUB_INT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_INT_LIT16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_INT_LIT16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_INT_LIT16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AND_INT_LIT16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_OR_INT_LIT16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_XOR_INT_LIT16 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_ADD_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_RSUB_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_MUL_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_DIV_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_REM_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_AND_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_OR_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_XOR_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHL_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SHR_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_USHR_INT_LIT8 (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_OBJECT_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_WIDE_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_WIDE_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_WIDE_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_WIDE_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_BREAKPOINT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_THROW_VERIFICATION_ERROR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_EXECUTE_INLINE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_EXECUTE_INLINE_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_OBJECT_INIT_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_RETURN_VOID_BARRIER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_WIDE_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IGET_OBJECT_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_WIDE_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_OBJECT_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_VIRTUAL_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_VIRTUAL_QUICK_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_SUPER_QUICK (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_INVOKE_SUPER_QUICK_RANGE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_IPUT_OBJECT_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SGET_OBJECT_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_SPUT_OBJECT_VOLATILE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_UNUSED_FF (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_CATCH (const location_type& l);
+
+    static inline
+    symbol_type
+    make_REGD (const int& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_NUMBER (const uint64_t& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_COLON (const location_type& l);
+
+    static inline
+    symbol_type
+    make_LEFTPAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_RIGHTPAR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_COMMA (const location_type& l);
+
+    static inline
+    symbol_type
+    make_POINT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_INIBRACE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_CLOBRACE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_ELLIPSIS (const location_type& l);
 
 
     /// Build a parser object.
@@ -469,10 +1898,10 @@ namespace  Analysis  {
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
-  static const unsigned char yystos_[];
+  static const unsigned short int yystos_[];
 
   // YYR1[YYN] -- Symbol number of symbol that rule YYN derives.
-  static const unsigned char yyr1_[];
+  static const unsigned short int yyr1_[];
 
   // YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.
   static const unsigned char yyr2_[];
@@ -486,7 +1915,7 @@ namespace  Analysis  {
     static const char* const yytname_[];
 #if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-  static const unsigned char yyrline_[];
+  static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -586,7 +2015,7 @@ namespace  Analysis  {
       yyfinal_ = 2, //< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 4    //< Number of tokens.
+      yyntokens_ = 286    //< Number of tokens.
     };
 
 
@@ -628,9 +2057,38 @@ namespace  Analysis  {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     2,     3
+       2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    88,    89,    90,    91,    92,    93,    94,
+      95,    96,    97,    98,    99,   100,   101,   102,   103,   104,
+     105,   106,   107,   108,   109,   110,   111,   112,   113,   114,
+     115,   116,   117,   118,   119,   120,   121,   122,   123,   124,
+     125,   126,   127,   128,   129,   130,   131,   132,   133,   134,
+     135,   136,   137,   138,   139,   140,   141,   142,   143,   144,
+     145,   146,   147,   148,   149,   150,   151,   152,   153,   154,
+     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
+     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   187,   188,   189,   190,   191,   192,   193,   194,
+     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
+     245,   246,   247,   248,   249,   250,   251,   252,   253,   254,
+     255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285
     };
-    const unsigned int user_token_number_max_ = 258;
+    const unsigned int user_token_number_max_ = 540;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -663,6 +2121,23 @@ namespace  Analysis  {
   {
       switch (other.type_get ())
     {
+      case 18: // "flag"
+      case 276: // "v(p)x"
+        value.copy< int > (other.value);
+        break;
+
+      case 4: // "c type string"
+      case 5: // "name string"
+      case 6: // "comment"
+      case 7: // "class name"
+      case 8: // "class type"
+        value.copy< std::string > (other.value);
+        break;
+
+      case 277: // "number"
+        value.copy< uint64_t > (other.value);
+        break;
+
       default:
         break;
     }
@@ -680,6 +2155,23 @@ namespace  Analysis  {
     (void) v;
       switch (this->type_get ())
     {
+      case 18: // "flag"
+      case 276: // "v(p)x"
+        value.copy< int > (v);
+        break;
+
+      case 4: // "c type string"
+      case 5: // "name string"
+      case 6: // "comment"
+      case 7: // "class name"
+      case 8: // "class type"
+        value.copy< std::string > (v);
+        break;
+
+      case 277: // "number"
+        value.copy< uint64_t > (v);
+        break;
+
       default:
         break;
     }
@@ -692,6 +2184,27 @@ namespace  Analysis  {
    Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
     : Base (t)
     , value ()
+    , location (l)
+  {}
+
+  template <typename Base>
+   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const uint64_t v, const location_type& l)
+    : Base (t)
+    , value (v)
     , location (l)
   {}
 
@@ -711,6 +2224,23 @@ namespace  Analysis  {
     // Type destructor.
     switch (yytype)
     {
+      case 18: // "flag"
+      case 276: // "v(p)x"
+        value.template destroy< int > ();
+        break;
+
+      case 4: // "c type string"
+      case 5: // "name string"
+      case 6: // "comment"
+      case 7: // "class name"
+      case 8: // "class type"
+        value.template destroy< std::string > ();
+        break;
+
+      case 277: // "number"
+        value.template destroy< uint64_t > ();
+        break;
+
       default:
         break;
     }
@@ -725,6 +2255,23 @@ namespace  Analysis  {
     super_type::move(s);
       switch (this->type_get ())
     {
+      case 18: // "flag"
+      case 276: // "v(p)x"
+        value.move< int > (s.value);
+        break;
+
+      case 4: // "c type string"
+      case 5: // "name string"
+      case 6: // "comment"
+      case 7: // "class name"
+      case 8: // "class type"
+        value.move< std::string > (s.value);
+        break;
+
+      case 277: // "number"
+        value.move< uint64_t > (s.value);
+        break;
+
       default:
         break;
     }
@@ -773,7 +2320,35 @@ namespace  Analysis  {
     const unsigned short int
     yytoken_number_[] =
     {
-       0,   256,   257,   258
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
+     305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
+     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
+     325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
+     335,   336,   337,   338,   339,   340,   341,   342,   343,   344,
+     345,   346,   347,   348,   349,   350,   351,   352,   353,   354,
+     355,   356,   357,   358,   359,   360,   361,   362,   363,   364,
+     365,   366,   367,   368,   369,   370,   371,   372,   373,   374,
+     375,   376,   377,   378,   379,   380,   381,   382,   383,   384,
+     385,   386,   387,   388,   389,   390,   391,   392,   393,   394,
+     395,   396,   397,   398,   399,   400,   401,   402,   403,   404,
+     405,   406,   407,   408,   409,   410,   411,   412,   413,   414,
+     415,   416,   417,   418,   419,   420,   421,   422,   423,   424,
+     425,   426,   427,   428,   429,   430,   431,   432,   433,   434,
+     435,   436,   437,   438,   439,   440,   441,   442,   443,   444,
+     445,   446,   447,   448,   449,   450,   451,   452,   453,   454,
+     455,   456,   457,   458,   459,   460,   461,   462,   463,   464,
+     465,   466,   467,   468,   469,   470,   471,   472,   473,   474,
+     475,   476,   477,   478,   479,   480,   481,   482,   483,   484,
+     485,   486,   487,   488,   489,   490,   491,   492,   493,   494,
+     495,   496,   497,   498,   499,   500,   501,   502,   503,   504,
+     505,   506,   507,   508,   509,   510,   511,   512,   513,   514,
+     515,   516,   517,   518,   519,   520,   521,   522,   523,   524,
+     525,   526,   527,   528,   529,   530,   531,   532,   533,   534,
+     535,   536,   537,   538,   539,   540
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -792,10 +2367,1984 @@ namespace  Analysis  {
 
   }
 
+   Parser ::symbol_type
+   Parser ::make_CSTRING (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CSTRING, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_NAMESTRING (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_NAMESTRING, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_COMMENT (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_COMMENT, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_CLASSNAME (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CLASSNAME, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_CLASSTYPE (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CLASSTYPE, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_CLASSBEG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CLASSBEG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_SUPERBEG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_SUPERBEG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_SRCBEG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_SRCBEG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_FIELDBEG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_FIELDBEG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_METHODBEG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_METHODBEG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_METHODEND (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_METHODEND, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_REGISTERS (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_REGISTERS, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_PROLOGUE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_PROLOGUE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_LINE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_LINE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_FLAG (const int& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_FLAG, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NOP (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NOP, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_FROM16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_FROM16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_WIDE_FROM16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_WIDE_FROM16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_WIDE_16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_WIDE_16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_OBJECT_FROM16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_OBJECT_FROM16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_OBJECT_16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_OBJECT_16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_RESULT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_RESULT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_RESULT_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_RESULT_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_RESULT_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_RESULT_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MOVE_EXCEPTION (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MOVE_EXCEPTION, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_RETURN_VOID (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_RETURN_VOID, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_RETURN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_RETURN, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_RETURN_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_RETURN_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_RETURN_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_RETURN_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_4 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_4, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_HIGH16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_HIGH16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_WIDE_16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_WIDE_16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_WIDE_32 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_WIDE_32, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_WIDE_HIGH16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_WIDE_HIGH16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_STRING (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_STRING, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_STRING_JUMBO (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_STRING_JUMBO, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CONST_CLASS (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CONST_CLASS, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MONITOR_ENTER (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MONITOR_ENTER, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MONITOR_EXIT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MONITOR_EXIT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CHECK_CAST (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CHECK_CAST, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INSTANCE_OF (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INSTANCE_OF, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ARRAY_LENGTH (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ARRAY_LENGTH, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NEW_INSTANCE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NEW_INSTANCE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NEW_ARRAY (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NEW_ARRAY, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_FILLED_NEW_ARRAY (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_FILLED_NEW_ARRAY, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_FILLED_NEW_ARRAY_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_FILLED_NEW_ARRAY_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_FILL_ARRAY_DATA (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_FILL_ARRAY_DATA, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_THROW (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_THROW, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_GOTO (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_GOTO, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_GOTO_16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_GOTO_16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_GOTO_32 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_GOTO_32, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_PACKED_SWITCH (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_PACKED_SWITCH, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPARSE_SWITCH (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPARSE_SWITCH, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CMPL_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CMPL_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CMPG_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CMPG_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CMPL_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CMPL_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CMPG_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CMPG_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CMP_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CMP_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_EQ (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_EQ, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_NE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_NE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_LT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_LT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_GE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_GE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_GT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_GT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_LE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_LE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_EQZ (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_EQZ, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_NEZ (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_NEZ, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_LTZ (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_LTZ, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_GEZ (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_GEZ, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_GTZ (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_GTZ, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IF_LEZ (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IF_LEZ, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_3E (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_3E, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_3F (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_3F, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_40 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_40, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_41 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_41, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_42 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_42, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_43 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_43, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AGET (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AGET, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AGET_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AGET_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AGET_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AGET_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AGET_BOOLEAN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AGET_BOOLEAN, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AGET_BYTE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AGET_BYTE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AGET_CHAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AGET_CHAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AGET_SHORT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AGET_SHORT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_APUT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_APUT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_APUT_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_APUT_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_APUT_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_APUT_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_APUT_BOOLEAN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_APUT_BOOLEAN, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_APUT_BYTE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_APUT_BYTE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_APUT_CHAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_APUT_CHAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_APUT_SHORT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_APUT_SHORT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_BOOLEAN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_BOOLEAN, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_BYTE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_BYTE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_CHAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_CHAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_SHORT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_SHORT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_BOOLEAN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_BOOLEAN, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_BYTE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_BYTE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_CHAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_CHAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_SHORT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_SHORT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_BOOLEAN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_BOOLEAN, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_BYTE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_BYTE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_CHAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_CHAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_SHORT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_SHORT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_WIDE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_WIDE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_OBJECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_OBJECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_BOOLEAN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_BOOLEAN, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_BYTE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_BYTE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_CHAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_CHAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_SHORT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_SHORT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_VIRTUAL (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_SUPER (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_SUPER, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_DIRECT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_DIRECT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_STATIC (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_STATIC, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_INTERFACE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_INTERFACE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_73 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_73, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_VIRTUAL_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_SUPER_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_SUPER_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_DIRECT_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_DIRECT_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_STATIC_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_STATIC_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_INTERFACE_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_INTERFACE_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_79 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_79, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_7A (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_7A, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NEG_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NEG_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NOT_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NOT_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NEG_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NEG_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NOT_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NOT_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NEG_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NEG_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_NEG_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_NEG_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INT_TO_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INT_TO_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INT_TO_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INT_TO_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INT_TO_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INT_TO_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_LONG_TO_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_LONG_TO_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_LONG_TO_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_LONG_TO_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_LONG_TO_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_LONG_TO_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_FLOAT_TO_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_FLOAT_TO_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_FLOAT_TO_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_FLOAT_TO_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_FLOAT_TO_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_FLOAT_TO_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DOUBLE_TO_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DOUBLE_TO_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DOUBLE_TO_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DOUBLE_TO_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DOUBLE_TO_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DOUBLE_TO_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INT_TO_BYTE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INT_TO_BYTE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INT_TO_CHAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INT_TO_CHAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INT_TO_SHORT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INT_TO_SHORT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AND_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AND_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_OR_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_OR_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_XOR_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_XOR_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHL_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHL_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHR_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHR_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_USHR_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_USHR_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AND_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AND_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_OR_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_OR_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_XOR_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_XOR_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHL_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHL_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHR_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHR_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_USHR_LONG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_USHR_LONG, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_FLOAT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_FLOAT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_DOUBLE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_DOUBLE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AND_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AND_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_OR_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_OR_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_XOR_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_XOR_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHL_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHL_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHR_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHR_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_USHR_INT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_USHR_INT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AND_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AND_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_OR_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_OR_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_XOR_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_XOR_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHL_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHL_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHR_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHR_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_USHR_LONG_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_USHR_LONG_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_FLOAT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_FLOAT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_FLOAT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_FLOAT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_FLOAT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_FLOAT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_FLOAT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_FLOAT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_FLOAT_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_FLOAT_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_DOUBLE_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_DOUBLE_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SUB_DOUBLE_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SUB_DOUBLE_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_DOUBLE_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_DOUBLE_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_DOUBLE_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_DOUBLE_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_DOUBLE_2ADDR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_DOUBLE_2ADDR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_INT_LIT16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_INT_LIT16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_RSUB_INT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_RSUB_INT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_INT_LIT16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_INT_LIT16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_INT_LIT16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_INT_LIT16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_INT_LIT16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_INT_LIT16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AND_INT_LIT16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AND_INT_LIT16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_OR_INT_LIT16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_OR_INT_LIT16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_XOR_INT_LIT16 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_XOR_INT_LIT16, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_ADD_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_ADD_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_RSUB_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_RSUB_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_MUL_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_MUL_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_DIV_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_DIV_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_REM_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_REM_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_AND_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_AND_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_OR_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_OR_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_XOR_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_XOR_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHL_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHL_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SHR_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SHR_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_USHR_INT_LIT8 (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_USHR_INT_LIT8, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_OBJECT_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_OBJECT_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_WIDE_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_WIDE_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_WIDE_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_WIDE_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_WIDE_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_WIDE_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_WIDE_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_WIDE_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_BREAKPOINT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_BREAKPOINT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_THROW_VERIFICATION_ERROR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_THROW_VERIFICATION_ERROR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_EXECUTE_INLINE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_EXECUTE_INLINE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_EXECUTE_INLINE_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_EXECUTE_INLINE_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_OBJECT_INIT_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_OBJECT_INIT_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_RETURN_VOID_BARRIER (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_RETURN_VOID_BARRIER, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_WIDE_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_WIDE_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IGET_OBJECT_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IGET_OBJECT_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_WIDE_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_WIDE_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_OBJECT_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_OBJECT_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_VIRTUAL_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_VIRTUAL_QUICK_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_SUPER_QUICK (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_SUPER_QUICK, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_INVOKE_SUPER_QUICK_RANGE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_INVOKE_SUPER_QUICK_RANGE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_IPUT_OBJECT_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_IPUT_OBJECT_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SGET_OBJECT_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SGET_OBJECT_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_SPUT_OBJECT_VOLATILE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_SPUT_OBJECT_VOLATILE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_UNUSED_FF (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_UNUSED_FF, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_CATCH (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_CATCH, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_REGD (const int& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_REGD, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_NUMBER (const uint64_t& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_NUMBER, v, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_COLON (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_COLON, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_LEFTPAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_LEFTPAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_RIGHTPAR (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_RIGHTPAR, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_COMMA (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_COMMA, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_POINT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_POINT, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_INIBRACE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_INIBRACE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_CLOBRACE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CLOBRACE, l);
+
+  }
+
+   Parser ::symbol_type
+   Parser ::make_ELLIPSIS (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_ELLIPSIS, l);
+
+  }
+
 
 #line 9 "Parser.yy" // lalr1.cc:371
 } //  Analysis 
-#line 799 "Parser.hpp" // lalr1.cc:371
+#line 4348 "Parser.hpp" // lalr1.cc:371
 
 
 

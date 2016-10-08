@@ -15,13 +15,14 @@
 #include "Lexer.h"
 #include <sstream>
 #include <fstream>
+#include "Parser.hpp"
 using namespace std;
 using namespace Analysis;
 
 int main() {
 
     ifstream ifile;
-    ifile.open ("/home/f8left/CodeSrc/FDA/SmaliParser/res/StubApplication.smali");
+    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
     // test Lexer
     if (ifile.is_open ()) {
         Lexer lexer;
@@ -30,7 +31,13 @@ int main() {
             auto token = lexer.get_next_token ();
             if(token.token () == 0)
                 break;
-            cout << lexer.text() << endl;
+            if(token.token () == Parser::token::TOKEN_EOL) {
+                continue;
+            }
+            cout << " line :" << lexer.line ()
+                 << " column :" << lexer.column ()
+                 << " token :" << lexer.curTokenText () << endl;
+//                 << " text :" << lexer.text() << endl;
         }
     }
     return 0;
