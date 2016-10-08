@@ -21,4 +21,5 @@ ENDIF ()
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror")
 
+add_subdirectory(lib/SmaliParse)
 add_subdirectory(lib/gui)
