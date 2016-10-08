@@ -40,7 +40,6 @@ namespace Analysis {
 
     public:
         void beginInitial();
-        void beginMethodDef();
         void beginArgsDef();
 
     private:
