@@ -9,11 +9,13 @@
 #include "Editor.h"
 
 #include <utils/Configuration.h>
+#include "HighLighter/HighLighter.h"
 
 #include <QTextStream>
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets/QGridLayout>
 #include <QFileInfo>
+#include <QWidget>
 
 void readFileThread(Editor* e, QString filePath);
 void saveFileThread(QString text, QString  filePath);
@@ -21,13 +23,10 @@ void saveFileThread(QString text, QString  filePath);
 Editor::Editor(QWidget *parent) :
         QWidget(parent)
 {
-    QLayout* layout = new QGridLayout();
 
     mFileChangedTimer = new QTimer(this);
-    mFileEdit = allocTextEditorWidget ();
-    layout->addWidget (mFileEdit);
-
-    setLayout (layout);
+    mFileEdit = new TextEditorWidget(this);
+    setTextLayout();
 
     connect(this, SIGNAL(readLine(QString)), this, SLOT(appendLine(QString)));
     connect(this, SIGNAL(readEnd()), this, SLOT(readFileEnd()));
@@ -50,6 +49,14 @@ Editor::~Editor()
     saveToConfig();
 }
 
+
+void Editor::setTextLayout ()
+{
+    QLayout* layout = new QGridLayout(this);
+    layout->addWidget (mFileEdit);
+    setLayout (layout);
+}
+
 bool Editor::openFile(QString filePath, int iLine)
 {
     fp = filePath;
@@ -61,6 +68,8 @@ bool Editor::openFile(QString filePath, int iLine)
         mFileEdit->setDocumentTitle(fn);
         mFileEdit->setDocumentPath(filePath);
         file.close();
+
+        mHighlighter = setHighLighter(mFileEdit->document (), fn);
 
         mLine = iLine;
         QtConcurrent::run(readFileThread, this, filePath);
@@ -132,12 +141,6 @@ void Editor::textChangedTimeOut()
 {
     saveFile();
 }
-
-TextEditorWidget *Editor::allocTextEditorWidget ()
-{
-    return new TextEditorWidget(this);
-}
-
 
 void readFileThread(Editor* e, QString filePath) {
     QFile file(filePath);

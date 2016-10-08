@@ -250,8 +250,8 @@ namespace  Analysis  {
   {
       switch (that.type_get ())
     {
-      case 18: // "flag"
-      case 276: // "v(p)x"
+      case 20: // "flag"
+      case 21: // "v(p)x"
         value.move< int > (that.value);
         break;
 
@@ -263,7 +263,7 @@ namespace  Analysis  {
         value.move< std::string > (that.value);
         break;
 
-      case 277: // "number"
+      case 22: // "number"
         value.move< uint64_t > (that.value);
         break;
 
@@ -282,8 +282,8 @@ namespace  Analysis  {
     state = that.state;
       switch (that.type_get ())
     {
-      case 18: // "flag"
-      case 276: // "v(p)x"
+      case 20: // "flag"
+      case 21: // "v(p)x"
         value.copy< int > (that.value);
         break;
 
@@ -295,7 +295,7 @@ namespace  Analysis  {
         value.copy< std::string > (that.value);
         break;
 
-      case 277: // "number"
+      case 22: // "number"
         value.copy< uint64_t > (that.value);
         break;
 
@@ -530,8 +530,8 @@ namespace  Analysis  {
        variants.  */
       switch (yyr1_[yyn])
     {
-      case 18: // "flag"
-      case 276: // "v(p)x"
+      case 20: // "flag"
+      case 21: // "v(p)x"
         yylhs.value.build< int > ();
         break;
 
@@ -543,7 +543,7 @@ namespace  Analysis  {
         yylhs.value.build< std::string > ();
         break;
 
-      case 277: // "number"
+      case 22: // "number"
         yylhs.value.build< uint64_t > ();
         break;
 
@@ -565,7 +565,7 @@ namespace  Analysis  {
         switch (yyn)
           {
   case 2:
-#line 349 "Parser.yy" // lalr1.cc:846
+#line 355 "Parser.yy" // lalr1.cc:846
     {
                 ;
             }
@@ -873,13 +873,13 @@ namespace  Analysis  {
   const unsigned short int
    Parser ::yystos_[] =
   {
-       0,   287,     0,     1,     3,     3
+       0,   293,     0,     1,     3,     3
   };
 
   const unsigned short int
    Parser ::yyr1_[] =
   {
-       0,   286,   287,   287,   287
+       0,   292,   293,   293,   293
   };
 
   const unsigned char
@@ -897,10 +897,11 @@ namespace  Analysis  {
   {
   "\"end of file\"", "error", "$undefined", "\"end of line\"",
   "\"c type string\"", "\"name string\"", "\"comment\"", "\"class name\"",
-  "\"class type\"", "\".class\"", "\".super\"", "\".source\"",
-  "\".field\"", "\".method\"", "\".endmethod\"", "\".registers\"",
-  "\".prologue\"", "\".line\"", "\"flag\"", "\"nop\"", "\"move\"",
-  "\"move/from16\"", "\"move/16\"", "\"move-wide\"",
+  "\"class type\"", "\"begin of keywords\"", "\".class\"", "\".super\"",
+  "\".source\"", "\".field\"", "\".method\"", "\".endmethod\"",
+  "\".registers\"", "\".prologue\"", "\".line\"", "\"end of keywords\"",
+  "\"flag\"", "\"v(p)x\"", "\"number\"", "\"begin of opcodes\"", "\"nop\"",
+  "\"move\"", "\"move/from16\"", "\"move/16\"", "\"move-wide\"",
   "\"move-wide/from16\"", "\"move-wide/16\"", "\"move-object\"",
   "\"move-object/from16\"", "\"move-object/16\"", "\"move-result\"",
   "\"move-result-wide\"", "\"move-result-object\"", "\"move-exception\"",
@@ -977,16 +978,16 @@ namespace  Analysis  {
   "\"+invoke-virtual-quick/range\"", "\"+invoke-super-quick\"",
   "\"+invoke-super-quick/range\"", "\"+iput-object-volatile\"",
   "\"+sget-object-volatile\"", "\"+sput-object-volatile\"",
-  "\"unused-ff\"", "\".catch\"", "\"v(p)x\"", "\"number\"", "\":\"",
-  "\"(\"", "\")\"", "\",\"", "\"->\"", "\"{\"", "\"}\"", "\"..\"",
-  "$accept", "program", YY_NULL
+  "\"unused-ff\"", "\".catch\"", "\"end of opcodes\"",
+  "\"begin of symbol\"", "\":\"", "\"(\"", "\")\"", "\",\"", "\"->\"",
+  "\"{\"", "\"}\"", "\"..\"", "\"end of symbol\"", "$accept", "program", YY_NULL
   };
 
 #if YYDEBUG
   const unsigned short int
    Parser ::yyrline_[] =
   {
-       0,   349,   349,   352,   353
+       0,   355,   355,   358,   359
   };
 
   // Print the state stack on the debug stream.
@@ -1021,8 +1022,8 @@ namespace  Analysis  {
 
 #line 9 "Parser.yy" // lalr1.cc:1156
 } //  Analysis 
-#line 1025 "Parser.cpp" // lalr1.cc:1156
-#line 355 "Parser.yy" // lalr1.cc:1157
+#line 1026 "Parser.cpp" // lalr1.cc:1156
+#line 361 "Parser.yy" // lalr1.cc:1157
 
 
 void Analysis::Parser::error(const location &loc, const std::string &message) {

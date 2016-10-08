@@ -36,6 +36,7 @@ int main() {
             }
             cout << " line :" << lexer.line ()
                  << " column :" << lexer.column ()
+                 << " len :" << lexer.curTokenLen ()
                  << " token :" << lexer.curTokenText () << endl;
 //                 << " text :" << lexer.text() << endl;
         }

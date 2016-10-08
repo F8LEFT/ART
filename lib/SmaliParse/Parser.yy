@@ -58,12 +58,11 @@
 %token END 0 "end of file";
 %token EOL "end of line";
 
-
 %token <std::string> CSTRING "c type string" NAMESTRING "name string";
-
 %token <std::string> COMMENT "comment";
 %token <std::string> CLASSNAME "class name" CLASSTYPE "class type";
 
+%token KEYWORD_BEGIN "begin of keywords"
 %token CLASSBEG ".class"
 %token SUPERBEG ".super"
 %token SRCBEG ".source"
@@ -71,9 +70,16 @@
 %token METHODBEG ".method"
 %token METHODEND ".endmethod";
 
-%token REGISTERS ".registers" PROLOGUE ".prologue" LINE ".line"
-%token <int> FLAG "flag"
+%token REGISTERS ".registers"
+%token PROLOGUE ".prologue"
+%token LINE ".line"
+%token KEYWORD_END "end of keywords"
 
+%token <int> FLAG "flag"
+%token <int> REGD "v(p)x"
+%token <uint64_t> NUMBER "number";
+
+%token OP_BEGIN "begin of opcodes"
 %token OP_NOP "nop"
 %token OP_MOVE "move"
 %token OP_MOVE_FROM16 "move/from16"
@@ -331,16 +337,16 @@
 %token OP_SPUT_OBJECT_VOLATILE "+sput-object-volatile"
 %token OP_UNUSED_FF "unused-ff"
 %token OP_CATCH ".catch"
+%token OP_END "end of opcodes"
 
-%token <int> REGD "v(p)x"
-%token <uint64_t> NUMBER "number";
-
+%token SYMBOL_BEGIN "begin of symbol"
 %token COLON ":"
 %token LEFTPAR "(" RIGHTPAR ")"
 %token COMMA ","
 %token POINT "->"
 %token INIBRACE "{" CLOBRACE "}"
 %token ELLIPSIS ".."
+%token SYMBOL_END "end of symbol"
 
 
 %start program

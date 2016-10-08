@@ -35,6 +35,7 @@ namespace Analysis {
     public:
         const std::string& text() {return mText;}
         const std::string& curTokenText() {return mCurTokenText;}
+        int curTokenLen() {return mCurTokenText.length ();}
         int column() {return mColumn;}
         int line() {return mLine;}
 
@@ -44,15 +45,16 @@ namespace Analysis {
 
     private:
         void acceptToken(const char* text, int len) {
-            mCurTokenText = std::string(text, len);
             if (text[0] == '\n') {
                 mColumn = 1;
                 mLine++;
                 mText.clear ();
+                mCurTokenText.clear ();
                 return;
             }
+            mColumn += mCurTokenText.length ();
+            mCurTokenText = std::string(text, len);
             mText += mCurTokenText;
-            mColumn += len;
         }
 
     private:

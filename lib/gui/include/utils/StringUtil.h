@@ -53,6 +53,7 @@ static int GetCompilePatch ()
 QString GetProjectsPath(const QString& expend = QString());
 QString GetProjectsProjectPath(const QString& expend);
 QString GetThirdPartyPath(const QString& expend = QString());
+QString GetCfgsPath(const QString& expend = QString());
 
 QString GetSystemType();
 

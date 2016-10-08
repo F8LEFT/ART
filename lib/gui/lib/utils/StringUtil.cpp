@@ -56,6 +56,15 @@ QString GetThirdPartyPath (const QString& expend)
     }
 }
 
+QString GetCfgsPath (const QString &expend)
+{
+    if(expend.isEmpty ()) {
+        return "./cfgs";
+    } else {
+        return "./cfgs/" + expend;
+    }
+}
+
 QString GetSystemType ()
 {
 #if defined(UNIX)
@@ -66,5 +75,7 @@ QString GetSystemType ()
     return "win";
 #endif
 }
+
+
 
 

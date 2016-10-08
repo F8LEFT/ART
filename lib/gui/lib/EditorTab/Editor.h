@@ -16,10 +16,12 @@
 
 #include "TextEditorWidget.h"
 
+#include <BookMark/BookMark.h>
+
 #include <QWidget>
 #include <QThread>
 #include <QTimer>
-#include <BookMark/BookMark.h>
+#include <QSyntaxHighlighter>
 
 class Editor : public QWidget
 {
@@ -28,7 +30,7 @@ class Editor : public QWidget
 public:
     Editor(QWidget *parent = 0);
     ~Editor();
-
+    virtual void setTextLayout();
     bool openFile(QString filePath, int iLine = 1);
     bool saveFile();
     bool reload();
@@ -42,8 +44,6 @@ public:
 
     void gotoLine(int line, int column = 0, bool centerLine = true);
     int currentLine();
-
-    virtual TextEditorWidget* allocTextEditorWidget();
 
 signals:
     void readLine(QString line);
@@ -63,6 +63,7 @@ protected:
     bool isUpdated = false;
     QTimer* mFileChangedTimer;
     TextEditorWidget* mFileEdit;
+    QSyntaxHighlighter* mHighlighter;
     int mLine;
 };
 

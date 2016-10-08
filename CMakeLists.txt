@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 set(ART_VERSION_MAJOR 0)
-set(ART_VERSION_MINOR 3)
+set(ART_VERSION_MINOR 5)
 set(ART_VERSION_PATCH 0)
 set(ART_VERSION ${ART_VERSION_MAJOR}.${ART_VERSION_MINOR}.${ART_VERSION_PATCH})
 
@@ -20,6 +20,11 @@ ELSE()
 ENDIF ()
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror")
+
+
+SET(ART_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+INCLUDE_DIRECTORIES(${ART_INCLUDE_DIR})
 
 add_subdirectory(lib/SmaliParse)
 add_subdirectory(lib/gui)
