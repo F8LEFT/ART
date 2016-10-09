@@ -19,9 +19,11 @@
 //===----------------------------------------------------------------------===//
 //
 // The file defines a Parser for smali language. Please use
-// bison -v -o Parser.cpp Parser.yy
+// bison -o Parser.cpp Parser.yy
 // to generate parser source file
-//
+// or
+// bison -v -o Parser.cpp Parser.yy
+// to debug.
 //===----------------------------------------------------------------------===//
     #include <iostream>
     #include <string>

@@ -22,7 +22,10 @@ using namespace Analysis;
 int main() {
 
     ifstream ifile;
-    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
+//    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
+    ifile.open ("/home/f8left/CodeSrc/ART/res/BackStackRecord.smali");
+
+
     // test Lexer
     if (ifile.is_open ()) {
         Lexer lexer;

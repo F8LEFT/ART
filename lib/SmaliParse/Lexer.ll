@@ -11,6 +11,9 @@
 // The file defines a lexer for smali language. Please use
 // flex -o Lexer.cpp Lexer.ll
 // to generate lex source file
+// or
+// flex -s -o Lexer.cpp Lexer.ll
+// to debug
 //
 //===----------------------------------------------------------------------===//
 	#include <iostream>
@@ -30,7 +33,6 @@
     #define LOCATION Analysis::location(YY_NULL, line(), column())
 %}
 
-%option nodefault
 %option noyywrap
 %option c++
 %option yyclass="Lexer"
@@ -49,7 +51,7 @@ UONLY   {U2}{U}|{U3}{U}{U}|{U4}{U}{U}{U}
 UANY    {ASC}|{UONLY}
 UANYN   {ASCN}|{UONLY}
 
-ASCSTR  [0-9a-zA-Z/\x3C\x3E_]
+ASCSTR  [0-9a-zA-Z/<>$]
 UASTR   {ASCSTR}|{UONLY}
 
 /* Define constants */

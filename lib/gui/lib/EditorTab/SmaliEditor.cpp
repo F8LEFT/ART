@@ -93,6 +93,13 @@ void SmaliEditor::setHintMap ()
     if(init)
         return;
     init = true;
+    mHintMap[Parser::token::TOKEN_CLASSBEG] = tr(".class flag className : Define a class.");
+    mHintMap[Parser::token::TOKEN_SUPERBEG] = tr(".super className : Define super class.");
+    mHintMap[Parser::token::TOKEN_SRCBEG] = tr (".source \"source name\" : Define source file name");
+    mHintMap[Parser::token::TOKEN_FIELDBEG] = tr (".field flag fieldName:fieldType : Define a field.");
+    mHintMap[Parser::token::TOKEN_METHODBEG] = tr (".method flag methodName(argtype)returntype : Define a method.");
+    mHintMap[Parser::token::TOKEN_METHODEND] = tr (".end method : Method define end");
+
 
 //    mHintMap[Parser::token::TOKEN_OP_BEGIN] = "op - begin";
     mHintMap[Parser::token::TOKEN_OP_NOP] = tr ("nop : No operation");
