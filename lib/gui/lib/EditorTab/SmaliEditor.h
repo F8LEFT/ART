@@ -16,7 +16,9 @@
 #define PROJECT_SMALIEDITOR_H
 
 #include "Editor.h"
+
 #include <QtWidgets/QSplitter>
+#include <QMap>
 
 
 class SmaliEditor : public Editor
@@ -30,11 +32,17 @@ public:
 
     void loadFromConfig();
     void saveToConfig();
+
+protected slots:
+    void editCursorChanged();
+
+private:
+    static void setHintMap();
 private:
     QPlainTextEdit* mHintEdit;
     QSplitter* mVSplitter;
     QList<int> mVSplitterSize;
-
+    static QMap<int, QString> mHintMap;
 };
 
 
