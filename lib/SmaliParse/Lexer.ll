@@ -51,7 +51,7 @@ UONLY   {U2}{U}|{U3}{U}{U}|{U4}{U}{U}{U}
 UANY    {ASC}|{UONLY}
 UANYN   {ASCN}|{UONLY}
 
-ASCSTR  [0-9a-zA-Z/<>$]
+ASCSTR  [0-9a-zA-Z/<>$_]
 UASTR   {ASCSTR}|{UONLY}
 
 /* Define constants */

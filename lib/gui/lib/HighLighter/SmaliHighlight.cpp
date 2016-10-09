@@ -12,15 +12,35 @@
 #include "Lexer.h"
 
 #include <sstream>
+#include <QTextDocument>
 
 using namespace Analysis;
 
 SmaliHighlight::SmaliHighlight (QTextDocument *parent,QString fileName)
         : QSyntaxHighlighter(parent)
 {
-    mKeywordFormat.setFontUnderline (true);
-    mOpFormat.setFontUnderline (true);
-    mSymbolFormat.setFontUnderline (true);
+    mKeywordFormat.setForeground(QBrush(QColor(175,215,231)));
+    mOpFormat.setForeground(QBrush(QColor(128,0,128)));
+    mSymbolFormat.setForeground(QBrush(QColor(0,0,128)));
+    mCStringFormat.setForeground(QBrush(QColor(0,128,0)));
+    mNameStringFormat.setForeground(QBrush(QColor(102,163,52)));
+    mCommentFormat.setForeground(QBrush(QColor(0,128,0)));
+    mClassTypeFormat.setForeground(QBrush(QColor(0,0,0)));
+    mFlagFormat.setForeground(QBrush(QColor(128,0,128)));
+    mREGDFormat.setForeground(QBrush(QColor(0,0,255)));
+    mNumberFormat.setForeground(QBrush(QColor(0,0,128)));
+
+    auto font = parent->defaultFont ();
+    mKeywordFormat.setFont (font);
+    mOpFormat.setFont (font);
+    mSymbolFormat.setFont (font);
+    mCStringFormat.setFont (font);
+    mNameStringFormat.setFont (font);
+    mCommentFormat.setFont (font);
+    mClassTypeFormat.setFont (font);
+    mFlagFormat.setFont (font);
+    mREGDFormat.setFont (font);
+    mNumberFormat.setFont (font);
 }
 
 void SmaliHighlight::highlightBlock (const QString &text)
