@@ -16,6 +16,8 @@
 #define PROJECT_SMALIEDITOR_H
 
 #include "Editor.h"
+#include <QtWidgets/QSplitter>
+
 
 class SmaliEditor : public Editor
 {
@@ -25,6 +27,13 @@ public:
     ~SmaliEditor();
 
     void setTextLayout();
+
+    void loadFromConfig();
+    void saveToConfig();
+private:
+    QPlainTextEdit* mHintEdit;
+    QSplitter* mVSplitter;
+    QList<int> mVSplitterSize;
 
 };
 

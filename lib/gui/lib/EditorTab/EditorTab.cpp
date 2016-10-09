@@ -11,6 +11,7 @@
 #include "ui_EditorTab.h"
 
 #include "Editor.h"
+#include "SmaliEditor.h"
 
 #include <utils/ScriptEngine.h>
 #include <utils/ProjectInfo.h>
@@ -64,7 +65,14 @@ bool EditorTab::openFile(QString filePath, int iLine)
         return true;
     }
     if (!filePath.isEmpty()) {
-        auto p = new Editor(this);
+        Editor* p;
+        if(filePath.endsWith (".smali")) {
+            p = new SmaliEditor(this);
+        } else {
+            p = new Editor(this);
+        }
+        p->setTextLayout ();
+
         iLine = (iLine == -1) ? 1 : iLine;
         if (p->openFile(filePath, iLine)) {
 

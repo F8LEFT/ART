@@ -23,10 +23,8 @@ void saveFileThread(QString text, QString  filePath);
 Editor::Editor(QWidget *parent) :
         QWidget(parent)
 {
-
     mFileChangedTimer = new QTimer(this);
     mFileEdit = new TextEditorWidget(this);
-    setTextLayout();
 
     connect(this, SIGNAL(readLine(QString)), this, SLOT(appendLine(QString)));
     connect(this, SIGNAL(readEnd()), this, SLOT(readFileEnd()));
@@ -49,10 +47,11 @@ Editor::~Editor()
     saveToConfig();
 }
 
-
+// TODO this method should be invoked after init.
 void Editor::setTextLayout ()
 {
     QLayout* layout = new QGridLayout(this);
+    layout->setContentsMargins (0,0,0,0);
     layout->addWidget (mFileEdit);
     setLayout (layout);
 }
