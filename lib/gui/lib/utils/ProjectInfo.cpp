@@ -45,12 +45,12 @@ QString ProjectInfo::getProjectPath ()
 
 QString ProjectInfo::getProjectCfgLastPath ()
 {
-    return GetProjectsPath (mMap["ProjectLast"]) + "/Config.ini";
+    return GetProjectsPath (mMap["ProjectLast"]) + "/Config.xml";
 }
 
 QString ProjectInfo::getProjectCfgCurPath ()
 {
-    return GetProjectsPath (mMap["ProjectCur"]) + "/Config.ini";
+    return GetProjectsPath (mMap["ProjectCur"]) + "/Config.xml";
 }
 
 bool ProjectInfo::isProjectOpened ()

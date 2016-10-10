@@ -147,7 +147,7 @@ void OpenApk::accept()
         dir.mkdir (mFileName);
     } 
 
-    QString cfgPath = GetProjectsPath (mFileName) + "/Config.ini" ;
+    QString cfgPath = GetProjectsPath (mFileName) + "/Config.xml" ;
 
     Configuration cfg(cfgPath);
     cfg.setString ("ProjectInfo", "CompileCmd", mComCmd);

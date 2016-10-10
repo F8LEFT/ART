@@ -30,6 +30,7 @@ SET(GUI_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 INCLUDE_DIRECTORIES(${GUI_INCLUDE_DIR})
 FIND_PACKAGE(Qt5Widgets REQUIRED)
+FIND_PACKAGE(Qt5Xml)
 
 macro(source_group_by_dir source_files)
     if(MSVC)

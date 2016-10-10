@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file use QSetting to save user setting.
+// This file use QDomXml to save user setting.
 //
 //===----------------------------------------------------------------------===//
 #ifndef CONFIGURATION_H
@@ -18,6 +18,7 @@
 #include <QMap>
 #include <QColor>
 #include <QFont>
+#include <QDomDocument>
 
 class Configuration;
 
@@ -35,7 +36,6 @@ class Configuration : public QObject
 {
     Q_OBJECT
 public:
-    //Structures
     struct Shortcut
     {
         QString Name;
@@ -48,49 +48,38 @@ public:
             Hotkey = QKeySequence(h);
             GlobalShortcut = g;
         }
+
     };
 
-    //Functions
 public:
     explicit Configuration(QString cfgPath, QObject* mParent = nullptr);
     ~Configuration();
-
     static Configuration* instance();
     void load();
     void save();
-    void readColors();
-    void writeColors();
-    void readBools();
-    void writeBools();
-    void readUints();
-    void writeUints();
-    void readFonts();
-    void writeFonts();
-    void readShortcuts();
-    void writeShortcuts();
-    void readStrings();
-    void writeStrings();
 
-    const QColor getColor(const QString id) const;
-    void setColor(const QString id, QColor c);
+    const QColor getColor (const QString category,const QString id) const;
+    void setColor (const QString category,const QString id,QColor c);
     const bool getBool(const QString category, const QString id) const;
     void setBool(const QString category, const QString id, const bool b);
     const unsigned getUint(const QString category, const QString id) const;
     void setUint(const QString category, const QString id, const unsigned i);
-    const QFont getFont(const QString id) const;
-    void setFont(const QString id, QFont f);
-    const Shortcut getShortcut(const QString key_id) const;
-    void setShortcut(const QString key_id, const QKeySequence key_sequence);
+    const QFont getFont (const QString category,const QString id) const;
+    void setFont (const QString category,const QString id,QFont f);
+    const Shortcut getShortcut (const QString category,const QString id) const;
+    void setShortcut (const QString category,const QString id,const QKeySequence sequence);
     const QString getString(const QString category, const QString id) const;
     void setString(const QString category, const QString id, const QString s);
 
-    //public variables
-    QMap<QString, QColor> Colors;                   //[Colors]
-    QMap<QString, QMap<QString, bool>> Bools;       //[Bools]
-    QMap<QString, QMap<QString, unsigned>> Uints;   //[Uints]
-    QMap<QString, QFont> Fonts;                     //[Fonts]
-    QMap<QString, Shortcut> Shortcuts;              //[Shortcuts]
-    QMap<QString, QMap<QString, QString>> Strings;  //[Strings]
+
+public:
+    QMap<QString, QMap<QString, QColor>> Colors;        //[Colors]
+    QMap<QString, QMap<QString, bool>> Bools;           //[Bools]
+    QMap<QString, QMap<QString, unsigned>> Uints;       //[Uints]
+    QMap<QString, QMap<QString, QFont>> Fonts;          //[Fonts]
+    QMap<QString, QMap<QString, Shortcut>> Shortcuts;   //[Shortcuts]
+    QMap<QString, QMap<QString, QString>> Strings;      //[Strings]
+
 
 signals:
     void colorsUpdated();
@@ -99,19 +88,18 @@ signals:
     void tokenizerConfigUpdated();
 
 private:
-    QColor colorFromConfig(const QString id);
-    bool colorToConfig(const QString id, const QColor color);
-    bool boolFromConfig(const QString id);
-    bool boolToConfig(const QString id, bool bBool);
-    unsigned uintFromConfig(const QString id);
-    bool uintToConfig(const QString id, unsigned i);
-    QFont fontFromConfig(const QString id);
-    bool fontToConfig(const QString id, const QFont font);
-    QString shortcutFromConfig(const QString id);
-    bool shortcutToConfig(const QString id, const QKeySequence shortcut);
-    QString stringFromConfig(const QString id);
-    bool stringToConfig(const QString id, const QString s);
+    QString mSetFile;
 
-    QSettings* mSettings;
+private:
+    QColor colorFromString (const QString &value);
+    QString colorToString(const QColor& color);
+    QFont fontFromString (const QString &value);
+    QString fontToString(const QFont& font);
+    QKeySequence shortcutFromString (const QString &value);
+    QString shortcutToString (const QKeySequence &sequence);
+
+    bool writeCfgElement(QDomDocument& doc, QDomElement& element,
+                   QString type, QString category, QString id, QString value);
 };
+
 #endif // CONFIGURATION_H
