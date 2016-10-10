@@ -23,11 +23,11 @@
 class Configuration;
 
 #define Config() (Configuration::instance())
-#define ConfigColor(x) (Config()->getColor(x))
+#define ConfigColor(x,y) (Config()->getColor(x,y))
 #define ConfigBool(x,y) (Config()->getBool(x,y))
 #define ConfigUint(x,y) (Config()->getUint(x,y))
-#define ConfigFont(x) (Config()->getFont(x))
-#define ConfigShortcut(x) (Config()->getShortcut(x).Hotkey)
+#define ConfigFont(x,y) (Config()->getFont(x,y))
+#define ConfigShortcut(x,y) (Config()->getShortcut(x,y))
 #define ConfigString(x,y) (Config()->getString(x,y))
 #define ConfigHScrollBarStyle() "QScrollBar:horizontal{border:1px solid grey;background:#f1f1f1;height:10px}QScrollBar::handle:horizontal{background:#aaa;min-width:20px;margin:1px}QScrollBar::add-line:horizontal,QScrollBar::sub-line:horizontal{width:0;height:0}"
 #define ConfigVScrollBarStyle() "QScrollBar:vertical{border:1px solid grey;background:#f1f1f1;width:10px}QScrollBar::handle:vertical{background:#aaa;min-height:20px;margin:1px}QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical{width:0;height:0}"
@@ -35,21 +35,6 @@ class Configuration;
 class Configuration : public QObject
 {
     Q_OBJECT
-public:
-    struct Shortcut
-    {
-        QString Name;
-        QKeySequence Hotkey;
-        bool GlobalShortcut;
-
-        Shortcut(QString n = QString(), QString h = QString(), bool g = false)
-        {
-            Name = n;
-            Hotkey = QKeySequence(h);
-            GlobalShortcut = g;
-        }
-
-    };
 
 public:
     explicit Configuration(QString cfgPath, QObject* mParent = nullptr);
@@ -58,18 +43,18 @@ public:
     void load();
     void save();
 
-    const QColor getColor (const QString category,const QString id) const;
-    void setColor (const QString category,const QString id,QColor c);
-    const bool getBool(const QString category, const QString id) const;
-    void setBool(const QString category, const QString id, const bool b);
-    const unsigned getUint(const QString category, const QString id) const;
-    void setUint(const QString category, const QString id, const unsigned i);
-    const QFont getFont (const QString category,const QString id) const;
-    void setFont (const QString category,const QString id,QFont f);
-    const Shortcut getShortcut (const QString category,const QString id) const;
-    void setShortcut (const QString category,const QString id,const QKeySequence sequence);
-    const QString getString(const QString category, const QString id) const;
-    void setString(const QString category, const QString id, const QString s);
+    const QColor getColor (const QString &category,const QString &id);
+    void setColor (const QString &category,const QString &id,const QColor &c);
+    const bool getBool (const QString &category,const QString &id);
+    void setBool (const QString &category,const QString &id,const bool b);
+    const unsigned getUint (const QString &category,const QString &id);
+    void setUint (const QString &category,const QString &id,const unsigned i);
+    const QFont getFont (const QString &category,const QString &id);
+    void setFont (const QString &category,const QString &id,const QFont &f);
+    const QKeySequence getShortcut (const QString &category,const QString &id);
+    void setShortcut (const QString &category,const QString &id,const QKeySequence &sequence);
+    const QString getString (const QString &category,const QString &id);
+    void setString (const QString &category,const QString &id,const QString &s);
 
 
 public:
@@ -77,7 +62,7 @@ public:
     QMap<QString, QMap<QString, bool>> Bools;           //[Bools]
     QMap<QString, QMap<QString, unsigned>> Uints;       //[Uints]
     QMap<QString, QMap<QString, QFont>> Fonts;          //[Fonts]
-    QMap<QString, QMap<QString, Shortcut>> Shortcuts;   //[Shortcuts]
+    QMap<QString, QMap<QString, QKeySequence>> Shortcuts;   //[Shortcuts]
     QMap<QString, QMap<QString, QString>> Strings;      //[Strings]
 
 
@@ -98,8 +83,8 @@ private:
     QKeySequence shortcutFromString (const QString &value);
     QString shortcutToString (const QKeySequence &sequence);
 
-    bool writeCfgElement(QDomDocument& doc, QDomElement& element,
-                   QString type, QString category, QString id, QString value);
+    bool writeCfgElement (QDomDocument &doc,QDomElement &element,const QString &type,
+                          const QString &category,const QString &id,const QString &value);
 };
 
 #endif // CONFIGURATION_H

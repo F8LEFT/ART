@@ -83,7 +83,7 @@ void Configuration::load ()
         } else if (type == "font") {
             Fonts[category][id] = fontFromString (value);
         } else if (type == "shortcut") {
-//            Shortcuts[category][id].Hotkey = shortcutFromString (value);
+            Shortcuts[category][id] = shortcutFromString (value);
         }
         catatype = catatype.nextSiblingElement();
     }
@@ -145,10 +145,11 @@ void Configuration::save()
     for(auto it = Shortcuts.begin (), itEnd = Shortcuts.end (); it != itEnd; it++) {
         for(auto itSub = it->begin (), itSubEnd = it->end ();
             itSub != itSubEnd; itSub++) {
-//            QDomElement element =  domDocument.createElement("cfg");
-//            writeCfgElement (domDocument,element, "shortcut",it->key (),
-//                             itSub.key (), shortcutToString (itSub.value ().Hotkey));
-//            root.appendChild (element);
+            QString category = it.key ();
+            QDomElement element =  domDocument.createElement("cfg");
+            writeCfgElement (domDocument,element, "shortcut", category,
+                             itSub.key (), shortcutToString (itSub.value ()));
+            root.appendChild (element);
         }
     }
 
@@ -170,7 +171,7 @@ void Configuration::save()
 }
 
 
-const QColor Configuration::getColor (const QString category,const QString id) const
+const QColor Configuration::getColor (const QString &category,const QString &id)
 {
     if(Colors.contains(category))
     {
@@ -182,13 +183,13 @@ const QColor Configuration::getColor (const QString category,const QString id) c
     return Qt::black;
 }
 
-void Configuration::setColor (const QString category,const QString id,QColor c)
+void Configuration::setColor (const QString &category,const QString &id,const QColor &c)
 {
     Colors[id][category] = c;
     return;
 }
 
-const bool Configuration::getBool(const QString category, const QString id) const
+const bool Configuration::getBool (const QString &category,const QString &id)
 {
     if(Bools.contains(category))
     {
@@ -198,13 +199,13 @@ const bool Configuration::getBool(const QString category, const QString id) cons
     return false;
 }
 
-void Configuration::setBool(const QString category, const QString id, const bool b)
+void Configuration::setBool (const QString &category,const QString &id,const bool b)
 {
     Bools[category][id] = b;
     return;
 }
 
-const unsigned Configuration::getUint(const QString category, const QString id) const
+const unsigned Configuration::getUint (const QString &category,const QString &id)
 {
     if(Uints.contains(category))
     {
@@ -214,13 +215,13 @@ const unsigned Configuration::getUint(const QString category, const QString id) 
     return 0;
 }
 
-void Configuration::setUint(const QString category, const QString id, const unsigned i)
+void Configuration::setUint (const QString &category,const QString &id,const unsigned i)
 {
     Uints[category][id] = i;
     return;
 }
 
-const QFont Configuration::getFont (const QString category,const QString id) const
+const QFont Configuration::getFont (const QString &category,const QString &id)
 {
     if(Fonts.contains(category))
     {
@@ -233,28 +234,28 @@ const QFont Configuration::getFont (const QString category,const QString id) con
     return ret;
 }
 
-void Configuration::setFont (const QString category,const QString id,QFont f)
+void Configuration::setFont (const QString &category,const QString &id,const QFont &f)
 {
     Fonts[id][category] = f;
 }
 
-const Configuration::Shortcut Configuration::getShortcut (const QString category,const QString id) const
+const QKeySequence Configuration::getShortcut (const QString &category,const QString &id)
 {
     if(Shortcuts.contains(category))
     {
         if(Shortcuts[category].contains(id))
             return Shortcuts[category][id];
     }
-    return Shortcut();
+    return QKeySequence();
 }
 
-void Configuration::setShortcut (const QString category,const QString id,const QKeySequence sequence)
+void Configuration::setShortcut (const QString &category,const QString &id,const QKeySequence &sequence)
 {
-    Shortcuts[id][category].Hotkey = sequence;
+    Shortcuts[id][category] = sequence;
     return;
 }
 
-const QString Configuration::getString(const QString category, const QString id) const
+const QString Configuration::getString (const QString &category,const QString &id)
 {
     if(Strings.contains(category))
     {
@@ -264,7 +265,7 @@ const QString Configuration::getString(const QString category, const QString id)
     return "";
 }
 
-void Configuration::setString(const QString category, const QString id, const QString s)
+void Configuration::setString (const QString &category,const QString &id,const QString &s)
 {
     Strings[category][id] = s;
     return;
@@ -314,18 +315,14 @@ QKeySequence Configuration::shortcutFromString (const QString &value)
 
 QString Configuration::shortcutToString(const QKeySequence &sequence)
 {
-    return "NOT_SET";
-//    QString _id = sequence.toString ();
-//    QString _key = "";
-//    if(!shortcut.isEmpty())
-//        _key = shortcut.toString(QKeySequence::NativeText);
-//    else
-//        _key =
-//    return true;
+    if(sequence.isEmpty ()) {
+        return "NOT_SET";
+    }
+    return sequence.toString ();
 }
 
-bool Configuration::writeCfgElement(QDomDocument &doc, QDomElement& element,
-                     QString type, QString category, QString id, QString value)
+bool Configuration::writeCfgElement (QDomDocument &doc,QDomElement &element,
+                                     const QString &type,const QString &category,const QString &id,const QString &value)
 {
 
     QDomAttr typeAttr = doc.createAttribute("type");
