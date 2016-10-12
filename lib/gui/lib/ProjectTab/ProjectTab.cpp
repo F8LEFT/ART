@@ -13,6 +13,7 @@
 #include <utils/CmdMsgUtil.h>
 #include <utils/ProjectInfo.h>
 #include <utils/ScriptEngine.h>
+#include "yaml-cpp/yaml.h"
 
 #include <QtCore/QDir>
 #include <utils/Configuration.h>
@@ -103,6 +104,7 @@ void ProjectTab::openProject (QString projectName)
 
     mProjectName = projectName;
 
+    readProjectInfo();
     cmdexec("ProjectOpened", projectName);
 }
 
@@ -139,5 +141,108 @@ void ProjectTab::onProjectClosed()
 {
     cmdmsg ()->addCmdMsg ("project " + mProjectName + " closed");
     setCurrentIndex(0);
+}
+
+void ProjectTab::readProjectInfo ()
+{
+    if(mHasProject) {
+        QString cmd = projinfo ("CompileCmd");
+        ui->mCompileEdit->setText(cmd);
+        readProjectYmlInfo();
+        readProjectManifestInfo();
+    }
+}
+
+void ProjectTab::readProjectYmlInfo ()
+{
+    QString projectPath = GetProjectsProjectPath (mProjectName);
+
+    // dexMaps defaul smali | smali_xxxx
+    mSmaliDirectory.clear();
+    QDir dir(projectPath);
+    if (dir.exists()) {
+        dir.setFilter(QDir::Dirs | QDir::NoSymLinks);
+        QFileInfoList list = dir.entryInfoList();
+        int fCount = list.count();
+        if (fCount > 0) {
+            QStringList strList;
+            for (int i = 0; i < fCount; i++) {
+                QFileInfo fInfo = list.at(i);
+                QString fileName = fInfo.fileName();
+                if (fileName.startsWith("smali")) {
+                    mSmaliDirectory.append(fileName);
+                }
+            }
+        }
+    }
+
+    QString ymlPath = projectPath + "/apktool.yml";
+    try {
+        YAML::Node doc = YAML::LoadFile(ymlPath.toStdString());
+        mVersion = QString::fromStdString (doc["version"].as<std::string>());
+        mVersionCode = QString::fromStdString (
+                doc["versionInfo"]["versionCode"].as<std::string>());
+        mVersionName = QString::fromStdString (
+                doc["versionInfo"]["versionName"].as<std::string>());
+
+        ui->mVersionEdit->setText(mVersion);
+        ui->mVersionCodeEdit->setText(mVersionCode);
+        ui->mVersionNameEdit->setText(mVersionName);
+    } catch (const YAML::Exception& e) {
+    }
+}
+
+void ProjectTab::readProjectManifestInfo ()
+{
+    ui->mActivityInfoList->clear();
+
+    QString projectPath = GetProjectsProjectPath (mProjectName);
+
+    QString miniFest = projectPath + "/AndroidManifest.xml";
+    QFile file(miniFest);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        return;
+    }
+
+    QDomDocument doc;
+    if (!doc.setContent(&file)) {
+        file.close();
+        return;
+    }
+    // 根元素
+    QDomElement docElem= doc.firstChildElement("manifest");
+    if (!docElem.isNull()) {
+        mPackageName = docElem.attribute("package");
+
+        QDomElement appElem = docElem.firstChildElement("application");
+        if (!appElem.isNull()) {
+            mApplicationName = appElem.attribute("android:name");
+
+            for(QDomElement avityElem = appElem.firstChildElement("activity");
+                !avityElem.isNull();
+                avityElem = avityElem.nextSiblingElement("activity")) {
+                ui->mActivityInfoList->addItem(avityElem.attribute("android:name"));
+
+                QDomElement intentElem = avityElem.firstChildElement("intent-filter");
+                if(intentElem.isNull()) {
+                    continue;
+                }
+                QDomElement categoryElem = intentElem.firstChildElement("category");
+                if (categoryElem.isNull()) {
+                    continue;
+                }
+                if (categoryElem.attribute("android:name")
+                        == "android.intent.category.LAUNCHER") {
+                    mActivityEntryName = avityElem.attribute("android:name");
+                    continue;
+                }
+            }
+        }
+    }
+    ui->mPackageNameLabel->setText(mPackageName);
+    ui->mApplicationNameLabel->setText(mApplicationName);
+    ui->mEntryLabel->setText(mActivityEntryName);
+
+    file.close();
 }
 

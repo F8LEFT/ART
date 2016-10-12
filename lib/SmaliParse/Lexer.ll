@@ -21,7 +21,7 @@
     #include "Lexer.h"
 	#include "Parser.hpp"
 	#include "location.hh"
-    #include "AndroidDef.h"
+    #include "utils/Defs.h"
 
 	using namespace std;
 	using namespace Analysis;

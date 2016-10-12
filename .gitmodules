@@ -1,0 +1,3 @@
+[submodule "lib/yamlcpp"]
+	path = lib/yamlcpp
+	url = https://github.com/jbeder/yaml-cpp/

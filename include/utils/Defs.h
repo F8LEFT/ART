@@ -1,6 +1,16 @@
+//===- Defs.h - ART-utils ---------------------------------------*- c++ -*-===//
 //
-// Created by f8left on 16-8-29.
+//                     ANDROID REVERSE TOOLKIT
 //
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===----------------------------------------------------------------------===//
+//
+// The file difines.
+//
+//===----------------------------------------------------------------------===//
+
 
 #ifndef SMALIPARSER_ANDROIDDEF_H
 #define SMALIPARSER_ANDROIDDEF_H
@@ -359,6 +369,15 @@ enum InstructionIndexType {
     kIndexInlineMethod, // inline method index (for inline linked methods)
     kIndexVtableOffset, // vtable offset (for static linked methods)
     kIndexFieldOffset   // field offset (for static linked fields)
+};
+
+enum OpcodeFlagsBits {
+    kInstrCanBranch     = 1,        // conditional or unconditional branch
+    kInstrCanContinue   = 1 << 1,   // flow can continue to next statement
+    kInstrCanSwitch     = 1 << 2,   // switch statement
+    kInstrCanThrow      = 1 << 3,   // could cause an exception to be thrown
+    kInstrCanReturn     = 1 << 4,   // returns, no additional statements
+    kInstrInvoke        = 1 << 5,   // a flavor of invoke
 };
 
 #endif //SMALIPARSER_ANDROIDDEF_H

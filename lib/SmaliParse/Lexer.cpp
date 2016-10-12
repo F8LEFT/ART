@@ -1669,7 +1669,7 @@ static yyconst flex_int16_t yy_chk[2913] =
     #include "Lexer.h"
 	#include "Parser.hpp"
 	#include "location.hh"
-    #include "AndroidDef.h"
+    #include "utils/Defs.h"
 
 	using namespace std;
 	using namespace Analysis;

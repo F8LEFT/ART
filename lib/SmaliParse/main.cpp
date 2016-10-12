@@ -16,14 +16,16 @@
 #include <sstream>
 #include <fstream>
 #include "Parser.hpp"
+#include "Interpreter.h"
+
 using namespace std;
 using namespace Analysis;
 
 int main() {
 
     ifstream ifile;
-//    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
-    ifile.open ("/home/f8left/CodeSrc/ART/res/BackStackRecord.smali");
+    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
+//    ifile.open ("/home/f8left/CodeSrc/ART/res/BackStackRecord.smali");
 
 
     // test Lexer
@@ -44,5 +46,20 @@ int main() {
 //                 << " text :" << lexer.text() << endl;
         }
     }
+    ifile.close ();
+    // test parser
+    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
+//    ifile.open ("/home/f8left/CodeSrc/ART/res/BackStackRecord.smali");
+    if(ifile.is_open ()) {
+        Interpreter interpreter;
+        SmaliClass sClass;
+        StringPool sp;
+        sClass.setStringPool (&sp);
+        interpreter.switchInputStream (&ifile,&sClass);
+        interpreter.parse ();
+        interpreter.print ();
+    }
+    ifile.close ();
+
     return 0;
 }

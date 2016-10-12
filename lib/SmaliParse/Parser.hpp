@@ -52,20 +52,24 @@
 //===----------------------------------------------------------------------===//
 //
 // The file defines a Parser for smali language. Please use
-// bison -v -o Parser.cpp Parser.yy
+// bison -o Parser.cpp Parser.yy
 // to generate parser source file
-//
+// or
+// bison -v -o Parser.cpp Parser.yy
+// to debug.
 //===----------------------------------------------------------------------===//
     #include <iostream>
     #include <string>
     #include <vector>
     #include <stdint.h>
-    #include "Lexer.h"
+    #include "Ops/Ops.h"
+
     namespace Analysis {
         class Lexer;
+        class Interpreter;
     }
 
-#line 69 "Parser.hpp" // lalr1.cc:371
+#line 73 "Parser.hpp" // lalr1.cc:371
 
 # include <cassert>
 # include <vector>
@@ -88,7 +92,7 @@
 
 #line 9 "Parser.yy" // lalr1.cc:371
 namespace  Analysis  {
-#line 92 "Parser.hpp" // lalr1.cc:371
+#line 96 "Parser.hpp" // lalr1.cc:371
 
 
 
@@ -1841,7 +1845,7 @@ namespace  Analysis  {
 
 
     /// Build a parser object.
-     Parser  (Analysis::Lexer &lexer_yyarg);
+     Parser  (Analysis::Lexer &lexer_yyarg, Analysis::Interpreter &driver_yyarg);
     virtual ~ Parser  ();
 
     /// Parse.
@@ -2039,7 +2043,7 @@ namespace  Analysis  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 3,           //< Last index in yytable_.
+      yylast_ = 0,           //< Last index in yytable_.
       yynnts_ = 2,  //< Number of nonterminal symbols.
       yyempty_ = -2,
       yyfinal_ = 2, //< Termination state number.
@@ -2051,6 +2055,7 @@ namespace  Analysis  {
 
     // User arguments.
     Analysis::Lexer &lexer;
+    Analysis::Interpreter &driver;
   };
 
   // Symbol number corresponding to token number t.
@@ -4417,7 +4422,7 @@ namespace  Analysis  {
 
 #line 9 "Parser.yy" // lalr1.cc:371
 } //  Analysis 
-#line 4421 "Parser.hpp" // lalr1.cc:371
+#line 4426 "Parser.hpp" // lalr1.cc:371
 
 
 

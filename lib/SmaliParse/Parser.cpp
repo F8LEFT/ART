@@ -30,25 +30,29 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 // //                    "%code top" blocks.
-#line 37 "Parser.yy" // lalr1.cc:391
+#line 41 "Parser.yy" // lalr1.cc:391
 
     #include <iostream>
     #include "Lexer.h"
     #include "Parser.hpp"
     #include "location.hh"
+    #include "Interpreter.h"
+    #include "Lexer.h"
+    #include "utils/Defs.h"
 
-    static Analysis::Parser::symbol_type yylex(Analysis::Lexer &lexer) {
+    static Analysis::Parser::symbol_type yylex(Analysis::Lexer &lexer
+                                    , Analysis::Interpreter &driver ) {
         return lexer.get_next_token();
     }
     using namespace std;
     using namespace Analysis;
 
-#line 47 "Parser.cpp" // lalr1.cc:391
+#line 51 "Parser.cpp" // lalr1.cc:391
 
 
 // First part of user declarations.
 
-#line 52 "Parser.cpp" // lalr1.cc:398
+#line 56 "Parser.cpp" // lalr1.cc:398
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -62,7 +66,7 @@
 
 // User implementation prologue.
 
-#line 66 "Parser.cpp" // lalr1.cc:406
+#line 70 "Parser.cpp" // lalr1.cc:406
 
 
 #ifndef YY_
@@ -148,7 +152,7 @@
 
 #line 9 "Parser.yy" // lalr1.cc:473
 namespace  Analysis  {
-#line 152 "Parser.cpp" // lalr1.cc:473
+#line 156 "Parser.cpp" // lalr1.cc:473
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -189,13 +193,14 @@ namespace  Analysis  {
 
 
   /// Build a parser object.
-   Parser :: Parser  (Analysis::Lexer &lexer_yyarg)
+   Parser :: Parser  (Analysis::Lexer &lexer_yyarg, Analysis::Interpreter &driver_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
       yycdebug_ (&std::cerr),
 #endif
-      lexer (lexer_yyarg)
+      lexer (lexer_yyarg),
+      driver (driver_yyarg)
   {}
 
    Parser ::~ Parser  ()
@@ -471,7 +476,7 @@ namespace  Analysis  {
         YYCDEBUG << "Reading a token: ";
         try
           {
-            symbol_type yylookahead (yylex (lexer));
+            symbol_type yylookahead (yylex (lexer, driver));
             yyla.move (yylookahead);
           }
         catch (const syntax_error& yyexc)
@@ -564,16 +569,8 @@ namespace  Analysis  {
       {
         switch (yyn)
           {
-  case 2:
-#line 355 "Parser.yy" // lalr1.cc:846
-    {
-                ;
-            }
-#line 573 "Parser.cpp" // lalr1.cc:846
-    break;
 
-
-#line 577 "Parser.cpp" // lalr1.cc:846
+#line 574 "Parser.cpp" // lalr1.cc:846
           default:
             break;
           }
@@ -830,26 +827,26 @@ namespace  Analysis  {
   }
 
 
-  const signed char  Parser ::yypact_ninf_ = -2;
+  const signed char  Parser ::yypact_ninf_ = -1;
 
   const signed char  Parser ::yytable_ninf_ = -1;
 
   const signed char
    Parser ::yypact_[] =
   {
-      -2,     0,    -2,    -1,    -2,    -2
+      -1,     0,    -1
   };
 
   const unsigned char
    Parser ::yydefact_[] =
   {
-       2,     0,     1,     0,     3,     4
+       2,     0,     1
   };
 
   const signed char
    Parser ::yypgoto_[] =
   {
-      -2,    -2
+      -1,    -1
   };
 
   const signed char
@@ -861,31 +858,31 @@ namespace  Analysis  {
   const unsigned char
    Parser ::yytable_[] =
   {
-       2,     3,     5,     4
+       2
   };
 
   const unsigned char
    Parser ::yycheck_[] =
   {
-       0,     1,     3,     3
+       0
   };
 
   const unsigned short int
    Parser ::yystos_[] =
   {
-       0,   293,     0,     1,     3,     3
+       0,   293,     0
   };
 
   const unsigned short int
    Parser ::yyr1_[] =
   {
-       0,   292,   293,   293,   293
+       0,   292,   293
   };
 
   const unsigned char
    Parser ::yyr2_[] =
   {
-       0,     2,     0,     2,     3
+       0,     2,     0
   };
 
 
@@ -987,7 +984,7 @@ namespace  Analysis  {
   const unsigned short int
    Parser ::yyrline_[] =
   {
-       0,   355,   355,   358,   359
+       0,   369,   369
   };
 
   // Print the state stack on the debug stream.
@@ -1022,11 +1019,11 @@ namespace  Analysis  {
 
 #line 9 "Parser.yy" // lalr1.cc:1156
 } //  Analysis 
-#line 1026 "Parser.cpp" // lalr1.cc:1156
-#line 361 "Parser.yy" // lalr1.cc:1157
+#line 1023 "Parser.cpp" // lalr1.cc:1156
+#line 371 "Parser.yy" // lalr1.cc:1157
 
 
 void Analysis::Parser::error(const location &loc, const std::string &message) {
 	cout << "Parse error: " << message << endl
-	    << "Error location: " << loc << endl << endl;
+	    << "Error location: " << loc << endl;
 }

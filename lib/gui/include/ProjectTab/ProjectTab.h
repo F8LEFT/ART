@@ -37,12 +37,26 @@ protected slots:
 
     void onProjectOpened(QStringList projName);
     void onProjectClosed();
+
+private:
+    void readProjectInfo();
+    void readProjectYmlInfo();          // for apktool.yml
+    void readProjectManifestInfo();     // for AndroidManifest.xml
 private:
     Ui::ProjectTab *ui;
 
     QFileSystemModel* mFileSystemModel;
-    QString mProjectName;
     bool mHasProject;
+
+    // project info
+    QString mProjectName;
+    QList<QString> mSmaliDirectory;
+    QString mVersion;
+    QString mVersionCode;
+    QString mVersionName;
+    QString mPackageName;
+    QString mApplicationName;
+    QString mActivityEntryName;
 };
 
 #endif // PROJECTTAB_H

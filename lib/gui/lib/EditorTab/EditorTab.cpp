@@ -174,25 +174,24 @@ void EditorTab::fileChanged(QString path)
 
 void EditorTab::onProjectOpened (QStringList args)
 {
-    //QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
-    //Configuration cfg(cfgPath);
-    //
-    //auto &openMap = cfg.Uints["EditorTab"];
-    //for (auto it = openMap.begin (), end = openMap.end (); it != end; it++) {
-    //    openFile (it.key (), it.value ());
-    //}
+    QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
+    Configuration cfg(cfgPath);
+
+    auto &openMap = cfg.Uints["EditorTab"];
+    for (auto it = openMap.begin (), end = openMap.end (); it != end; it++) {
+        openFile (it.key (), it.value ());
+    }
 }
 
 void EditorTab::onProjectClosed ()
 {
-    // TODO Record all opened file
-    //QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
-    //Configuration cfg (cfgPath);
-    //
-    //for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {
-    //    Editor* p = (Editor*)ui->mEditStackedWidget->widget(i);
-    //    cfg.setUint ("EditorTab", p->getFilePath (), p->currentLine ());
-    //}
+    QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
+    Configuration cfg (cfgPath);
+
+    for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {
+        Editor* p = (Editor*)ui->mEditStackedWidget->widget(i);
+        cfg.setUint ("EditorTab", p->getFilePath (), p->currentLine ());
+    }
     closeAll ();
 }
 

@@ -54,7 +54,8 @@ void Configuration::load ()
     QString strError;
     int errLin = 0, errCol = 0;
     if(!domDocument.setContent(&file, false, &strError, &errLin, &errCol)) {
-        qDebug()<<"parse file failed at line"<<errLin<<",column"<<errCol<<","<<strError;
+        qDebug()<<"parse file failed at line"<<errLin
+                <<",column"<<errCol<<","<<strError;
         return;
     }
 
@@ -183,7 +184,8 @@ const QColor Configuration::getColor (const QString &category,const QString &id)
     return Qt::black;
 }
 
-void Configuration::setColor (const QString &category,const QString &id,const QColor &c)
+void Configuration::setColor (const QString &category,const QString &id,
+                              const QColor &c)
 {
     Colors[id][category] = c;
     return;
@@ -215,7 +217,8 @@ const unsigned Configuration::getUint (const QString &category,const QString &id
     return 0;
 }
 
-void Configuration::setUint (const QString &category,const QString &id,const unsigned i)
+void Configuration::setUint (const QString &category,const QString &id,
+                             const unsigned i)
 {
     Uints[category][id] = i;
     return;
@@ -239,7 +242,8 @@ void Configuration::setFont (const QString &category,const QString &id,const QFo
     Fonts[id][category] = f;
 }
 
-const QKeySequence Configuration::getShortcut (const QString &category,const QString &id)
+const QKeySequence Configuration::getShortcut (const QString &category,
+                                               const QString &id)
 {
     if(Shortcuts.contains(category))
     {
@@ -249,7 +253,8 @@ const QKeySequence Configuration::getShortcut (const QString &category,const QSt
     return QKeySequence();
 }
 
-void Configuration::setShortcut (const QString &category,const QString &id,const QKeySequence &sequence)
+void Configuration::setShortcut (const QString &category,const QString &id,
+                                 const QKeySequence &sequence)
 {
     Shortcuts[id][category] = sequence;
     return;
@@ -265,7 +270,8 @@ const QString Configuration::getString (const QString &category,const QString &i
     return "";
 }
 
-void Configuration::setString (const QString &category,const QString &id,const QString &s)
+void Configuration::setString(const QString &category,const QString &id,
+                              const QString &s)
 {
     Strings[category][id] = s;
     return;
@@ -322,7 +328,8 @@ QString Configuration::shortcutToString(const QKeySequence &sequence)
 }
 
 bool Configuration::writeCfgElement (QDomDocument &doc,QDomElement &element,
-                                     const QString &type,const QString &category,const QString &id,const QString &value)
+                                     const QString &type,const QString &category,
+                                     const QString &id,const QString &value)
 {
 
     QDomAttr typeAttr = doc.createAttribute("type");

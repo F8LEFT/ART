@@ -26,12 +26,12 @@
 #include "Parser.hpp"
 
 namespace Analysis {
+
     class Lexer : public yyFlexLexer {
     public:
         Lexer():mColumn(1), mLine(1) {}
         virtual ~Lexer() {}
         virtual Analysis::Parser::symbol_type get_next_token();
-
     public:
         const std::string& text() {return mText;}
         const std::string& curTokenText() {return mCurTokenText;}

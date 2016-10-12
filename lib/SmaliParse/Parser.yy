@@ -29,9 +29,11 @@
     #include <string>
     #include <vector>
     #include <stdint.h>
-    #include "Lexer.h"
+    #include "Ops/Ops.h"
+
     namespace Analysis {
         class Lexer;
+        class Interpreter;
     }
 }
 
@@ -41,8 +43,12 @@
     #include "Lexer.h"
     #include "Parser.hpp"
     #include "location.hh"
+    #include "Interpreter.h"
+    #include "Lexer.h"
+    #include "utils/Defs.h"
 
-    static Analysis::Parser::symbol_type yylex(Analysis::Lexer &lexer) {
+    static Analysis::Parser::symbol_type yylex(Analysis::Lexer &lexer
+                                    , Analysis::Interpreter &driver ) {
         return lexer.get_next_token();
     }
     using namespace std;
@@ -50,10 +56,16 @@
 }
 
 %lex-param { Analysis::Lexer &lexer }
+%lex-param { Analysis::Interpreter &driver }
+
 %parse-param { Analysis::Lexer &lexer }
+%parse-param { Analysis::Interpreter &driver }
+
 %locations
 %define parse.trace
 %define parse.error verbose
+
+%debug
 
 %define api.token.prefix {TOKEN_}
 
@@ -350,19 +362,15 @@
 %token ELLIPSIS ".."
 %token SYMBOL_END "end of symbol"
 
-
 %start program
 
 %%
-program :   {
-                ;
-            }
-        | program EOL
-        | program error EOL
-        ;
+program :
+     %empty
+      ;
 %%
 
 void Analysis::Parser::error(const location &loc, const std::string &message) {
 	cout << "Parse error: " << message << endl
-	    << "Error location: " << loc << endl << endl;
+	    << "Error location: " << loc << endl;
 }

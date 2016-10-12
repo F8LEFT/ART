@@ -14,6 +14,10 @@ mkdir build
 
 cd build
 
+git submodule init
+
+git submodule update
+
 cmake -DRELEASE=1 ..
 
 make

@@ -52,7 +52,8 @@ public:
     const QFont getFont (const QString &category,const QString &id);
     void setFont (const QString &category,const QString &id,const QFont &f);
     const QKeySequence getShortcut (const QString &category,const QString &id);
-    void setShortcut (const QString &category,const QString &id,const QKeySequence &sequence);
+    void setShortcut (const QString &category,const QString &id,
+                      const QKeySequence &sequence);
     const QString getString (const QString &category,const QString &id);
     void setString (const QString &category,const QString &id,const QString &s);
 
@@ -83,8 +84,9 @@ private:
     QKeySequence shortcutFromString (const QString &value);
     QString shortcutToString (const QKeySequence &sequence);
 
-    bool writeCfgElement (QDomDocument &doc,QDomElement &element,const QString &type,
-                          const QString &category,const QString &id,const QString &value);
+    bool writeCfgElement (QDomDocument &doc,QDomElement &element,
+                          const QString &type,const QString &category,
+                          const QString &id,const QString &value);
 };
 
 #endif // CONFIGURATION_H

@@ -23,8 +23,8 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror")
 
 
 SET(ART_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
+SET(ART_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${ART_INCLUDE_DIR})
 
-add_subdirectory(lib/SmaliParse)
-add_subdirectory(lib/gui)
+add_subdirectory(lib)
+
