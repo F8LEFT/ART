@@ -27,6 +27,7 @@ void Interpreter::switchInputStream (std::istream *is,SmaliClass *pClass)
 {
     mLexer.switch_streams (is,nullptr);
     mClass = pClass;
+    mStringPool = pClass->stringPool ();
 }
 
 void Interpreter::print ()
@@ -76,10 +77,12 @@ void Interpreter::setCurMethodRegSize (int size)
 
 void Interpreter::addOpcode (OpCode *code)
 {
-    std::string codeStr = code->toString ();
+#ifdef DEBUG
     std::string tStr = trim(mLexer.text ());
     std::cout << tStr << std::endl;
-    assert (codeStr == tStr);       // for debug only
+    std::string codeStr = code->toString ();
+    assert (codeStr == tStr);
+#endif
     mCurMethod->mInsList.push_back (code);
 }
 
@@ -87,6 +90,8 @@ void Interpreter::endMethod ()
 {
     mCurMethod = nullptr;
 }
+
+StringPool *Interpreter::stringPool (){ return mStringPool;}
 
 std::string trim (const std::string &si)
 {

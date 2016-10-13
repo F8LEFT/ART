@@ -57,6 +57,7 @@ int main() {
         sClass.setStringPool (&sp);
         interpreter.switchInputStream (&ifile,&sClass);
         interpreter.parse ();
+        cout << "print file tree" << endl;
         interpreter.print ();
     }
     ifile.close ();

@@ -337,11 +337,14 @@ namespace  Analysis  {
       // jmplabel
       char dummy3[sizeof(std::string)];
 
+      // regs
+      char dummy4[sizeof(std::vector<int>)];
+
       // args
-      char dummy4[sizeof(std::vector<std::string>)];
+      char dummy5[sizeof(std::vector<std::string>)];
 
       // "number"
-      char dummy5[sizeof(uint64_t)];
+      char dummy6[sizeof(uint64_t)];
 };
 
     /// Symbol semantic values.
@@ -696,6 +699,8 @@ namespace  Analysis  {
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::vector<int> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l);
 
@@ -2133,8 +2138,8 @@ namespace  Analysis  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 300,     ///< Last index in yytable_.
-      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yylast_ = 713,     ///< Last index in yytable_.
+      yynnts_ = 15,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -2245,7 +2250,7 @@ namespace  Analysis  {
   {
       switch (other.type_get ())
     {
-      case 305: // instruction
+      case 306: // instruction
         value.copy< OpCode* > (other.value);
         break;
 
@@ -2258,7 +2263,7 @@ namespace  Analysis  {
       case 298: // fielddef
       case 299: // methoddef
       case 300: // flags
-      case 303: // registers
+      case 304: // registers
         value.copy< int > (other.value);
         break;
 
@@ -2267,9 +2272,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 302: // comment
-      case 304: // jmplabel
+      case 303: // comment
+      case 305: // jmplabel
         value.copy< std::string > (other.value);
+        break;
+
+      case 302: // regs
+        value.copy< std::vector<int> > (other.value);
         break;
 
       case 301: // args
@@ -2297,7 +2306,7 @@ namespace  Analysis  {
     (void) v;
       switch (this->type_get ())
     {
-      case 305: // instruction
+      case 306: // instruction
         value.copy< OpCode* > (v);
         break;
 
@@ -2310,7 +2319,7 @@ namespace  Analysis  {
       case 298: // fielddef
       case 299: // methoddef
       case 300: // flags
-      case 303: // registers
+      case 304: // registers
         value.copy< int > (v);
         break;
 
@@ -2319,9 +2328,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 302: // comment
-      case 304: // jmplabel
+      case 303: // comment
+      case 305: // jmplabel
         value.copy< std::string > (v);
+        break;
+
+      case 302: // regs
+        value.copy< std::vector<int> > (v);
         break;
 
       case 301: // args
@@ -2369,6 +2382,13 @@ namespace  Analysis  {
   {}
 
   template <typename Base>
+   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<int> v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
    Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l)
     : Base (t)
     , value (v)
@@ -2408,7 +2428,7 @@ namespace  Analysis  {
     // Type destructor.
     switch (yytype)
     {
-      case 305: // instruction
+      case 306: // instruction
         value.template destroy< OpCode* > ();
         break;
 
@@ -2421,7 +2441,7 @@ namespace  Analysis  {
       case 298: // fielddef
       case 299: // methoddef
       case 300: // flags
-      case 303: // registers
+      case 304: // registers
         value.template destroy< int > ();
         break;
 
@@ -2430,9 +2450,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 302: // comment
-      case 304: // jmplabel
+      case 303: // comment
+      case 305: // jmplabel
         value.template destroy< std::string > ();
+        break;
+
+      case 302: // regs
+        value.template destroy< std::vector<int> > ();
         break;
 
       case 301: // args
@@ -2466,7 +2490,7 @@ namespace  Analysis  {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 305: // instruction
+      case 306: // instruction
         value.move< OpCode* > (s.value);
         break;
 
@@ -2479,7 +2503,7 @@ namespace  Analysis  {
       case 298: // fielddef
       case 299: // methoddef
       case 300: // flags
-      case 303: // registers
+      case 304: // registers
         value.move< int > (s.value);
         break;
 
@@ -2488,9 +2512,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 302: // comment
-      case 304: // jmplabel
+      case 303: // comment
+      case 305: // jmplabel
         value.move< std::string > (s.value);
+        break;
+
+      case 302: // regs
+        value.move< std::vector<int> > (s.value);
         break;
 
       case 301: // args
@@ -4333,7 +4361,7 @@ namespace  Analysis  {
 
 #line 9 "Parser.yy" // lalr1.cc:377
 } //  Analysis 
-#line 4337 "Parser.hpp" // lalr1.cc:377
+#line 4365 "Parser.hpp" // lalr1.cc:377
 
 
 

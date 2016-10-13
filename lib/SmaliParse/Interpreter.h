@@ -39,6 +39,7 @@ namespace Analysis {
          * It will also reset AST.
          */
         void switchInputStream (std::istream *is,SmaliClass *pClass);
+        StringPool* stringPool();
         /**
          * print AST message
          */
@@ -63,7 +64,7 @@ namespace Analysis {
 
         SmaliClass* mClass;
         SmaliMethod* mCurMethod;
-
+        StringPool* mStringPool;
     };
 }
 

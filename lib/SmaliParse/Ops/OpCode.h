@@ -18,6 +18,7 @@
 #include "utils/Defs.h"
 #include "RegisterX.h"
 #include "utils/StringPool.hpp"
+#include "RegisterX.h"
 
 namespace Analysis {
     namespace Android
@@ -457,7 +458,7 @@ namespace Analysis {
             opLen = Android::gInstructionWidthTable[(u1)op];
         }
         virtual std::string toString() = 0;
-
+        virtual void deleteThis() = 0;
         u1 insFormat;
         u1 indexType;
         u1 opFlag;
