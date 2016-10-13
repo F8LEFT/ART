@@ -20,6 +20,8 @@
 #include "SmaliAst/SmaliClass.h"
 #include "Lexer.h"
 
+#define DEBUG
+
 namespace Analysis {
     class Interpreter
     {
@@ -42,6 +44,7 @@ namespace Analysis {
          */
         void print();
         friend class Lexer;
+        friend class Parser;
 
     private:
         void setClassDefine(int flag,std::string& type);
@@ -56,13 +59,11 @@ namespace Analysis {
         void endMethod();
     private:
         Lexer mLexer;
+        Parser mParser;
 
         SmaliClass* mClass;
         SmaliMethod* mCurMethod;
 
-    private:
-        // Parser
-        bool consumeLine();
     };
 }
 

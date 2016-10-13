@@ -89,8 +89,6 @@ COMMENT         #{UANYN}*
 
     /*      method keyword  */
 ".registers"  {return Parser::make_REGISTERS(LOCATION);}
-".prologue"    {return Parser::make_PROLOGUE(LOCATION);}
-".line"       {return Parser::make_LINE(LOCATION);}
 
     /*      instruction keyword     */
 "nop"        {return Parser::make_OP_NOP(LOCATION);}

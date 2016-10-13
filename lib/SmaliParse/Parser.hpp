@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.
+// A Bison parser, made by GNU Bison 3.0.4.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2013 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
 #ifndef YY_YY_PARSER_HPP_INCLUDED
 # define YY_YY_PARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 11 "Parser.yy" // lalr1.cc:371
+#line 11 "Parser.yy" // lalr1.cc:377
 
 //===- Parser.yy - ART-Parser ---------------------------------*- bison -*-===//
 //
@@ -69,13 +69,14 @@
         class Interpreter;
     }
 
-#line 73 "Parser.hpp" // lalr1.cc:371
+#line 73 "Parser.hpp" // lalr1.cc:377
 
 # include <cassert>
-# include <vector>
+# include <cstdlib> // std::abort
 # include <iostream>
 # include <stdexcept>
 # include <string>
+# include <vector>
 # include "stack.hh"
 # include "location.hh"
 #include <typeinfo>
@@ -85,14 +86,67 @@
 #endif
 
 
+#ifndef YY_ATTRIBUTE
+# if (defined __GNUC__                                               \
+      && (2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)))  \
+     || defined __SUNPRO_C && 0x5110 <= __SUNPRO_C
+#  define YY_ATTRIBUTE(Spec) __attribute__(Spec)
+# else
+#  define YY_ATTRIBUTE(Spec) /* empty */
+# endif
+#endif
+
+#ifndef YY_ATTRIBUTE_PURE
+# define YY_ATTRIBUTE_PURE   YY_ATTRIBUTE ((__pure__))
+#endif
+
+#ifndef YY_ATTRIBUTE_UNUSED
+# define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
+#endif
+
+#if !defined _Noreturn \
+     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
+# if defined _MSC_VER && 1200 <= _MSC_VER
+#  define _Noreturn __declspec (noreturn)
+# else
+#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
+# endif
+#endif
+
+/* Suppress unused-variable warnings by "using" E.  */
+#if ! defined lint || defined __GNUC__
+# define YYUSE(E) ((void) (E))
+#else
+# define YYUSE(E) /* empty */
+#endif
+
+#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+/* Suppress an incorrect diagnostic about yylval being uninitialized.  */
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
+    _Pragma ("GCC diagnostic push") \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
+    _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END \
+    _Pragma ("GCC diagnostic pop")
+#else
+# define YY_INITIAL_VALUE(Value) Value
+#endif
+#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END
+#endif
+#ifndef YY_INITIAL_VALUE
+# define YY_INITIAL_VALUE(Value) /* Nothing. */
+#endif
+
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
 #endif
 
-#line 9 "Parser.yy" // lalr1.cc:371
+#line 9 "Parser.yy" // lalr1.cc:377
 namespace  Analysis  {
-#line 96 "Parser.hpp" // lalr1.cc:371
+#line 150 "Parser.hpp" // lalr1.cc:377
 
 
 
@@ -109,13 +163,13 @@ namespace  Analysis  {
 
     /// Empty construction.
     variant ()
-      : yytname_ (YY_NULL)
+      : yytypeid_ (YY_NULLPTR)
     {}
 
     /// Construct and fill.
     template <typename T>
     variant (const T& t)
-      : yytname_ (typeid (T).name ())
+      : yytypeid_ (&typeid (T))
     {
       YYASSERT (sizeof (T) <= S);
       new (yyas_<T> ()) T (t);
@@ -124,7 +178,7 @@ namespace  Analysis  {
     /// Destruction, allowed only if empty.
     ~variant ()
     {
-      YYASSERT (!yytname_);
+      YYASSERT (!yytypeid_);
     }
 
     /// Instantiate an empty \a T in here.
@@ -132,9 +186,9 @@ namespace  Analysis  {
     T&
     build ()
     {
-      YYASSERT (!yytname_);
+      YYASSERT (!yytypeid_);
       YYASSERT (sizeof (T) <= S);
-      yytname_ = typeid (T).name ();
+      yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T;
     }
 
@@ -143,9 +197,9 @@ namespace  Analysis  {
     T&
     build (const T& t)
     {
-      YYASSERT (!yytname_);
+      YYASSERT (!yytypeid_);
       YYASSERT (sizeof (T) <= S);
-      yytname_ = typeid (T).name ();
+      yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T (t);
     }
 
@@ -154,7 +208,7 @@ namespace  Analysis  {
     T&
     as ()
     {
-      YYASSERT (yytname_ == typeid (T).name ());
+      YYASSERT (*yytypeid_ == typeid (T));
       YYASSERT (sizeof (T) <= S);
       return *yyas_<T> ();
     }
@@ -164,7 +218,7 @@ namespace  Analysis  {
     const T&
     as () const
     {
-      YYASSERT (yytname_ == typeid (T).name ());
+      YYASSERT (*yytypeid_ == typeid (T));
       YYASSERT (sizeof (T) <= S);
       return *yyas_<T> ();
     }
@@ -181,8 +235,8 @@ namespace  Analysis  {
     void
     swap (self_type& other)
     {
-      YYASSERT (yytname_);
-      YYASSERT (yytname_ == other.yytname_);
+      YYASSERT (yytypeid_);
+      YYASSERT (*yytypeid_ == *other.yytypeid_);
       std::swap (as<T> (), other.as<T> ());
     }
 
@@ -193,7 +247,6 @@ namespace  Analysis  {
     void
     move (self_type& other)
     {
-      YYASSERT (!yytname_);
       build<T> ();
       swap<T> (other);
       other.destroy<T> ();
@@ -213,7 +266,7 @@ namespace  Analysis  {
     destroy ()
     {
       as<T> ().~T ();
-      yytname_ = YY_NULL;
+      yytypeid_ = YY_NULLPTR;
     }
 
   private:
@@ -248,7 +301,7 @@ namespace  Analysis  {
     } yybuffer_;
 
     /// Whether the content is built: if defined, the name of the stored type.
-    const char *yytname_;
+    const std::type_info *yytypeid_;
   };
 
 
@@ -260,19 +313,35 @@ namespace  Analysis  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // instruction
+      char dummy1[sizeof(OpCode*)];
+
       // "flag"
       // "v(p)x"
-      char dummy1[sizeof(int)];
+      // exp
+      // classdef
+      // superdef
+      // srcdef
+      // fielddef
+      // methoddef
+      // flags
+      // registers
+      char dummy2[sizeof(int)];
 
       // "c type string"
       // "name string"
       // "comment"
       // "class name"
       // "class type"
-      char dummy2[sizeof(std::string)];
+      // comment
+      // jmplabel
+      char dummy3[sizeof(std::string)];
+
+      // args
+      char dummy4[sizeof(std::vector<std::string>)];
 
       // "number"
-      char dummy3[sizeof(uint64_t)];
+      char dummy5[sizeof(uint64_t)];
 };
 
     /// Symbol semantic values.
@@ -591,8 +660,11 @@ namespace  Analysis  {
     /// (External) token type, as returned by yylex.
     typedef token::yytokentype token_type;
 
-    /// Internal symbol number.
+    /// Symbol type: an internal symbol number.
     typedef int symbol_number_type;
+
+    /// The symbol type number to denote an empty symbol.
+    enum { empty_symbol = -2 };
 
     /// Internal symbol number for tokens (subsumed by symbol_number_type).
     typedef unsigned short int token_number_type;
@@ -619,9 +691,13 @@ namespace  Analysis  {
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
 
+  basic_symbol (typename Base::kind_type t, const OpCode* v, const location_type& l);
+
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const uint64_t v, const location_type& l);
 
@@ -631,7 +707,14 @@ namespace  Analysis  {
                     const semantic_type& v,
                     const location_type& l);
 
+      /// Destroy the symbol.
       ~basic_symbol ();
+
+      /// Destroy contents, and record that is empty.
+      void clear ();
+
+      /// Whether empty.
+      bool empty () const;
 
       /// Destructive move, \a s is emptied into this.
       void move (basic_symbol& s);
@@ -662,21 +745,23 @@ namespace  Analysis  {
       /// Constructor from (external) token numbers.
       by_type (kind_type t);
 
+      /// Record that this symbol is empty.
+      void clear ();
+
       /// Steal the symbol type from \a that.
       void move (by_type& that);
 
       /// The (internal) type number (corresponding to \a type).
-      /// -1 when this symbol is empty.
+      /// \a empty when empty.
       symbol_number_type type_get () const;
 
       /// The token.
       token_type token () const;
 
-      enum { empty = 0 };
-
       /// The symbol type.
-      /// -1 when this symbol is empty.
-      token_number_type type;
+      /// \a empty_symbol when empty.
+      /// An int, not token_number_type, to be able to store empty_symbol.
+      int type;
     };
 
     /// "External" symbols: returned by the scanner.
@@ -1854,14 +1939,14 @@ namespace  Analysis  {
 
 #if YYDEBUG
     /// The current debugging stream.
-    std::ostream& debug_stream () const;
+    std::ostream& debug_stream () const YY_ATTRIBUTE_PURE;
     /// Set the current debugging stream.
     void set_debug_stream (std::ostream &);
 
     /// Type for debugging levels.
     typedef int debug_level_type;
     /// The current debugging level.
-    debug_level_type debug_level () const;
+    debug_level_type debug_level () const YY_ATTRIBUTE_PURE;
     /// Set the current debugging level.
     void set_debug_level (debug_level_type l);
 #endif
@@ -1884,14 +1969,14 @@ namespace  Analysis  {
 
     /// Generate an error message.
     /// \param yystate   the state where the error occurred.
-    /// \param yytoken   the lookahead token type, or yyempty_.
+    /// \param yyla      the lookahead token.
     virtual std::string yysyntax_error_ (state_type yystate,
-                                         symbol_number_type yytoken) const;
+                                         const symbol_type& yyla) const;
 
     /// Compute post-reduction state.
     /// \param yystate   the current state
-    /// \param yylhs     the nonterminal to push on the stack
-    state_type yy_lr_goto_state_ (state_type yystate, int yylhs);
+    /// \param yysym     the nonterminal to push on the stack
+    state_type yy_lr_goto_state_ (state_type yystate, int yysym);
 
     /// Whether the given \c yypact_ value indicates a defaulted state.
     /// \param yyvalue   the value to check
@@ -1901,7 +1986,7 @@ namespace  Analysis  {
     /// \param yyvalue   the value to check
     static bool yy_table_value_is_error_ (int yyvalue);
 
-    static const signed char yypact_ninf_;
+    static const short int yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -1910,25 +1995,25 @@ namespace  Analysis  {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const signed char yypact_[];
+  static const short int yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
   // means the default is an error.
-  static const unsigned char yydefact_[];
+  static const unsigned short int yydefact_[];
 
   // YYPGOTO[NTERM-NUM].
-  static const signed char yypgoto_[];
+  static const short int yypgoto_[];
 
   // YYDEFGOTO[NTERM-NUM].
-  static const signed char yydefgoto_[];
+  static const short int yydefgoto_[];
 
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned char yytable_[];
+  static const unsigned short int yytable_[];
 
-  static const unsigned char yycheck_[];
+  static const short int yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -1969,7 +2054,7 @@ namespace  Analysis  {
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg     Why this token is reclaimed.
     ///                  If null, print nothing.
-    /// \param s         The symbol.
+    /// \param yysym     The symbol.
     template <typename Base>
     void yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const;
 
@@ -1989,16 +2074,21 @@ namespace  Analysis  {
       /// Copy constructor.
       by_state (const by_state& other);
 
+      /// Record that this symbol is empty.
+      void clear ();
+
       /// Steal the symbol type from \a that.
       void move (by_state& that);
 
       /// The (internal) type number (corresponding to \a state).
-      /// "empty" when empty.
+      /// \a empty_symbol when empty.
       symbol_number_type type_get () const;
 
-      enum { empty = 0 };
+      /// The state number used to denote an empty symbol.
+      enum { empty_state = -1 };
 
       /// The state.
+      /// \a empty when empty.
       state_type state;
     };
 
@@ -2039,17 +2129,16 @@ namespace  Analysis  {
     /// Pop \a n symbols the three stacks.
     void yypop_ (unsigned int n = 1);
 
-    // Constants.
+    /// Constants.
     enum
     {
       yyeof_ = 0,
-      yylast_ = 0,           //< Last index in yytable_.
-      yynnts_ = 2,  //< Number of nonterminal symbols.
-      yyempty_ = -2,
-      yyfinal_ = 2, //< Termination state number.
+      yylast_ = 300,     ///< Last index in yytable_.
+      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 292    //< Number of tokens.
+      yyntokens_ = 292  ///< Number of tokens.
     };
 
 
@@ -2156,8 +2245,20 @@ namespace  Analysis  {
   {
       switch (other.type_get ())
     {
+      case 305: // instruction
+        value.copy< OpCode* > (other.value);
+        break;
+
       case 20: // "flag"
       case 21: // "v(p)x"
+      case 294: // exp
+      case 295: // classdef
+      case 296: // superdef
+      case 297: // srcdef
+      case 298: // fielddef
+      case 299: // methoddef
+      case 300: // flags
+      case 303: // registers
         value.copy< int > (other.value);
         break;
 
@@ -2166,7 +2267,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
+      case 302: // comment
+      case 304: // jmplabel
         value.copy< std::string > (other.value);
+        break;
+
+      case 301: // args
+        value.copy< std::vector<std::string> > (other.value);
         break;
 
       case 22: // "number"
@@ -2190,8 +2297,20 @@ namespace  Analysis  {
     (void) v;
       switch (this->type_get ())
     {
+      case 305: // instruction
+        value.copy< OpCode* > (v);
+        break;
+
       case 20: // "flag"
       case 21: // "v(p)x"
+      case 294: // exp
+      case 295: // classdef
+      case 296: // superdef
+      case 297: // srcdef
+      case 298: // fielddef
+      case 299: // methoddef
+      case 300: // flags
+      case 303: // registers
         value.copy< int > (v);
         break;
 
@@ -2200,7 +2319,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
+      case 302: // comment
+      case 304: // jmplabel
         value.copy< std::string > (v);
+        break;
+
+      case 301: // args
+        value.copy< std::vector<std::string> > (v);
         break;
 
       case 22: // "number"
@@ -2223,6 +2348,13 @@ namespace  Analysis  {
   {}
 
   template <typename Base>
+   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OpCode* v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
    Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
     : Base (t)
     , value (v)
@@ -2231,6 +2363,13 @@ namespace  Analysis  {
 
   template <typename Base>
    Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -2248,8 +2387,18 @@ namespace  Analysis  {
   inline
    Parser ::basic_symbol<Base>::~basic_symbol ()
   {
+    clear ();
+  }
+
+  template <typename Base>
+  inline
+  void
+   Parser ::basic_symbol<Base>::clear ()
+  {
     // User destructor.
     symbol_number_type yytype = this->type_get ();
+    basic_symbol<Base>& yysym = *this;
+    (void) yysym;
     switch (yytype)
     {
    default:
@@ -2259,8 +2408,20 @@ namespace  Analysis  {
     // Type destructor.
     switch (yytype)
     {
+      case 305: // instruction
+        value.template destroy< OpCode* > ();
+        break;
+
       case 20: // "flag"
       case 21: // "v(p)x"
+      case 294: // exp
+      case 295: // classdef
+      case 296: // superdef
+      case 297: // srcdef
+      case 298: // fielddef
+      case 299: // methoddef
+      case 300: // flags
+      case 303: // registers
         value.template destroy< int > ();
         break;
 
@@ -2269,7 +2430,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
+      case 302: // comment
+      case 304: // jmplabel
         value.template destroy< std::string > ();
+        break;
+
+      case 301: // args
+        value.template destroy< std::vector<std::string> > ();
         break;
 
       case 22: // "number"
@@ -2280,6 +2447,15 @@ namespace  Analysis  {
         break;
     }
 
+    Base::clear ();
+  }
+
+  template <typename Base>
+  inline
+  bool
+   Parser ::basic_symbol<Base>::empty () const
+  {
+    return Base::type_get () == empty_symbol;
   }
 
   template <typename Base>
@@ -2290,8 +2466,20 @@ namespace  Analysis  {
     super_type::move(s);
       switch (this->type_get ())
     {
+      case 305: // instruction
+        value.move< OpCode* > (s.value);
+        break;
+
       case 20: // "flag"
       case 21: // "v(p)x"
+      case 294: // exp
+      case 295: // classdef
+      case 296: // superdef
+      case 297: // srcdef
+      case 298: // fielddef
+      case 299: // methoddef
+      case 300: // flags
+      case 303: // registers
         value.move< int > (s.value);
         break;
 
@@ -2300,7 +2488,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
+      case 302: // comment
+      case 304: // jmplabel
         value.move< std::string > (s.value);
+        break;
+
+      case 301: // args
+        value.move< std::vector<std::string> > (s.value);
         break;
 
       case 22: // "number"
@@ -2317,7 +2511,7 @@ namespace  Analysis  {
   // by_type.
   inline
    Parser ::by_type::by_type ()
-     : type (empty)
+    : type (empty_symbol)
   {}
 
   inline
@@ -2332,10 +2526,17 @@ namespace  Analysis  {
 
   inline
   void
+   Parser ::by_type::clear ()
+  {
+    type = empty_symbol;
+  }
+
+  inline
+  void
    Parser ::by_type::move (by_type& that)
   {
     type = that.type;
-    that.type = empty;
+    that.clear ();
   }
 
   inline
@@ -2393,2036 +2594,1746 @@ namespace  Analysis  {
    Parser ::make_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_END, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_EOL (const location_type& l)
   {
     return symbol_type (token::TOKEN_EOL, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_CSTRING (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_CSTRING, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_NAMESTRING (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_NAMESTRING, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_COMMENT (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_COMMENT, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_CLASSNAME (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_CLASSNAME, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_CLASSTYPE (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_CLASSTYPE, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_KEYWORD_BEGIN (const location_type& l)
   {
     return symbol_type (token::TOKEN_KEYWORD_BEGIN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_CLASSBEG (const location_type& l)
   {
     return symbol_type (token::TOKEN_CLASSBEG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_SUPERBEG (const location_type& l)
   {
     return symbol_type (token::TOKEN_SUPERBEG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_SRCBEG (const location_type& l)
   {
     return symbol_type (token::TOKEN_SRCBEG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_FIELDBEG (const location_type& l)
   {
     return symbol_type (token::TOKEN_FIELDBEG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_METHODBEG (const location_type& l)
   {
     return symbol_type (token::TOKEN_METHODBEG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_METHODEND (const location_type& l)
   {
     return symbol_type (token::TOKEN_METHODEND, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_REGISTERS (const location_type& l)
   {
     return symbol_type (token::TOKEN_REGISTERS, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_PROLOGUE (const location_type& l)
   {
     return symbol_type (token::TOKEN_PROLOGUE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_LINE (const location_type& l)
   {
     return symbol_type (token::TOKEN_LINE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_KEYWORD_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_KEYWORD_END, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_FLAG (const int& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_FLAG, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_REGD (const int& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_REGD, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_NUMBER (const uint64_t& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_NUMBER, v, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_BEGIN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_BEGIN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NOP (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NOP, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_FROM16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_FROM16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_WIDE_FROM16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_WIDE_FROM16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_WIDE_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_WIDE_16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_OBJECT_FROM16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_OBJECT_FROM16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_OBJECT_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_OBJECT_16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_RESULT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_RESULT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_RESULT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_RESULT_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_RESULT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_RESULT_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MOVE_EXCEPTION (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_EXCEPTION, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_RETURN_VOID (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_VOID, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_RETURN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_RETURN_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_RETURN_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_4 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_4, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_HIGH16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_HIGH16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_WIDE_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE_16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_WIDE_32 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE_32, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_WIDE_HIGH16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE_HIGH16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_STRING (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_STRING, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_STRING_JUMBO (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_STRING_JUMBO, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CONST_CLASS (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_CLASS, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MONITOR_ENTER (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MONITOR_ENTER, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MONITOR_EXIT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MONITOR_EXIT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CHECK_CAST (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CHECK_CAST, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INSTANCE_OF (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INSTANCE_OF, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ARRAY_LENGTH (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ARRAY_LENGTH, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NEW_INSTANCE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEW_INSTANCE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NEW_ARRAY (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEW_ARRAY, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_FILLED_NEW_ARRAY (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FILLED_NEW_ARRAY, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_FILLED_NEW_ARRAY_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FILLED_NEW_ARRAY_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_FILL_ARRAY_DATA (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FILL_ARRAY_DATA, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_THROW (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_THROW, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_GOTO (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_GOTO, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_GOTO_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_GOTO_16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_GOTO_32 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_GOTO_32, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_PACKED_SWITCH (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_PACKED_SWITCH, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPARSE_SWITCH (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPARSE_SWITCH, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CMPL_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPL_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CMPG_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPG_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CMPL_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPL_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CMPG_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPG_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CMP_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMP_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_EQ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_EQ, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_NE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_NE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_LT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_GE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_GT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_LE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_EQZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_EQZ, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_NEZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_NEZ, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_LTZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LTZ, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_GEZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GEZ, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_GTZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GTZ, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IF_LEZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LEZ, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_3E (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_3E, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_3F (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_3F, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_40 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_40, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_41 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_41, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_42 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_42, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_43 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_43, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AGET (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AGET_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AGET_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AGET_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_BOOLEAN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AGET_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_BYTE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AGET_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_CHAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AGET_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_SHORT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_APUT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_APUT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_APUT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_APUT_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_BOOLEAN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_APUT_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_BYTE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_APUT_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_CHAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_APUT_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_SHORT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_BOOLEAN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_BYTE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_CHAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_SHORT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_BOOLEAN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_BYTE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_CHAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_SHORT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_BOOLEAN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_BYTE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_CHAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_SHORT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_WIDE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_OBJECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_BOOLEAN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_BYTE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_CHAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_SHORT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_VIRTUAL (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_SUPER (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_DIRECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_DIRECT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_STATIC (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_STATIC, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_INTERFACE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_INTERFACE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_73 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_73, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_VIRTUAL_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_SUPER_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_DIRECT_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_DIRECT_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_STATIC_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_STATIC_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_INTERFACE_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_INTERFACE_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_79 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_79, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_7A (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_7A, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NEG_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NOT_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NOT_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NEG_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NOT_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NOT_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NEG_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_NEG_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INT_TO_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INT_TO_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INT_TO_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_LONG_TO_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_LONG_TO_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_LONG_TO_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_LONG_TO_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_LONG_TO_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_LONG_TO_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_FLOAT_TO_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FLOAT_TO_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_FLOAT_TO_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FLOAT_TO_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_FLOAT_TO_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FLOAT_TO_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DOUBLE_TO_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DOUBLE_TO_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DOUBLE_TO_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DOUBLE_TO_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DOUBLE_TO_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DOUBLE_TO_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INT_TO_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_BYTE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INT_TO_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_CHAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INT_TO_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_SHORT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AND_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_OR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_XOR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHL_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_USHR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AND_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_OR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_XOR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHL_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_USHR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_LONG, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_FLOAT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_DOUBLE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AND_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_OR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_XOR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHL_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_USHR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_INT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AND_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_OR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_XOR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHL_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_USHR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_LONG_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_FLOAT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_FLOAT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_FLOAT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_FLOAT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_FLOAT_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_DOUBLE_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SUB_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_DOUBLE_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_DOUBLE_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_DOUBLE_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_DOUBLE_2ADDR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT_LIT16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_RSUB_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RSUB_INT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT_LIT16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT_LIT16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT_LIT16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AND_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT_LIT16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_OR_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT_LIT16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_XOR_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT_LIT16, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_ADD_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_RSUB_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RSUB_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_MUL_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_DIV_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_REM_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_AND_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_OR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_XOR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHL_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SHR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_USHR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_INT_LIT8, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_OBJECT_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_WIDE_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_WIDE_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_WIDE_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_WIDE_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_BREAKPOINT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_BREAKPOINT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_THROW_VERIFICATION_ERROR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_THROW_VERIFICATION_ERROR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_EXECUTE_INLINE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_EXECUTE_INLINE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_EXECUTE_INLINE_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_EXECUTE_INLINE_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_OBJECT_INIT_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_OBJECT_INIT_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_RETURN_VOID_BARRIER (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_VOID_BARRIER, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_WIDE_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_WIDE_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IGET_OBJECT_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_OBJECT_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_WIDE_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_WIDE_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_OBJECT_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_OBJECT_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_VIRTUAL_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_VIRTUAL_QUICK_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_SUPER_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER_QUICK, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_INVOKE_SUPER_QUICK_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER_QUICK_RANGE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_IPUT_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_OBJECT_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SGET_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_OBJECT_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_SPUT_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_OBJECT_VOLATILE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_UNUSED_FF (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_FF, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_CATCH (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CATCH, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_OP_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_END, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_SYMBOL_BEGIN (const location_type& l)
   {
     return symbol_type (token::TOKEN_SYMBOL_BEGIN, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_COLON (const location_type& l)
   {
     return symbol_type (token::TOKEN_COLON, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_LEFTPAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_LEFTPAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_RIGHTPAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_RIGHTPAR, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_COMMA (const location_type& l)
   {
     return symbol_type (token::TOKEN_COMMA, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_POINT (const location_type& l)
   {
     return symbol_type (token::TOKEN_POINT, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_INIBRACE (const location_type& l)
   {
     return symbol_type (token::TOKEN_INIBRACE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_CLOBRACE (const location_type& l)
   {
     return symbol_type (token::TOKEN_CLOBRACE, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_ELLIPSIS (const location_type& l)
   {
     return symbol_type (token::TOKEN_ELLIPSIS, l);
-
   }
 
    Parser ::symbol_type
    Parser ::make_SYMBOL_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_SYMBOL_END, l);
-
   }
 
 
-#line 9 "Parser.yy" // lalr1.cc:371
+#line 9 "Parser.yy" // lalr1.cc:377
 } //  Analysis 
-#line 4426 "Parser.hpp" // lalr1.cc:371
+#line 4337 "Parser.hpp" // lalr1.cc:377
 
 
 

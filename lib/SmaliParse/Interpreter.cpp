@@ -13,16 +13,14 @@ using namespace Analysis;
 std::string trim (const std::string &si);
 
 Interpreter::Interpreter()
+    : mParser(mLexer, *this)
 {
 
 }
 
 int Interpreter::parse ()
 {
-    while(consumeLine ()) {
-
-    }
-    return 0;
+    return mParser.parse ();
 }
 
 void Interpreter::switchInputStream (std::istream *is,SmaliClass *pClass)
@@ -89,26 +87,6 @@ void Interpreter::endMethod ()
 {
     mCurMethod = nullptr;
 }
-
-
-bool Interpreter::consumeLine ()
-{
-    std::list<Parser::symbol_type> tokens;
-
-    while(true) {
-        auto token = mLexer.get_next_token ();
-
-        if(token.token () == Parser::token::TOKEN_END)
-            return false;
-        else if(token.token () == Parser::token::TOKEN_EOL)
-            break;
-        tokens.push_back (token);
-    }
-
-
-    return true;
-}
-
 
 std::string trim (const std::string &si)
 {

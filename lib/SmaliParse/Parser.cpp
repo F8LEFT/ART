@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.
+// A Bison parser, made by GNU Bison 3.0.4.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2013 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 // //                    "%code top" blocks.
-#line 41 "Parser.yy" // lalr1.cc:391
+#line 41 "Parser.yy" // lalr1.cc:397
 
     #include <iostream>
     #include "Lexer.h"
@@ -47,18 +47,18 @@
     using namespace std;
     using namespace Analysis;
 
-#line 51 "Parser.cpp" // lalr1.cc:391
+#line 51 "Parser.cpp" // lalr1.cc:397
 
 
 // First part of user declarations.
 
-#line 56 "Parser.cpp" // lalr1.cc:398
+#line 56 "Parser.cpp" // lalr1.cc:404
 
-# ifndef YY_NULL
+# ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULL nullptr
+#   define YY_NULLPTR nullptr
 #  else
-#   define YY_NULL 0
+#   define YY_NULLPTR 0
 #  endif
 # endif
 
@@ -66,7 +66,7 @@
 
 // User implementation prologue.
 
-#line 70 "Parser.cpp" // lalr1.cc:406
+#line 70 "Parser.cpp" // lalr1.cc:412
 
 
 #ifndef YY_
@@ -143,16 +143,16 @@
 #endif // !YYDEBUG
 
 #define yyerrok         (yyerrstatus_ = 0)
-#define yyclearin       (yyempty = true)
+#define yyclearin       (yyla.clear ())
 
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 9 "Parser.yy" // lalr1.cc:473
+#line 9 "Parser.yy" // lalr1.cc:479
 namespace  Analysis  {
-#line 156 "Parser.cpp" // lalr1.cc:473
+#line 156 "Parser.cpp" // lalr1.cc:479
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -216,7 +216,7 @@ namespace  Analysis  {
   // by_state.
   inline
    Parser ::by_state::by_state ()
-    : state (empty)
+    : state (empty_state)
   {}
 
   inline
@@ -226,10 +226,17 @@ namespace  Analysis  {
 
   inline
   void
+   Parser ::by_state::clear ()
+  {
+    state = empty_state;
+  }
+
+  inline
+  void
    Parser ::by_state::move (by_state& that)
   {
     state = that.state;
-    that.state = empty;
+    that.clear ();
   }
 
   inline
@@ -241,7 +248,10 @@ namespace  Analysis  {
    Parser ::symbol_number_type
    Parser ::by_state::type_get () const
   {
-    return state == empty ? 0 : yystos_[state];
+    if (state == empty_state)
+      return empty_symbol;
+    else
+      return yystos_[state];
   }
 
   inline
@@ -255,8 +265,20 @@ namespace  Analysis  {
   {
       switch (that.type_get ())
     {
+      case 305: // instruction
+        value.move< OpCode* > (that.value);
+        break;
+
       case 20: // "flag"
       case 21: // "v(p)x"
+      case 294: // exp
+      case 295: // classdef
+      case 296: // superdef
+      case 297: // srcdef
+      case 298: // fielddef
+      case 299: // methoddef
+      case 300: // flags
+      case 303: // registers
         value.move< int > (that.value);
         break;
 
@@ -265,7 +287,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
+      case 302: // comment
+      case 304: // jmplabel
         value.move< std::string > (that.value);
+        break;
+
+      case 301: // args
+        value.move< std::vector<std::string> > (that.value);
         break;
 
       case 22: // "number"
@@ -277,7 +305,7 @@ namespace  Analysis  {
     }
 
     // that is emptied.
-    that.type = empty;
+    that.type = empty_symbol;
   }
 
   inline
@@ -287,8 +315,20 @@ namespace  Analysis  {
     state = that.state;
       switch (that.type_get ())
     {
+      case 305: // instruction
+        value.copy< OpCode* > (that.value);
+        break;
+
       case 20: // "flag"
       case 21: // "v(p)x"
+      case 294: // exp
+      case 295: // classdef
+      case 296: // superdef
+      case 297: // srcdef
+      case 298: // fielddef
+      case 299: // methoddef
+      case 300: // flags
+      case 303: // registers
         value.copy< int > (that.value);
         break;
 
@@ -297,7 +337,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
+      case 302: // comment
+      case 304: // jmplabel
         value.copy< std::string > (that.value);
+        break;
+
+      case 301: // args
+        value.copy< std::vector<std::string> > (that.value);
         break;
 
       case 22: // "number"
@@ -331,6 +377,10 @@ namespace  Analysis  {
     std::ostream& yyoutput = yyo;
     YYUSE (yyoutput);
     symbol_number_type yytype = yysym.type_get ();
+    // Avoid a (spurious) G++ 4.8 warning about "array subscript is
+    // below array bounds".
+    if (yysym.empty ())
+      std::abort ();
     yyo << (yytype < yyntokens_ ? "token" : "nterm")
         << ' ' << yytname_[yytype] << " ("
         << yysym.location << ": ";
@@ -391,13 +441,13 @@ namespace  Analysis  {
 #endif // YYDEBUG
 
   inline  Parser ::state_type
-   Parser ::yy_lr_goto_state_ (state_type yystate, int yylhs)
+   Parser ::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
-    int yyr = yypgoto_[yylhs - yyntokens_] + yystate;
+    int yyr = yypgoto_[yysym - yyntokens_] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
       return yytable_[yyr];
     else
-      return yydefgoto_[yylhs - yyntokens_];
+      return yydefgoto_[yysym - yyntokens_];
   }
 
   inline bool
@@ -415,11 +465,9 @@ namespace  Analysis  {
   int
    Parser ::parse ()
   {
-    /// Whether yyla contains a lookahead.
-    bool yyempty = true;
-
     // State.
     int yyn;
+    /// Length of the RHS of the rule being reduced.
     int yylen = 0;
 
     // Error handling.
@@ -431,9 +479,6 @@ namespace  Analysis  {
 
     /// The locations where the error started and ended.
     stack_symbol_type yyerror_range[3];
-
-    /// $$ and @$.
-    stack_symbol_type yylhs;
 
     /// The return value of parse ().
     int yyresult;
@@ -450,7 +495,7 @@ namespace  Analysis  {
        location values to have been already stored, initialize these
        stacks with a primary value.  */
     yystack_.clear ();
-    yypush_ (YY_NULL, 0, yyla);
+    yypush_ (YY_NULLPTR, 0, yyla);
 
     // A new symbol was pushed on the stack.
   yynewstate:
@@ -471,7 +516,7 @@ namespace  Analysis  {
       goto yydefault;
 
     // Read a lookahead token.
-    if (yyempty)
+    if (yyla.empty ())
       {
         YYCDEBUG << "Reading a token: ";
         try
@@ -484,7 +529,6 @@ namespace  Analysis  {
             error (yyexc);
             goto yyerrlab1;
           }
-        yyempty = false;
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
@@ -503,9 +547,6 @@ namespace  Analysis  {
         yyn = -yyn;
         goto yyreduce;
       }
-
-    // Discard the token being shifted.
-    yyempty = true;
 
     // Count tokens shifted since error; after three, turn off error status.
     if (yyerrstatus_)
@@ -529,14 +570,28 @@ namespace  Analysis  {
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
-    yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
-    /* Variants are always initialized to an empty instance of the
-       correct type. The default $$=$1 action is NOT applied when using
-       variants.  */
-      switch (yyr1_[yyn])
     {
+      stack_symbol_type yylhs;
+      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
+      /* Variants are always initialized to an empty instance of the
+         correct type. The default '$$ = $1' action is NOT applied
+         when using variants.  */
+        switch (yyr1_[yyn])
+    {
+      case 305: // instruction
+        yylhs.value.build< OpCode* > ();
+        break;
+
       case 20: // "flag"
       case 21: // "v(p)x"
+      case 294: // exp
+      case 295: // classdef
+      case 296: // superdef
+      case 297: // srcdef
+      case 298: // fielddef
+      case 299: // methoddef
+      case 300: // flags
+      case 303: // registers
         yylhs.value.build< int > ();
         break;
 
@@ -545,7 +600,13 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
+      case 302: // comment
+      case 304: // jmplabel
         yylhs.value.build< std::string > ();
+        break;
+
+      case 301: // args
+        yylhs.value.build< std::vector<std::string> > ();
         break;
 
       case 22: // "number"
@@ -557,36 +618,160 @@ namespace  Analysis  {
     }
 
 
-    // Compute the default @$.
-    {
-      slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
-      YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+      // Compute the default @$.
+      {
+        slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+      }
+
+      // Perform the reduction.
+      YY_REDUCE_PRINT (yyn);
+      try
+        {
+          switch (yyn)
+            {
+  case 13:
+#line 392 "Parser.yy" // lalr1.cc:859
+    {yylhs.value.as< int > () = 1; driver.addOpcode(yystack_[0].value.as< OpCode* > ());}
+#line 637 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 14:
+#line 393 "Parser.yy" // lalr1.cc:859
+    {yylhs.value.as< int > () = 1; driver.endMethod();}
+#line 643 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 15:
+#line 396 "Parser.yy" // lalr1.cc:859
+    { yylhs.value.as< int > () = 1;
+        driver.setClassDefine(yystack_[1].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
+#line 651 "Parser.cpp" // lalr1.cc:859
+    break;
 
-    // Perform the reduction.
-    YY_REDUCE_PRINT (yyn);
-    try
-      {
-        switch (yyn)
-          {
+  case 16:
+#line 400 "Parser.yy" // lalr1.cc:859
+    { yylhs.value.as< int > () = 1;
+        driver.setSuperDefine(yystack_[0].value.as< std::string > ());
+    }
+#line 659 "Parser.cpp" // lalr1.cc:859
+    break;
 
-#line 574 "Parser.cpp" // lalr1.cc:846
-          default:
-            break;
-          }
-      }
-    catch (const syntax_error& yyexc)
-      {
-        error (yyexc);
-        YYERROR;
-      }
-    YY_SYMBOL_PRINT ("-> $$ =", yylhs);
-    yypop_ (yylen);
-    yylen = 0;
-    YY_STACK_PRINT ();
+  case 17:
+#line 404 "Parser.yy" // lalr1.cc:859
+    { yylhs.value.as< int > () = 1;
+        driver.setSourceDefine(yystack_[0].value.as< std::string > ());
+    }
+#line 667 "Parser.cpp" // lalr1.cc:859
+    break;
 
-    // Shift the result of the reduction.
-    yypush_ (YY_NULL, yylhs);
+  case 18:
+#line 408 "Parser.yy" // lalr1.cc:859
+    { yylhs.value.as< int > () = 1;
+        driver.addField(yystack_[2].value.as< std::string > (), yystack_[3].value.as< int > (), yystack_[0].value.as< std::string > ());
+    }
+#line 675 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 19:
+#line 412 "Parser.yy" // lalr1.cc:859
+    { yylhs.value.as< int > () = 1;
+        driver.addMethod(yystack_[4].value.as< std::string > (), yystack_[5].value.as< int > (), yystack_[0].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > ());
+    }
+#line 683 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 20:
+#line 416 "Parser.yy" // lalr1.cc:859
+    {yylhs.value.as< int > () = 0;}
+#line 689 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 21:
+#line 417 "Parser.yy" // lalr1.cc:859
+    {
+        yylhs.value.as< int > () = yystack_[0].value.as< int > ();
+    }
+#line 697 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 22:
+#line 420 "Parser.yy" // lalr1.cc:859
+    {
+        yylhs.value.as< int > () = yystack_[1].value.as< int > ();
+        yylhs.value.as< int > () |= yystack_[0].value.as< int > ();
+    }
+#line 706 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 23:
+#line 426 "Parser.yy" // lalr1.cc:859
+    { yylhs.value.as< std::vector<std::string> > () = std::vector<std::string>();}
+#line 712 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 24:
+#line 427 "Parser.yy" // lalr1.cc:859
+    {
+        yylhs.value.as< std::vector<std::string> > () = std::vector<std::string>();
+        yylhs.value.as< std::vector<std::string> > ().push_back(yystack_[0].value.as< std::string > ());
+    }
+#line 721 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 25:
+#line 431 "Parser.yy" // lalr1.cc:859
+    {
+        yylhs.value.as< std::vector<std::string> > () = yystack_[1].value.as< std::vector<std::string> > ();
+        yylhs.value.as< std::vector<std::string> > ().push_back(yystack_[0].value.as< std::string > ());
+    }
+#line 730 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 26:
+#line 448 "Parser.yy" // lalr1.cc:859
+    {
+        yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > ();
+    }
+#line 738 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 27:
+#line 454 "Parser.yy" // lalr1.cc:859
+    {
+        driver.setCurMethodRegSize(yystack_[0].value.as< uint64_t > ());
+    }
+#line 746 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 28:
+#line 460 "Parser.yy" // lalr1.cc:859
+    {
+        yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > ();
+    }
+#line 754 "Parser.cpp" // lalr1.cc:859
+    break;
+
+
+#line 758 "Parser.cpp" // lalr1.cc:859
+            default:
+              break;
+            }
+        }
+      catch (const syntax_error& yyexc)
+        {
+          error (yyexc);
+          YYERROR;
+        }
+      YY_SYMBOL_PRINT ("-> $$ =", yylhs);
+      yypop_ (yylen);
+      yylen = 0;
+      YY_STACK_PRINT ();
+
+      // Shift the result of the reduction.
+      yypush_ (YY_NULLPTR, yylhs);
+    }
     goto yynewstate;
 
   /*--------------------------------------.
@@ -597,8 +782,7 @@ namespace  Analysis  {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        error (yyla.location, yysyntax_error_ (yystack_[0].state,
-                                           yyempty ? yyempty_ : yyla.type_get ()));
+        error (yyla.location, yysyntax_error_ (yystack_[0].state, yyla));
       }
 
 
@@ -611,10 +795,10 @@ namespace  Analysis  {
         // Return failure if at end of input.
         if (yyla.type_get () == yyeof_)
           YYABORT;
-        else if (!yyempty)
+        else if (!yyla.empty ())
           {
             yy_destroy_ ("Error: discarding", yyla);
-            yyempty = true;
+            yyla.clear ();
           }
       }
 
@@ -633,9 +817,6 @@ namespace  Analysis  {
     if (false)
       goto yyerrorlab;
     yyerror_range[1].location = yystack_[yylen - 1].location;
-    /* $$ was initialized before running the user action.  */
-    YY_SYMBOL_PRINT ("Error: discarding", yylhs);
-    yylhs.~stack_symbol_type();
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -693,7 +874,7 @@ namespace  Analysis  {
     goto yyreturn;
 
   yyreturn:
-    if (!yyempty)
+    if (!yyla.empty ())
       yy_destroy_ ("Cleanup: discarding lookahead", yyla);
 
     /* Do not reclaim the symbols of the rule whose action triggered
@@ -713,12 +894,12 @@ namespace  Analysis  {
                  << std::endl;
         // Do not try to display the values of the reclaimed symbols,
         // as their printer might throw an exception.
-        if (!yyempty)
-          yy_destroy_ (YY_NULL, yyla);
+        if (!yyla.empty ())
+          yy_destroy_ (YY_NULLPTR, yyla);
 
         while (1 < yystack_.size ())
           {
-            yy_destroy_ (YY_NULL, yystack_[0]);
+            yy_destroy_ (YY_NULLPTR, yystack_[0]);
             yypop_ ();
           }
         throw;
@@ -733,9 +914,8 @@ namespace  Analysis  {
 
   // Generate an error message.
   std::string
-   Parser ::yysyntax_error_ (state_type yystate, symbol_number_type yytoken) const
+   Parser ::yysyntax_error_ (state_type yystate, const symbol_type& yyla) const
   {
-    std::string yyres;
     // Number of reported tokens (one for the "unexpected", one per
     // "expected").
     size_t yycount = 0;
@@ -749,7 +929,7 @@ namespace  Analysis  {
          the only way this function was invoked is if the default action
          is an error action.  In that case, don't check for expected
          tokens because there are none.
-       - The only way there can be no lookahead present (in yytoken) is
+       - The only way there can be no lookahead present (in yyla) is
          if this state is a consistent state with a default action.
          Thus, detecting the absence of a lookahead is sufficient to
          determine that there is no unexpected or expected token to
@@ -769,8 +949,9 @@ namespace  Analysis  {
          token that will not be accepted due to an error action in a
          later state.
     */
-    if (yytoken != yyempty_)
+    if (!yyla.empty ())
       {
+        int yytoken = yyla.type_get ();
         yyarg[yycount++] = yytname_[yytoken];
         int yyn = yypact_[yystate];
         if (!yy_pact_value_is_default_ (yyn))
@@ -797,7 +978,7 @@ namespace  Analysis  {
           }
       }
 
-    char const* yyformat = YY_NULL;
+    char const* yyformat = YY_NULLPTR;
     switch (yycount)
       {
 #define YYCASE_(N, S)                         \
@@ -813,6 +994,7 @@ namespace  Analysis  {
 #undef YYCASE_
       }
 
+    std::string yyres;
     // Argument number.
     size_t yyi = 0;
     for (char const* yyp = yyformat; *yyp; ++yyp)
@@ -827,62 +1009,270 @@ namespace  Analysis  {
   }
 
 
-  const signed char  Parser ::yypact_ninf_ = -1;
+  const short int  Parser ::yypact_ninf_ = -286;
 
   const signed char  Parser ::yytable_ninf_ = -1;
 
-  const signed char
+  const short int
    Parser ::yypact_[] =
   {
-      -1,     0,    -1
+    -286,     0,  -286,     5,  -286,  -286,   -15,   274,   280,   -15,
+     -15,  -286,   263,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,   278,
+     282,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,
+    -286,  -286,     1,  -286,  -286,    -3,     2,  -286,     3,  -286,
+    -286,  -286,     6,     4,     7,   284,   285,   289,     8,  -286,
+    -286,    -4,  -286,     7,  -286,   287,    11,  -286,     7,  -286
   };
 
-  const unsigned char
+  const unsigned short int
    Parser ::yydefact_[] =
   {
-       2,     0,     1
+       2,     0,     1,     0,     3,    26,    20,     0,     0,    20,
+      20,    14,     0,    29,    30,    31,    32,    33,    34,    35,
+      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
+      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
+      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
+      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
+      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
+      96,    97,    98,    99,   100,   101,   102,   103,   104,   105,
+     106,   107,   108,   109,   110,   111,   112,   113,   114,   115,
+     116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
+     126,   127,   128,   129,   130,   131,   132,   133,   134,   135,
+     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
+     146,   147,   148,   149,   150,   151,   152,   153,   154,   155,
+     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
+     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
+     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
+     186,   187,   188,   189,   190,   191,   192,   193,   194,   195,
+     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
+     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
+     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
+     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
+     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
+     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
+     256,   257,   258,   259,   260,   261,   262,   263,   264,   265,
+     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
+     276,   277,   278,   279,   280,   281,   282,   283,   284,     0,
+       0,     5,     7,     8,     9,    10,    11,     4,    12,    13,
+       6,    21,     0,    16,    17,     0,     0,    27,     0,   285,
+      15,    22,     0,     0,     0,     0,    23,     0,     0,    18,
+      24,     0,    28,     0,    25,     0,     0,    19,     0,   286
   };
 
-  const signed char
+  const short int
    Parser ::yypgoto_[] =
   {
-      -1,    -1
+    -286,  -286,  -286,  -286,  -286,  -286,  -286,  -286,    10,  -286,
+    -286,  -286,  -285,  -286
   };
 
-  const signed char
+  const short int
    Parser ::yydefgoto_[] =
   {
-      -1,     1
+      -1,     1,   271,   272,   273,   274,   275,   276,   282,   301,
+     277,   278,   298,   279
   };
 
-  const unsigned char
+  const unsigned short int
    Parser ::yytable_[] =
   {
-       2
+       2,     3,   292,     4,   304,   281,     5,   293,   280,   290,
+       6,     7,     8,     9,    10,    11,    12,   291,   306,   285,
+     286,   291,   291,   309,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
+      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
+      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
+     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
+     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
+     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
+     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
+     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
+     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
+     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
+     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
+     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
+     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
+     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
+     269,   305,   283,   270,   284,   287,   288,   289,   296,   295,
+     297,   294,   299,   300,   302,   307,     0,     0,   303,     0,
+     308
   };
 
-  const unsigned char
+  const short int
    Parser ::yycheck_[] =
   {
-       0
+       0,     1,     5,     3,     8,    20,     6,     5,     3,     8,
+      10,    11,    12,    13,    14,    15,    16,    20,   303,     9,
+      10,    20,    20,   308,    24,    25,    26,    27,    28,    29,
+      30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
+      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
+      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
+      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
+      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
+      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
+      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
+     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
+     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
+     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
+     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
+     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
+     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
+     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
+     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
+     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
+     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
+     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
+     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
+     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
+     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
+     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
+     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
+     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
+     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
+     280,   285,     8,   283,     4,    22,     8,     5,   284,   283,
+     283,   288,     8,     8,     5,     8,    -1,    -1,   290,    -1,
+     289
   };
 
   const unsigned short int
    Parser ::yystos_[] =
   {
-       0,   293,     0
+       0,   293,     0,     1,     3,     6,    10,    11,    12,    13,
+      14,    15,    16,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    93,    94,    95,    96,    97,    98,    99,   100,
+     101,   102,   103,   104,   105,   106,   107,   108,   109,   110,
+     111,   112,   113,   114,   115,   116,   117,   118,   119,   120,
+     121,   122,   123,   124,   125,   126,   127,   128,   129,   130,
+     131,   132,   133,   134,   135,   136,   137,   138,   139,   140,
+     141,   142,   143,   144,   145,   146,   147,   148,   149,   150,
+     151,   152,   153,   154,   155,   156,   157,   158,   159,   160,
+     161,   162,   163,   164,   165,   166,   167,   168,   169,   170,
+     171,   172,   173,   174,   175,   176,   177,   178,   179,   180,
+     181,   182,   183,   184,   185,   186,   187,   188,   189,   190,
+     191,   192,   193,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
+     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,   242,   243,   244,   245,   246,   247,   248,   249,   250,
+     251,   252,   253,   254,   255,   256,   257,   258,   259,   260,
+     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
+     283,   294,   295,   296,   297,   298,   299,   302,   303,   305,
+       3,    20,   300,     8,     4,   300,   300,    22,     8,     5,
+       8,    20,     5,     5,   288,   283,   284,   283,   304,     8,
+       8,   301,     5,   290,     8,   285,   304,     8,   289,   304
   };
 
   const unsigned short int
    Parser ::yyr1_[] =
   {
-       0,   292,   293
+       0,   292,   293,   293,   293,   293,   293,   294,   294,   294,
+     294,   294,   294,   294,   294,   295,   296,   297,   298,   299,
+     300,   300,   300,   301,   301,   301,   302,   303,   304,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305,   305,   305,   305,
+     305,   305,   305,   305,   305,   305,   305
   };
 
   const unsigned char
    Parser ::yyr2_[] =
   {
-       0,     2,     0
+       0,     2,     0,     2,     2,     2,     3,     1,     1,     1,
+       1,     1,     1,     1,     1,     3,     2,     2,     5,     7,
+       0,     1,     2,     0,     1,     2,     1,     2,     2,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     2,     8
   };
 
 
@@ -977,14 +1367,44 @@ namespace  Analysis  {
   "\"+sget-object-volatile\"", "\"+sput-object-volatile\"",
   "\"unused-ff\"", "\".catch\"", "\"end of opcodes\"",
   "\"begin of symbol\"", "\":\"", "\"(\"", "\")\"", "\",\"", "\"->\"",
-  "\"{\"", "\"}\"", "\"..\"", "\"end of symbol\"", "$accept", "program", YY_NULL
+  "\"{\"", "\"}\"", "\"..\"", "\"end of symbol\"", "$accept", "program",
+  "exp", "classdef", "superdef", "srcdef", "fielddef", "methoddef",
+  "flags", "args", "comment", "registers", "jmplabel", "instruction", YY_NULLPTR
   };
 
 #if YYDEBUG
   const unsigned short int
    Parser ::yyrline_[] =
   {
-       0,   369,   369
+       0,   379,   379,   380,   381,   382,   383,   386,   387,   388,
+     389,   390,   391,   392,   393,   396,   400,   404,   408,   412,
+     416,   417,   420,   426,   427,   431,   448,   454,   460,   465,
+     466,   467,   468,   469,   470,   471,   472,   473,   474,   475,
+     476,   477,   478,   479,   480,   481,   482,   483,   484,   485,
+     486,   487,   488,   489,   490,   491,   492,   493,   494,   495,
+     496,   497,   498,   499,   500,   501,   502,   503,   504,   505,
+     506,   507,   508,   509,   510,   511,   512,   513,   514,   515,
+     516,   517,   518,   519,   520,   521,   522,   523,   524,   525,
+     526,   527,   528,   529,   530,   531,   532,   533,   534,   535,
+     536,   537,   538,   539,   540,   541,   542,   543,   544,   545,
+     546,   547,   548,   549,   550,   551,   552,   553,   554,   555,
+     556,   557,   558,   559,   560,   561,   562,   563,   564,   565,
+     566,   567,   568,   569,   570,   571,   572,   573,   574,   575,
+     576,   577,   578,   579,   580,   581,   582,   583,   584,   585,
+     586,   587,   588,   589,   590,   591,   592,   593,   594,   595,
+     596,   597,   598,   599,   600,   601,   602,   603,   604,   605,
+     606,   607,   608,   609,   610,   611,   612,   613,   614,   615,
+     616,   617,   618,   619,   620,   621,   622,   623,   624,   625,
+     626,   627,   628,   629,   630,   631,   632,   633,   634,   635,
+     636,   637,   638,   639,   640,   641,   642,   643,   644,   645,
+     646,   647,   648,   649,   650,   651,   652,   653,   654,   655,
+     656,   657,   658,   659,   660,   661,   662,   663,   664,   665,
+     666,   667,   668,   669,   670,   671,   672,   673,   674,   675,
+     676,   677,   678,   679,   680,   681,   682,   683,   684,   685,
+     686,   687,   688,   689,   690,   691,   692,   693,   694,   695,
+     696,   697,   698,   699,   700,   701,   702,   703,   704,   705,
+     706,   707,   708,   709,   710,   711,   712,   713,   714,   715,
+     716,   717,   718,   719,   720,   721,   722
   };
 
   // Print the state stack on the debug stream.
@@ -1017,13 +1437,13 @@ namespace  Analysis  {
 #endif // YYDEBUG
 
 
-#line 9 "Parser.yy" // lalr1.cc:1156
+#line 9 "Parser.yy" // lalr1.cc:1167
 } //  Analysis 
-#line 1023 "Parser.cpp" // lalr1.cc:1156
-#line 371 "Parser.yy" // lalr1.cc:1157
+#line 1443 "Parser.cpp" // lalr1.cc:1167
+#line 724 "Parser.yy" // lalr1.cc:1168
 
 
 void Analysis::Parser::error(const location &loc, const std::string &message) {
 	cout << "Parse error: " << message << endl
-	    << "Error location: " << loc << endl;
+	    << "Error location: " << loc << endl << driver.mLexer.text() << endl;
 }

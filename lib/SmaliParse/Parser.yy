@@ -362,15 +362,368 @@
 %token ELLIPSIS ".."
 %token SYMBOL_END "end of symbol"
 
+%type <int> exp classdef superdef srcdef fielddef methoddef
+%type <int> registers
+%type <std::string> comment;
+%type <int> flags;
+%type <std::vector<std::string>> args;
+%type <std::vector<int>> regs;
+%type <OpCode*> instruction;
+%type <std::string> jmplabel;
+
 %start program
 
 %%
+
 program :
-     %empty
-      ;
+          %empty
+        | program EOL
+        | program comment
+        | program exp
+        | program error EOL
+        ;
+
+exp : classdef
+    | superdef
+    | srcdef
+    | fielddef
+    | methoddef
+    | registers
+    | instruction {$$ = 1; driver.addOpcode($1);}
+    | METHODEND {$$ = 1; driver.endMethod();}
+    ;
+
+classdef : CLASSBEG flags CLASSTYPE { $$ = 1;
+        driver.setClassDefine($2, $3);
+    } ;
+
+superdef : SUPERBEG CLASSTYPE { $$ = 1;
+        driver.setSuperDefine($2);
+    };
+
+srcdef : SRCBEG CSTRING { $$ = 1;
+        driver.setSourceDefine($2);
+    };
+
+fielddef: FIELDBEG flags NAMESTRING COLON CLASSTYPE { $$ = 1;
+        driver.addField($3, $2, $5);
+    };
+
+methoddef: METHODBEG flags NAMESTRING LEFTPAR args RIGHTPAR CLASSTYPE { $$ = 1;
+        driver.addMethod($3, $2, $7, $5);
+    };
+
+flags:  {$$ = 0;}
+    | FLAG {
+        $$ = $1;
+    }
+    | flags FLAG {
+        $$ = $1;
+        $$ |= $2;
+    }
+    ;
+
+args:   { $$ = std::vector<std::string>();}
+    | CLASSTYPE {
+        $$ = std::vector<std::string>();
+        $$.push_back($1);
+    }
+    | args CLASSTYPE {
+        $$ = $1;
+        $$.push_back($2);
+    }
+    ;
+
+regs: { $$ = std::vector<int>();}
+    | REGD {
+        $$ = std::vector<int>();
+        $$.push_back($1);
+    }
+    | regs COMMA REGD {
+        $$ = $1;
+        $$.push_back($3);
+    }
+    ;
+
+comment : COMMENT {
+        $$ = $1;
+    }
+    ;
+
+    /*      define a method */
+registers : REGISTERS NUMBER {
+        driver.setCurMethodRegSize($2);
+    }
+    ;
+
+
+jmplabel : COLON NAMESTRING {
+        $$ = $2;
+    }
+
+instruction :
+     OP_NOP
+   | OP_MOVE
+   | OP_MOVE_FROM16
+   | OP_MOVE_16
+   | OP_MOVE_WIDE
+   | OP_MOVE_WIDE_FROM16
+   | OP_MOVE_WIDE_16
+   | OP_MOVE_OBJECT
+   | OP_MOVE_OBJECT_FROM16
+   | OP_MOVE_OBJECT_16
+   | OP_MOVE_RESULT
+   | OP_MOVE_RESULT_WIDE
+   | OP_MOVE_RESULT_OBJECT
+   | OP_MOVE_EXCEPTION
+   | OP_RETURN_VOID
+   | OP_RETURN
+   | OP_RETURN_WIDE
+   | OP_RETURN_OBJECT
+   | OP_CONST_4
+   | OP_CONST_16
+   | OP_CONST
+   | OP_CONST_HIGH16
+   | OP_CONST_WIDE_16
+   | OP_CONST_WIDE_32
+   | OP_CONST_WIDE
+   | OP_CONST_WIDE_HIGH16
+   | OP_CONST_STRING
+   | OP_CONST_STRING_JUMBO
+   | OP_CONST_CLASS
+   | OP_MONITOR_ENTER
+   | OP_MONITOR_EXIT
+   | OP_CHECK_CAST
+   | OP_INSTANCE_OF
+   | OP_ARRAY_LENGTH
+   | OP_NEW_INSTANCE
+   | OP_NEW_ARRAY
+   | OP_FILLED_NEW_ARRAY
+   | OP_FILLED_NEW_ARRAY_RANGE
+   | OP_FILL_ARRAY_DATA
+   | OP_THROW
+   | OP_GOTO
+   | OP_GOTO_16
+   | OP_GOTO_32
+   | OP_PACKED_SWITCH
+   | OP_SPARSE_SWITCH
+   | OP_CMPL_FLOAT
+   | OP_CMPG_FLOAT
+   | OP_CMPL_DOUBLE
+   | OP_CMPG_DOUBLE
+   | OP_CMP_LONG
+   | OP_IF_EQ
+   | OP_IF_NE
+   | OP_IF_LT
+   | OP_IF_GE
+   | OP_IF_GT
+   | OP_IF_LE
+   | OP_IF_EQZ
+   | OP_IF_NEZ
+   | OP_IF_LTZ
+   | OP_IF_GEZ
+   | OP_IF_GTZ
+   | OP_IF_LEZ
+   | OP_UNUSED_3E
+   | OP_UNUSED_3F
+   | OP_UNUSED_40
+   | OP_UNUSED_41
+   | OP_UNUSED_42
+   | OP_UNUSED_43
+   | OP_AGET
+   | OP_AGET_WIDE
+   | OP_AGET_OBJECT
+   | OP_AGET_BOOLEAN
+   | OP_AGET_BYTE
+   | OP_AGET_CHAR
+   | OP_AGET_SHORT
+   | OP_APUT
+   | OP_APUT_WIDE
+   | OP_APUT_OBJECT
+   | OP_APUT_BOOLEAN
+   | OP_APUT_BYTE
+   | OP_APUT_CHAR
+   | OP_APUT_SHORT
+   | OP_IGET
+   | OP_IGET_WIDE
+   | OP_IGET_OBJECT
+   | OP_IGET_BOOLEAN
+   | OP_IGET_BYTE
+   | OP_IGET_CHAR
+   | OP_IGET_SHORT
+   | OP_IPUT
+   | OP_IPUT_WIDE
+   | OP_IPUT_OBJECT
+   | OP_IPUT_BOOLEAN
+   | OP_IPUT_BYTE
+   | OP_IPUT_CHAR
+   | OP_IPUT_SHORT
+   | OP_SGET
+   | OP_SGET_WIDE
+   | OP_SGET_OBJECT
+   | OP_SGET_BOOLEAN
+   | OP_SGET_BYTE
+   | OP_SGET_CHAR
+   | OP_SGET_SHORT
+   | OP_SPUT
+   | OP_SPUT_WIDE
+   | OP_SPUT_OBJECT
+   | OP_SPUT_BOOLEAN
+   | OP_SPUT_BYTE
+   | OP_SPUT_CHAR
+   | OP_SPUT_SHORT
+   | OP_INVOKE_VIRTUAL
+   | OP_INVOKE_SUPER
+   | OP_INVOKE_DIRECT
+   | OP_INVOKE_STATIC
+   | OP_INVOKE_INTERFACE
+   | OP_UNUSED_73
+   | OP_INVOKE_VIRTUAL_RANGE
+   | OP_INVOKE_SUPER_RANGE
+   | OP_INVOKE_DIRECT_RANGE
+   | OP_INVOKE_STATIC_RANGE
+   | OP_INVOKE_INTERFACE_RANGE
+   | OP_UNUSED_79
+   | OP_UNUSED_7A
+   | OP_NEG_INT
+   | OP_NOT_INT
+   | OP_NEG_LONG
+   | OP_NOT_LONG
+   | OP_NEG_FLOAT
+   | OP_NEG_DOUBLE
+   | OP_INT_TO_LONG
+   | OP_INT_TO_FLOAT
+   | OP_INT_TO_DOUBLE
+   | OP_LONG_TO_INT
+   | OP_LONG_TO_FLOAT
+   | OP_LONG_TO_DOUBLE
+   | OP_FLOAT_TO_INT
+   | OP_FLOAT_TO_LONG
+   | OP_FLOAT_TO_DOUBLE
+   | OP_DOUBLE_TO_INT
+   | OP_DOUBLE_TO_LONG
+   | OP_DOUBLE_TO_FLOAT
+   | OP_INT_TO_BYTE
+   | OP_INT_TO_CHAR
+   | OP_INT_TO_SHORT
+   | OP_ADD_INT
+   | OP_SUB_INT
+   | OP_MUL_INT
+   | OP_DIV_INT
+   | OP_REM_INT
+   | OP_AND_INT
+   | OP_OR_INT
+   | OP_XOR_INT
+   | OP_SHL_INT
+   | OP_SHR_INT
+   | OP_USHR_INT
+   | OP_ADD_LONG
+   | OP_SUB_LONG
+   | OP_MUL_LONG
+   | OP_DIV_LONG
+   | OP_REM_LONG
+   | OP_AND_LONG
+   | OP_OR_LONG
+   | OP_XOR_LONG
+   | OP_SHL_LONG
+   | OP_SHR_LONG
+   | OP_USHR_LONG
+   | OP_ADD_FLOAT
+   | OP_SUB_FLOAT
+   | OP_MUL_FLOAT
+   | OP_DIV_FLOAT
+   | OP_REM_FLOAT
+   | OP_ADD_DOUBLE
+   | OP_SUB_DOUBLE
+   | OP_MUL_DOUBLE
+   | OP_DIV_DOUBLE
+   | OP_REM_DOUBLE
+   | OP_ADD_INT_2ADDR
+   | OP_SUB_INT_2ADDR
+   | OP_MUL_INT_2ADDR
+   | OP_DIV_INT_2ADDR
+   | OP_REM_INT_2ADDR
+   | OP_AND_INT_2ADDR
+   | OP_OR_INT_2ADDR
+   | OP_XOR_INT_2ADDR
+   | OP_SHL_INT_2ADDR
+   | OP_SHR_INT_2ADDR
+   | OP_USHR_INT_2ADDR
+   | OP_ADD_LONG_2ADDR
+   | OP_SUB_LONG_2ADDR
+   | OP_MUL_LONG_2ADDR
+   | OP_DIV_LONG_2ADDR
+   | OP_REM_LONG_2ADDR
+   | OP_AND_LONG_2ADDR
+   | OP_OR_LONG_2ADDR
+   | OP_XOR_LONG_2ADDR
+   | OP_SHL_LONG_2ADDR
+   | OP_SHR_LONG_2ADDR
+   | OP_USHR_LONG_2ADDR
+   | OP_ADD_FLOAT_2ADDR
+   | OP_SUB_FLOAT_2ADDR
+   | OP_MUL_FLOAT_2ADDR
+   | OP_DIV_FLOAT_2ADDR
+   | OP_REM_FLOAT_2ADDR
+   | OP_ADD_DOUBLE_2ADDR
+   | OP_SUB_DOUBLE_2ADDR
+   | OP_MUL_DOUBLE_2ADDR
+   | OP_DIV_DOUBLE_2ADDR
+   | OP_REM_DOUBLE_2ADDR
+   | OP_ADD_INT_LIT16
+   | OP_RSUB_INT
+   | OP_MUL_INT_LIT16
+   | OP_DIV_INT_LIT16
+   | OP_REM_INT_LIT16
+   | OP_AND_INT_LIT16
+   | OP_OR_INT_LIT16
+   | OP_XOR_INT_LIT16
+   | OP_ADD_INT_LIT8
+   | OP_RSUB_INT_LIT8
+   | OP_MUL_INT_LIT8
+   | OP_DIV_INT_LIT8
+   | OP_REM_INT_LIT8
+   | OP_AND_INT_LIT8
+   | OP_OR_INT_LIT8
+   | OP_XOR_INT_LIT8
+   | OP_SHL_INT_LIT8
+   | OP_SHR_INT_LIT8
+   | OP_USHR_INT_LIT8
+   | OP_IGET_VOLATILE
+   | OP_IPUT_VOLATILE
+   | OP_SGET_VOLATILE
+   | OP_SPUT_VOLATILE
+   | OP_IGET_OBJECT_VOLATILE
+   | OP_IGET_WIDE_VOLATILE
+   | OP_IPUT_WIDE_VOLATILE
+   | OP_SGET_WIDE_VOLATILE
+   | OP_SPUT_WIDE_VOLATILE
+   | OP_BREAKPOINT
+   | OP_THROW_VERIFICATION_ERROR
+   | OP_EXECUTE_INLINE
+   | OP_EXECUTE_INLINE_RANGE
+   | OP_INVOKE_OBJECT_INIT_RANGE
+   | OP_RETURN_VOID_BARRIER
+   | OP_IGET_QUICK
+   | OP_IGET_WIDE_QUICK
+   | OP_IGET_OBJECT_QUICK
+   | OP_IPUT_QUICK
+   | OP_IPUT_WIDE_QUICK
+   | OP_IPUT_OBJECT_QUICK
+   | OP_INVOKE_VIRTUAL_QUICK
+   | OP_INVOKE_VIRTUAL_QUICK_RANGE
+   | OP_INVOKE_SUPER_QUICK
+   | OP_INVOKE_SUPER_QUICK_RANGE
+   | OP_IPUT_OBJECT_VOLATILE
+   | OP_SGET_OBJECT_VOLATILE
+   | OP_SPUT_OBJECT_VOLATILE
+   | OP_UNUSED_FF
+   | COLON NAMESTRING
+   | OP_CATCH CLASSTYPE INIBRACE jmplabel ELLIPSIS jmplabel CLOBRACE jmplabel
+   ;
 %%
 
 void Analysis::Parser::error(const location &loc, const std::string &message) {
 	cout << "Parse error: " << message << endl
-	    << "Error location: " << loc << endl;
+	    << "Error location: " << loc << endl << driver.mLexer.text() << endl;
 }
