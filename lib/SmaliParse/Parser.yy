@@ -91,7 +91,7 @@
 
 %token <int> FLAG "flag"
 %token <int> REGD "v(p)x"
-%token <uint64_t> NUMBER "number";
+%token <int64_t> NUMBER "number";
 
 %token OP_BEGIN "begin of opcodes"
 %token OP_NOP "nop"
@@ -462,7 +462,9 @@ jmplabel : COLON NAMESTRING {
     }
 
 instruction :
-     OP_NOP
+     OP_NOP {
+       $$ = new Op_NOP(OP_NOP, driver.stringPool());
+    }
    | OP_MOVE REGD COMMA REGD {
        $$ = new Op_MOVE(OP_MOVE, driver.stringPool(), $2, $4);
     }
@@ -535,7 +537,9 @@ instruction :
    | OP_CONST_CLASS
    | OP_MONITOR_ENTER
    | OP_MONITOR_EXIT
-   | OP_CHECK_CAST
+   | OP_CHECK_CAST REGD COMMA CLASSTYPE {
+       $$ = new Op_CHECK_CAST(OP_CHECK_CAST, driver.stringPool(), $2, $4);
+    }
    | OP_INSTANCE_OF
    | OP_ARRAY_LENGTH REGD COMMA REGD {
        $$ = new Op_ARRAY_LENGTH(OP_ARRAY_LENGTH, driver.stringPool(), $2, $4);
@@ -549,7 +553,9 @@ instruction :
    | OP_FILLED_NEW_ARRAY
    | OP_FILLED_NEW_ARRAY_RANGE
    | OP_FILL_ARRAY_DATA
-   | OP_THROW
+   | OP_THROW REGD {
+       $$ = new Op_THROW(OP_THROW, driver.stringPool(), $2);
+    }
    | OP_GOTO jmplabel {
        $$ = new Op_GOTO(OP_GOTO, driver.stringPool(), $2);
     }
@@ -559,8 +565,12 @@ instruction :
    | OP_GOTO_32 jmplabel {
        $$ = new Op_GOTO(OP_GOTO_32, driver.stringPool(), $2);
     }
-   | OP_PACKED_SWITCH
-   | OP_SPARSE_SWITCH
+   | OP_PACKED_SWITCH REGD COMMA jmplabel {
+       $$ = new Op_X_SWITCH(OP_PACKED_SWITCH, driver.stringPool(), $2, $4);
+    }
+   | OP_SPARSE_SWITCH REGD COMMA jmplabel {
+       $$ = new Op_X_SWITCH(OP_SPARSE_SWITCH, driver.stringPool(), $2, $4);
+    }
    | OP_CMPL_FLOAT
    | OP_CMPG_FLOAT
    | OP_CMPL_DOUBLE
@@ -636,20 +646,48 @@ instruction :
    | OP_APUT_BYTE
    | OP_APUT_CHAR
    | OP_APUT_SHORT
-   | OP_IGET
-   | OP_IGET_WIDE
-   | OP_IGET_OBJECT
-   | OP_IGET_BOOLEAN
-   | OP_IGET_BYTE
-   | OP_IGET_CHAR
-   | OP_IGET_SHORT
-   | OP_IPUT
-   | OP_IPUT_WIDE
-   | OP_IPUT_OBJECT
-   | OP_IPUT_BOOLEAN
-   | OP_IPUT_BYTE
-   | OP_IPUT_CHAR
-   | OP_IPUT_SHORT
+   | OP_IGET REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IGET(OP_IGET, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IGET_WIDE REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IGET(OP_IGET_WIDE, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IGET_OBJECT REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IGET(OP_IGET_OBJECT, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IGET_BOOLEAN REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IGET(OP_IGET_BOOLEAN, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IGET_BYTE REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IGET(OP_IGET_BYTE, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IGET_CHAR REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IGET(OP_IGET_CHAR, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IGET_SHORT REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IGET(OP_IGET_SHORT, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IPUT REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IPUT(OP_IPUT, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IPUT_WIDE REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IPUT(OP_IPUT_WIDE, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IPUT_OBJECT REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IPUT(OP_IPUT_OBJECT, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IPUT_BOOLEAN REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IPUT(OP_IPUT_BOOLEAN, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IPUT_BYTE REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IPUT(OP_IPUT_BYTE, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IPUT_CHAR REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IPUT(OP_IPUT_CHAR, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
+   | OP_IPUT_SHORT REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
+       $$ = new Op_IPUT(OP_IPUT_SHORT, driver.stringPool(), $2, $4, $6, $8, $10);
+    }
    | OP_SGET REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
        $$ = new Op_SGET(OP_SGET, driver.stringPool(), $2, $4, $6, $8);
     }
@@ -708,11 +746,21 @@ instruction :
        $$ = new Op_INVOKE(OP_INVOKE_INTERFACE, driver.stringPool(), $3, $6, $8, $10, $12);
     }
    | OP_UNUSED_73
-   | OP_INVOKE_VIRTUAL_RANGE
-   | OP_INVOKE_SUPER_RANGE
-   | OP_INVOKE_DIRECT_RANGE
-   | OP_INVOKE_STATIC_RANGE
-   | OP_INVOKE_INTERFACE_RANGE
+   | OP_INVOKE_VIRTUAL_RANGE INIBRACE REGD ELLIPSIS REGD CLOBRACE COMMA CLASSTYPE POINT NAMESTRING LEFTPAR args RIGHTPAR CLASSTYPE {
+       $$ = new Op_INVOKE_X_RANGE(OP_INVOKE_VIRTUAL_RANGE, driver.stringPool(), $3, $5, $8, $10, $12, $14);
+    }
+   | OP_INVOKE_SUPER_RANGE INIBRACE REGD ELLIPSIS REGD CLOBRACE COMMA CLASSTYPE POINT NAMESTRING LEFTPAR args RIGHTPAR CLASSTYPE {
+       $$ = new Op_INVOKE_X_RANGE(OP_INVOKE_SUPER_RANGE, driver.stringPool(), $3, $5, $8, $10, $12, $14);
+    }
+   | OP_INVOKE_DIRECT_RANGE INIBRACE REGD ELLIPSIS REGD CLOBRACE COMMA CLASSTYPE POINT NAMESTRING LEFTPAR args RIGHTPAR CLASSTYPE {
+       $$ = new Op_INVOKE_X_RANGE(OP_INVOKE_DIRECT_RANGE, driver.stringPool(), $3, $5, $8, $10, $12, $14);
+    }
+   | OP_INVOKE_STATIC_RANGE INIBRACE REGD ELLIPSIS REGD CLOBRACE COMMA CLASSTYPE POINT NAMESTRING LEFTPAR args RIGHTPAR CLASSTYPE {
+       $$ = new Op_INVOKE_X_RANGE(OP_INVOKE_STATIC_RANGE, driver.stringPool(), $3, $5, $8, $10, $12, $14);
+    }
+   | OP_INVOKE_INTERFACE_RANGE INIBRACE REGD ELLIPSIS REGD CLOBRACE COMMA CLASSTYPE POINT NAMESTRING LEFTPAR args RIGHTPAR CLASSTYPE {
+       $$ = new Op_INVOKE_X_RANGE(OP_INVOKE_INTERFACE_RANGE, driver.stringPool(), $3, $5, $8, $10, $12, $14);
+    }
    | OP_UNUSED_79
    | OP_UNUSED_7A
    | OP_NEG_INT
@@ -768,17 +816,39 @@ instruction :
    | OP_MUL_DOUBLE
    | OP_DIV_DOUBLE
    | OP_REM_DOUBLE
-   | OP_ADD_INT_2ADDR
-   | OP_SUB_INT_2ADDR
-   | OP_MUL_INT_2ADDR
-   | OP_DIV_INT_2ADDR
-   | OP_REM_INT_2ADDR
-   | OP_AND_INT_2ADDR
-   | OP_OR_INT_2ADDR
-   | OP_XOR_INT_2ADDR
-   | OP_SHL_INT_2ADDR
-   | OP_SHR_INT_2ADDR
-   | OP_USHR_INT_2ADDR
+   | OP_ADD_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_ADD_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SUB_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_SUB_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_MUL_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_MUL_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_DIV_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_DIV_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_REM_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_REM_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_AND_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_AND_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_OR_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_OR_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_XOR_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_XOR_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SHL_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_SHL_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SHR_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_SHR_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_USHR_INT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_INT_2ADDR(OP_USHR_INT_2ADDR, driver.stringPool(), $2, $4);
+    }
    | OP_ADD_LONG_2ADDR
    | OP_SUB_LONG_2ADDR
    | OP_MUL_LONG_2ADDR

@@ -83,7 +83,8 @@ StringPool *SmaliField::stringPool ()
 
 void SmaliField::printAst (std::vector<std::string> &v)
 {
-    v.push_back (".field "+formater::getAccessFlagField (mFlag)+" "+(*mStringPool)[mName]+":"+(*mStringPool)[mType]);
+    v.push_back (std::string(".field ")+formater::getAccessFlagField (mFlag)
+                 +" "+(*mStringPool)[mName]+":"+(*mStringPool)[mType]);
 }
 
 

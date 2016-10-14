@@ -431,12 +431,12 @@ COMMENT         #{UANYN}*
 ".."  {return Parser::make_ELLIPSIS(LOCATION);}
 
 
-{DNUMBER}   {
-                uint64_t number = strtoull(yytext, 0, 10);
+[-]?{DNUMBER}   {
+                int64_t number = strtoll(yytext, 0, 10);
                 return Parser::make_NUMBER(number, LOCATION);
             }
-"0x"{HNUMBER} {
-                uint64_t number = strtoull(yytext, 0, 16);
+[-]?"0x"{HNUMBER} {
+                int64_t number = strtoll(yytext, 0, 16);
                 return Parser::make_NUMBER(number, LOCATION);
             }
 

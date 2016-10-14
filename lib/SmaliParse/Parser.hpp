@@ -328,6 +328,9 @@ namespace  Analysis  {
       // registers
       char dummy2[sizeof(int)];
 
+      // "number"
+      char dummy3[sizeof(int64_t)];
+
       // "c type string"
       // "name string"
       // "comment"
@@ -335,16 +338,13 @@ namespace  Analysis  {
       // "class type"
       // comment
       // jmplabel
-      char dummy3[sizeof(std::string)];
+      char dummy4[sizeof(std::string)];
 
       // regs
-      char dummy4[sizeof(std::vector<int>)];
+      char dummy5[sizeof(std::vector<int>)];
 
       // args
-      char dummy5[sizeof(std::vector<std::string>)];
-
-      // "number"
-      char dummy6[sizeof(uint64_t)];
+      char dummy6[sizeof(std::vector<std::string>)];
 };
 
     /// Symbol semantic values.
@@ -698,13 +698,13 @@ namespace  Analysis  {
 
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
+  basic_symbol (typename Base::kind_type t, const int64_t v, const location_type& l);
+
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<int> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const uint64_t v, const location_type& l);
 
 
       /// Constructor for symbols with semantic value.
@@ -855,7 +855,7 @@ namespace  Analysis  {
 
     static inline
     symbol_type
-    make_NUMBER (const uint64_t& v, const location_type& l);
+    make_NUMBER (const int64_t& v, const location_type& l);
 
     static inline
     symbol_type
@@ -2138,7 +2138,7 @@ namespace  Analysis  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 713,     ///< Last index in yytable_.
+      yylast_ = 1008,     ///< Last index in yytable_.
       yynnts_ = 15,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
@@ -2267,6 +2267,10 @@ namespace  Analysis  {
         value.copy< int > (other.value);
         break;
 
+      case 22: // "number"
+        value.copy< int64_t > (other.value);
+        break;
+
       case 4: // "c type string"
       case 5: // "name string"
       case 6: // "comment"
@@ -2283,10 +2287,6 @@ namespace  Analysis  {
 
       case 301: // args
         value.copy< std::vector<std::string> > (other.value);
-        break;
-
-      case 22: // "number"
-        value.copy< uint64_t > (other.value);
         break;
 
       default:
@@ -2323,6 +2323,10 @@ namespace  Analysis  {
         value.copy< int > (v);
         break;
 
+      case 22: // "number"
+        value.copy< int64_t > (v);
+        break;
+
       case 4: // "c type string"
       case 5: // "name string"
       case 6: // "comment"
@@ -2339,10 +2343,6 @@ namespace  Analysis  {
 
       case 301: // args
         value.copy< std::vector<std::string> > (v);
-        break;
-
-      case 22: // "number"
-        value.copy< uint64_t > (v);
         break;
 
       default:
@@ -2375,6 +2375,13 @@ namespace  Analysis  {
   {}
 
   template <typename Base>
+   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int64_t v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
    Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
     : Base (t)
     , value (v)
@@ -2390,13 +2397,6 @@ namespace  Analysis  {
 
   template <typename Base>
    Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const uint64_t v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -2445,6 +2445,10 @@ namespace  Analysis  {
         value.template destroy< int > ();
         break;
 
+      case 22: // "number"
+        value.template destroy< int64_t > ();
+        break;
+
       case 4: // "c type string"
       case 5: // "name string"
       case 6: // "comment"
@@ -2461,10 +2465,6 @@ namespace  Analysis  {
 
       case 301: // args
         value.template destroy< std::vector<std::string> > ();
-        break;
-
-      case 22: // "number"
-        value.template destroy< uint64_t > ();
         break;
 
       default:
@@ -2507,6 +2507,10 @@ namespace  Analysis  {
         value.move< int > (s.value);
         break;
 
+      case 22: // "number"
+        value.move< int64_t > (s.value);
+        break;
+
       case 4: // "c type string"
       case 5: // "name string"
       case 6: // "comment"
@@ -2523,10 +2527,6 @@ namespace  Analysis  {
 
       case 301: // args
         value.move< std::vector<std::string> > (s.value);
-        break;
-
-      case 22: // "number"
-        value.move< uint64_t > (s.value);
         break;
 
       default:
@@ -2739,7 +2739,7 @@ namespace  Analysis  {
   }
 
    Parser ::symbol_type
-   Parser ::make_NUMBER (const uint64_t& v, const location_type& l)
+   Parser ::make_NUMBER (const int64_t& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_NUMBER, v, l);
   }

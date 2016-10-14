@@ -22,7 +22,11 @@ class formater {
 public:
     static std::string int2hexStr(int i) {
         char buf[12];
-        sprintf (buf, "0x%x",i);
+        if(i < 0) {
+            sprintf (buf, "-0x%x",-i);
+        } else {
+            sprintf (buf, "0x%x",i);
+        }
         return buf;
     }
 
@@ -106,6 +110,8 @@ public:
 
 private:
     static std::string getAccessFlag(u4 flags, const char *kAccessStrings[18]) {
+        if(flags == 0)
+            return "";
         std::string rel;
         const char **acceptFlags = kAccessStrings;
         assert (acceptFlags != nullptr);

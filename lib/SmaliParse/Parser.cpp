@@ -282,6 +282,10 @@ namespace  Analysis  {
         value.move< int > (that.value);
         break;
 
+      case 22: // "number"
+        value.move< int64_t > (that.value);
+        break;
+
       case 4: // "c type string"
       case 5: // "name string"
       case 6: // "comment"
@@ -298,10 +302,6 @@ namespace  Analysis  {
 
       case 301: // args
         value.move< std::vector<std::string> > (that.value);
-        break;
-
-      case 22: // "number"
-        value.move< uint64_t > (that.value);
         break;
 
       default:
@@ -336,6 +336,10 @@ namespace  Analysis  {
         value.copy< int > (that.value);
         break;
 
+      case 22: // "number"
+        value.copy< int64_t > (that.value);
+        break;
+
       case 4: // "c type string"
       case 5: // "name string"
       case 6: // "comment"
@@ -352,10 +356,6 @@ namespace  Analysis  {
 
       case 301: // args
         value.copy< std::vector<std::string> > (that.value);
-        break;
-
-      case 22: // "number"
-        value.copy< uint64_t > (that.value);
         break;
 
       default:
@@ -603,6 +603,10 @@ namespace  Analysis  {
         yylhs.value.build< int > ();
         break;
 
+      case 22: // "number"
+        yylhs.value.build< int64_t > ();
+        break;
+
       case 4: // "c type string"
       case 5: // "name string"
       case 6: // "comment"
@@ -619,10 +623,6 @@ namespace  Analysis  {
 
       case 301: // args
         yylhs.value.build< std::vector<std::string> > ();
-        break;
-
-      case 22: // "number"
-        yylhs.value.build< uint64_t > ();
         break;
 
       default:
@@ -776,7 +776,7 @@ namespace  Analysis  {
   case 30:
 #line 454 "Parser.yy" // lalr1.cc:859
     {
-        driver.setCurMethodRegSize(yystack_[0].value.as< uint64_t > ());
+        driver.setCurMethodRegSize(yystack_[0].value.as< int64_t > ());
     }
 #line 782 "Parser.cpp" // lalr1.cc:859
     break;
@@ -789,696 +789,976 @@ namespace  Analysis  {
 #line 790 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 33:
-#line 466 "Parser.yy" // lalr1.cc:859
+  case 32:
+#line 465 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_NOP(OP_NOP, driver.stringPool());
     }
 #line 798 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 34:
-#line 469 "Parser.yy" // lalr1.cc:859
+  case 33:
+#line 468 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_FROM16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 806 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 35:
-#line 472 "Parser.yy" // lalr1.cc:859
+  case 34:
+#line 471 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_FROM16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 814 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 36:
-#line 475 "Parser.yy" // lalr1.cc:859
+  case 35:
+#line 474 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_WIDE, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 822 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 37:
-#line 478 "Parser.yy" // lalr1.cc:859
+  case 36:
+#line 477 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_WIDE_FROM16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_WIDE, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 830 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 38:
-#line 481 "Parser.yy" // lalr1.cc:859
+  case 37:
+#line 480 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_WIDE_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_WIDE_FROM16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 838 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 39:
-#line 484 "Parser.yy" // lalr1.cc:859
+  case 38:
+#line 483 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_OBJECT, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_WIDE_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 846 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 40:
-#line 487 "Parser.yy" // lalr1.cc:859
+  case 39:
+#line 486 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_OBJECT_FROM16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_OBJECT, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 854 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 41:
-#line 490 "Parser.yy" // lalr1.cc:859
+  case 40:
+#line 489 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_OBJECT_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_OBJECT_FROM16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 862 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 42:
-#line 493 "Parser.yy" // lalr1.cc:859
+  case 41:
+#line 492 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_MOVE_RESULT(OP_MOVE_RESULT, driver.stringPool(), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_MOVE(OP_MOVE_OBJECT_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 870 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 43:
-#line 496 "Parser.yy" // lalr1.cc:859
+  case 42:
+#line 495 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_MOVE_RESULT(OP_MOVE_RESULT_WIDE, driver.stringPool(), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_MOVE_RESULT(OP_MOVE_RESULT, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 878 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 44:
-#line 499 "Parser.yy" // lalr1.cc:859
+  case 43:
+#line 498 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_MOVE_RESULT(OP_MOVE_RESULT_OBJECT, driver.stringPool(), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_MOVE_RESULT(OP_MOVE_RESULT_WIDE, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 886 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 45:
-#line 502 "Parser.yy" // lalr1.cc:859
+  case 44:
+#line 501 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_MOVE_EXCEPTION(OP_MOVE_EXCEPTION, driver.stringPool(), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_MOVE_RESULT(OP_MOVE_RESULT_OBJECT, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 894 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 46:
-#line 505 "Parser.yy" // lalr1.cc:859
+  case 45:
+#line 504 "Parser.yy" // lalr1.cc:859
     {
-        yylhs.value.as< OpCode* > () = new Op_RETURN_VOID(OP_RETURN_VOID, driver.stringPool());
+       yylhs.value.as< OpCode* > () = new Op_MOVE_EXCEPTION(OP_MOVE_EXCEPTION, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 902 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 47:
-#line 508 "Parser.yy" // lalr1.cc:859
+  case 46:
+#line 507 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_RETURN(OP_RETURN, driver.stringPool(), yystack_[0].value.as< int > ());
+        yylhs.value.as< OpCode* > () = new Op_RETURN_VOID(OP_RETURN_VOID, driver.stringPool());
     }
 #line 910 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 48:
-#line 511 "Parser.yy" // lalr1.cc:859
+  case 47:
+#line 510 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_RETURN(OP_RETURN_WIDE, driver.stringPool(), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_RETURN(OP_RETURN, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 918 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 49:
-#line 514 "Parser.yy" // lalr1.cc:859
+  case 48:
+#line 513 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_RETURN(OP_RETURN_OBJECT, driver.stringPool(), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_RETURN(OP_RETURN_WIDE, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 926 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 50:
-#line 517 "Parser.yy" // lalr1.cc:859
+  case 49:
+#line 516 "Parser.yy" // lalr1.cc:859
     {
-        yylhs.value.as< OpCode* > () = new Op_CONST_D(OP_CONST_4, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+      yylhs.value.as< OpCode* > () = new Op_RETURN(OP_RETURN_OBJECT, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 934 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 51:
-#line 520 "Parser.yy" // lalr1.cc:859
+  case 50:
+#line 519 "Parser.yy" // lalr1.cc:859
     {
-        yylhs.value.as< OpCode* > () = new Op_CONST_D(OP_CONST_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+        yylhs.value.as< OpCode* > () = new Op_CONST_D(OP_CONST_4, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
     }
 #line 942 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 58:
-#line 529 "Parser.yy" // lalr1.cc:859
+  case 51:
+#line 522 "Parser.yy" // lalr1.cc:859
     {
-        yylhs.value.as< OpCode* > () = new Op_CONST_STRING(OP_CONST_STRING, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+        yylhs.value.as< OpCode* > () = new Op_CONST_D(OP_CONST_16, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
     }
 #line 950 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 59:
-#line 532 "Parser.yy" // lalr1.cc:859
+  case 58:
+#line 531 "Parser.yy" // lalr1.cc:859
     {
-        yylhs.value.as< OpCode* > () = new Op_CONST_STRING(OP_CONST_STRING_JUMBO, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+        yylhs.value.as< OpCode* > () = new Op_CONST_STRING(OP_CONST_STRING, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 958 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 65:
-#line 540 "Parser.yy" // lalr1.cc:859
+  case 59:
+#line 534 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_ARRAY_LENGTH(OP_ARRAY_LENGTH, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+        yylhs.value.as< OpCode* > () = new Op_CONST_STRING(OP_CONST_STRING_JUMBO, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 966 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 66:
-#line 543 "Parser.yy" // lalr1.cc:859
+  case 63:
+#line 540 "Parser.yy" // lalr1.cc:859
     {
-        yylhs.value.as< OpCode* > () = new Op_NEW_INSTANCE(OP_NEW_INSTANCE, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_CHECK_CAST(OP_CHECK_CAST, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 974 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 67:
-#line 546 "Parser.yy" // lalr1.cc:859
+  case 65:
+#line 544 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_NEW_ARRAY(OP_NEW_ARRAY, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_ARRAY_LENGTH(OP_ARRAY_LENGTH, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 982 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 72:
-#line 553 "Parser.yy" // lalr1.cc:859
+  case 66:
+#line 547 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_GOTO(OP_GOTO, driver.stringPool(), yystack_[0].value.as< std::string > ());
+        yylhs.value.as< OpCode* > () = new Op_NEW_INSTANCE(OP_NEW_INSTANCE, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 990 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 73:
-#line 556 "Parser.yy" // lalr1.cc:859
+  case 67:
+#line 550 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_GOTO(OP_GOTO_16, driver.stringPool(), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_NEW_ARRAY(OP_NEW_ARRAY, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 998 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 74:
-#line 559 "Parser.yy" // lalr1.cc:859
+  case 71:
+#line 556 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_GOTO(OP_GOTO_32, driver.stringPool(), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_THROW(OP_THROW, driver.stringPool(), yystack_[0].value.as< int > ());
     }
 #line 1006 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 82:
-#line 569 "Parser.yy" // lalr1.cc:859
+  case 72:
+#line 559 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_EQ, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_GOTO(OP_GOTO, driver.stringPool(), yystack_[0].value.as< std::string > ());
     }
 #line 1014 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 83:
-#line 572 "Parser.yy" // lalr1.cc:859
+  case 73:
+#line 562 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_NE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_GOTO(OP_GOTO_16, driver.stringPool(), yystack_[0].value.as< std::string > ());
     }
 #line 1022 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 84:
-#line 575 "Parser.yy" // lalr1.cc:859
+  case 74:
+#line 565 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_LT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_GOTO(OP_GOTO_32, driver.stringPool(), yystack_[0].value.as< std::string > ());
     }
 #line 1030 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 85:
-#line 578 "Parser.yy" // lalr1.cc:859
+  case 75:
+#line 568 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_GE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_X_SWITCH(OP_PACKED_SWITCH, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1038 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 86:
-#line 581 "Parser.yy" // lalr1.cc:859
+  case 76:
+#line 571 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_GT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_X_SWITCH(OP_SPARSE_SWITCH, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1046 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 87:
-#line 584 "Parser.yy" // lalr1.cc:859
+  case 82:
+#line 579 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_LE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_EQ, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1054 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 88:
-#line 587 "Parser.yy" // lalr1.cc:859
+  case 83:
+#line 582 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_EQZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_NE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1062 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 89:
-#line 590 "Parser.yy" // lalr1.cc:859
+  case 84:
+#line 585 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_NEZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_LT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1070 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 90:
-#line 593 "Parser.yy" // lalr1.cc:859
+  case 85:
+#line 588 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_LTZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_GE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1078 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 91:
-#line 596 "Parser.yy" // lalr1.cc:859
+  case 86:
+#line 591 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_GEZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_GT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1086 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 92:
-#line 599 "Parser.yy" // lalr1.cc:859
+  case 87:
+#line 594 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_GTZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IF_XX(OP_IF_LE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1094 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 93:
-#line 602 "Parser.yy" // lalr1.cc:859
+  case 88:
+#line 597 "Parser.yy" // lalr1.cc:859
     {
-      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_LEZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
+      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_EQZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1102 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 100:
-#line 611 "Parser.yy" // lalr1.cc:859
+  case 89:
+#line 600 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_NEZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1110 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 101:
-#line 614 "Parser.yy" // lalr1.cc:859
+  case 90:
+#line 603 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_WIDE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_LTZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1118 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 102:
-#line 617 "Parser.yy" // lalr1.cc:859
+  case 91:
+#line 606 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_OBJECT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_GEZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1126 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 103:
-#line 620 "Parser.yy" // lalr1.cc:859
+  case 92:
+#line 609 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_BOOLEAN, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_GTZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1134 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 104:
-#line 623 "Parser.yy" // lalr1.cc:859
+  case 93:
+#line 612 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_BYTE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+      yylhs.value.as< OpCode* > () = new Op_IF_XXZ(OP_IF_LEZ, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< std::string > ());
     }
 #line 1142 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 105:
-#line 626 "Parser.yy" // lalr1.cc:859
+  case 100:
+#line 621 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_CHAR, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 1150 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 106:
-#line 629 "Parser.yy" // lalr1.cc:859
+  case 101:
+#line 624 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_SHORT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_WIDE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 1158 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 128:
-#line 653 "Parser.yy" // lalr1.cc:859
+  case 102:
+#line 627 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_OBJECT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 1166 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 129:
-#line 656 "Parser.yy" // lalr1.cc:859
+  case 103:
+#line 630 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_WIDE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_BOOLEAN, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 1174 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 130:
-#line 659 "Parser.yy" // lalr1.cc:859
+  case 104:
+#line 633 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_OBJECT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_BYTE, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 1182 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 131:
-#line 662 "Parser.yy" // lalr1.cc:859
+  case 105:
+#line 636 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_BOOLEAN, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_CHAR, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 1190 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 132:
-#line 665 "Parser.yy" // lalr1.cc:859
+  case 106:
+#line 639 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_BYTE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_AGET(OP_AGET_SHORT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
     }
 #line 1198 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 133:
-#line 668 "Parser.yy" // lalr1.cc:859
+  case 114:
+#line 649 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_CHAR, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IGET(OP_IGET, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1206 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 134:
-#line 671 "Parser.yy" // lalr1.cc:859
+  case 115:
+#line 652 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_SHORT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IGET(OP_IGET_WIDE, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1214 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 135:
-#line 674 "Parser.yy" // lalr1.cc:859
+  case 116:
+#line 655 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IGET(OP_IGET_OBJECT, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1222 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 136:
-#line 677 "Parser.yy" // lalr1.cc:859
+  case 117:
+#line 658 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_WIDE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IGET(OP_IGET_BOOLEAN, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1230 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 137:
-#line 680 "Parser.yy" // lalr1.cc:859
+  case 118:
+#line 661 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_OBJECT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IGET(OP_IGET_BYTE, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1238 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 138:
-#line 683 "Parser.yy" // lalr1.cc:859
+  case 119:
+#line 664 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_BOOLEAN, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IGET(OP_IGET_CHAR, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1246 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 139:
-#line 686 "Parser.yy" // lalr1.cc:859
+  case 120:
+#line 667 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_BYTE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IGET(OP_IGET_SHORT, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1254 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 140:
-#line 689 "Parser.yy" // lalr1.cc:859
+  case 121:
+#line 670 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_CHAR, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IPUT(OP_IPUT, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1262 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 141:
-#line 692 "Parser.yy" // lalr1.cc:859
+  case 122:
+#line 673 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_SHORT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IPUT(OP_IPUT_WIDE, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1270 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 142:
-#line 695 "Parser.yy" // lalr1.cc:859
+  case 123:
+#line 676 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_VIRTUAL, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IPUT(OP_IPUT_OBJECT, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1278 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 143:
-#line 698 "Parser.yy" // lalr1.cc:859
+  case 124:
+#line 679 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_SUPER, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IPUT(OP_IPUT_BOOLEAN, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1286 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 144:
-#line 701 "Parser.yy" // lalr1.cc:859
+  case 125:
+#line 682 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_DIRECT, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IPUT(OP_IPUT_BYTE, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1294 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 145:
-#line 704 "Parser.yy" // lalr1.cc:859
+  case 126:
+#line 685 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_STATIC, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IPUT(OP_IPUT_CHAR, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1302 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 146:
-#line 707 "Parser.yy" // lalr1.cc:859
+  case 127:
+#line 688 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_INTERFACE, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_IPUT(OP_IPUT_SHORT, driver.stringPool(), yystack_[8].value.as< int > (), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1310 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 240:
-#line 803 "Parser.yy" // lalr1.cc:859
+  case 128:
+#line 691 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_ADD_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1318 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 241:
-#line 806 "Parser.yy" // lalr1.cc:859
+  case 129:
+#line 694 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_RSUB_INT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_WIDE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1326 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 242:
-#line 809 "Parser.yy" // lalr1.cc:859
+  case 130:
+#line 697 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_MUL_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_OBJECT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1334 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 243:
-#line 812 "Parser.yy" // lalr1.cc:859
+  case 131:
+#line 700 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_DIV_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_BOOLEAN, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1342 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 244:
-#line 815 "Parser.yy" // lalr1.cc:859
+  case 132:
+#line 703 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_REM_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_BYTE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1350 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 245:
-#line 818 "Parser.yy" // lalr1.cc:859
+  case 133:
+#line 706 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_AND_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_CHAR, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1358 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 246:
-#line 821 "Parser.yy" // lalr1.cc:859
+  case 134:
+#line 709 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_OR_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SGET(OP_SGET_SHORT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1366 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 247:
-#line 824 "Parser.yy" // lalr1.cc:859
+  case 135:
+#line 712 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_XOR_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1374 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 248:
-#line 827 "Parser.yy" // lalr1.cc:859
+  case 136:
+#line 715 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_ADD_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_WIDE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1382 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 249:
-#line 830 "Parser.yy" // lalr1.cc:859
+  case 137:
+#line 718 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_RSUB_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_OBJECT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1390 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 250:
-#line 833 "Parser.yy" // lalr1.cc:859
+  case 138:
+#line 721 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_MUL_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_BOOLEAN, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1398 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 251:
-#line 836 "Parser.yy" // lalr1.cc:859
+  case 139:
+#line 724 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_DIV_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_BYTE, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1406 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 252:
-#line 839 "Parser.yy" // lalr1.cc:859
+  case 140:
+#line 727 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_REM_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_CHAR, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1414 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 253:
-#line 842 "Parser.yy" // lalr1.cc:859
+  case 141:
+#line 730 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_AND_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_SPUT(OP_SPUT_SHORT, driver.stringPool(), yystack_[6].value.as< int > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
     }
 #line 1422 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 254:
-#line 845 "Parser.yy" // lalr1.cc:859
+  case 142:
+#line 733 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_OR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_VIRTUAL, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
     }
 #line 1430 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 255:
-#line 848 "Parser.yy" // lalr1.cc:859
+  case 143:
+#line 736 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_XOR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_SUPER, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
     }
 #line 1438 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 256:
-#line 851 "Parser.yy" // lalr1.cc:859
+  case 144:
+#line 739 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_SHL_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_DIRECT, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
     }
 #line 1446 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 257:
-#line 854 "Parser.yy" // lalr1.cc:859
+  case 145:
+#line 742 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_SHR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_STATIC, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
     }
 #line 1454 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 258:
-#line 857 "Parser.yy" // lalr1.cc:859
+  case 146:
+#line 745 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_USHR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< uint64_t > ());
+       yylhs.value.as< OpCode* > () = new Op_INVOKE(OP_INVOKE_INTERFACE, driver.stringPool(), yystack_[9].value.as< std::vector<int> > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
     }
 #line 1462 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 288:
-#line 889 "Parser.yy" // lalr1.cc:859
+  case 148:
+#line 749 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_JmpLabel(OP_UNUSED_FF, driver.stringPool(), yystack_[0].value.as< std::string > ());
+       yylhs.value.as< OpCode* > () = new Op_INVOKE_X_RANGE(OP_INVOKE_VIRTUAL_RANGE, driver.stringPool(), yystack_[11].value.as< int > (), yystack_[9].value.as< int > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
     }
 #line 1470 "Parser.cpp" // lalr1.cc:859
     break;
 
-  case 289:
-#line 892 "Parser.yy" // lalr1.cc:859
+  case 149:
+#line 752 "Parser.yy" // lalr1.cc:859
     {
-       yylhs.value.as< OpCode* > () = new Op_CATCH(OP_UNUSED_FF, driver.stringPool(), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
-   }
+       yylhs.value.as< OpCode* > () = new Op_INVOKE_X_RANGE(OP_INVOKE_SUPER_RANGE, driver.stringPool(), yystack_[11].value.as< int > (), yystack_[9].value.as< int > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+    }
 #line 1478 "Parser.cpp" // lalr1.cc:859
     break;
 
+  case 150:
+#line 755 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_INVOKE_X_RANGE(OP_INVOKE_DIRECT_RANGE, driver.stringPool(), yystack_[11].value.as< int > (), yystack_[9].value.as< int > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+    }
+#line 1486 "Parser.cpp" // lalr1.cc:859
+    break;
 
-#line 1482 "Parser.cpp" // lalr1.cc:859
+  case 151:
+#line 758 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_INVOKE_X_RANGE(OP_INVOKE_STATIC_RANGE, driver.stringPool(), yystack_[11].value.as< int > (), yystack_[9].value.as< int > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+    }
+#line 1494 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 152:
+#line 761 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_INVOKE_X_RANGE(OP_INVOKE_INTERFACE_RANGE, driver.stringPool(), yystack_[11].value.as< int > (), yystack_[9].value.as< int > (), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::vector<std::string> > (), yystack_[0].value.as< std::string > ());
+    }
+#line 1502 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 208:
+#line 819 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_ADD_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1510 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 209:
+#line 822 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_SUB_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1518 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 210:
+#line 825 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_MUL_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1526 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 211:
+#line 828 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_DIV_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1534 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 212:
+#line 831 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_REM_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1542 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 213:
+#line 834 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_AND_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1550 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 214:
+#line 837 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_OR_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1558 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 215:
+#line 840 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_XOR_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1566 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 216:
+#line 843 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_SHL_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1574 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 217:
+#line 846 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_SHR_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1582 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 218:
+#line 849 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_2ADDR(OP_USHR_INT_2ADDR, driver.stringPool(), yystack_[2].value.as< int > (), yystack_[0].value.as< int > ());
+    }
+#line 1590 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 240:
+#line 873 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_ADD_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1598 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 241:
+#line 876 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_RSUB_INT, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1606 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 242:
+#line 879 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_MUL_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1614 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 243:
+#line 882 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_DIV_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1622 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 244:
+#line 885 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_REM_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1630 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 245:
+#line 888 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_AND_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1638 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 246:
+#line 891 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_OR_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1646 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 247:
+#line 894 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_XOR_INT_LIT16, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1654 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 248:
+#line 897 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_ADD_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1662 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 249:
+#line 900 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_RSUB_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1670 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 250:
+#line 903 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_MUL_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1678 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 251:
+#line 906 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_DIV_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1686 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 252:
+#line 909 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_REM_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1694 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 253:
+#line 912 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_AND_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1702 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 254:
+#line 915 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_OR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1710 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 255:
+#line 918 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_XOR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1718 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 256:
+#line 921 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_SHL_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1726 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 257:
+#line 924 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_SHR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1734 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 258:
+#line 927 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_X_INT_LIT(OP_USHR_INT_LIT8, driver.stringPool(), yystack_[4].value.as< int > (), yystack_[2].value.as< int > (), yystack_[0].value.as< int64_t > ());
+    }
+#line 1742 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 288:
+#line 959 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_JmpLabel(OP_UNUSED_FF, driver.stringPool(), yystack_[0].value.as< std::string > ());
+    }
+#line 1750 "Parser.cpp" // lalr1.cc:859
+    break;
+
+  case 289:
+#line 962 "Parser.yy" // lalr1.cc:859
+    {
+       yylhs.value.as< OpCode* > () = new Op_CATCH(OP_UNUSED_FF, driver.stringPool(), yystack_[6].value.as< std::string > (), yystack_[4].value.as< std::string > (), yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());
+   }
+#line 1758 "Parser.cpp" // lalr1.cc:859
+    break;
+
+
+#line 1762 "Parser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1733,84 +2013,107 @@ namespace  Analysis  {
   }
 
 
-  const short int  Parser ::yypact_ninf_ = -395;
+  const short int  Parser ::yypact_ninf_ = -586;
 
   const signed char  Parser ::yytable_ninf_ = -1;
 
   const short int
    Parser ::yypact_[] =
   {
-    -395,     2,  -395,   296,  -395,  -395,   -16,   304,   309,   -16,
-     -16,  -395,   292,  -395,   294,   295,   297,   298,   299,   300,
-     302,   303,   305,   306,   307,   308,   310,  -395,   311,   312,
-     313,   314,   315,  -395,  -395,  -395,  -395,  -395,  -395,   316,
-     317,  -395,  -395,  -395,  -395,  -395,   318,   319,   320,  -395,
-    -395,  -395,  -395,    34,    34,    34,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,   321,   322,   323,   324,   325,   332,   333,
-     334,   335,   336,   337,   338,  -395,  -395,  -395,  -395,  -395,
-    -395,   339,   340,   341,   342,   343,   344,   345,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,   346,
-     347,   348,   349,   350,   351,   352,   353,   354,   355,   356,
-     357,   358,   359,    37,    42,    93,    94,    95,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,   363,   364,   365,   366,   367,   368,   369,   370,   371,
-     372,   373,   374,   375,   376,   377,   379,   380,   381,   382,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,   396,
-     400,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,   281,  -395,  -395,     5,   282,  -395,    36,   120,
-     121,   122,   123,   124,   125,   126,   127,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,   128,   129,   130,   131,   132,   133,
-     134,   416,  -395,  -395,  -395,   136,   137,   138,   139,   140,
-     141,   142,   143,   144,   145,   146,   147,   148,   149,   150,
-     151,   152,   153,   154,   155,   156,   157,   158,   159,   160,
-     161,   162,   163,   164,   165,   166,   167,   168,   434,   434,
-     434,   434,   434,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,  -395,  -395,  -395,   192,   194,   455,   458,
-     459,   466,   467,   468,   469,   470,   471,   472,   473,   489,
-     492,   476,   490,   478,  -395,   479,   480,   481,   482,   483,
-     484,    34,    34,    34,    34,    34,    34,   485,   486,   487,
-     488,   491,   493,   494,   502,   503,   505,   508,   509,   510,
-     511,   512,   513,   514,   515,   516,   517,   518,  -395,     9,
-      14,    18,    19,    20,   506,   507,   519,   520,   521,   522,
-     523,   524,   525,   526,   527,   528,   529,   530,   531,   532,
-     533,   534,   535,    34,   549,   550,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,   243,   244,   245,   246,   248,   249,   250,  -395,  -395,
-    -395,  -395,  -395,  -395,   251,   252,   253,   273,   274,   275,
-     276,   277,   278,   279,   280,   283,   284,   285,   286,   287,
-     288,   289,   290,   291,   293,   542,   326,   327,   328,   329,
-     330,   331,   360,   361,   362,   378,   383,   384,   385,   386,
-     387,   388,   389,   390,   391,   392,   393,   394,   395,   397,
-     398,  -395,  -395,    -2,   560,    34,    34,    34,    34,    34,
-      34,   548,   558,   561,   562,   563,   564,   565,   576,   582,
-     583,   584,   585,   586,   587,   588,   589,   590,   591,   592,
-     593,   594,  -395,   595,   596,   597,   598,   599,   578,   579,
-     580,   600,   601,   602,   603,   604,   605,   606,   607,   608,
-     609,   610,   611,   612,   613,   614,   615,    34,  -395,   630,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,   399,   401,   402,   403,   404,   406,
-     407,   408,   409,   410,   411,   412,   413,   414,   415,   417,
-     418,   419,   420,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,   421,  -395,   631,   632,   633,   634,   635,   636,
-     637,   641,   642,   643,   644,   645,   646,   647,   616,   651,
-     652,   653,   654,    34,  -395,  -395,  -395,  -395,  -395,  -395,
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,   424,   425,
-     427,   428,   429,  -395,   550,   550,   550,   550,   550,    -1,
-       1,     3,    11,    12,   655,   657,   658,   659,   660,  -395,
-    -395,  -395,  -395,  -395
+    -586,     2,  -586,     7,  -586,  -586,   -16,   279,   308,   -16,
+     -16,  -586,   298,  -586,   304,   305,   306,   312,   313,   315,
+     316,   317,   318,   319,   320,   321,   322,  -586,   323,   324,
+     325,   326,   327,  -586,  -586,  -586,  -586,  -586,  -586,   328,
+     329,  -586,  -586,  -586,   330,  -586,   331,   332,   333,  -586,
+    -586,  -586,   334,    52,    52,    52,   335,   336,  -586,  -586,
+    -586,  -586,  -586,   337,   338,   339,   340,   341,   342,   343,
+     344,   345,   346,   347,   348,  -586,  -586,  -586,  -586,  -586,
+    -586,   349,   350,   351,   352,   353,   354,   357,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,   358,   359,   360,   361,   362,
+     369,   370,   371,   372,   373,   374,   375,   376,   377,   378,
+     379,   380,   381,   382,   383,   384,   385,   386,   387,   388,
+     389,   390,   391,   125,   126,   127,   128,   129,  -586,   130,
+     131,   132,   133,   134,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,   402,
+     403,   404,   405,   406,   407,   408,   409,   410,   411,   412,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,   413,   414,   415,   416,   417,   418,   419,   420,   421,
+     422,   423,   424,   425,   426,   427,   428,   429,   430,   431,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,   445,
+     449,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,   295,  -586,  -586,   289,   290,  -586,   169,   170,
+     171,   172,   173,   174,   175,   176,   177,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,   178,   179,   181,   182,   183,   184,
+     185,   186,  -586,   468,  -586,  -586,  -586,   188,   189,   190,
+     191,   192,   193,   194,   195,   196,   197,   198,   199,   200,
+     201,   202,   203,   204,   205,   206,   207,   208,   209,   210,
+     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   232,   233,   234,   235,   236,   502,   502,   502,   502,
+     502,   503,   504,   505,   506,   507,   243,   244,   245,   246,
+     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
+     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
+     267,   268,   269,   270,   271,   272,   273,  -586,  -586,  -586,
+     276,   278,   539,   542,   543,   544,   545,   546,   547,   548,
+     549,   550,   551,   567,   570,   568,   554,   569,   557,  -586,
+      52,    52,   558,   559,   566,   571,   572,   573,    52,    52,
+      52,    52,    52,    52,   574,   575,   576,   577,   578,   579,
+     580,   581,   582,   583,   584,   585,   586,   587,   588,   589,
+     590,   591,   592,   593,   594,   608,   609,   610,   611,   612,
+     613,   614,   615,   616,   617,   618,   619,   620,   621,  -586,
+      22,    27,    28,    32,    33,   299,   300,   301,   355,   356,
+     622,   623,   626,   627,   628,   629,   630,   632,   633,   634,
+     635,   636,   637,   638,   639,   640,   641,   642,   643,   644,
+     645,   646,   647,   648,   649,   650,   651,   652,   653,   654,
+      52,   624,   625,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,   302,
+    -586,  -586,   392,   393,   394,   395,   396,   397,  -586,  -586,
+    -586,  -586,  -586,  -586,   398,   399,   400,   401,   432,   433,
+     434,   435,   436,   437,   438,   439,   440,   441,   442,   443,
+     444,   446,   447,   448,   450,   451,   452,   453,   454,   455,
+     456,   457,   458,   459,   460,   461,   462,   463,   464,   655,
+     466,   467,   469,   470,   471,   656,   667,   668,   669,   670,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,   472,   473,   474,   475,   476,   477,   478,   479,   481,
+     482,   483,   484,   485,   486,   487,   488,   489,   490,   491,
+     492,  -586,  -586,    -2,   631,    52,    52,    52,    52,    52,
+      52,   671,   672,   673,   674,   675,   676,   677,   691,   692,
+     693,   694,   695,   696,   697,   698,   699,   700,   701,   702,
+     703,   704,   708,   709,   710,   711,   712,   726,   730,   732,
+     749,   773,   774,   775,   776,   778,  -586,   777,   779,   780,
+     781,   782,   495,   497,   508,   509,   510,   769,   770,   771,
+     772,   783,   784,   785,   786,   787,   788,   789,   790,   791,
+     792,   793,   794,   795,   796,   797,    52,  -586,   812,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,   513,   514,   515,   516,   517,   534,   535,
+     536,   537,   538,   540,   541,   552,   553,   512,   555,   560,
+     561,   562,   563,   564,   565,   595,   596,   597,   598,   599,
+     600,   601,   602,   603,   604,   605,   556,   607,   657,   658,
+     659,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,
+     606,  -586,   821,   824,   825,   826,   827,   828,   829,   830,
+     831,   832,   836,   844,   845,   846,   847,   848,   849,   850,
+     851,   852,   853,   854,   855,   856,   857,   858,   859,   860,
+     864,   865,   866,   867,   868,   869,   876,   877,   878,   879,
+      52,   663,   664,   665,   666,   678,   679,   680,   681,   682,
+     683,   684,   685,   686,   687,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,   688,
+     689,   690,   705,   706,   707,   713,   714,   715,   716,  -586,
+     886,   888,   889,   890,   891,   892,   893,   894,   895,   896,
+     897,   898,   899,   900,   625,   625,   625,   625,   625,   870,
+     871,   904,   905,   906,  -586,  -586,  -586,  -586,  -586,  -586,
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,    -1,     1,
+       3,    11,    12,   720,   721,   722,   723,   724,   907,   908,
+     909,   910,   911,   625,   625,   625,   625,   625,  -586,  -586,
+    -586,  -586,  -586,    13,    14,    15,    16,    17,   912,   913,
+     914,   915,   916,  -586,  -586,  -586,  -586,  -586
   };
 
   const unsigned short int
@@ -1820,22 +2123,22 @@ namespace  Analysis  {
       20,    14,     0,    32,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,    46,     0,     0,
        0,     0,     0,    52,    53,    54,    55,    56,    57,     0,
-       0,    60,    61,    62,    63,    64,     0,     0,     0,    68,
-      69,    70,    71,     0,     0,     0,    75,    76,    77,    78,
+       0,    60,    61,    62,     0,    64,     0,     0,     0,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,    77,    78,
       79,    80,    81,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,    94,    95,    96,    97,    98,
       99,     0,     0,     0,     0,     0,     0,     0,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,     0,
+     109,   110,   111,   112,   113,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   147,     0,
+       0,     0,     0,     0,   153,   154,   155,   156,   157,   158,
      159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
      169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
      179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
      189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
      219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
      229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
      239,     0,     0,     0,     0,     0,     0,     0,     0,     0,
@@ -1847,68 +2150,91 @@ namespace  Analysis  {
        6,    21,     0,    16,    17,     0,     0,    30,     0,     0,
        0,     0,     0,     0,     0,     0,     0,    42,    43,    44,
       45,    47,    48,    49,     0,     0,     0,     0,     0,     0,
-       0,     0,    72,    73,    74,     0,     0,     0,     0,     0,
+       0,     0,    71,     0,    72,    73,    74,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    26,    26,
-      26,    26,    26,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,   288,    15,    22,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    31,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    27,     0,
+       0,     0,     0,     0,     0,     0,    26,    26,    26,    26,
+      26,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    23,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    50,    51,    58,    59,    65,
-      66,     0,     0,     0,     0,     0,     0,     0,    88,    89,
+       0,     0,     0,     0,     0,     0,     0,   288,    15,    22,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    31,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    27,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    23,    33,    34,    35,    36,    37,    38,    39,
+      40,    41,    50,    51,    58,    59,    63,    65,    66,     0,
+      75,    76,     0,     0,     0,     0,     0,     0,    88,    89,
       90,    91,    92,    93,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
+     218,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,    18,    24,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    28,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    25,     0,
-      67,    82,    83,    84,    85,    86,    87,   100,   101,   102,
-     103,   104,   105,   106,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    28,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,     0,    19,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   128,   129,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,     0,     0,
-       0,     0,     0,   289,    23,    23,    23,    23,    23,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   142,
-     143,   144,   145,   146
+       0,     0,     0,     0,     0,     0,     0,    25,     0,    67,
+      82,    83,    84,    85,    86,    87,   100,   101,   102,   103,
+     104,   105,   106,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   240,   241,   242,   243,   244,   245,   246,   247,   248,
+     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
+       0,    19,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   128,   129,   130,   131,   132,
+     133,   134,   135,   136,   137,   138,   139,   140,   141,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   289,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    23,    23,    23,    23,    23,     0,
+       0,     0,     0,     0,   114,   115,   116,   117,   118,   119,
+     120,   121,   122,   123,   124,   125,   126,   127,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    23,    23,    23,    23,    23,   142,   143,
+     144,   145,   146,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   148,   149,   150,   151,   152
   };
 
   const short int
    Parser ::yypgoto_[] =
   {
-    -395,  -395,  -395,  -395,  -395,  -395,  -395,  -395,   301,  -394,
-    -328,  -395,  -395,   -54,  -395
+    -586,  -586,  -586,  -586,  -586,  -586,  -586,  -586,   314,  -585,
+     -63,  -586,  -586,   -54,  -586
   };
 
   const short int
    Parser ::yydefgoto_[] =
   {
-      -1,     1,   271,   272,   273,   274,   275,   276,   282,   533,
-     429,   277,   278,   312,   279
+      -1,     1,   271,   272,   273,   274,   275,   276,   282,   633,
+     480,   277,   278,   314,   279
   };
 
   const unsigned short int
    Parser ::yytable_[] =
   {
-     313,   314,     2,     3,   281,     4,   588,   588,     5,   588,
-     376,   588,     6,     7,     8,     9,    10,    11,    12,   588,
-     588,   430,   431,   432,   433,   375,    13,    14,    15,    16,
+     315,   316,     2,     3,   281,     4,   707,   707,     5,   707,
+     280,   707,     6,     7,     8,     9,    10,    11,    12,   707,
+     707,   707,   707,   707,   707,   707,    13,    14,    15,    16,
       17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
       27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
       37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
@@ -1934,58 +2260,87 @@ namespace  Analysis  {
      237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
      247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
      257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   589,   694,   270,   695,   377,   696,   374,
-     689,   690,   691,   692,   693,   505,   697,   698,   506,   280,
-     505,   375,   375,   507,   505,   505,   505,   508,   509,   510,
-     285,   286,   283,   284,   287,   288,   289,   311,   290,   291,
-     292,   293,   378,   294,   295,   348,   296,   297,   298,   299,
-     349,   300,   301,   302,   303,   304,   305,   306,   307,   308,
-     309,   310,   315,   316,   317,   318,   319,   478,   479,   480,
-     481,   482,   483,   320,   321,   322,   323,   324,   325,   326,
-     327,   328,   329,   330,   331,   332,   333,   334,   335,   336,
-     337,   338,   339,   340,   341,   342,   343,   344,   345,   346,
-     347,   350,   351,   352,   353,   354,   355,   356,   357,   358,
-     359,   360,   361,   362,   363,   364,   365,   366,   367,   530,
-     368,   369,   370,   371,   372,   373,   379,   380,   381,   382,
+     267,   268,   269,   708,   908,   270,   909,   283,   910,   898,
+     899,   900,   901,   902,   410,   411,   911,   912,   928,   929,
+     930,   931,   932,   408,   481,   482,   483,   484,   589,   409,
+     409,   590,   284,   589,   589,   409,   591,   592,   589,   589,
+     287,   593,   594,   285,   286,   288,   289,   290,   923,   924,
+     925,   926,   927,   291,   292,   313,   293,   294,   295,   296,
+     297,   298,   299,   300,   301,   302,   303,   304,   305,   306,
+     307,   308,   309,   310,   311,   312,   317,   318,   319,   320,
+     321,   322,   323,   324,   325,   326,   327,   328,   329,   330,
+     331,   332,   333,   334,   335,   336,   540,   541,   337,   338,
+     339,   340,   341,   342,   548,   549,   550,   551,   552,   553,
+     343,   344,   345,   346,   347,   348,   349,   350,   351,   352,
+     353,   354,   355,   356,   357,   358,   359,   360,   361,   362,
+     363,   364,   365,   366,   367,   368,   369,   370,   371,   372,
+     373,   374,   375,   376,   377,   378,   379,   380,   381,   382,
      383,   384,   385,   386,   387,   388,   389,   390,   391,   392,
      393,   394,   395,   396,   397,   398,   399,   400,   401,   402,
-     403,   404,   405,   406,   407,   408,   409,   410,   411,   412,
-     413,   414,   415,   416,   417,   418,   419,   420,   421,   422,
-     423,   424,   425,   426,   427,   428,   434,   435,   436,   437,
-     438,   439,   440,   441,   442,   443,   444,   445,   446,   447,
-     448,   449,   450,   451,   452,   454,   456,   453,   455,   457,
-     458,   591,   592,   593,   594,   595,   596,   459,   460,   461,
-     462,   463,   464,   467,   465,   466,   468,   469,   470,   471,
-     472,   473,   474,   475,   476,   477,   484,   485,   486,   487,
-     491,   492,   488,   493,   489,   490,   494,   495,   496,   497,
-     498,   499,   500,   501,   502,   503,   504,   511,   512,   534,
-     535,   536,   537,   642,   538,   539,   540,   541,   542,   543,
-     513,   514,   515,   516,   517,   518,   519,   520,   521,   522,
-     523,   524,   525,   526,   527,   528,   529,   531,   532,   544,
-     545,   546,   547,   562,   548,   549,   550,   551,   590,   597,
-     552,   553,   554,   555,   556,   557,   558,   559,   560,   598,
-     561,   604,   599,   600,   601,   602,   603,   605,   606,   607,
-     608,   609,   610,   611,   612,   613,   614,   615,   616,   617,
-     623,   624,   625,   618,   619,   620,   621,   622,     0,   683,
-       0,     0,   563,   564,   565,   566,   567,   568,     0,     0,
-       0,   678,   626,   627,   628,   629,   630,   631,   632,   633,
-     634,   635,   636,   637,   638,   639,   640,   641,   643,   664,
-     665,   666,   667,   668,   669,   670,   569,   570,   571,   671,
-     672,   673,   674,   675,   676,   677,   679,   680,   681,   682,
-       0,     0,     0,   699,   572,   700,   701,   702,   703,   573,
-     574,   575,   576,   577,   578,   579,   580,   581,   582,   583,
-     584,   585,   644,   586,   645,   646,   647,   648,   587,   649,
-     650,   651,   652,   653,   654,   655,   656,   657,     0,     0,
-       0,     0,   658,     0,   659,   660,   661,   662,   684,   685,
-     663,   686,   687,   688
+     403,   404,   405,   406,   407,   412,   413,   414,   415,   416,
+     417,   418,   419,   420,   421,   422,   630,   423,   424,   425,
+     426,   427,   428,   429,   430,   431,   432,   433,   434,   435,
+     436,   437,   438,   439,   440,   441,   442,   443,   444,   445,
+     446,   447,   448,   449,   450,   451,   452,   453,   454,   455,
+     456,   457,   458,   459,   460,   461,   462,   463,   464,   465,
+     466,   467,   468,   469,   470,   471,   472,   473,   474,   475,
+     476,   477,   478,   479,   485,   486,   487,   488,   489,   490,
+     491,   492,   493,   494,   495,   496,   497,   498,   499,   500,
+     501,   502,   503,   504,   505,   506,   507,   508,   509,   510,
+     511,   512,   513,   514,   515,   516,   517,   518,   519,   521,
+     523,   520,   522,   524,   525,   526,   527,   528,   529,   530,
+     531,   534,   532,   533,   535,   537,   536,   538,   539,   542,
+     543,   710,   711,   712,   713,   714,   715,   544,   634,   595,
+     596,   597,   545,   546,   547,   554,   555,   556,   557,   558,
+     559,   560,   561,   562,   563,   564,   565,   566,   567,   568,
+     569,   570,   571,   572,   573,   574,   575,   576,   577,   578,
+     579,   580,   581,   582,   583,   584,   585,   586,   587,   588,
+       0,     0,   631,   632,     0,     0,     0,     0,     0,   709,
+       0,     0,     0,   600,   601,   598,   599,   602,   603,   604,
+     605,   606,   780,   607,   608,   609,   610,   611,   612,   613,
+     614,   615,   616,   617,   618,   619,   620,   621,   622,   623,
+     624,   625,   626,   627,   628,   629,   676,   682,   635,   636,
+     637,   638,   639,   640,   641,   642,   643,   644,   683,   684,
+     685,   686,   716,   717,   718,   719,   720,   721,   722,   723,
+     724,   725,   726,   727,   728,   729,   730,   731,   732,   733,
+     734,   735,   736,   737,   738,   739,   740,   741,   645,   646,
+     647,   648,   649,   650,   651,   652,   653,   654,   655,   656,
+     657,   742,   658,   659,   660,   743,   661,   744,   662,   663,
+     664,   665,   666,   667,   668,   669,   670,   671,   672,   673,
+     674,   675,   677,   678,   745,   679,   680,   681,   687,   688,
+     689,   690,   691,   692,   693,   694,   859,   695,   696,   697,
+     698,   699,   700,   701,   702,   703,   704,   705,   746,   747,
+     748,   749,   706,   750,   756,   751,   757,   752,   753,   754,
+     755,   761,   762,   763,   764,   796,     0,   758,   759,   760,
+     782,   783,   784,   785,   786,   765,   766,   767,   768,   769,
+     770,   771,   772,   773,   774,   775,   776,   777,   778,   779,
+     781,   787,   788,   789,   790,   791,   821,   792,   793,   822,
+     823,   824,   825,   826,   827,   828,   829,   830,   797,   794,
+     795,   831,   815,   798,   799,   800,   801,   802,   803,   832,
+     833,   834,     0,     0,     0,   835,   836,   837,   838,   839,
+     840,   841,   842,   843,   844,   845,   846,   847,   848,   849,
+     850,   851,   852,   853,     0,   903,   904,   854,   804,   805,
+     806,   807,   808,   809,   855,   856,   857,   858,   810,   811,
+     812,   813,   814,   816,   884,   820,   885,   886,   887,   888,
+     889,   890,   891,   892,   893,   894,   895,   896,   897,   905,
+     906,   907,     0,     0,     0,   918,   919,   920,   921,   922,
+     933,   934,   935,   936,   937,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   817,   818,   819,   860,   861,   862,   863,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   864,   865,   866,   867,   868,   869,   870,   871,   872,
+     873,     0,   874,   875,   876,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   877,
+     878,     0,     0,     0,   879,     0,     0,     0,     0,     0,
+     880,   881,   882,   883,   913,   914,   915,   916,   917
   };
 
   const short int
    Parser ::yycheck_[] =
   {
       54,    55,     0,     1,    20,     3,     8,     8,     6,     8,
-       5,     8,    10,    11,    12,    13,    14,    15,    16,     8,
-       8,   349,   350,   351,   352,    20,    24,    25,    26,    27,
+       3,     8,    10,    11,    12,    13,    14,    15,    16,     8,
+       8,     8,     8,     8,     8,     8,    24,    25,    26,    27,
       28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
       38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
       48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
@@ -2011,50 +2366,79 @@ namespace  Analysis  {
      248,   249,   250,   251,   252,   253,   254,   255,   256,   257,
      258,   259,   260,   261,   262,   263,   264,   265,   266,   267,
      268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   285,   285,   283,   285,     5,   285,     8,
-     684,   685,   686,   687,   688,   286,   285,   285,   289,     3,
-     286,    20,    20,   289,   286,   286,   286,   289,   289,   289,
-       9,    10,     8,     4,    22,    21,    21,   283,    21,    21,
-      21,    21,   286,    21,    21,   288,    21,    21,    21,    21,
-     288,    21,    21,    21,    21,    21,    21,    21,    21,    21,
-      21,    21,    21,    21,    21,    21,    21,   401,   402,   403,
-     404,   405,   406,    21,    21,    21,    21,    21,    21,    21,
+     278,   279,   280,   285,   285,   283,   285,     8,   285,   874,
+     875,   876,   877,   878,     5,     5,   285,   285,   285,   285,
+     285,   285,   285,     8,   367,   368,   369,   370,   286,    20,
+      20,   289,     4,   286,   286,    20,   289,   289,   286,   286,
+      22,   289,   289,     9,    10,    21,    21,    21,   913,   914,
+     915,   916,   917,    21,    21,   283,    21,    21,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
-      21,   288,   288,   288,    21,    21,    21,    21,    21,    21,
-      21,    21,    21,    21,    21,    21,    21,    21,    21,   453,
-      21,    21,    21,    21,     8,     5,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,     5,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,    21,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   283,    21,   288,   284,    21,
-      21,   535,   536,   537,   538,   539,   540,    21,    21,    21,
-      21,    21,    21,     4,    22,    22,     4,    21,     8,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
-       8,     8,    21,     8,    21,    21,     8,     8,     8,     8,
-       8,     8,     8,     8,     8,     8,     8,    21,    21,   286,
-     286,   286,   286,   587,   286,   286,   286,   286,   286,   286,
+      21,    21,    21,    21,    21,    21,   430,   431,    21,    21,
+      21,    21,    21,    21,   438,   439,   440,   441,   442,   443,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
-      21,    21,    21,    21,    21,    21,    21,     8,     8,   286,
-     286,   286,   286,    21,   287,   287,   287,   287,     8,    21,
-     287,   287,   287,   287,   287,   287,   287,   287,   287,    21,
-     287,     5,    21,    21,    21,    21,    21,     5,     5,     5,
-       5,     5,     5,     5,     5,     5,     5,     5,     5,     5,
-      22,    22,    22,     8,     8,     8,     8,     8,    -1,   663,
-      -1,    -1,   286,   286,   286,   286,   286,   286,    -1,    -1,
-      -1,     5,    22,    22,    22,    22,    22,    22,    22,    22,
-      22,    22,    22,    22,    22,    22,    22,    22,     8,     8,
-       8,     8,     8,     8,     8,     8,   286,   286,   286,     8,
-       8,     8,     8,     8,     8,     8,     5,     5,     5,     5,
-      -1,    -1,    -1,     8,   286,     8,     8,     8,     8,   286,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,   288,   288,   288,   288,   288,   288,   288,
+     288,   288,   288,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,     8,     5,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   520,   286,   286,   286,
+     286,   286,   286,     5,   286,   286,   286,   286,   286,   286,
      286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   283,   286,   283,   283,   283,   283,   290,   283,
-     283,   283,   283,   283,   283,   283,   283,   283,    -1,    -1,
-      -1,    -1,   287,    -1,   287,   287,   287,   287,   284,   284,
-     289,   284,   284,   284
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,    21,    21,    21,    21,    21,    21,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   283,
+      21,   288,   284,    21,    21,    21,    21,    21,    21,    21,
+      21,     4,    22,    22,     4,    21,     8,     8,    21,    21,
+      21,   635,   636,   637,   638,   639,   640,    21,   286,   290,
+     290,   290,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,     8,     8,     8,     8,     8,
+      -1,    -1,     8,     8,    -1,    -1,    -1,    -1,    -1,     8,
+      -1,    -1,    -1,    21,    21,   290,   290,    21,    21,    21,
+      21,    21,   706,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,     8,
+       8,     8,     8,     8,     8,     8,     8,     8,     8,     8,
+       8,     8,     8,     5,     5,     5,     5,     5,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,     5,   286,   286,   286,     5,   286,     5,   287,   287,
+     287,   287,   287,   287,   287,   287,   287,   287,   287,   287,
+     287,   287,   286,   286,     5,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   820,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,     5,     5,
+       5,     5,   290,     5,   289,     8,   289,     8,     8,     8,
+       8,    22,    22,    22,    22,   283,    -1,   289,   289,   289,
+     287,   287,   287,   287,   287,    22,    22,    22,    22,    22,
+      22,    22,    22,    22,    22,    22,    22,    22,    22,    22,
+       8,   287,   287,   287,   287,   287,     5,   287,   287,     5,
+       5,     5,     5,     5,     5,     5,     5,     5,   283,   287,
+     287,     5,   286,   283,   283,   283,   283,   283,   283,     5,
+       5,     5,    -1,    -1,    -1,     8,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,     8,     8,     8,     8,     5,
+       5,     5,     5,     5,    -1,     5,     5,     8,   283,   283,
+     283,   283,   283,   283,     8,     8,     8,     8,   287,   287,
+     287,   287,   287,   286,     8,   289,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,     8,     8,     8,     8,     5,
+       5,     5,    -1,    -1,    -1,     8,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   286,   286,   286,   283,   283,   283,   283,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,   283,   283,   283,   283,   283,   283,   283,   283,   283,
+     283,    -1,   284,   284,   284,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   284,
+     284,    -1,    -1,    -1,   287,    -1,    -1,    -1,    -1,    -1,
+     287,   287,   287,   287,   284,   284,   284,   284,   284
   };
 
   const unsigned short int
@@ -2091,46 +2475,69 @@ namespace  Analysis  {
        3,    20,   300,     8,     4,   300,   300,    22,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
-      21,   283,   305,   305,   305,    21,    21,    21,    21,    21,
+      21,    21,    21,   283,   305,   305,   305,    21,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
-      21,    21,    21,    21,    21,    21,    21,    21,   288,   288,
-     288,   288,   288,    21,    21,    21,    21,    21,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
-      21,    21,     8,     5,     8,    20,     5,     5,   286,   286,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,   288,   288,   288,   288,
+     288,   288,   288,   288,   288,   288,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,     8,     5,     8,    20,
+       5,     5,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,     5,
      286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,     5,   286,   286,   286,   286,   286,
      286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
      286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   286,   286,   286,    21,   302,
-     302,   302,   302,   302,   286,   286,   286,   286,   286,   286,
      286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   288,   283,   284,    21,    21,    21,    21,
-      21,    21,    21,    21,    21,    22,    22,     4,     4,    21,
-       8,    21,    21,    21,    21,    21,    21,    21,   305,   305,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,    21,
+     302,   302,   302,   302,   302,    21,    21,    21,    21,    21,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     288,   283,   284,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    22,    22,     4,     4,     8,    21,     8,    21,
+     305,   305,    21,    21,    21,    21,    21,    21,   305,   305,
      305,   305,   305,   305,    21,    21,    21,    21,    21,    21,
-      21,     8,     8,     8,     8,     8,     8,     8,     8,     8,
-       8,     8,     8,     8,     8,   286,   289,   289,   289,   289,
-     289,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,     8,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,     8,     8,     8,     8,   286,
+     289,   289,   289,   289,   289,   290,   290,   290,   290,   290,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+      21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
       21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
      305,     8,     8,   301,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   286,   286,   286,   287,   287,
-     287,   287,   287,   287,   287,   287,   287,   287,   287,   287,
-     287,   287,    21,   286,   286,   286,   286,   286,   286,   286,
      286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
-     286,   286,   286,   286,   286,   286,   286,   290,     8,   285,
-       8,   305,   305,   305,   305,   305,   305,    21,    21,    21,
-      21,    21,    21,    21,     5,     5,     5,     5,     5,     5,
-       5,     5,     5,     5,     5,     5,     5,     5,     8,     8,
-       8,     8,     8,    22,    22,    22,    22,    22,    22,    22,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   287,   287,   287,   287,   287,   287,   287,   287,
+     287,   287,   287,   287,   287,   287,    21,   286,   286,   286,
+     286,   286,    21,    21,    21,    21,    21,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   286,   286,   286,   286,
+     286,   286,   286,   286,   286,   286,   290,     8,   285,     8,
+     305,   305,   305,   305,   305,   305,    21,    21,    21,    21,
+      21,    21,    21,     8,     8,     8,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,     8,     8,     5,     5,     5,
+       5,     5,     5,     5,     5,     5,     5,     5,     5,     5,
+       5,     8,     8,     8,     8,     8,   289,   289,   289,   289,
+     289,    22,    22,    22,    22,    22,    22,    22,    22,    22,
       22,    22,    22,    22,    22,    22,    22,    22,    22,    22,
-      22,    22,   305,     8,   283,   283,   283,   283,   283,   283,
-     283,   283,   283,   283,   283,   283,   283,   283,   287,   287,
-     287,   287,   287,   289,     8,     8,     8,     8,     8,     8,
-       8,     8,     8,     8,     8,     8,     8,     8,     5,     5,
-       5,     5,     5,   305,   284,   284,   284,   284,   284,   301,
-     301,   301,   301,   301,   285,   285,   285,   285,   285,     8,
-       8,     8,     8,     8
+     305,     8,   287,   287,   287,   287,   287,   287,   287,   287,
+     287,   287,   287,   287,   287,   287,   283,   283,   283,   283,
+     283,   283,   283,   283,   283,   283,   283,   283,   283,   283,
+     287,   287,   287,   287,   287,   286,   286,   286,   286,   286,
+     289,     5,     5,     5,     5,     5,     5,     5,     5,     5,
+       5,     5,     5,     5,     5,     8,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,     8,     8,     8,     8,     5,
+       5,     5,     5,     5,     8,     8,     8,     8,     8,   305,
+     283,   283,   283,   283,   283,   283,   283,   283,   283,   283,
+     283,   283,   283,   283,   284,   284,   284,   284,   284,   287,
+     287,   287,   287,   287,     8,     8,     8,     8,     8,     8,
+       8,     8,     8,     8,     8,     8,     8,     8,   301,   301,
+     301,   301,   301,     5,     5,     5,     5,     5,   285,   285,
+     285,   285,   285,   284,   284,   284,   284,   284,     8,     8,
+       8,     8,     8,   301,   301,   301,   301,   301,   285,   285,
+     285,   285,   285,     8,     8,     8,     8,     8
   };
 
   const unsigned short int
@@ -2176,22 +2583,22 @@ namespace  Analysis  {
        2,     2,     1,     4,     4,     4,     4,     4,     4,     4,
        4,     4,     2,     2,     2,     2,     1,     2,     2,     2,
        4,     4,     1,     1,     1,     1,     1,     1,     4,     4,
-       1,     1,     1,     1,     1,     4,     4,     6,     1,     1,
-       1,     1,     2,     2,     2,     1,     1,     1,     1,     1,
+       1,     1,     1,     4,     1,     4,     4,     6,     1,     1,
+       1,     2,     2,     2,     2,     4,     4,     1,     1,     1,
        1,     1,     6,     6,     6,     6,     6,     6,     4,     4,
        4,     4,     4,     4,     1,     1,     1,     1,     1,     1,
        6,     6,     6,     6,     6,     6,     6,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     8,     8,
+       1,     1,     1,     1,    10,    10,    10,    10,    10,    10,
+      10,    10,    10,    10,    10,    10,    10,    10,     8,     8,
        8,     8,     8,     8,     8,     8,     8,     8,     8,     8,
-       8,     8,    12,    12,    12,    12,    12,     1,     1,     1,
+       8,     8,    12,    12,    12,    12,    12,     1,    14,    14,
+      14,    14,    14,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     4,     4,
+       4,     4,     4,     4,     4,     4,     4,     4,     4,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        6,     6,     6,     6,     6,     6,     6,     6,     6,     6,
@@ -2306,32 +2713,32 @@ namespace  Analysis  {
        0,   379,   379,   380,   381,   382,   383,   386,   387,   388,
      389,   390,   391,   392,   393,   396,   400,   404,   408,   412,
      416,   417,   420,   426,   427,   431,   437,   438,   442,   448,
-     454,   460,   465,   466,   469,   472,   475,   478,   481,   484,
-     487,   490,   493,   496,   499,   502,   505,   508,   511,   514,
-     517,   520,   523,   524,   525,   526,   527,   528,   529,   532,
-     535,   536,   537,   538,   539,   540,   543,   546,   549,   550,
-     551,   552,   553,   556,   559,   562,   563,   564,   565,   566,
-     567,   568,   569,   572,   575,   578,   581,   584,   587,   590,
-     593,   596,   599,   602,   605,   606,   607,   608,   609,   610,
-     611,   614,   617,   620,   623,   626,   629,   632,   633,   634,
-     635,   636,   637,   638,   639,   640,   641,   642,   643,   644,
-     645,   646,   647,   648,   649,   650,   651,   652,   653,   656,
-     659,   662,   665,   668,   671,   674,   677,   680,   683,   686,
-     689,   692,   695,   698,   701,   704,   707,   710,   711,   712,
-     713,   714,   715,   716,   717,   718,   719,   720,   721,   722,
-     723,   724,   725,   726,   727,   728,   729,   730,   731,   732,
-     733,   734,   735,   736,   737,   738,   739,   740,   741,   742,
-     743,   744,   745,   746,   747,   748,   749,   750,   751,   752,
-     753,   754,   755,   756,   757,   758,   759,   760,   761,   762,
-     763,   764,   765,   766,   767,   768,   769,   770,   771,   772,
-     773,   774,   775,   776,   777,   778,   779,   780,   781,   782,
-     783,   784,   785,   786,   787,   788,   789,   790,   791,   792,
-     793,   794,   795,   796,   797,   798,   799,   800,   801,   802,
-     803,   806,   809,   812,   815,   818,   821,   824,   827,   830,
-     833,   836,   839,   842,   845,   848,   851,   854,   857,   860,
-     861,   862,   863,   864,   865,   866,   867,   868,   869,   870,
-     871,   872,   873,   874,   875,   876,   877,   878,   879,   880,
-     881,   882,   883,   884,   885,   886,   887,   888,   889,   892
+     454,   460,   465,   468,   471,   474,   477,   480,   483,   486,
+     489,   492,   495,   498,   501,   504,   507,   510,   513,   516,
+     519,   522,   525,   526,   527,   528,   529,   530,   531,   534,
+     537,   538,   539,   540,   543,   544,   547,   550,   553,   554,
+     555,   556,   559,   562,   565,   568,   571,   574,   575,   576,
+     577,   578,   579,   582,   585,   588,   591,   594,   597,   600,
+     603,   606,   609,   612,   615,   616,   617,   618,   619,   620,
+     621,   624,   627,   630,   633,   636,   639,   642,   643,   644,
+     645,   646,   647,   648,   649,   652,   655,   658,   661,   664,
+     667,   670,   673,   676,   679,   682,   685,   688,   691,   694,
+     697,   700,   703,   706,   709,   712,   715,   718,   721,   724,
+     727,   730,   733,   736,   739,   742,   745,   748,   749,   752,
+     755,   758,   761,   764,   765,   766,   767,   768,   769,   770,
+     771,   772,   773,   774,   775,   776,   777,   778,   779,   780,
+     781,   782,   783,   784,   785,   786,   787,   788,   789,   790,
+     791,   792,   793,   794,   795,   796,   797,   798,   799,   800,
+     801,   802,   803,   804,   805,   806,   807,   808,   809,   810,
+     811,   812,   813,   814,   815,   816,   817,   818,   819,   822,
+     825,   828,   831,   834,   837,   840,   843,   846,   849,   852,
+     853,   854,   855,   856,   857,   858,   859,   860,   861,   862,
+     863,   864,   865,   866,   867,   868,   869,   870,   871,   872,
+     873,   876,   879,   882,   885,   888,   891,   894,   897,   900,
+     903,   906,   909,   912,   915,   918,   921,   924,   927,   930,
+     931,   932,   933,   934,   935,   936,   937,   938,   939,   940,
+     941,   942,   943,   944,   945,   946,   947,   948,   949,   950,
+     951,   952,   953,   954,   955,   956,   957,   958,   959,   962
   };
 
   // Print the state stack on the debug stream.
@@ -2366,8 +2773,8 @@ namespace  Analysis  {
 
 #line 9 "Parser.yy" // lalr1.cc:1167
 } //  Analysis 
-#line 2370 "Parser.cpp" // lalr1.cc:1167
-#line 896 "Parser.yy" // lalr1.cc:1168
+#line 2777 "Parser.cpp" // lalr1.cc:1167
+#line 966 "Parser.yy" // lalr1.cc:1168
 
 
 void Analysis::Parser::error(const location &loc, const std::string &message) {

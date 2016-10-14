@@ -1,4 +1,4 @@
-//===- Op_JmpLabel.h - ART-LEX ----------------------------------*- c++ -*-===//
+//===- Op_THROW.h - ART-LEX ------------------------------*- c++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
@@ -11,33 +11,30 @@
 //
 //===----------------------------------------------------------------------===//
 
-
-#ifndef PROJECT_OP_JMPLABEL_H
-#define PROJECT_OP_JMPLABEL_H
+#ifndef PROJECT_OP_THROW_H
+#define PROJECT_OP_THROW_H
 
 #include "OpCode.h"
 
 namespace Analysis {
-    /* : label
+    /* throw rx
      * */
 
-    class Op_JmpLabel: public OpCode {
+    class Op_THROW: public OpCode {
     public:
-        Op_JmpLabel(Opcode o, StringPool* sp, std::string &l)
-                : OpCode (o, sp)
+        Op_THROW(Opcode o, StringPool* sp, int reg)
+                : OpCode (o, sp), rx(reg)
         {
-            jmpLabel = (*mStringPool)[l];
         }
         std::string toString() {
-            std::string rel = ":";
-            rel += (*mStringPool)[jmpLabel];
+            std::string rel = "throw " + rx.toString();
             return move(rel);
         }
-        int jmpLabel;
+        RegisterX rx;
 
         void deleteThis() {
             delete this;
         }
     };
 }
-#endif //PROJECT_OP_JMPLABEL_H
+#endif //PROJECT_OP_THROW_H
