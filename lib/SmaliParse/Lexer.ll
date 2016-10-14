@@ -136,6 +136,8 @@ COMMENT         #{UANYN}*
 "goto/16"    {return Parser::make_OP_GOTO_16(LOCATION);}
 "goto/32"    {return Parser::make_OP_GOTO_32(LOCATION);}
 "packed-switch"      {return Parser::make_OP_PACKED_SWITCH(LOCATION);}
+".packed-switch"     {return Parser::make_OP_PACKED_SWITCHDATABEG(LOCATION);}
+".end packed-switch" {return Parser::make_OP_PACKED_SWITCHDATAEND(LOCATION);}
 "sparse-switch"      {return Parser::make_OP_SPARSE_SWITCH(LOCATION);}
 "cmpl-float" {return Parser::make_OP_CMPL_FLOAT(LOCATION);}
 "cmpg-float" {return Parser::make_OP_CMPG_FLOAT(LOCATION);}

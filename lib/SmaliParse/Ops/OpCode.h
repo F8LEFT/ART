@@ -24,7 +24,7 @@ namespace Analysis {
     namespace Android
     {
 
-        static u1 gInstructionWidthTable[kNumPackedOpcodes] = {
+        static u1 gInstructionWidthTable[kNumPackedOpcodes + kExtraOpcodes] = {
                 // BEGIN(libdex-widths); GENERATED AUTOMATICALLY BY opcode-gen
                 1,1,2,3,1,2,3,1,2,3,1,1,1,1,1,1,
                 1,1,1,2,3,2,2,3,5,2,2,3,2,1,1,2,
@@ -43,9 +43,10 @@ namespace Analysis {
                 2,2,2,2,2,2,2,2,2,2,2,2,0,2,3,3,
                 3,1,2,2,2,2,2,2,3,3,3,3,2,2,2,0,
                 // END(libdex-widths)
+                0,0,0,0,0,0
         };
 
-        static u1 gOpcodeFlagsTable[kNumPackedOpcodes] = {
+        static u1 gOpcodeFlagsTable[kNumPackedOpcodes + kExtraOpcodes] = {
                 // BEGIN(libdex-flags); GENERATED AUTOMATICALLY BY opcode-gen
                 kInstrCanContinue,
                 kInstrCanContinue,
@@ -304,13 +305,14 @@ namespace Analysis {
                 kInstrCanContinue | kInstrCanThrow,
                 0,
                 // END(libdex-flags)
+                0,0,0,0,0,0
         };
 
 /*
  * Table that maps each opcode to the instruction format associated
  * that opcode.
  */
-        static u1 gInstructionFormatTable[kNumPackedOpcodes] = {
+        static u1 gInstructionFormatTable[kNumPackedOpcodes + kExtraOpcodes] = {
                 // BEGIN(libdex-formats); GENERATED AUTOMATICALLY BY opcode-gen
                 kFmt10x,kFmt12x,kFmt22x,kFmt32x,kFmt12x,kFmt22x,kFmt32x,
                 kFmt12x,kFmt22x,kFmt32x,kFmt11x,kFmt11x,kFmt11x,kFmt11x,
@@ -350,13 +352,14 @@ namespace Analysis {
                 kFmt22cs,kFmt22cs,kFmt22cs,kFmt35ms,kFmt3rms,kFmt35ms,kFmt3rms,
                 kFmt22c,kFmt21c,kFmt21c,kFmt00x,
                 // END(libdex-formats)
+                kFmt00x,kFmt00x,kFmt00x,kFmt00x,kFmt00x,kFmt00x
         };
 
 /*
  * Table that maps each opcode to the index type implied by that
  * opcode.
  */
-        static u1 gInstructionIndexTypeTable[kNumPackedOpcodes] = {
+        static u1 gInstructionIndexTypeTable[kNumPackedOpcodes + kExtraOpcodes] = {
                 // BEGIN(libdex-index-types); GENERATED AUTOMATICALLY BY opcode-gen
                 kIndexNone,kIndexNone,kIndexNone,
                 kIndexNone,kIndexNone,kIndexNone,
@@ -445,6 +448,8 @@ namespace Analysis {
                 kIndexFieldRef,kIndexFieldRef,kIndexFieldRef,
                 kIndexUnknown,
                 // END(libdex-index-types)
+                kIndexUnknown,kIndexUnknown,kIndexUnknown,kIndexUnknown,
+                kIndexUnknown,kIndexUnknown
         };
 
     }

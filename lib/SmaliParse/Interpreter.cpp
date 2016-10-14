@@ -23,6 +23,11 @@ int Interpreter::parse ()
     return mParser.parse ();
 }
 
+void Interpreter::analysis ()
+{
+
+}
+
 void Interpreter::switchInputStream (std::istream *is,SmaliClass *pClass)
 {
     mLexer.switch_streams (is,nullptr);

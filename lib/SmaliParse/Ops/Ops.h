@@ -182,5 +182,7 @@
 //#include "OP_UNUSED_FF.h"
 #include "Op_JmpLabel.h"
 #include "Op_CATCH.h"
-
+#include "Op_PACKED_SWITCHDATA.h"
+#include "Op_PACKED_SWITCHDATA_BEG.h"
+#include "Op_PACKED_SWITCHDATA_END.h"
 #endif //SMALIPARSER_OPS_H

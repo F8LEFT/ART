@@ -647,16 +647,18 @@ namespace  Analysis  {
         TOKEN_OP_UNUSED_FF = 534,
         TOKEN_OP_CATCH = 535,
         TOKEN_OP_END = 536,
-        TOKEN_SYMBOL_BEGIN = 537,
-        TOKEN_COLON = 538,
-        TOKEN_LEFTPAR = 539,
-        TOKEN_RIGHTPAR = 540,
-        TOKEN_COMMA = 541,
-        TOKEN_POINT = 542,
-        TOKEN_INIBRACE = 543,
-        TOKEN_CLOBRACE = 544,
-        TOKEN_ELLIPSIS = 545,
-        TOKEN_SYMBOL_END = 546
+        TOKEN_OP_PACKED_SWITCHDATABEG = 537,
+        TOKEN_OP_PACKED_SWITCHDATAEND = 538,
+        TOKEN_SYMBOL_BEGIN = 539,
+        TOKEN_COLON = 540,
+        TOKEN_LEFTPAR = 541,
+        TOKEN_RIGHTPAR = 542,
+        TOKEN_COMMA = 543,
+        TOKEN_POINT = 544,
+        TOKEN_INIBRACE = 545,
+        TOKEN_CLOBRACE = 546,
+        TOKEN_ELLIPSIS = 547,
+        TOKEN_SYMBOL_END = 548
       };
     };
 
@@ -1895,6 +1897,14 @@ namespace  Analysis  {
 
     static inline
     symbol_type
+    make_OP_PACKED_SWITCHDATABEG (const location_type& l);
+
+    static inline
+    symbol_type
+    make_OP_PACKED_SWITCHDATAEND (const location_type& l);
+
+    static inline
+    symbol_type
     make_SYMBOL_BEGIN (const location_type& l);
 
     static inline
@@ -2143,7 +2153,7 @@ namespace  Analysis  {
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 292  ///< Number of tokens.
+      yyntokens_ = 294  ///< Number of tokens.
     };
 
 
@@ -2215,9 +2225,9 @@ namespace  Analysis  {
      255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291
+     285,   286,   287,   288,   289,   290,   291,   292,   293
     };
-    const unsigned int user_token_number_max_ = 546;
+    const unsigned int user_token_number_max_ = 548;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -2250,20 +2260,20 @@ namespace  Analysis  {
   {
       switch (other.type_get ())
     {
-      case 306: // instruction
+      case 308: // instruction
         value.copy< OpCode* > (other.value);
         break;
 
       case 20: // "flag"
       case 21: // "v(p)x"
-      case 294: // exp
-      case 295: // classdef
-      case 296: // superdef
-      case 297: // srcdef
-      case 298: // fielddef
-      case 299: // methoddef
-      case 300: // flags
-      case 304: // registers
+      case 296: // exp
+      case 297: // classdef
+      case 298: // superdef
+      case 299: // srcdef
+      case 300: // fielddef
+      case 301: // methoddef
+      case 302: // flags
+      case 306: // registers
         value.copy< int > (other.value);
         break;
 
@@ -2276,16 +2286,16 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 303: // comment
-      case 305: // jmplabel
+      case 305: // comment
+      case 307: // jmplabel
         value.copy< std::string > (other.value);
         break;
 
-      case 302: // regs
+      case 304: // regs
         value.copy< std::vector<int> > (other.value);
         break;
 
-      case 301: // args
+      case 303: // args
         value.copy< std::vector<std::string> > (other.value);
         break;
 
@@ -2306,20 +2316,20 @@ namespace  Analysis  {
     (void) v;
       switch (this->type_get ())
     {
-      case 306: // instruction
+      case 308: // instruction
         value.copy< OpCode* > (v);
         break;
 
       case 20: // "flag"
       case 21: // "v(p)x"
-      case 294: // exp
-      case 295: // classdef
-      case 296: // superdef
-      case 297: // srcdef
-      case 298: // fielddef
-      case 299: // methoddef
-      case 300: // flags
-      case 304: // registers
+      case 296: // exp
+      case 297: // classdef
+      case 298: // superdef
+      case 299: // srcdef
+      case 300: // fielddef
+      case 301: // methoddef
+      case 302: // flags
+      case 306: // registers
         value.copy< int > (v);
         break;
 
@@ -2332,16 +2342,16 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 303: // comment
-      case 305: // jmplabel
+      case 305: // comment
+      case 307: // jmplabel
         value.copy< std::string > (v);
         break;
 
-      case 302: // regs
+      case 304: // regs
         value.copy< std::vector<int> > (v);
         break;
 
-      case 301: // args
+      case 303: // args
         value.copy< std::vector<std::string> > (v);
         break;
 
@@ -2428,20 +2438,20 @@ namespace  Analysis  {
     // Type destructor.
     switch (yytype)
     {
-      case 306: // instruction
+      case 308: // instruction
         value.template destroy< OpCode* > ();
         break;
 
       case 20: // "flag"
       case 21: // "v(p)x"
-      case 294: // exp
-      case 295: // classdef
-      case 296: // superdef
-      case 297: // srcdef
-      case 298: // fielddef
-      case 299: // methoddef
-      case 300: // flags
-      case 304: // registers
+      case 296: // exp
+      case 297: // classdef
+      case 298: // superdef
+      case 299: // srcdef
+      case 300: // fielddef
+      case 301: // methoddef
+      case 302: // flags
+      case 306: // registers
         value.template destroy< int > ();
         break;
 
@@ -2454,16 +2464,16 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 303: // comment
-      case 305: // jmplabel
+      case 305: // comment
+      case 307: // jmplabel
         value.template destroy< std::string > ();
         break;
 
-      case 302: // regs
+      case 304: // regs
         value.template destroy< std::vector<int> > ();
         break;
 
-      case 301: // args
+      case 303: // args
         value.template destroy< std::vector<std::string> > ();
         break;
 
@@ -2490,20 +2500,20 @@ namespace  Analysis  {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 306: // instruction
+      case 308: // instruction
         value.move< OpCode* > (s.value);
         break;
 
       case 20: // "flag"
       case 21: // "v(p)x"
-      case 294: // exp
-      case 295: // classdef
-      case 296: // superdef
-      case 297: // srcdef
-      case 298: // fielddef
-      case 299: // methoddef
-      case 300: // flags
-      case 304: // registers
+      case 296: // exp
+      case 297: // classdef
+      case 298: // superdef
+      case 299: // srcdef
+      case 300: // fielddef
+      case 301: // methoddef
+      case 302: // flags
+      case 306: // registers
         value.move< int > (s.value);
         break;
 
@@ -2516,16 +2526,16 @@ namespace  Analysis  {
       case 6: // "comment"
       case 7: // "class name"
       case 8: // "class type"
-      case 303: // comment
-      case 305: // jmplabel
+      case 305: // comment
+      case 307: // jmplabel
         value.move< std::string > (s.value);
         break;
 
-      case 302: // regs
+      case 304: // regs
         value.move< std::vector<int> > (s.value);
         break;
 
-      case 301: // args
+      case 303: // args
         value.move< std::vector<std::string> > (s.value);
         break;
 
@@ -2613,7 +2623,7 @@ namespace  Analysis  {
      515,   516,   517,   518,   519,   520,   521,   522,   523,   524,
      525,   526,   527,   528,   529,   530,   531,   532,   533,   534,
      535,   536,   537,   538,   539,   540,   541,   542,   543,   544,
-     545,   546
+     545,   546,   547,   548
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -4299,6 +4309,18 @@ namespace  Analysis  {
   }
 
    Parser ::symbol_type
+   Parser ::make_OP_PACKED_SWITCHDATABEG (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_PACKED_SWITCHDATABEG, l);
+  }
+
+   Parser ::symbol_type
+   Parser ::make_OP_PACKED_SWITCHDATAEND (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_OP_PACKED_SWITCHDATAEND, l);
+  }
+
+   Parser ::symbol_type
    Parser ::make_SYMBOL_BEGIN (const location_type& l)
   {
     return symbol_type (token::TOKEN_SYMBOL_BEGIN, l);
@@ -4361,7 +4383,7 @@ namespace  Analysis  {
 
 #line 9 "Parser.yy" // lalr1.cc:377
 } //  Analysis 
-#line 4365 "Parser.hpp" // lalr1.cc:377
+#line 4387 "Parser.hpp" // lalr1.cc:377
 
 
 

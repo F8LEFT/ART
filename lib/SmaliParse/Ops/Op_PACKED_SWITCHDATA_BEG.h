@@ -1,4 +1,4 @@
-//===- Op_NOP.h - ART-LEX ---------------------------------------*- c++ -*-===//
+//===- Op_PackedSwitchDataBeg.h - ART-LEX -----------------------*- c++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
@@ -12,29 +12,31 @@
 //===----------------------------------------------------------------------===//
 
 
-#ifndef PROJECT_OP_NOP_H
-#define PROJECT_OP_NOP_H
+#ifndef PROJECT_OP_PACKEDSWITCHDATABEG_H
+#define PROJECT_OP_PACKEDSWITCHDATABEG_H
 
 #include "OpCode.h"
 
 namespace Analysis {
-    /* nop
+    /* .packed-switch 0x1
      * */
 
-    class Op_NOP: public OpCode {
+    class Op_PACKED_SWITCHDATA_BEG: public OpCode {
     public:
-        Op_NOP(Opcode o, StringPool* sp)
+        Op_PACKED_SWITCHDATA_BEG(Opcode o, StringPool* sp, int id)
                 : OpCode (o, sp)
         {
+            md = id;
         }
         std::string toString() {
-            std::string rel = "nop";
+            std::string rel = ".packed-switch";
+            rel += " " + formater::int2hexStr (md);
             return move(rel);
         }
-
+        int md;
         void deleteThis() {
             delete this;
         }
     };
 }
-#endif //PROJECT_OP_NOP_H
+#endif //PROJECT_OP_PACKEDSWITCHDATABEG_H

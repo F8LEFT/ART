@@ -33,7 +33,7 @@ namespace Analysis {
          * \returns 0 on success, 1 on failure
          */
         int parse();
-
+        void analysis();
         /**
          * Switch scanner input stream. Default is standard input (std::cin).
          * It will also reset AST.
@@ -58,6 +58,7 @@ namespace Analysis {
         void setCurMethodRegSize(int size);
         void addOpcode(OpCode* code);
         void endMethod();
+
     private:
         Lexer mLexer;
         Parser mParser;

@@ -352,6 +352,9 @@
 %token OP_UNUSED_FF "unused-ff"
 %token OP_CATCH ".catch"
 %token OP_END "end of opcodes"
+%token OP_PACKED_SWITCHDATABEG ".packed-switch"
+%token OP_PACKED_SWITCHDATAEND ".end packed-switch"
+
 
 %token SYMBOL_BEGIN "begin of symbol"
 %token COLON ":"
@@ -391,7 +394,7 @@ exp : classdef
     | registers
     | instruction {$$ = 1; driver.addOpcode($1);}
     | METHODEND {$$ = 1; driver.endMethod();}
-    ;
+     ;
 
 classdef : CLASSBEG flags CLASSTYPE { $$ = 1;
         driver.setClassDefine($2, $3);
@@ -957,11 +960,17 @@ instruction :
    | OP_SPUT_OBJECT_VOLATILE
    | OP_UNUSED_FF
    | COLON NAMESTRING {
-       $$ = new Op_JmpLabel(OP_UNUSED_FF, driver.stringPool(), $2);
+       $$ = new Op_JmpLabel(OP_JMPLABEL, driver.stringPool(), $2);
     }
    | OP_CATCH CLASSTYPE INIBRACE jmplabel ELLIPSIS jmplabel CLOBRACE jmplabel {
-       $$ = new Op_CATCH(OP_UNUSED_FF, driver.stringPool(), $2, $4, $6, $8);
-   }
+       $$ = new Op_CATCH(OP_CATCH, driver.stringPool(), $2, $4, $6, $8);
+    }
+   | OP_PACKED_SWITCHDATABEG NUMBER {
+       $$ = new Op_PACKED_SWITCHDATA_BEG(OP_PACKED_SWITCHDATABEG, driver.stringPool(),$2);
+    }
+   | OP_PACKED_SWITCHDATAEND {
+       $$ = new Op_PACKED_SWITCHDATA_END(OP_PACKED_SWITCHDATAEND, driver.stringPool());
+    }
    ;
 %%
 
