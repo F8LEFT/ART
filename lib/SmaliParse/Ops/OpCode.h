@@ -464,6 +464,9 @@ namespace Analysis {
         }
         virtual std::string toString() = 0;
         virtual void deleteThis() = 0;
+        const std::string getPoolStr(int i) {
+            return (*mStringPool)[i];
+        }
         u1 insFormat;
         u1 indexType;
         u1 opFlag;

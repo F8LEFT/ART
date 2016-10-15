@@ -60,6 +60,10 @@ namespace Analysis {
         void endMethod();
 
     private:
+        // scan and anslysis method ops,
+        void analysisMethod(SmaliMethod* method);
+
+    private:
         Lexer mLexer;
         Parser mParser;
 

@@ -50,7 +50,6 @@ namespace Analysis {
         SmaliClass* mParent;
 
         // extra
-
     };
 }
 

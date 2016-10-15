@@ -53,6 +53,10 @@ namespace Analysis {
 
         // for test
         void printAst (std::vector<std::string> &v);
+
+    public:
+        std::list<SmaliField*> fields;
+        std::list<SmaliMethod*> methods;
     private:
         StringPool *mStringPool = nullptr;
 
@@ -61,8 +65,7 @@ namespace Analysis {
         int mSuper;
         int mFlag = 0;
 
-        std::list<SmaliField*> fields;
-        std::list<SmaliMethod*> methods;
+
     };
 }
 

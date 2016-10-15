@@ -25,7 +25,10 @@ int Interpreter::parse ()
 
 void Interpreter::analysis ()
 {
-
+    for(auto it = mClass->methods.begin (), itEnd = mClass->methods.end ();
+            it != itEnd; it++) {
+        analysisMethod ((*it));
+    }
 }
 
 void Interpreter::switchInputStream (std::istream *is,SmaliClass *pClass)
@@ -97,6 +100,43 @@ void Interpreter::endMethod ()
 }
 
 StringPool *Interpreter::stringPool (){ return mStringPool;}
+
+void Interpreter::analysisMethod (SmaliMethod *method)
+{
+    for(auto it = method->mInsList.begin (), itEnd = method->mInsList.end ();
+            it != itEnd; it++) {
+        if((*it)->op == OP_PACKED_SWITCHDATABEG) {
+            auto packedbeg = (Op_PACKED_SWITCHDATA_BEG*)(*it);
+            auto packedtable = new Op_PACKED_SWITCHDATA(OP_PACKED_SWITCHDATA,
+                                        packedbeg->mStringPool, packedbeg->md);
+            bool succ = false;
+            packedbeg->deleteThis ();
+            it = method->mInsList.erase (it);
+            while(it != itEnd) {
+                if((*it)->op == OP_JMPLABEL) {
+                    packedtable->addLabels (((Op_JmpLabel*)(*it))->jmpLabel);
+                    (*it)->deleteThis ();
+                    it = method->mInsList.erase (it);
+                } else if((*it)->op == OP_PACKED_SWITCHDATAEND) {
+                    (*it)->deleteThis ();
+                    it = method->mInsList.erase (it);
+                    succ = true;
+                    break;
+                } else {
+                    // error, just skip
+                    break;
+                }
+            }
+            if(succ) {
+                method->mInsList.insert (it, packedtable);
+            } else {
+                packedtable->deleteThis ();
+            }
+        }
+
+
+    }
+}
 
 std::string trim (const std::string &si)
 {

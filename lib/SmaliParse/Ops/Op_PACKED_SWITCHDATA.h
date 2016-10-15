@@ -32,7 +32,7 @@ namespace Analysis {
             std::string rel = ".packed-switch";
             rel += " " + formater::int2hexStr (md);
             for(auto l : table) {
-                rel += "\n";
+                rel += "\n:";
                 rel += (*mStringPool)[l];
             }
             rel += "\n.end packed-switch";
@@ -40,6 +40,9 @@ namespace Analysis {
         }
         void addLabels(const std::string l) {
             table.push_back ((*mStringPool)[l]);
+        }
+        void addLabels(int l) {
+            table.push_back (l);
         }
         int md;
 
