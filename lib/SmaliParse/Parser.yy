@@ -520,30 +520,50 @@ instruction :
       $$ = new Op_RETURN(OP_RETURN_OBJECT, driver.stringPool(), $2);
     }
    | OP_CONST_4 REGD COMMA NUMBER{
-        $$ = new Op_CONST_D(OP_CONST_4, driver.stringPool(), $2, $4);
+        $$ = new Op_CONST(OP_CONST_4, driver.stringPool(), $2, $4);
     }
    | OP_CONST_16 REGD COMMA NUMBER{
-        $$ = new Op_CONST_D(OP_CONST_16, driver.stringPool(), $2, $4);
+        $$ = new Op_CONST(OP_CONST_16, driver.stringPool(), $2, $4);
     }
-   | OP_CONST
-   | OP_CONST_HIGH16
-   | OP_CONST_WIDE_16
-   | OP_CONST_WIDE_32
-   | OP_CONST_WIDE
-   | OP_CONST_WIDE_HIGH16
+   | OP_CONST REGD COMMA NUMBER{
+        $$ = new Op_CONST(OP_CONST, driver.stringPool(), $2, $4);
+    }
+   | OP_CONST_HIGH16 REGD COMMA NUMBER{
+        $$ = new Op_CONST(OP_CONST_HIGH16, driver.stringPool(), $2, $4);
+    }
+   | OP_CONST_WIDE_16 REGD COMMA NUMBER{
+        $$ = new Op_CONST(OP_CONST_WIDE_16, driver.stringPool(), $2, $4);
+    }
+   | OP_CONST_WIDE_32 REGD COMMA NUMBER{
+        $$ = new Op_CONST(OP_CONST_WIDE_32, driver.stringPool(), $2, $4);
+    }
+   | OP_CONST_WIDE REGD COMMA NUMBER{
+        $$ = new Op_CONST(OP_CONST_WIDE, driver.stringPool(), $2, $4);
+    }
+   | OP_CONST_WIDE_HIGH16 REGD COMMA NUMBER{
+        $$ = new Op_CONST(OP_CONST_WIDE_HIGH16, driver.stringPool(), $2, $4);
+    }
    | OP_CONST_STRING REGD COMMA CSTRING {
-        $$ = new Op_CONST_STRING(OP_CONST_STRING, driver.stringPool(), $2, $4);
+       $$ = new Op_CONST_STRING(OP_CONST_STRING, driver.stringPool(), $2, $4);
     }
    | OP_CONST_STRING_JUMBO REGD COMMA CSTRING {
-        $$ = new Op_CONST_STRING(OP_CONST_STRING_JUMBO, driver.stringPool(), $2, $4);
+       $$ = new Op_CONST_STRING(OP_CONST_STRING_JUMBO, driver.stringPool(), $2, $4);
     }
-   | OP_CONST_CLASS
-   | OP_MONITOR_ENTER
-   | OP_MONITOR_EXIT
+   | OP_CONST_CLASS REGD COMMA CLASSTYPE {
+       $$ = new Op_CONST_CLASS(OP_CONST_CLASS, driver.stringPool(), $2, $4);
+    }
+   | OP_MONITOR_ENTER REGD {
+       $$ = new Op_MONITOR(OP_MONITOR_ENTER, driver.stringPool(), $2);
+    }
+   | OP_MONITOR_EXIT REGD {
+       $$ = new Op_MONITOR(OP_MONITOR_EXIT, driver.stringPool(), $2);
+    }
    | OP_CHECK_CAST REGD COMMA CLASSTYPE {
        $$ = new Op_CHECK_CAST(OP_CHECK_CAST, driver.stringPool(), $2, $4);
     }
-   | OP_INSTANCE_OF
+   | OP_INSTANCE_OF REGD COMMA REGD COMMA CLASSTYPE {
+       $$ = new Op_INSTANCE_OF(OP_INSTANCE_OF, driver.stringPool(), $2, $4, $6);
+   }
    | OP_ARRAY_LENGTH REGD COMMA REGD {
        $$ = new Op_ARRAY_LENGTH(OP_ARRAY_LENGTH, driver.stringPool(), $2, $4);
     }
@@ -555,7 +575,9 @@ instruction :
     }
    | OP_FILLED_NEW_ARRAY
    | OP_FILLED_NEW_ARRAY_RANGE
-   | OP_FILL_ARRAY_DATA
+   | OP_FILL_ARRAY_DATA REGD COMMA jmplabel {
+       $$ = new Op_FILL_ARRAY_DATA(OP_FILL_ARRAY_DATA, driver.stringPool(), $2, $4);
+    }
    | OP_THROW REGD {
        $$ = new Op_THROW(OP_THROW, driver.stringPool(), $2);
     }
@@ -574,11 +596,21 @@ instruction :
    | OP_SPARSE_SWITCH REGD COMMA jmplabel {
        $$ = new Op_X_SWITCH(OP_SPARSE_SWITCH, driver.stringPool(), $2, $4);
     }
-   | OP_CMPL_FLOAT
-   | OP_CMPG_FLOAT
-   | OP_CMPL_DOUBLE
-   | OP_CMPG_DOUBLE
-   | OP_CMP_LONG
+   | OP_CMPL_FLOAT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_CMP(OP_CMPL_FLOAT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_CMPG_FLOAT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_CMP(OP_CMPG_FLOAT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_CMPL_DOUBLE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_CMP(OP_CMPL_DOUBLE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_CMPG_DOUBLE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_CMP(OP_CMPG_DOUBLE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_CMP_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_CMP(OP_CMP_LONG, driver.stringPool(), $2, $4, $6);
+    }
    | OP_IF_EQ REGD COMMA REGD COMMA jmplabel {
        $$ = new Op_IF_XX(OP_IF_EQ, driver.stringPool(), $2, $4, $6);
     }
@@ -642,13 +674,27 @@ instruction :
    | OP_AGET_SHORT REGD COMMA REGD COMMA REGD {
        $$ = new Op_AGET(OP_AGET_SHORT, driver.stringPool(), $2, $4, $6);
     }
-   | OP_APUT
-   | OP_APUT_WIDE
-   | OP_APUT_OBJECT
-   | OP_APUT_BOOLEAN
-   | OP_APUT_BYTE
-   | OP_APUT_CHAR
-   | OP_APUT_SHORT
+   | OP_APUT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_APUT(OP_APUT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_APUT_WIDE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_APUT(OP_APUT_WIDE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_APUT_OBJECT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_APUT(OP_APUT_OBJECT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_APUT_BOOLEAN REGD COMMA REGD COMMA REGD {
+       $$ = new Op_APUT(OP_APUT_BOOLEAN, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_APUT_BYTE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_APUT(OP_APUT_BYTE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_APUT_CHAR REGD COMMA REGD COMMA REGD {
+       $$ = new Op_APUT(OP_APUT_CHAR, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_APUT_SHORT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_APUT(OP_APUT_SHORT, driver.stringPool(), $2, $4, $6);
+    }
    | OP_IGET REGD COMMA REGD COMMA CLASSTYPE POINT NAMESTRING COLON CLASSTYPE {
        $$ = new Op_IGET(OP_IGET, driver.stringPool(), $2, $4, $6, $8, $10);
     }
@@ -766,59 +812,165 @@ instruction :
     }
    | OP_UNUSED_79
    | OP_UNUSED_7A
-   | OP_NEG_INT
-   | OP_NOT_INT
-   | OP_NEG_LONG
-   | OP_NOT_LONG
-   | OP_NEG_FLOAT
-   | OP_NEG_DOUBLE
-   | OP_INT_TO_LONG
-   | OP_INT_TO_FLOAT
-   | OP_INT_TO_DOUBLE
-   | OP_LONG_TO_INT
-   | OP_LONG_TO_FLOAT
-   | OP_LONG_TO_DOUBLE
-   | OP_FLOAT_TO_INT
-   | OP_FLOAT_TO_LONG
-   | OP_FLOAT_TO_DOUBLE
-   | OP_DOUBLE_TO_INT
-   | OP_DOUBLE_TO_LONG
-   | OP_DOUBLE_TO_FLOAT
-   | OP_INT_TO_BYTE
-   | OP_INT_TO_CHAR
-   | OP_INT_TO_SHORT
-   | OP_ADD_INT
-   | OP_SUB_INT
-   | OP_MUL_INT
-   | OP_DIV_INT
-   | OP_REM_INT
-   | OP_AND_INT
-   | OP_OR_INT
-   | OP_XOR_INT
-   | OP_SHL_INT
-   | OP_SHR_INT
-   | OP_USHR_INT
-   | OP_ADD_LONG
-   | OP_SUB_LONG
-   | OP_MUL_LONG
-   | OP_DIV_LONG
-   | OP_REM_LONG
-   | OP_AND_LONG
-   | OP_OR_LONG
-   | OP_XOR_LONG
-   | OP_SHL_LONG
-   | OP_SHR_LONG
-   | OP_USHR_LONG
-   | OP_ADD_FLOAT
-   | OP_SUB_FLOAT
-   | OP_MUL_FLOAT
-   | OP_DIV_FLOAT
-   | OP_REM_FLOAT
-   | OP_ADD_DOUBLE
-   | OP_SUB_DOUBLE
-   | OP_MUL_DOUBLE
-   | OP_DIV_DOUBLE
-   | OP_REM_DOUBLE
+   | OP_NEG_INT REGD COMMA REGD {
+       $$ = new Op_NEGNOT_X(OP_NEG_INT, driver.stringPool(), $2, $4);
+    }
+   | OP_NOT_INT REGD COMMA REGD {
+       $$ = new Op_NEGNOT_X(OP_NOT_INT, driver.stringPool(), $2, $4);
+    }
+   | OP_NEG_LONG REGD COMMA REGD {
+       $$ = new Op_NEGNOT_X(OP_NEG_LONG, driver.stringPool(), $2, $4);
+    }
+   | OP_NOT_LONG REGD COMMA REGD {
+       $$ = new Op_NEGNOT_X(OP_NOT_LONG, driver.stringPool(), $2, $4);
+    }
+   | OP_NEG_FLOAT REGD COMMA REGD {
+       $$ = new Op_NEGNOT_X(OP_NEG_FLOAT, driver.stringPool(), $2, $4);
+    }
+   | OP_NEG_DOUBLE REGD COMMA REGD {
+       $$ = new Op_NEGNOT_X(OP_NEG_DOUBLE, driver.stringPool(), $2, $4);
+    }
+   | OP_INT_TO_LONG REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_INT_TO_LONG, driver.stringPool(), $2, $4);
+    }
+   | OP_INT_TO_FLOAT REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_INT_TO_FLOAT, driver.stringPool(), $2, $4);
+    }
+   | OP_INT_TO_DOUBLE REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_INT_TO_DOUBLE, driver.stringPool(), $2, $4);
+    }
+   | OP_LONG_TO_INT REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_LONG_TO_INT, driver.stringPool(), $2, $4);
+    }
+   | OP_LONG_TO_FLOAT REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_LONG_TO_FLOAT, driver.stringPool(), $2, $4);
+    }
+   | OP_LONG_TO_DOUBLE REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_LONG_TO_DOUBLE, driver.stringPool(), $2, $4);
+    }
+   | OP_FLOAT_TO_INT REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_FLOAT_TO_INT, driver.stringPool(), $2, $4);
+    }
+   | OP_FLOAT_TO_LONG REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_FLOAT_TO_LONG, driver.stringPool(), $2, $4);
+    }
+   | OP_FLOAT_TO_DOUBLE REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_FLOAT_TO_DOUBLE, driver.stringPool(), $2, $4);
+    }
+   | OP_DOUBLE_TO_INT REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_DOUBLE_TO_INT, driver.stringPool(), $2, $4);
+    }
+   | OP_DOUBLE_TO_LONG REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_DOUBLE_TO_LONG, driver.stringPool(), $2, $4);
+    }
+   | OP_DOUBLE_TO_FLOAT REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_DOUBLE_TO_FLOAT, driver.stringPool(), $2, $4);
+    }
+   | OP_INT_TO_BYTE REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_INT_TO_BYTE, driver.stringPool(), $2, $4);
+    }
+   | OP_INT_TO_CHAR REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_INT_TO_CHAR, driver.stringPool(), $2, $4);
+    }
+   | OP_INT_TO_SHORT REGD COMMA REGD {
+       $$ = new Op_X_TO_Y(OP_INT_TO_SHORT, driver.stringPool(), $2, $4);
+    }
+   | OP_ADD_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_ADD_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SUB_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_SUB_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_MUL_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_MUL_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_DIV_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_DIV_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_REM_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_REM_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_AND_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_AND_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_OR_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_OR_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_XOR_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_XOR_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SHL_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_SHL_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SHR_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_SHR_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_USHR_INT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_INT(OP_USHR_INT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_ADD_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_ADD_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SUB_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_SUB_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_MUL_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_MUL_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_DIV_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_DIV_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_REM_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_REM_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_AND_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_AND_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_OR_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_OR_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_XOR_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_XOR_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SHL_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_SHL_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SHR_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_SHR_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_USHR_LONG REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_LONG(OP_USHR_LONG, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_ADD_FLOAT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_FLOAT(OP_ADD_FLOAT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SUB_FLOAT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_FLOAT(OP_SUB_FLOAT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_MUL_FLOAT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_FLOAT(OP_MUL_FLOAT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_DIV_FLOAT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_FLOAT(OP_DIV_FLOAT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_REM_FLOAT REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_FLOAT(OP_REM_FLOAT, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_ADD_DOUBLE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE(OP_ADD_DOUBLE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_SUB_DOUBLE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE(OP_SUB_DOUBLE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_MUL_DOUBLE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE(OP_MUL_DOUBLE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_DIV_DOUBLE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE(OP_DIV_DOUBLE, driver.stringPool(), $2, $4, $6);
+    }
+   | OP_REM_DOUBLE REGD COMMA REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE(OP_REM_DOUBLE, driver.stringPool(), $2, $4, $6);
+    }
    | OP_ADD_INT_2ADDR REGD COMMA REGD {
        $$ = new Op_X_INT_2ADDR(OP_ADD_INT_2ADDR, driver.stringPool(), $2, $4);
     }
@@ -852,27 +1004,69 @@ instruction :
    | OP_USHR_INT_2ADDR REGD COMMA REGD {
        $$ = new Op_X_INT_2ADDR(OP_USHR_INT_2ADDR, driver.stringPool(), $2, $4);
     }
-   | OP_ADD_LONG_2ADDR
-   | OP_SUB_LONG_2ADDR
-   | OP_MUL_LONG_2ADDR
-   | OP_DIV_LONG_2ADDR
-   | OP_REM_LONG_2ADDR
-   | OP_AND_LONG_2ADDR
-   | OP_OR_LONG_2ADDR
-   | OP_XOR_LONG_2ADDR
-   | OP_SHL_LONG_2ADDR
-   | OP_SHR_LONG_2ADDR
-   | OP_USHR_LONG_2ADDR
-   | OP_ADD_FLOAT_2ADDR
-   | OP_SUB_FLOAT_2ADDR
-   | OP_MUL_FLOAT_2ADDR
-   | OP_DIV_FLOAT_2ADDR
-   | OP_REM_FLOAT_2ADDR
-   | OP_ADD_DOUBLE_2ADDR
-   | OP_SUB_DOUBLE_2ADDR
-   | OP_MUL_DOUBLE_2ADDR
-   | OP_DIV_DOUBLE_2ADDR
-   | OP_REM_DOUBLE_2ADDR
+   | OP_ADD_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_ADD_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SUB_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_SUB_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_MUL_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_MUL_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_DIV_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_DIV_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_REM_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_REM_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_AND_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_AND_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_OR_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_OR_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_XOR_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_XOR_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SHL_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_SHL_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SHR_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_SHR_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_USHR_LONG_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_LONG_2ADDR(OP_USHR_LONG_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_ADD_FLOAT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_FLOAT_2ADDR(OP_ADD_FLOAT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SUB_FLOAT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_FLOAT_2ADDR(OP_SUB_FLOAT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_MUL_FLOAT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_FLOAT_2ADDR(OP_MUL_FLOAT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_DIV_FLOAT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_FLOAT_2ADDR(OP_DIV_FLOAT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_REM_FLOAT_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_FLOAT_2ADDR(OP_REM_FLOAT_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_ADD_DOUBLE_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE_2ADDR(OP_ADD_DOUBLE_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_SUB_DOUBLE_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE_2ADDR(OP_SUB_DOUBLE_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_MUL_DOUBLE_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE_2ADDR(OP_MUL_DOUBLE_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_DIV_DOUBLE_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE_2ADDR(OP_DIV_DOUBLE_2ADDR, driver.stringPool(), $2, $4);
+    }
+   | OP_REM_DOUBLE_2ADDR REGD COMMA REGD {
+       $$ = new Op_X_DOUBLE_2ADDR(OP_REM_DOUBLE_2ADDR, driver.stringPool(), $2, $4);
+    }
    | OP_ADD_INT_LIT16 REGD COMMA REGD COMMA NUMBER {
        $$ = new Op_X_INT_LIT(OP_ADD_INT_LIT16, driver.stringPool(), $2, $4, $6);
     }
@@ -964,12 +1158,6 @@ instruction :
     }
    | OP_CATCH CLASSTYPE INIBRACE jmplabel ELLIPSIS jmplabel CLOBRACE jmplabel {
        $$ = new Op_CATCH(OP_CATCH, driver.stringPool(), $2, $4, $6, $8);
-    }
-   | OP_PACKED_SWITCHDATABEG NUMBER {
-       $$ = new Op_PACKED_SWITCHDATA_BEG(OP_PACKED_SWITCHDATABEG, driver.stringPool(),$2);
-    }
-   | OP_PACKED_SWITCHDATAEND {
-       $$ = new Op_PACKED_SWITCHDATA_END(OP_PACKED_SWITCHDATAEND, driver.stringPool());
     }
    ;
 %%

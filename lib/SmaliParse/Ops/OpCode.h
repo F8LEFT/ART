@@ -43,7 +43,8 @@ namespace Analysis {
                 2,2,2,2,2,2,2,2,2,2,2,2,0,2,3,3,
                 3,1,2,2,2,2,2,2,3,3,3,3,2,2,2,0,
                 // END(libdex-widths)
-                0,0,0,0,0,0
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         };
 
         static u1 gOpcodeFlagsTable[kNumPackedOpcodes + kExtraOpcodes] = {
@@ -305,7 +306,8 @@ namespace Analysis {
                 kInstrCanContinue | kInstrCanThrow,
                 0,
                 // END(libdex-flags)
-                0,0,0,0,0,0
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         };
 
 /*
@@ -352,7 +354,8 @@ namespace Analysis {
                 kFmt22cs,kFmt22cs,kFmt22cs,kFmt35ms,kFmt3rms,kFmt35ms,kFmt3rms,
                 kFmt22c,kFmt21c,kFmt21c,kFmt00x,
                 // END(libdex-formats)
-                kFmt00x,kFmt00x,kFmt00x,kFmt00x,kFmt00x,kFmt00x
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         };
 
 /*
@@ -448,8 +451,8 @@ namespace Analysis {
                 kIndexFieldRef,kIndexFieldRef,kIndexFieldRef,
                 kIndexUnknown,
                 // END(libdex-index-types)
-                kIndexUnknown,kIndexUnknown,kIndexUnknown,kIndexUnknown,
-                kIndexUnknown,kIndexUnknown
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         };
 
     }

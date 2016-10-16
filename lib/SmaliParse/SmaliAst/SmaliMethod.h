@@ -26,6 +26,7 @@ namespace Analysis {
     class SmaliMethod
     {
     public:
+        ~SmaliMethod ();
         void setStringPool (StringPool *sp);
         StringPool* stringPool();
 

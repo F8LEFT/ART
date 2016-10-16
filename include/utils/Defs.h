@@ -26,7 +26,7 @@ typedef int16_t             s2;
 typedef int32_t             s4;
 typedef int64_t             s8;
 #define kNumPackedOpcodes 0x100
-#define kExtraOpcodes     0x8
+#define kExtraOpcodes     0x20
 enum Opcode {
     OP_NOP                          = 0x00,
     OP_MOVE                         = 0x01,
@@ -293,6 +293,9 @@ enum Opcode {
     OP_SPARSE_SWITCHDATA            = 0x105,
     OP_SPARSE_SWITCHDATABEG         = 0x106,
     OP_SPARSE_SWITCHDATAEND         = 0x107,
+    OP_ARRAY_DATA                   = 0x108,
+    OP_ARRAY_DATABEG                = 0x109,
+    OP_ARRAY_DATAEND                = 0x10a,
 };
 
 

@@ -420,7 +420,7 @@ COMMENT         #{UANYN}*
         return Parser::make_FLAG(ACC_FLAGS::ACC_ENUM, LOCATION);}
 "constructor" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_CONSTRUCTOR, LOCATION);}
-"declared_synchronized" {
+"declared-synchronized" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_DECLARED_SYNCHRONIZED, LOCATION);}
 
 ":"         {return Parser::make_COLON(LOCATION);}

@@ -1,4 +1,4 @@
-//===- Op_PackedSwitchDataEnd.h - ART-LEX -----------------------*- c++ -*-===//
+//===- Op_ARRAY_DATA.h - ART-LEX -------------------------------*- c++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
@@ -12,28 +12,34 @@
 //===----------------------------------------------------------------------===//
 
 
-#ifndef PROJECT_OP_PACKEDSWITCHDATAEND_H
-#define PROJECT_OP_PACKEDSWITCHDATAEND_H
+#ifndef PROJECT_OP_ARRAY_DATA_H
+#define PROJECT_OP_ARRAY_DATA_H
 
+// TODO read array-data from smali
 #include "OpCode.h"
 
 namespace Analysis {
-    /* .end packed-switch
+    /* .array-data len
+     * data1
+     * data2
+     * ...
+     * .end array-data
      * */
 
-    class Op_PACKED_SWITCHDATA_END: public OpCode {
+    class Op_ARRAY_DATA: public OpCode {
     public:
-        Op_PACKED_SWITCHDATA_END(Opcode o, StringPool* sp)
+        Op_ARRAY_DATA(Opcode o, StringPool* sp)
                 : OpCode (o, sp)
         {
         }
         std::string toString() {
-            std::string rel = ".end packed-switch";
+            std::string rel = "return-void";
             return move(rel);
         }
+
         void deleteThis() {
             delete this;
         }
     };
 }
-#endif //PROJECT_OP_PACKEDSWITCHDATAEND_H
+#endif //PROJECT_OP_ARRAY_DATA_H

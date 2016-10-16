@@ -25,6 +25,7 @@ namespace Analysis {
     class SmaliField
     {
     public:
+        ~SmaliField ();
         void setStringPool (StringPool *sp);
         StringPool* stringPool();
 

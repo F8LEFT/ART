@@ -24,8 +24,7 @@ using namespace Analysis;
 int main() {
 
     ifstream ifile;
-    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
-//    ifile.open ("/home/f8left/CodeSrc/ART/res/BackStackRecord.smali");
+//    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
 
 
     // test Lexer
@@ -48,8 +47,7 @@ int main() {
     }
     ifile.close ();
     // test parser
-//    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
-    ifile.open ("/home/f8left/CodeSrc/ART/res/BackStackRecord.smali");
+    ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");
     if(ifile.is_open ()) {
         Interpreter interpreter;
         SmaliClass sClass;

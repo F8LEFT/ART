@@ -17,8 +17,13 @@
 
 #include "OpCode.h"
 
+// TODO read packed-switch from smali
 namespace Analysis {
-    /* return-void
+    /* .packed-switch 0x1
+     * :label1
+     * :label2
+     * ...
+     * .end packed-switch
      * */
 
     class Op_PACKED_SWITCHDATA: public OpCode {

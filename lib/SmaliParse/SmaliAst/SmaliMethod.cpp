@@ -14,6 +14,15 @@
 using namespace Analysis;
 using namespace std;
 
+SmaliMethod::~SmaliMethod ()
+{
+    for(auto it = mInsList.begin (), itEnd = mInsList.end ();
+            it != itEnd; it++ ) {
+        (*it)->deleteThis ();
+    }
+}
+
+
 void SmaliMethod::setName (std::string &name)
 {
     mName = (*mStringPool)[name];
@@ -138,3 +147,4 @@ void SmaliMethod::printAst (std::vector<std::string> &v)
         v.push_back (op->toString ());
     }
 }
+

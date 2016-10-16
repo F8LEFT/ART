@@ -18,12 +18,18 @@
 
 namespace Analysis {
     /* const/4 rx, num
-    /* const/16 rx, num
+     * const/16 rx, num
+     * const rx, num
+     * const/high16 rx, num
+     * const-wide/16 rx, num
+     * const-wide/32 rx, num
+     * const-wide rx, num
+     * const-wide/high16
      * */
 
-    class Op_CONST_D: public OpCode {
+    class Op_CONST: public OpCode {
     public:
-        Op_CONST_D(Opcode o, StringPool* sp, int reg, int value)
+        Op_CONST(Opcode o, StringPool* sp, int reg, int64_t value)
                 : OpCode (o, sp), rx(reg), val(value)
         {
         }
@@ -36,6 +42,21 @@ namespace Analysis {
                 case OP_CONST_16:
                     rel += "/16";
                     break;
+                case OP_CONST_HIGH16:
+                    rel += "/high16";
+                    break;
+                case OP_CONST_WIDE_16:
+                    rel += "-wide/16";
+                    break;
+                case OP_CONST_WIDE_32:
+                    rel += "-wide/32";
+                    break;
+                case OP_CONST_WIDE:
+                    rel += "-wide";
+                    break;
+                case OP_CONST_WIDE_HIGH16:
+                    rel += "-wide/high16";
+                    break;
                 default:
                     break;
             }
@@ -44,7 +65,7 @@ namespace Analysis {
         }
 
         RegisterX rx;
-        int val;
+        int64_t val;
 
         void deleteThis() {
             delete this;

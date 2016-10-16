@@ -14,14 +14,15 @@
 #include <utils/ProjectInfo.h>
 #include <utils/ScriptEngine.h>
 #include "yaml-cpp/yaml.h"
+#include "SmaliAnalysis/SmaliAnalysis.h"
 
 #include <QtCore/QDir>
 #include <utils/Configuration.h>
 
 ProjectTab::ProjectTab(QWidget *parent) :
-    QStackedWidget(parent),
-    ui(new Ui::ProjectTab),
-    mHasProject(false)
+        QStackedWidget(parent),
+        ui(new Ui::ProjectTab),
+        mHasProject(false)
 {
     ui->setupUi(this);
 
@@ -135,12 +136,18 @@ void ProjectTab::onProjectOpened (QStringList projName)
 {
     cmdmsg ()->addCmdMsg ("project " + mProjectName + " opened.");
     setCurrentIndex(1);
+    auto analysis = new SmaliAnalysis(this);
+            foreach(QString dir, mSmaliDirectory) {
+            analysis->addDirectory (dir);
+        }
 }
 
 void ProjectTab::onProjectClosed()
 {
     cmdmsg ()->addCmdMsg ("project " + mProjectName + " closed");
     setCurrentIndex(0);
+    auto analysis = SmaliAnalysis::instance ();
+    delete analysis;
 }
 
 void ProjectTab::readProjectInfo ()
@@ -162,18 +169,15 @@ void ProjectTab::readProjectYmlInfo ()
     QDir dir(projectPath);
     if (dir.exists()) {
         dir.setFilter(QDir::Dirs | QDir::NoSymLinks);
-        QFileInfoList list = dir.entryInfoList();
-        int fCount = list.count();
-        if (fCount > 0) {
-            QStringList strList;
-            for (int i = 0; i < fCount; i++) {
-                QFileInfo fInfo = list.at(i);
-                QString fileName = fInfo.fileName();
-                if (fileName.startsWith("smali")) {
-                    mSmaliDirectory.append(fileName);
+                foreach(QFileInfo mfi ,dir.entryInfoList())
+            {
+                if(mfi.isDir ())
+                {
+                    if(mfi.fileName ().startsWith ("smali")) {
+                        mSmaliDirectory.append(mfi.absoluteFilePath ());
+                    }
                 }
             }
-        }
     }
 
     QString ymlPath = projectPath + "/apktool.yml";
@@ -232,7 +236,7 @@ void ProjectTab::readProjectManifestInfo ()
                     continue;
                 }
                 if (categoryElem.attribute("android:name")
-                        == "android.intent.category.LAUNCHER") {
+                    == "android.intent.category.LAUNCHER") {
                     mActivityEntryName = avityElem.attribute("android:name");
                     continue;
                 }
