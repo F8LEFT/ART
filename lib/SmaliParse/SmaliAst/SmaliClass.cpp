@@ -152,7 +152,9 @@ void SmaliClass::printAst (std::vector<std::string> &v)
 {
     v.push_back (".class " + formater::getAccessFlagClass (mFlag) + " " + (*mStringPool)[mClassType]);
     v.push_back (std::string(".super ") + (*mStringPool)[mSuper]);
-    v.push_back (std::string(".source \"") + (*mStringPool)[mSource]+"\"");
+    if(mSource != -1) {
+        v.push_back (std::string(".source \"") + (*mStringPool)[mSource]+"\"");
+    }
     for (auto f: fields) {
         f->printAst (v);
     }

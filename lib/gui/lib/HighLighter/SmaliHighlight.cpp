@@ -92,7 +92,8 @@ void SmaliHighlight::highlightBlock (const QString &text)
                 case Parser::token::TOKEN_REGD:
                     format = &mREGDFormat;
                     break;
-                case Parser::token::TOKEN_NUMBER:
+                case Parser::token::TOKEN_NUMBERSTRING:
+                case Parser::token::TOKEN_HEXNUMBERSTRING:
                     format = &mNumberFormat;
                     break;
                 default:

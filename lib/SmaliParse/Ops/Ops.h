@@ -18,7 +18,6 @@
 
 #include "Op_NOP.h"
 #include "Op_MOVE.h"
-
 #include "Op_MOVE_RESULT.h"
 #include "Op_MOVE_EXCEPTION.h"
 #include "Op_RETURN_VOID.h"
@@ -32,8 +31,7 @@
 #include "Op_ARRAY_LENGTH.h"
 #include "Op_NEW_INSTANCE.h"
 #include "Op_NEW_ARRAY.h"
-//#include "OP_FILLED_NEW_ARRAY.h"
-//#include "OP_FILLED_NEW_ARRAY_RANGE.h"
+#include "Op_FILLED_NEW_ARRAY.h"
 #include "Op_FILL_ARRAY_DATA.h"
 #include "Op_THROW.h"
 #include "Op_GOTO.h"

@@ -22,7 +22,7 @@ using namespace std;
 using namespace Analysis;
 
 int main() {
-
+    auto l = strtoll ("-0x800000000L", 0, 16);
     ifstream ifile;
 //    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
 
@@ -47,7 +47,7 @@ int main() {
     }
     ifile.close ();
     // test parser
-    ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");
+    ifile.open ("/home/f8left/CodeSrc/ART/lib/gui/bin/Projects/app.greyshirts.sslcapture-1/Project/smali/org/spongycastle/crypto/digests/GOST3411Digest.smali");
     if(ifile.is_open ()) {
         Interpreter interpreter;
         SmaliClass sClass;
@@ -60,6 +60,8 @@ int main() {
         interpreter.print ();
     }
     ifile.close ();
+    string a;
+    a.substr (0, a.length () - 12);
 
     return 0;
 }

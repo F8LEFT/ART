@@ -13,15 +13,23 @@ using namespace Analysis;
 std::string trim (const std::string &si);
 
 Interpreter::Interpreter()
-    : mParser(mLexer, *this)
+
+{
+
+}
+
+Interpreter::~Interpreter ()
 {
 
 }
 
 int Interpreter::parse ()
 {
-    mParser.parse ();
-    analysis ();
+    if(mParser.get () != nullptr) {
+        mParser->parse ();
+        analysis ();
+    }
+
 }
 
 void Interpreter::analysis ()
@@ -34,7 +42,10 @@ void Interpreter::analysis ()
 
 void Interpreter::switchInputStream (std::istream *is,SmaliClass *pClass)
 {
-    mLexer.switch_streams (is,nullptr);
+    mLexer.reset (new Lexer);
+    mParser.reset (new Parser(*mLexer, *this));
+
+    mLexer->switch_streams (is,nullptr);
     mClass = pClass;
     mStringPool = pClass->stringPool ();
 }
@@ -87,7 +98,7 @@ void Interpreter::setCurMethodRegSize (int size)
 void Interpreter::addOpcode (OpCode *code)
 {
 #ifdef DEBUG
-    std::string tStr = trim(mLexer.text ());
+    std::string tStr = trim(mLexer->text ());
 //    std::cout << tStr << std::endl;
     std::string codeStr = code->toString ();
     assert (codeStr == tStr);
@@ -138,6 +149,7 @@ void Interpreter::analysisMethod (SmaliMethod *method)
 //
 //    }
 }
+
 
 std::string trim (const std::string &si)
 {

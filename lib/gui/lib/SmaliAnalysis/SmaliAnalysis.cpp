@@ -79,12 +79,13 @@ QString SmaliAnalysis::parseFile (QString filePath)
     string classname;
     if(ifile.is_open ()) {
         Interpreter interpreter;
-        SmaliClass *sClass = new SmaliClass;
-        sClass->setStringPool (&mStringPool);
-        interpreter.switchInputStream (&ifile,sClass);
+        SmaliClass sClass;
+        StringPool strpool;
+        sClass.setStringPool (&strpool);
+        interpreter.switchInputStream (&ifile,&sClass);
         interpreter.parse ();
         interpreter.analysis ();
-        classname = sClass->classType ();
+        classname = sClass.classType ();
     }
     ifile.close ();
     return QString::fromStdString (classname);

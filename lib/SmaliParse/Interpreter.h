@@ -16,6 +16,7 @@
 #define PROJECT_INTERPRETER_H
 
 #include <iostream>
+#include <memory>
 #include "Parser.hpp"
 #include "SmaliAst/SmaliClass.h"
 #include "Lexer.h"
@@ -27,7 +28,7 @@ namespace Analysis {
     {
     public:
         Interpreter();
-
+        ~Interpreter ();
         /**
          * Run parser. Results are stored inside.
          * \returns 0 on success, 1 on failure
@@ -64,8 +65,8 @@ namespace Analysis {
         void analysisMethod(SmaliMethod* method);
 
     private:
-        Lexer mLexer;
-        Parser mParser;
+        std::shared_ptr<Lexer> mLexer;
+        std::shared_ptr<Parser> mParser;
 
         SmaliClass* mClass;
         SmaliMethod* mCurMethod;

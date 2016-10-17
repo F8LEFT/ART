@@ -69,7 +69,7 @@ CSTRING          "\""{UANYN}*"\""
 NAMESTRING      {UASTR}+
 COMMENT         #{UANYN}*
 
-%x ARGSDEF
+%x ARGSDEF NAMEDEF
 
 %%
 {OWS}+
@@ -82,8 +82,8 @@ COMMENT         #{UANYN}*
 ".class"  {return Parser::make_CLASSBEG(LOCATION);}
 ".super"  {return Parser::make_SUPERBEG(LOCATION);}
 ".source"    {return Parser::make_SRCBEG(LOCATION);}
-".field"  {return Parser::make_FIELDBEG(LOCATION);}
-".method" { return Parser::make_METHODBEG(LOCATION);}
+".field"  {BEGIN(NAMEDEF); return Parser::make_FIELDBEG(LOCATION);}
+".method" {BEGIN(NAMEDEF); return Parser::make_METHODBEG(LOCATION);}
 ".end method" { return Parser::make_METHODEND(LOCATION);}
 
 
@@ -382,45 +382,45 @@ COMMENT         #{UANYN}*
 
 
     /*          flags          */
-"public" {
+<INITIAL,NAMEDEF>"public" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_PUBLIC, LOCATION);}
-"private" {
+<INITIAL,NAMEDEF>"private" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_PRIVATE, LOCATION);}
-"protected" {
+<INITIAL,NAMEDEF>"protected" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_PROTECTED, LOCATION);}
-"static" {
+<INITIAL,NAMEDEF>"static" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_STATIC, LOCATION);}
-"final" {
+<INITIAL,NAMEDEF>"final" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_FINAL, LOCATION);}
-"synchronized" {
+<INITIAL,NAMEDEF>"synchronized" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_SYNCHRONIZED, LOCATION);}
-"super" {
+<INITIAL,NAMEDEF>"super" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_SUPER, LOCATION);}
-"volatile" {
+<INITIAL,NAMEDEF>"volatile" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_VOLATILE, LOCATION);}
-"bridge" {
+<INITIAL,NAMEDEF>"bridge" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_BRIDGE, LOCATION);}
-"transient" {
+<INITIAL,NAMEDEF>"transient" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_TRANSIENT, LOCATION);}
-"varargs" {
+<INITIAL,NAMEDEF>"varargs" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_VARARGS, LOCATION);}
-"native" {
+<INITIAL,NAMEDEF>"native" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_NATIVE, LOCATION);}
-"interface" {
+<INITIAL,NAMEDEF>"interface" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_INTERFACE, LOCATION);}
-"abstract" {
+<INITIAL,NAMEDEF>"abstract" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_ABSTRACT, LOCATION);}
-"strict" {
+<INITIAL,NAMEDEF>"strict" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_STRICT, LOCATION);}
-"synthetic" {
+<INITIAL,NAMEDEF>"synthetic" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_SYNTHETIC, LOCATION);}
-"annotation" {
+<INITIAL,NAMEDEF>"annotation" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_ANNOTATION, LOCATION);}
-"enum" {
+<INITIAL,NAMEDEF>"enum" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_ENUM, LOCATION);}
-"constructor" {
+<INITIAL,NAMEDEF>"constructor" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_CONSTRUCTOR, LOCATION);}
-"declared-synchronized" {
+<INITIAL,NAMEDEF>"declared-synchronized" {
         return Parser::make_FLAG(ACC_FLAGS::ACC_DECLARED_SYNCHRONIZED, LOCATION);}
 
 ":"         {return Parser::make_COLON(LOCATION);}
@@ -433,18 +433,17 @@ COMMENT         #{UANYN}*
 ".."  {return Parser::make_ELLIPSIS(LOCATION);}
 
 
-[-]?{DNUMBER}   {
-                int64_t number = strtoll(yytext, 0, 10);
-                return Parser::make_NUMBER(number, LOCATION);
-            }
+[-]?{DNUMBER} {
+      return Parser::make_NUMBERSTRING(std::string(yytext, yyleng), LOCATION);
+      }
 [-]?"0x"{HNUMBER} {
-                int64_t number = strtoll(yytext, 0, 16);
-                return Parser::make_NUMBER(number, LOCATION);
-            }
+
+      return Parser::make_HEXNUMBERSTRING(std::string(yytext, yyleng), LOCATION);
+      }
 
 {CSTRING} {
         return Parser::make_CSTRING(std::string(yytext+1, yyleng - 2), LOCATION);}
-{NAMESTRING} {return Parser::make_NAMESTRING(yytext, LOCATION);}
+<INITIAL,NAMEDEF>{NAMESTRING} {BEGIN(INITIAL); return Parser::make_NAMESTRING(yytext, LOCATION);}
 
 
 .           {;}

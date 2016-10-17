@@ -61,7 +61,7 @@ namespace Analysis {
         StringPool *mStringPool = nullptr;
 
         int mClassType;
-        int mSource;
+        int mSource = -1;
         int mSuper;
         int mFlag = 0;
 

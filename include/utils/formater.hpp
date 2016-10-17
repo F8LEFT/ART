@@ -20,19 +20,19 @@
 
 class formater {
 public:
-    static std::string int2hexStr(int i) {
+    static std::string int2hexStr(long long int i) {
         char buf[12];
         if(i < 0) {
-            sprintf (buf, "-0x%x",-i);
+            sprintf (buf, "-0x%llx",-i);
         } else {
-            sprintf (buf, "0x%x",i);
+            sprintf (buf, "0x%llx",i);
         }
         return buf;
     }
 
-    static std::string int2decStr(int i) {
+    static std::string int2decStr(long long int i) {
         char buf[12];
-        sprintf (buf, "%d", i);
+        sprintf (buf, "%lld", i);
         return buf;
     }
 

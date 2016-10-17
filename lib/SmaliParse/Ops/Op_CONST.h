@@ -29,9 +29,10 @@ namespace Analysis {
 
     class Op_CONST: public OpCode {
     public:
-        Op_CONST(Opcode o, StringPool* sp, int reg, int64_t value)
-                : OpCode (o, sp), rx(reg), val(value)
+        Op_CONST(Opcode o, StringPool* sp, int reg, long long int  value)
+                : OpCode (o, sp), rx(reg)
         {
+            val = value;
         }
         std::string toString() {
             std::string rel = "const";
@@ -61,11 +62,21 @@ namespace Analysis {
                     break;
             }
             rel += " " + rx.toString () + ", " + formater::int2hexStr (val);
+            switch(op) {
+                case OP_CONST_HIGH16:
+                    rel += "0000";
+                    break;
+                case OP_CONST_WIDE_HIGH16:
+                    rel += "000000000000";
+                    break;
+                default:
+                    break;
+            }
             return move(rel);
         }
 
         RegisterX rx;
-        int64_t val;
+        long long int  val;
 
         void deleteThis() {
             delete this;

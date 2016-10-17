@@ -91,7 +91,8 @@
 
 %token <int> FLAG "flag"
 %token <int> REGD "v(p)x"
-%token <int64_t> NUMBER "number";
+%token <std::string> NUMBERSTRING "0xnumber"
+%token <std::string> HEXNUMBERSTRING "0xnumber"
 
 %token OP_BEGIN "begin of opcodes"
 %token OP_NOP "nop"
@@ -373,6 +374,8 @@
 %type <std::vector<int>> regs;
 %type <OpCode*> instruction;
 %type <std::string> jmplabel;
+%type <long long int> NUMBER "number";
+
 
 %start program
 
@@ -383,7 +386,7 @@ program :
         | program EOL
         | program comment
         | program exp
-        | program error EOL
+        | program error EOL {yyerrok; driver.mLexer->beginInitial();}
         ;
 
 exp : classdef
@@ -464,6 +467,13 @@ jmplabel : COLON NAMESTRING {
         $$ = $2;
     }
 
+NUMBER : NUMBERSTRING {
+        $$ = strtoll($1.c_str(), 0, 10);
+     }
+    | HEXNUMBERSTRING {
+        $$ = strtoll($1.c_str(), 0, 16);
+     }
+
 instruction :
      OP_NOP {
        $$ = new Op_NOP(OP_NOP, driver.stringPool());
@@ -528,8 +538,11 @@ instruction :
    | OP_CONST REGD COMMA NUMBER{
         $$ = new Op_CONST(OP_CONST, driver.stringPool(), $2, $4);
     }
-   | OP_CONST_HIGH16 REGD COMMA NUMBER{
-        $$ = new Op_CONST(OP_CONST_HIGH16, driver.stringPool(), $2, $4);
+   | OP_CONST_HIGH16 REGD COMMA HEXNUMBERSTRING{
+        auto number = $4.substr (0, $4.length () - 4);
+        $$ = new Op_CONST(OP_CONST_HIGH16, driver.stringPool(), $2,
+                         strtoll(number.c_str(), 0, 16));
+
     }
    | OP_CONST_WIDE_16 REGD COMMA NUMBER{
         $$ = new Op_CONST(OP_CONST_WIDE_16, driver.stringPool(), $2, $4);
@@ -540,8 +553,10 @@ instruction :
    | OP_CONST_WIDE REGD COMMA NUMBER{
         $$ = new Op_CONST(OP_CONST_WIDE, driver.stringPool(), $2, $4);
     }
-   | OP_CONST_WIDE_HIGH16 REGD COMMA NUMBER{
-        $$ = new Op_CONST(OP_CONST_WIDE_HIGH16, driver.stringPool(), $2, $4);
+   | OP_CONST_WIDE_HIGH16 REGD COMMA HEXNUMBERSTRING{
+        auto number = $4.substr (0, $4.length () - 12);
+        $$ = new Op_CONST(OP_CONST_WIDE_HIGH16, driver.stringPool(), $2,
+                        strtoll(number.c_str(), 0, 16));
     }
    | OP_CONST_STRING REGD COMMA CSTRING {
        $$ = new Op_CONST_STRING(OP_CONST_STRING, driver.stringPool(), $2, $4);
@@ -573,8 +588,15 @@ instruction :
    | OP_NEW_ARRAY REGD COMMA REGD COMMA CLASSTYPE {
        $$ = new Op_NEW_ARRAY(OP_NEW_ARRAY, driver.stringPool(), $2, $4, $6);
     }
-   | OP_FILLED_NEW_ARRAY
-   | OP_FILLED_NEW_ARRAY_RANGE
+   | OP_FILLED_NEW_ARRAY INIBRACE regs CLOBRACE COMMA CLASSTYPE {
+       $$ = new Op_FILLED_NEW_ARRAY(OP_FILLED_NEW_ARRAY, driver.stringPool(), $3, $6);
+    }
+   | OP_FILLED_NEW_ARRAY_RANGE INIBRACE REGD ELLIPSIS REGD CLOBRACE COMMA CLASSTYPE {
+       std::vector<int> regs;
+       regs.push_back($3);
+       regs.push_back($5);
+       $$ = new Op_FILLED_NEW_ARRAY(OP_FILLED_NEW_ARRAY_RANGE, driver.stringPool(), regs, $8);
+    }
    | OP_FILL_ARRAY_DATA REGD COMMA jmplabel {
        $$ = new Op_FILL_ARRAY_DATA(OP_FILL_ARRAY_DATA, driver.stringPool(), $2, $4);
     }
@@ -1163,6 +1185,6 @@ instruction :
 %%
 
 void Analysis::Parser::error(const location &loc, const std::string &message) {
-	cout << "Parse error: " << message << endl
-	    << "Error location: " << loc << endl << driver.mLexer.text() << endl;
+	//cout << "Parse error: " << message << endl
+	//    << "Error location: " << loc << endl << driver.mLexer->text() << endl;
 }
