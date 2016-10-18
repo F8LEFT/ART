@@ -40,7 +40,7 @@
 
 # include "position.hh"
 
-#line 9 "Parser.yy" // location.cc:296
+#line 9 "SmaliParser.yy" // location.cc:296
 namespace  Analysis  {
 #line 46 "location.hh" // location.cc:296
   /// Abstract a location.
@@ -186,7 +186,7 @@ namespace  Analysis  {
     return ostr;
   }
 
-#line 9 "Parser.yy" // location.cc:296
+#line 9 "SmaliParser.yy" // location.cc:296
 } //  Analysis 
 #line 192 "location.hh" // location.cc:296
 #endif // !YY_YY_LOCATION_HH_INCLUDED

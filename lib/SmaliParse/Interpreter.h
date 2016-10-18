@@ -17,9 +17,9 @@
 
 #include <iostream>
 #include <memory>
-#include "Parser.hpp"
+//#include "Parser.hpp"
 #include "SmaliAst/SmaliClass.h"
-#include "Lexer.h"
+//#include "Lexer.h"
 
 #define DEBUG
 

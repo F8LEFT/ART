@@ -31,16 +31,16 @@
 // version 2.2 of Bison.
 
 /**
- ** \file Parser.hpp
+ ** \file SmaliParser.hpp
  ** Define the  Analysis ::parser class.
  */
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_YY_PARSER_HPP_INCLUDED
-# define YY_YY_PARSER_HPP_INCLUDED
+#ifndef YY_YY_SMALIPARSER_HPP_INCLUDED
+# define YY_YY_SMALIPARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 11 "Parser.yy" // lalr1.cc:377
+#line 11 "SmaliParser.yy" // lalr1.cc:377
 
 //===- Parser.yy - ART-Parser ---------------------------------*- bison -*-===//
 //
@@ -52,10 +52,10 @@
 //===----------------------------------------------------------------------===//
 //
 // The file defines a Parser for smali language. Please use
-// bison -o Parser.cpp Parser.yy
+// bison -o SmaliParser.cpp SmaliParser.yy
 // to generate parser source file
 // or
-// bison -v -o Parser.cpp Parser.yy
+// bison -v -o SmaliParser.cpp SmaliParser.yy
 // to debug.
 //===----------------------------------------------------------------------===//
     #include <iostream>
@@ -65,11 +65,11 @@
     #include "Ops/Ops.h"
 
     namespace Analysis {
-        class Lexer;
+        class SmaliLexer;
         class Interpreter;
     }
 
-#line 73 "Parser.hpp" // lalr1.cc:377
+#line 73 "SmaliParser.hpp" // lalr1.cc:377
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -144,9 +144,9 @@
 # define YYDEBUG 1
 #endif
 
-#line 9 "Parser.yy" // lalr1.cc:377
+#line 9 "SmaliParser.yy" // lalr1.cc:377
 namespace  Analysis  {
-#line 150 "Parser.hpp" // lalr1.cc:377
+#line 150 "SmaliParser.hpp" // lalr1.cc:377
 
 
 
@@ -306,48 +306,43 @@ namespace  Analysis  {
 
 
   /// A Bison parser.
-  class  Parser 
+  class  SmaliParser 
   {
   public:
 #ifndef YYSTYPE
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // instruction
-      char dummy1[sizeof(OpCode*)];
-
+      // "true|false"
       // "flag"
       // "v(p)x"
-      // exp
-      // classdef
-      // superdef
-      // srcdef
-      // fielddef
-      // methoddef
-      // flags
-      // registers
-      char dummy2[sizeof(int)];
+      char dummy1[sizeof(int)];
 
-      // "number"
-      // NUMBER
-      char dummy3[sizeof(long long int)];
-
-      // "c type string"
-      // "name string"
-      // "comment"
-      // "class name"
-      // "class type"
-      // "0xnumber"
-      // HEXNUMBERSTRING
-      // comment
-      // jmplabel
-      char dummy4[sizeof(std::string)];
-
-      // regs
-      char dummy5[sizeof(std::vector<int>)];
-
-      // args
-      char dummy6[sizeof(std::vector<std::string>)];
+      // "lex error"
+      // "Integer"
+      // "- Integer"
+      // "- Integer L"
+      // "- Integer S"
+      // "- Integer T"
+      // "FloatOrID F"
+      // "FloatOrID D"
+      // "Float F"
+      // "Float D"
+      // "ZBSCIJFDLIT"
+      // "ZBSCIJFD"
+      // "Lxxx;"
+      // "[["
+      // "simple name"
+      // "member name"
+      // "string"
+      // "char"
+      // "build runtime system"
+      // "ver type error"
+      // "inline@0x"
+      // "vtable@0x"
+      // "field@0x"
+      // "#xxx"
+      char dummy2[sizeof(std::string)];
 };
 
     /// Symbol semantic values.
@@ -372,297 +367,339 @@ namespace  Analysis  {
       {
         TOKEN_END = 0,
         TOKEN_EOL = 258,
-        TOKEN_CSTRING = 259,
-        TOKEN_NAMESTRING = 260,
-        TOKEN_COMMENT = 261,
-        TOKEN_CLASSNAME = 262,
-        TOKEN_CLASSTYPE = 263,
-        TOKEN_KEYWORD_BEGIN = 264,
-        TOKEN_CLASSBEG = 265,
-        TOKEN_SUPERBEG = 266,
-        TOKEN_SRCBEG = 267,
-        TOKEN_FIELDBEG = 268,
-        TOKEN_METHODBEG = 269,
-        TOKEN_METHODEND = 270,
-        TOKEN_REGISTERS = 271,
-        TOKEN_PROLOGUE = 272,
-        TOKEN_LINE = 273,
-        TOKEN_KEYWORD_END = 274,
-        TOKEN_FLAG = 275,
-        TOKEN_REGD = 276,
-        TOKEN_NUMBERSTRING = 277,
-        TOKEN_HEXNUMBERSTRING = 278,
-        TOKEN_OP_BEGIN = 279,
-        TOKEN_OP_NOP = 280,
-        TOKEN_OP_MOVE = 281,
-        TOKEN_OP_MOVE_FROM16 = 282,
-        TOKEN_OP_MOVE_16 = 283,
-        TOKEN_OP_MOVE_WIDE = 284,
-        TOKEN_OP_MOVE_WIDE_FROM16 = 285,
-        TOKEN_OP_MOVE_WIDE_16 = 286,
-        TOKEN_OP_MOVE_OBJECT = 287,
-        TOKEN_OP_MOVE_OBJECT_FROM16 = 288,
-        TOKEN_OP_MOVE_OBJECT_16 = 289,
-        TOKEN_OP_MOVE_RESULT = 290,
-        TOKEN_OP_MOVE_RESULT_WIDE = 291,
-        TOKEN_OP_MOVE_RESULT_OBJECT = 292,
-        TOKEN_OP_MOVE_EXCEPTION = 293,
-        TOKEN_OP_RETURN_VOID = 294,
-        TOKEN_OP_RETURN = 295,
-        TOKEN_OP_RETURN_WIDE = 296,
-        TOKEN_OP_RETURN_OBJECT = 297,
-        TOKEN_OP_CONST_4 = 298,
-        TOKEN_OP_CONST_16 = 299,
-        TOKEN_OP_CONST = 300,
-        TOKEN_OP_CONST_HIGH16 = 301,
-        TOKEN_OP_CONST_WIDE_16 = 302,
-        TOKEN_OP_CONST_WIDE_32 = 303,
-        TOKEN_OP_CONST_WIDE = 304,
-        TOKEN_OP_CONST_WIDE_HIGH16 = 305,
-        TOKEN_OP_CONST_STRING = 306,
-        TOKEN_OP_CONST_STRING_JUMBO = 307,
-        TOKEN_OP_CONST_CLASS = 308,
-        TOKEN_OP_MONITOR_ENTER = 309,
-        TOKEN_OP_MONITOR_EXIT = 310,
-        TOKEN_OP_CHECK_CAST = 311,
-        TOKEN_OP_INSTANCE_OF = 312,
-        TOKEN_OP_ARRAY_LENGTH = 313,
-        TOKEN_OP_NEW_INSTANCE = 314,
-        TOKEN_OP_NEW_ARRAY = 315,
-        TOKEN_OP_FILLED_NEW_ARRAY = 316,
-        TOKEN_OP_FILLED_NEW_ARRAY_RANGE = 317,
-        TOKEN_OP_FILL_ARRAY_DATA = 318,
-        TOKEN_OP_THROW = 319,
-        TOKEN_OP_GOTO = 320,
-        TOKEN_OP_GOTO_16 = 321,
-        TOKEN_OP_GOTO_32 = 322,
-        TOKEN_OP_PACKED_SWITCH = 323,
-        TOKEN_OP_SPARSE_SWITCH = 324,
-        TOKEN_OP_CMPL_FLOAT = 325,
-        TOKEN_OP_CMPG_FLOAT = 326,
-        TOKEN_OP_CMPL_DOUBLE = 327,
-        TOKEN_OP_CMPG_DOUBLE = 328,
-        TOKEN_OP_CMP_LONG = 329,
-        TOKEN_OP_IF_EQ = 330,
-        TOKEN_OP_IF_NE = 331,
-        TOKEN_OP_IF_LT = 332,
-        TOKEN_OP_IF_GE = 333,
-        TOKEN_OP_IF_GT = 334,
-        TOKEN_OP_IF_LE = 335,
-        TOKEN_OP_IF_EQZ = 336,
-        TOKEN_OP_IF_NEZ = 337,
-        TOKEN_OP_IF_LTZ = 338,
-        TOKEN_OP_IF_GEZ = 339,
-        TOKEN_OP_IF_GTZ = 340,
-        TOKEN_OP_IF_LEZ = 341,
-        TOKEN_OP_UNUSED_3E = 342,
-        TOKEN_OP_UNUSED_3F = 343,
-        TOKEN_OP_UNUSED_40 = 344,
-        TOKEN_OP_UNUSED_41 = 345,
-        TOKEN_OP_UNUSED_42 = 346,
-        TOKEN_OP_UNUSED_43 = 347,
-        TOKEN_OP_AGET = 348,
-        TOKEN_OP_AGET_WIDE = 349,
-        TOKEN_OP_AGET_OBJECT = 350,
-        TOKEN_OP_AGET_BOOLEAN = 351,
-        TOKEN_OP_AGET_BYTE = 352,
-        TOKEN_OP_AGET_CHAR = 353,
-        TOKEN_OP_AGET_SHORT = 354,
-        TOKEN_OP_APUT = 355,
-        TOKEN_OP_APUT_WIDE = 356,
-        TOKEN_OP_APUT_OBJECT = 357,
-        TOKEN_OP_APUT_BOOLEAN = 358,
-        TOKEN_OP_APUT_BYTE = 359,
-        TOKEN_OP_APUT_CHAR = 360,
-        TOKEN_OP_APUT_SHORT = 361,
-        TOKEN_OP_IGET = 362,
-        TOKEN_OP_IGET_WIDE = 363,
-        TOKEN_OP_IGET_OBJECT = 364,
-        TOKEN_OP_IGET_BOOLEAN = 365,
-        TOKEN_OP_IGET_BYTE = 366,
-        TOKEN_OP_IGET_CHAR = 367,
-        TOKEN_OP_IGET_SHORT = 368,
-        TOKEN_OP_IPUT = 369,
-        TOKEN_OP_IPUT_WIDE = 370,
-        TOKEN_OP_IPUT_OBJECT = 371,
-        TOKEN_OP_IPUT_BOOLEAN = 372,
-        TOKEN_OP_IPUT_BYTE = 373,
-        TOKEN_OP_IPUT_CHAR = 374,
-        TOKEN_OP_IPUT_SHORT = 375,
-        TOKEN_OP_SGET = 376,
-        TOKEN_OP_SGET_WIDE = 377,
-        TOKEN_OP_SGET_OBJECT = 378,
-        TOKEN_OP_SGET_BOOLEAN = 379,
-        TOKEN_OP_SGET_BYTE = 380,
-        TOKEN_OP_SGET_CHAR = 381,
-        TOKEN_OP_SGET_SHORT = 382,
-        TOKEN_OP_SPUT = 383,
-        TOKEN_OP_SPUT_WIDE = 384,
-        TOKEN_OP_SPUT_OBJECT = 385,
-        TOKEN_OP_SPUT_BOOLEAN = 386,
-        TOKEN_OP_SPUT_BYTE = 387,
-        TOKEN_OP_SPUT_CHAR = 388,
-        TOKEN_OP_SPUT_SHORT = 389,
-        TOKEN_OP_INVOKE_VIRTUAL = 390,
-        TOKEN_OP_INVOKE_SUPER = 391,
-        TOKEN_OP_INVOKE_DIRECT = 392,
-        TOKEN_OP_INVOKE_STATIC = 393,
-        TOKEN_OP_INVOKE_INTERFACE = 394,
-        TOKEN_OP_UNUSED_73 = 395,
-        TOKEN_OP_INVOKE_VIRTUAL_RANGE = 396,
-        TOKEN_OP_INVOKE_SUPER_RANGE = 397,
-        TOKEN_OP_INVOKE_DIRECT_RANGE = 398,
-        TOKEN_OP_INVOKE_STATIC_RANGE = 399,
-        TOKEN_OP_INVOKE_INTERFACE_RANGE = 400,
-        TOKEN_OP_UNUSED_79 = 401,
-        TOKEN_OP_UNUSED_7A = 402,
-        TOKEN_OP_NEG_INT = 403,
-        TOKEN_OP_NOT_INT = 404,
-        TOKEN_OP_NEG_LONG = 405,
-        TOKEN_OP_NOT_LONG = 406,
-        TOKEN_OP_NEG_FLOAT = 407,
-        TOKEN_OP_NEG_DOUBLE = 408,
-        TOKEN_OP_INT_TO_LONG = 409,
-        TOKEN_OP_INT_TO_FLOAT = 410,
-        TOKEN_OP_INT_TO_DOUBLE = 411,
-        TOKEN_OP_LONG_TO_INT = 412,
-        TOKEN_OP_LONG_TO_FLOAT = 413,
-        TOKEN_OP_LONG_TO_DOUBLE = 414,
-        TOKEN_OP_FLOAT_TO_INT = 415,
-        TOKEN_OP_FLOAT_TO_LONG = 416,
-        TOKEN_OP_FLOAT_TO_DOUBLE = 417,
-        TOKEN_OP_DOUBLE_TO_INT = 418,
-        TOKEN_OP_DOUBLE_TO_LONG = 419,
-        TOKEN_OP_DOUBLE_TO_FLOAT = 420,
-        TOKEN_OP_INT_TO_BYTE = 421,
-        TOKEN_OP_INT_TO_CHAR = 422,
-        TOKEN_OP_INT_TO_SHORT = 423,
-        TOKEN_OP_ADD_INT = 424,
-        TOKEN_OP_SUB_INT = 425,
-        TOKEN_OP_MUL_INT = 426,
-        TOKEN_OP_DIV_INT = 427,
-        TOKEN_OP_REM_INT = 428,
-        TOKEN_OP_AND_INT = 429,
-        TOKEN_OP_OR_INT = 430,
-        TOKEN_OP_XOR_INT = 431,
-        TOKEN_OP_SHL_INT = 432,
-        TOKEN_OP_SHR_INT = 433,
-        TOKEN_OP_USHR_INT = 434,
-        TOKEN_OP_ADD_LONG = 435,
-        TOKEN_OP_SUB_LONG = 436,
-        TOKEN_OP_MUL_LONG = 437,
-        TOKEN_OP_DIV_LONG = 438,
-        TOKEN_OP_REM_LONG = 439,
-        TOKEN_OP_AND_LONG = 440,
-        TOKEN_OP_OR_LONG = 441,
-        TOKEN_OP_XOR_LONG = 442,
-        TOKEN_OP_SHL_LONG = 443,
-        TOKEN_OP_SHR_LONG = 444,
-        TOKEN_OP_USHR_LONG = 445,
-        TOKEN_OP_ADD_FLOAT = 446,
-        TOKEN_OP_SUB_FLOAT = 447,
-        TOKEN_OP_MUL_FLOAT = 448,
-        TOKEN_OP_DIV_FLOAT = 449,
-        TOKEN_OP_REM_FLOAT = 450,
-        TOKEN_OP_ADD_DOUBLE = 451,
-        TOKEN_OP_SUB_DOUBLE = 452,
-        TOKEN_OP_MUL_DOUBLE = 453,
-        TOKEN_OP_DIV_DOUBLE = 454,
-        TOKEN_OP_REM_DOUBLE = 455,
-        TOKEN_OP_ADD_INT_2ADDR = 456,
-        TOKEN_OP_SUB_INT_2ADDR = 457,
-        TOKEN_OP_MUL_INT_2ADDR = 458,
-        TOKEN_OP_DIV_INT_2ADDR = 459,
-        TOKEN_OP_REM_INT_2ADDR = 460,
-        TOKEN_OP_AND_INT_2ADDR = 461,
-        TOKEN_OP_OR_INT_2ADDR = 462,
-        TOKEN_OP_XOR_INT_2ADDR = 463,
-        TOKEN_OP_SHL_INT_2ADDR = 464,
-        TOKEN_OP_SHR_INT_2ADDR = 465,
-        TOKEN_OP_USHR_INT_2ADDR = 466,
-        TOKEN_OP_ADD_LONG_2ADDR = 467,
-        TOKEN_OP_SUB_LONG_2ADDR = 468,
-        TOKEN_OP_MUL_LONG_2ADDR = 469,
-        TOKEN_OP_DIV_LONG_2ADDR = 470,
-        TOKEN_OP_REM_LONG_2ADDR = 471,
-        TOKEN_OP_AND_LONG_2ADDR = 472,
-        TOKEN_OP_OR_LONG_2ADDR = 473,
-        TOKEN_OP_XOR_LONG_2ADDR = 474,
-        TOKEN_OP_SHL_LONG_2ADDR = 475,
-        TOKEN_OP_SHR_LONG_2ADDR = 476,
-        TOKEN_OP_USHR_LONG_2ADDR = 477,
-        TOKEN_OP_ADD_FLOAT_2ADDR = 478,
-        TOKEN_OP_SUB_FLOAT_2ADDR = 479,
-        TOKEN_OP_MUL_FLOAT_2ADDR = 480,
-        TOKEN_OP_DIV_FLOAT_2ADDR = 481,
-        TOKEN_OP_REM_FLOAT_2ADDR = 482,
-        TOKEN_OP_ADD_DOUBLE_2ADDR = 483,
-        TOKEN_OP_SUB_DOUBLE_2ADDR = 484,
-        TOKEN_OP_MUL_DOUBLE_2ADDR = 485,
-        TOKEN_OP_DIV_DOUBLE_2ADDR = 486,
-        TOKEN_OP_REM_DOUBLE_2ADDR = 487,
-        TOKEN_OP_ADD_INT_LIT16 = 488,
-        TOKEN_OP_RSUB_INT = 489,
-        TOKEN_OP_MUL_INT_LIT16 = 490,
-        TOKEN_OP_DIV_INT_LIT16 = 491,
-        TOKEN_OP_REM_INT_LIT16 = 492,
-        TOKEN_OP_AND_INT_LIT16 = 493,
-        TOKEN_OP_OR_INT_LIT16 = 494,
-        TOKEN_OP_XOR_INT_LIT16 = 495,
-        TOKEN_OP_ADD_INT_LIT8 = 496,
-        TOKEN_OP_RSUB_INT_LIT8 = 497,
-        TOKEN_OP_MUL_INT_LIT8 = 498,
-        TOKEN_OP_DIV_INT_LIT8 = 499,
-        TOKEN_OP_REM_INT_LIT8 = 500,
-        TOKEN_OP_AND_INT_LIT8 = 501,
-        TOKEN_OP_OR_INT_LIT8 = 502,
-        TOKEN_OP_XOR_INT_LIT8 = 503,
-        TOKEN_OP_SHL_INT_LIT8 = 504,
-        TOKEN_OP_SHR_INT_LIT8 = 505,
-        TOKEN_OP_USHR_INT_LIT8 = 506,
-        TOKEN_OP_IGET_VOLATILE = 507,
-        TOKEN_OP_IPUT_VOLATILE = 508,
-        TOKEN_OP_SGET_VOLATILE = 509,
-        TOKEN_OP_SPUT_VOLATILE = 510,
-        TOKEN_OP_IGET_OBJECT_VOLATILE = 511,
-        TOKEN_OP_IGET_WIDE_VOLATILE = 512,
-        TOKEN_OP_IPUT_WIDE_VOLATILE = 513,
-        TOKEN_OP_SGET_WIDE_VOLATILE = 514,
-        TOKEN_OP_SPUT_WIDE_VOLATILE = 515,
-        TOKEN_OP_BREAKPOINT = 516,
-        TOKEN_OP_THROW_VERIFICATION_ERROR = 517,
-        TOKEN_OP_EXECUTE_INLINE = 518,
-        TOKEN_OP_EXECUTE_INLINE_RANGE = 519,
-        TOKEN_OP_INVOKE_OBJECT_INIT_RANGE = 520,
-        TOKEN_OP_RETURN_VOID_BARRIER = 521,
-        TOKEN_OP_IGET_QUICK = 522,
-        TOKEN_OP_IGET_WIDE_QUICK = 523,
-        TOKEN_OP_IGET_OBJECT_QUICK = 524,
-        TOKEN_OP_IPUT_QUICK = 525,
-        TOKEN_OP_IPUT_WIDE_QUICK = 526,
-        TOKEN_OP_IPUT_OBJECT_QUICK = 527,
-        TOKEN_OP_INVOKE_VIRTUAL_QUICK = 528,
-        TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE = 529,
-        TOKEN_OP_INVOKE_SUPER_QUICK = 530,
-        TOKEN_OP_INVOKE_SUPER_QUICK_RANGE = 531,
-        TOKEN_OP_IPUT_OBJECT_VOLATILE = 532,
-        TOKEN_OP_SGET_OBJECT_VOLATILE = 533,
-        TOKEN_OP_SPUT_OBJECT_VOLATILE = 534,
-        TOKEN_OP_UNUSED_FF = 535,
-        TOKEN_OP_CATCH = 536,
-        TOKEN_OP_END = 537,
-        TOKEN_OP_PACKED_SWITCHDATABEG = 538,
-        TOKEN_OP_PACKED_SWITCHDATAEND = 539,
-        TOKEN_SYMBOL_BEGIN = 540,
-        TOKEN_COLON = 541,
-        TOKEN_LEFTPAR = 542,
-        TOKEN_RIGHTPAR = 543,
-        TOKEN_COMMA = 544,
-        TOKEN_POINT = 545,
-        TOKEN_INIBRACE = 546,
-        TOKEN_CLOBRACE = 547,
-        TOKEN_ELLIPSIS = 548,
-        TOKEN_SYMBOL_END = 549
+        TOKEN_ERROR = 259,
+        TOKEN_KEYWORD_BEGIN = 260,
+        TOKEN_CLASS_DIRECTIVE = 261,
+        TOKEN_SUPER_DIRECTIVE = 262,
+        TOKEN_IMPLEMENTS_DIRECTIVE = 263,
+        TOKEN_SOURCE_DIRECTIVE = 264,
+        TOKEN_FIELD_DIRECTIVE = 265,
+        TOKEN_END_FIELD_DIRECTIVE = 266,
+        TOKEN_SUBANNOTATION_DIRECTIVE = 267,
+        TOKEN_END_SUBANNOTATION_DIRECTIVE = 268,
+        TOKEN_ANNOTATION_DIRECTIVE = 269,
+        TOKEN_END_ANNOTATION_DIRECTIVE = 270,
+        TOKEN_ENUM_DIRECTIVE = 271,
+        TOKEN_METHOD_DIRECTIVE = 272,
+        TOKEN_END_METHOD_DIRECTIVE = 273,
+        TOKEN_REGISTERS_DIRECTIVE = 274,
+        TOKEN_LOCALS_DIRECTIVE = 275,
+        TOKEN_ARRAY_DATA_DIRECTIVE = 276,
+        TOKEN_END_ARRAY_DATA_DIRECTIVE = 277,
+        TOKEN_PACKED_SWITCH_DIRECTIVE = 278,
+        TOKEN_END_PACKED_SWITCH_DIRECTIVE = 279,
+        TOKEN_SPARSE_SWITCH_DIRECTIVE = 280,
+        TOKEN_END_SPARSE_SWITCH_DIRECTIVE = 281,
+        TOKEN_CATCH_DIRECTIVE = 282,
+        TOKEN_CATCHALL_DIRECTIVE = 283,
+        TOKEN_LINE_DIRECTIVE = 284,
+        TOKEN_PARAMETER_DIRECTIVE = 285,
+        TOKEN_END_PARAMETER_DIRECTIVE = 286,
+        TOKEN_LOCAL_DIRECTIVE = 287,
+        TOKEN_END_LOCAL_DIRECTIVE = 288,
+        TOKEN_RESTART_LOCAL_DIRECTIVE = 289,
+        TOKEN_PROLOGUE_DIRECTIVE = 290,
+        TOKEN_EPILOGUE_DIRECTIVE = 291,
+        TOKEN_KEYWORD_END = 292,
+        TOKEN_NUMBER_BEGIN = 293,
+        TOKEN_POSITIVE_INTEGER_LITERAL = 294,
+        TOKEN_NEGATIVE_INTEGER_LITERAL = 295,
+        TOKEN_LONG_LITERAL = 296,
+        TOKEN_SHORT_LITERAL = 297,
+        TOKEN_BYTE_LITERAL = 298,
+        TOKEN_FLOAT_LITERAL_OR_ID = 299,
+        TOKEN_DOUBLE_LITERAL_OR_ID = 300,
+        TOKEN_FLOAT_LITERAL = 301,
+        TOKEN_DOUBLE_LITERAL = 302,
+        TOKEN_BOOL_LITERAL = 303,
+        TOKEN_NULL_LITERAL = 304,
+        TOKEN_NUMBER_END = 305,
+        TOKEN_FLAG = 306,
+        TOKEN_REGISTER = 307,
+        TOKEN_PARAM_LIST_OR_ID_PRIMITIVE_TYPE = 308,
+        TOKEN_PRIMITIVE_TYPE = 309,
+        TOKEN_CLASS_DESCRIPTOR = 310,
+        TOKEN_ARRAY_TYPE_PREFIX = 311,
+        TOKEN_VOID_TYPE = 312,
+        TOKEN_SIMPLE_NAME = 313,
+        TOKEN_MEMBER_NAME = 314,
+        TOKEN_STRING_LITERAL = 315,
+        TOKEN_CHAR_LITERAL = 316,
+        TOKEN_ANNOTATION_VISIBILITY = 317,
+        TOKEN_VERIFICATION_ERROR_TYPE = 318,
+        TOKEN_INLINE_INDEX = 319,
+        TOKEN_VTABLE_INDEX = 320,
+        TOKEN_FIELD_OFFSET = 321,
+        TOKEN_LINE_COMMENT = 322,
+        TOKEN_OP_BEGIN = 323,
+        TOKEN_OP_NOP = 324,
+        TOKEN_OP_MOVE = 325,
+        TOKEN_OP_MOVE_FROM16 = 326,
+        TOKEN_OP_MOVE_16 = 327,
+        TOKEN_OP_MOVE_WIDE = 328,
+        TOKEN_OP_MOVE_WIDE_FROM16 = 329,
+        TOKEN_OP_MOVE_WIDE_16 = 330,
+        TOKEN_OP_MOVE_OBJECT = 331,
+        TOKEN_OP_MOVE_OBJECT_FROM16 = 332,
+        TOKEN_OP_MOVE_OBJECT_16 = 333,
+        TOKEN_OP_MOVE_RESULT = 334,
+        TOKEN_OP_MOVE_RESULT_WIDE = 335,
+        TOKEN_OP_MOVE_RESULT_OBJECT = 336,
+        TOKEN_OP_MOVE_EXCEPTION = 337,
+        TOKEN_OP_RETURN_VOID = 338,
+        TOKEN_OP_RETURN = 339,
+        TOKEN_OP_RETURN_WIDE = 340,
+        TOKEN_OP_RETURN_OBJECT = 341,
+        TOKEN_OP_CONST_4 = 342,
+        TOKEN_OP_CONST_16 = 343,
+        TOKEN_OP_CONST = 344,
+        TOKEN_OP_CONST_HIGH16 = 345,
+        TOKEN_OP_CONST_WIDE_16 = 346,
+        TOKEN_OP_CONST_WIDE_32 = 347,
+        TOKEN_OP_CONST_WIDE = 348,
+        TOKEN_OP_CONST_WIDE_HIGH16 = 349,
+        TOKEN_OP_CONST_STRING = 350,
+        TOKEN_OP_CONST_STRING_JUMBO = 351,
+        TOKEN_OP_CONST_CLASS = 352,
+        TOKEN_OP_MONITOR_ENTER = 353,
+        TOKEN_OP_MONITOR_EXIT = 354,
+        TOKEN_OP_CHECK_CAST = 355,
+        TOKEN_OP_INSTANCE_OF = 356,
+        TOKEN_OP_ARRAY_LENGTH = 357,
+        TOKEN_OP_NEW_INSTANCE = 358,
+        TOKEN_OP_NEW_ARRAY = 359,
+        TOKEN_OP_FILLED_NEW_ARRAY = 360,
+        TOKEN_OP_FILLED_NEW_ARRAY_RANGE = 361,
+        TOKEN_OP_FILL_ARRAY_DATA = 362,
+        TOKEN_OP_THROW = 363,
+        TOKEN_OP_GOTO = 364,
+        TOKEN_OP_GOTO_16 = 365,
+        TOKEN_OP_GOTO_32 = 366,
+        TOKEN_OP_PACKED_SWITCH = 367,
+        TOKEN_OP_SPARSE_SWITCH = 368,
+        TOKEN_OP_CMPL_FLOAT = 369,
+        TOKEN_OP_CMPG_FLOAT = 370,
+        TOKEN_OP_CMPL_DOUBLE = 371,
+        TOKEN_OP_CMPG_DOUBLE = 372,
+        TOKEN_OP_CMP_LONG = 373,
+        TOKEN_OP_IF_EQ = 374,
+        TOKEN_OP_IF_NE = 375,
+        TOKEN_OP_IF_LT = 376,
+        TOKEN_OP_IF_GE = 377,
+        TOKEN_OP_IF_GT = 378,
+        TOKEN_OP_IF_LE = 379,
+        TOKEN_OP_IF_EQZ = 380,
+        TOKEN_OP_IF_NEZ = 381,
+        TOKEN_OP_IF_LTZ = 382,
+        TOKEN_OP_IF_GEZ = 383,
+        TOKEN_OP_IF_GTZ = 384,
+        TOKEN_OP_IF_LEZ = 385,
+        TOKEN_OP_UNUSED_3E = 386,
+        TOKEN_OP_UNUSED_3F = 387,
+        TOKEN_OP_UNUSED_40 = 388,
+        TOKEN_OP_UNUSED_41 = 389,
+        TOKEN_OP_UNUSED_42 = 390,
+        TOKEN_OP_UNUSED_43 = 391,
+        TOKEN_OP_AGET = 392,
+        TOKEN_OP_AGET_WIDE = 393,
+        TOKEN_OP_AGET_OBJECT = 394,
+        TOKEN_OP_AGET_BOOLEAN = 395,
+        TOKEN_OP_AGET_BYTE = 396,
+        TOKEN_OP_AGET_CHAR = 397,
+        TOKEN_OP_AGET_SHORT = 398,
+        TOKEN_OP_APUT = 399,
+        TOKEN_OP_APUT_WIDE = 400,
+        TOKEN_OP_APUT_OBJECT = 401,
+        TOKEN_OP_APUT_BOOLEAN = 402,
+        TOKEN_OP_APUT_BYTE = 403,
+        TOKEN_OP_APUT_CHAR = 404,
+        TOKEN_OP_APUT_SHORT = 405,
+        TOKEN_OP_IGET = 406,
+        TOKEN_OP_IGET_WIDE = 407,
+        TOKEN_OP_IGET_OBJECT = 408,
+        TOKEN_OP_IGET_BOOLEAN = 409,
+        TOKEN_OP_IGET_BYTE = 410,
+        TOKEN_OP_IGET_CHAR = 411,
+        TOKEN_OP_IGET_SHORT = 412,
+        TOKEN_OP_IPUT = 413,
+        TOKEN_OP_IPUT_WIDE = 414,
+        TOKEN_OP_IPUT_OBJECT = 415,
+        TOKEN_OP_IPUT_BOOLEAN = 416,
+        TOKEN_OP_IPUT_BYTE = 417,
+        TOKEN_OP_IPUT_CHAR = 418,
+        TOKEN_OP_IPUT_SHORT = 419,
+        TOKEN_OP_SGET = 420,
+        TOKEN_OP_SGET_WIDE = 421,
+        TOKEN_OP_SGET_OBJECT = 422,
+        TOKEN_OP_SGET_BOOLEAN = 423,
+        TOKEN_OP_SGET_BYTE = 424,
+        TOKEN_OP_SGET_CHAR = 425,
+        TOKEN_OP_SGET_SHORT = 426,
+        TOKEN_OP_SPUT = 427,
+        TOKEN_OP_SPUT_WIDE = 428,
+        TOKEN_OP_SPUT_OBJECT = 429,
+        TOKEN_OP_SPUT_BOOLEAN = 430,
+        TOKEN_OP_SPUT_BYTE = 431,
+        TOKEN_OP_SPUT_CHAR = 432,
+        TOKEN_OP_SPUT_SHORT = 433,
+        TOKEN_OP_INVOKE_VIRTUAL = 434,
+        TOKEN_OP_INVOKE_SUPER = 435,
+        TOKEN_OP_INVOKE_DIRECT = 436,
+        TOKEN_OP_INVOKE_STATIC = 437,
+        TOKEN_OP_INVOKE_INTERFACE = 438,
+        TOKEN_OP_UNUSED_73 = 439,
+        TOKEN_OP_INVOKE_VIRTUAL_RANGE = 440,
+        TOKEN_OP_INVOKE_SUPER_RANGE = 441,
+        TOKEN_OP_INVOKE_DIRECT_RANGE = 442,
+        TOKEN_OP_INVOKE_STATIC_RANGE = 443,
+        TOKEN_OP_INVOKE_INTERFACE_RANGE = 444,
+        TOKEN_OP_UNUSED_79 = 445,
+        TOKEN_OP_UNUSED_7A = 446,
+        TOKEN_OP_NEG_INT = 447,
+        TOKEN_OP_NOT_INT = 448,
+        TOKEN_OP_NEG_LONG = 449,
+        TOKEN_OP_NOT_LONG = 450,
+        TOKEN_OP_NEG_FLOAT = 451,
+        TOKEN_OP_NEG_DOUBLE = 452,
+        TOKEN_OP_INT_TO_LONG = 453,
+        TOKEN_OP_INT_TO_FLOAT = 454,
+        TOKEN_OP_INT_TO_DOUBLE = 455,
+        TOKEN_OP_LONG_TO_INT = 456,
+        TOKEN_OP_LONG_TO_FLOAT = 457,
+        TOKEN_OP_LONG_TO_DOUBLE = 458,
+        TOKEN_OP_FLOAT_TO_INT = 459,
+        TOKEN_OP_FLOAT_TO_LONG = 460,
+        TOKEN_OP_FLOAT_TO_DOUBLE = 461,
+        TOKEN_OP_DOUBLE_TO_INT = 462,
+        TOKEN_OP_DOUBLE_TO_LONG = 463,
+        TOKEN_OP_DOUBLE_TO_FLOAT = 464,
+        TOKEN_OP_INT_TO_BYTE = 465,
+        TOKEN_OP_INT_TO_CHAR = 466,
+        TOKEN_OP_INT_TO_SHORT = 467,
+        TOKEN_OP_ADD_INT = 468,
+        TOKEN_OP_SUB_INT = 469,
+        TOKEN_OP_MUL_INT = 470,
+        TOKEN_OP_DIV_INT = 471,
+        TOKEN_OP_REM_INT = 472,
+        TOKEN_OP_AND_INT = 473,
+        TOKEN_OP_OR_INT = 474,
+        TOKEN_OP_XOR_INT = 475,
+        TOKEN_OP_SHL_INT = 476,
+        TOKEN_OP_SHR_INT = 477,
+        TOKEN_OP_USHR_INT = 478,
+        TOKEN_OP_ADD_LONG = 479,
+        TOKEN_OP_SUB_LONG = 480,
+        TOKEN_OP_MUL_LONG = 481,
+        TOKEN_OP_DIV_LONG = 482,
+        TOKEN_OP_REM_LONG = 483,
+        TOKEN_OP_AND_LONG = 484,
+        TOKEN_OP_OR_LONG = 485,
+        TOKEN_OP_XOR_LONG = 486,
+        TOKEN_OP_SHL_LONG = 487,
+        TOKEN_OP_SHR_LONG = 488,
+        TOKEN_OP_USHR_LONG = 489,
+        TOKEN_OP_ADD_FLOAT = 490,
+        TOKEN_OP_SUB_FLOAT = 491,
+        TOKEN_OP_MUL_FLOAT = 492,
+        TOKEN_OP_DIV_FLOAT = 493,
+        TOKEN_OP_REM_FLOAT = 494,
+        TOKEN_OP_ADD_DOUBLE = 495,
+        TOKEN_OP_SUB_DOUBLE = 496,
+        TOKEN_OP_MUL_DOUBLE = 497,
+        TOKEN_OP_DIV_DOUBLE = 498,
+        TOKEN_OP_REM_DOUBLE = 499,
+        TOKEN_OP_ADD_INT_2ADDR = 500,
+        TOKEN_OP_SUB_INT_2ADDR = 501,
+        TOKEN_OP_MUL_INT_2ADDR = 502,
+        TOKEN_OP_DIV_INT_2ADDR = 503,
+        TOKEN_OP_REM_INT_2ADDR = 504,
+        TOKEN_OP_AND_INT_2ADDR = 505,
+        TOKEN_OP_OR_INT_2ADDR = 506,
+        TOKEN_OP_XOR_INT_2ADDR = 507,
+        TOKEN_OP_SHL_INT_2ADDR = 508,
+        TOKEN_OP_SHR_INT_2ADDR = 509,
+        TOKEN_OP_USHR_INT_2ADDR = 510,
+        TOKEN_OP_ADD_LONG_2ADDR = 511,
+        TOKEN_OP_SUB_LONG_2ADDR = 512,
+        TOKEN_OP_MUL_LONG_2ADDR = 513,
+        TOKEN_OP_DIV_LONG_2ADDR = 514,
+        TOKEN_OP_REM_LONG_2ADDR = 515,
+        TOKEN_OP_AND_LONG_2ADDR = 516,
+        TOKEN_OP_OR_LONG_2ADDR = 517,
+        TOKEN_OP_XOR_LONG_2ADDR = 518,
+        TOKEN_OP_SHL_LONG_2ADDR = 519,
+        TOKEN_OP_SHR_LONG_2ADDR = 520,
+        TOKEN_OP_USHR_LONG_2ADDR = 521,
+        TOKEN_OP_ADD_FLOAT_2ADDR = 522,
+        TOKEN_OP_SUB_FLOAT_2ADDR = 523,
+        TOKEN_OP_MUL_FLOAT_2ADDR = 524,
+        TOKEN_OP_DIV_FLOAT_2ADDR = 525,
+        TOKEN_OP_REM_FLOAT_2ADDR = 526,
+        TOKEN_OP_ADD_DOUBLE_2ADDR = 527,
+        TOKEN_OP_SUB_DOUBLE_2ADDR = 528,
+        TOKEN_OP_MUL_DOUBLE_2ADDR = 529,
+        TOKEN_OP_DIV_DOUBLE_2ADDR = 530,
+        TOKEN_OP_REM_DOUBLE_2ADDR = 531,
+        TOKEN_OP_ADD_INT_LIT16 = 532,
+        TOKEN_OP_RSUB_INT = 533,
+        TOKEN_OP_MUL_INT_LIT16 = 534,
+        TOKEN_OP_DIV_INT_LIT16 = 535,
+        TOKEN_OP_REM_INT_LIT16 = 536,
+        TOKEN_OP_AND_INT_LIT16 = 537,
+        TOKEN_OP_OR_INT_LIT16 = 538,
+        TOKEN_OP_XOR_INT_LIT16 = 539,
+        TOKEN_OP_ADD_INT_LIT8 = 540,
+        TOKEN_OP_RSUB_INT_LIT8 = 541,
+        TOKEN_OP_MUL_INT_LIT8 = 542,
+        TOKEN_OP_DIV_INT_LIT8 = 543,
+        TOKEN_OP_REM_INT_LIT8 = 544,
+        TOKEN_OP_AND_INT_LIT8 = 545,
+        TOKEN_OP_OR_INT_LIT8 = 546,
+        TOKEN_OP_XOR_INT_LIT8 = 547,
+        TOKEN_OP_SHL_INT_LIT8 = 548,
+        TOKEN_OP_SHR_INT_LIT8 = 549,
+        TOKEN_OP_USHR_INT_LIT8 = 550,
+        TOKEN_OP_IGET_VOLATILE = 551,
+        TOKEN_OP_IPUT_VOLATILE = 552,
+        TOKEN_OP_SGET_VOLATILE = 553,
+        TOKEN_OP_SPUT_VOLATILE = 554,
+        TOKEN_OP_IGET_OBJECT_VOLATILE = 555,
+        TOKEN_OP_IGET_WIDE_VOLATILE = 556,
+        TOKEN_OP_IPUT_WIDE_VOLATILE = 557,
+        TOKEN_OP_SGET_WIDE_VOLATILE = 558,
+        TOKEN_OP_SPUT_WIDE_VOLATILE = 559,
+        TOKEN_OP_BREAKPOINT = 560,
+        TOKEN_OP_THROW_VERIFICATION_ERROR = 561,
+        TOKEN_OP_EXECUTE_INLINE = 562,
+        TOKEN_OP_EXECUTE_INLINE_RANGE = 563,
+        TOKEN_OP_INVOKE_OBJECT_INIT_RANGE = 564,
+        TOKEN_OP_RETURN_VOID_BARRIER = 565,
+        TOKEN_OP_IGET_QUICK = 566,
+        TOKEN_OP_IGET_WIDE_QUICK = 567,
+        TOKEN_OP_IGET_OBJECT_QUICK = 568,
+        TOKEN_OP_IPUT_QUICK = 569,
+        TOKEN_OP_IPUT_WIDE_QUICK = 570,
+        TOKEN_OP_IPUT_OBJECT_QUICK = 571,
+        TOKEN_OP_INVOKE_VIRTUAL_QUICK = 572,
+        TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE = 573,
+        TOKEN_OP_INVOKE_SUPER_QUICK = 574,
+        TOKEN_OP_INVOKE_SUPER_QUICK_RANGE = 575,
+        TOKEN_OP_IPUT_OBJECT_VOLATILE = 576,
+        TOKEN_OP_SGET_OBJECT_VOLATILE = 577,
+        TOKEN_OP_SPUT_OBJECT_VOLATILE = 578,
+        TOKEN_OP_UNUSED_FF = 579,
+        TOKEN_OP_END = 580,
+        TOKEN_SYMBOL_BEGIN = 581,
+        TOKEN_DOTDOT = 582,
+        TOKEN_ARROW = 583,
+        TOKEN_EQUAL = 584,
+        TOKEN_COLON = 585,
+        TOKEN_COMMA = 586,
+        TOKEN_OPEN_BRACE = 587,
+        TOKEN_CLOSE_BRACE = 588,
+        TOKEN_OPEN_PAREN = 589,
+        TOKEN_CLOSE_PAREN = 590,
+        TOKEN_SYMBOL_END = 591
       };
     };
 
@@ -700,17 +737,9 @@ namespace  Analysis  {
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const OpCode* v, const location_type& l);
-
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const long long int v, const location_type& l);
-
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const std::vector<int> v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l);
 
 
       /// Constructor for symbols with semantic value.
@@ -789,23 +818,7 @@ namespace  Analysis  {
 
     static inline
     symbol_type
-    make_CSTRING (const std::string& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_NAMESTRING (const std::string& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_COMMENT (const std::string& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_CLASSNAME (const std::string& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_CLASSTYPE (const std::string& v, const location_type& l);
+    make_ERROR (const std::string& v, const location_type& l);
 
     static inline
     symbol_type
@@ -813,39 +826,127 @@ namespace  Analysis  {
 
     static inline
     symbol_type
-    make_CLASSBEG (const location_type& l);
+    make_CLASS_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_SUPERBEG (const location_type& l);
+    make_SUPER_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_SRCBEG (const location_type& l);
+    make_IMPLEMENTS_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_FIELDBEG (const location_type& l);
+    make_SOURCE_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_METHODBEG (const location_type& l);
+    make_FIELD_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_METHODEND (const location_type& l);
+    make_END_FIELD_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_REGISTERS (const location_type& l);
+    make_SUBANNOTATION_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_PROLOGUE (const location_type& l);
+    make_END_SUBANNOTATION_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
-    make_LINE (const location_type& l);
+    make_ANNOTATION_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_ANNOTATION_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_ENUM_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_METHOD_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_METHOD_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_REGISTERS_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_LOCALS_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_ARRAY_DATA_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_ARRAY_DATA_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_PACKED_SWITCH_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_PACKED_SWITCH_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SPARSE_SWITCH_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_SPARSE_SWITCH_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_CATCH_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_CATCHALL_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_LINE_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_PARAMETER_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_PARAMETER_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_LOCAL_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_END_LOCAL_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_RESTART_LOCAL_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_PROLOGUE_DIRECTIVE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_EPILOGUE_DIRECTIVE (const location_type& l);
 
     static inline
     symbol_type
@@ -853,19 +954,123 @@ namespace  Analysis  {
 
     static inline
     symbol_type
+    make_NUMBER_BEGIN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_POSITIVE_INTEGER_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_NEGATIVE_INTEGER_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_LONG_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_SHORT_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_BYTE_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_FLOAT_LITERAL_OR_ID (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_DOUBLE_LITERAL_OR_ID (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_FLOAT_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_DOUBLE_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_BOOL_LITERAL (const int& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_NULL_LITERAL (const location_type& l);
+
+    static inline
+    symbol_type
+    make_NUMBER_END (const location_type& l);
+
+    static inline
+    symbol_type
     make_FLAG (const int& v, const location_type& l);
 
     static inline
     symbol_type
-    make_REGD (const int& v, const location_type& l);
+    make_REGISTER (const int& v, const location_type& l);
 
     static inline
     symbol_type
-    make_NUMBERSTRING (const std::string& v, const location_type& l);
+    make_PARAM_LIST_OR_ID_PRIMITIVE_TYPE (const std::string& v, const location_type& l);
 
     static inline
     symbol_type
-    make_HEXNUMBERSTRING (const std::string& v, const location_type& l);
+    make_PRIMITIVE_TYPE (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_CLASS_DESCRIPTOR (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_ARRAY_TYPE_PREFIX (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_VOID_TYPE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SIMPLE_NAME (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_MEMBER_NAME (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_STRING_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_CHAR_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_ANNOTATION_VISIBILITY (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_VERIFICATION_ERROR_TYPE (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_INLINE_INDEX (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_VTABLE_INDEX (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_FIELD_OFFSET (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_LINE_COMMENT (const std::string& v, const location_type& l);
 
     static inline
     symbol_type
@@ -1897,19 +2102,7 @@ namespace  Analysis  {
 
     static inline
     symbol_type
-    make_OP_CATCH (const location_type& l);
-
-    static inline
-    symbol_type
     make_OP_END (const location_type& l);
-
-    static inline
-    symbol_type
-    make_OP_PACKED_SWITCHDATABEG (const location_type& l);
-
-    static inline
-    symbol_type
-    make_OP_PACKED_SWITCHDATAEND (const location_type& l);
 
     static inline
     symbol_type
@@ -1917,15 +2110,19 @@ namespace  Analysis  {
 
     static inline
     symbol_type
+    make_DOTDOT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_ARROW (const location_type& l);
+
+    static inline
+    symbol_type
+    make_EQUAL (const location_type& l);
+
+    static inline
+    symbol_type
     make_COLON (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LEFTPAR (const location_type& l);
-
-    static inline
-    symbol_type
-    make_RIGHTPAR (const location_type& l);
 
     static inline
     symbol_type
@@ -1933,19 +2130,19 @@ namespace  Analysis  {
 
     static inline
     symbol_type
-    make_POINT (const location_type& l);
+    make_OPEN_BRACE (const location_type& l);
 
     static inline
     symbol_type
-    make_INIBRACE (const location_type& l);
+    make_CLOSE_BRACE (const location_type& l);
 
     static inline
     symbol_type
-    make_CLOBRACE (const location_type& l);
+    make_OPEN_PAREN (const location_type& l);
 
     static inline
     symbol_type
-    make_ELLIPSIS (const location_type& l);
+    make_CLOSE_PAREN (const location_type& l);
 
     static inline
     symbol_type
@@ -1953,8 +2150,8 @@ namespace  Analysis  {
 
 
     /// Build a parser object.
-     Parser  (Analysis::Lexer &lexer_yyarg, Analysis::Interpreter &driver_yyarg);
-    virtual ~ Parser  ();
+     SmaliParser  (Analysis::SmaliLexer &lexer_yyarg, Analysis::Interpreter &driver_yyarg);
+    virtual ~ SmaliParser  ();
 
     /// Parse.
     /// \returns  0 iff parsing succeeded.
@@ -1984,8 +2181,8 @@ namespace  Analysis  {
 
   private:
     /// This class is not copyable.
-     Parser  (const  Parser &);
-     Parser & operator= (const  Parser &);
+     SmaliParser  (const  SmaliParser &);
+     SmaliParser & operator= (const  SmaliParser &);
 
     /// State numbers.
     typedef int state_type;
@@ -2009,7 +2206,7 @@ namespace  Analysis  {
     /// \param yyvalue   the value to check
     static bool yy_table_value_is_error_ (int yyvalue);
 
-    static const short int yypact_ninf_;
+    static const signed char yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -2018,25 +2215,25 @@ namespace  Analysis  {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const short int yypact_[];
+  static const signed char yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
   // means the default is an error.
-  static const unsigned short int yydefact_[];
+  static const unsigned char yydefact_[];
 
   // YYPGOTO[NTERM-NUM].
-  static const short int yypgoto_[];
+  static const signed char yypgoto_[];
 
   // YYDEFGOTO[NTERM-NUM].
-  static const short int yydefgoto_[];
+  static const signed char yydefgoto_[];
 
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned short int yytable_[];
+  static const unsigned char yytable_[];
 
-  static const short int yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -2156,24 +2353,24 @@ namespace  Analysis  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 1467,     ///< Last index in yytable_.
-      yynnts_ = 16,  ///< Number of nonterminal symbols.
+      yylast_ = 0,     ///< Last index in yytable_.
+      yynnts_ = 2,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 296  ///< Number of tokens.
+      yyntokens_ = 337  ///< Number of tokens.
     };
 
 
     // User arguments.
-    Analysis::Lexer &lexer;
+    Analysis::SmaliLexer &lexer;
     Analysis::Interpreter &driver;
   };
 
   // Symbol number corresponding to token number t.
   inline
-   Parser ::token_number_type
-   Parser ::yytranslate_ (token_type t)
+   SmaliParser ::token_number_type
+   SmaliParser ::yytranslate_ (token_type t)
   {
     static
     const token_number_type
@@ -2234,9 +2431,13 @@ namespace  Analysis  {
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     295
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
+     305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
+     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
+     325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
+     335,   336
     };
-    const unsigned int user_token_number_max_ = 550;
+    const unsigned int user_token_number_max_ = 591;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -2248,7 +2449,7 @@ namespace  Analysis  {
   }
 
   inline
-   Parser ::syntax_error::syntax_error (const location_type& l, const std::string& m)
+   SmaliParser ::syntax_error::syntax_error (const location_type& l, const std::string& m)
     : std::runtime_error (m)
     , location (l)
   {}
@@ -2256,59 +2457,50 @@ namespace  Analysis  {
   // basic_symbol.
   template <typename Base>
   inline
-   Parser ::basic_symbol<Base>::basic_symbol ()
+   SmaliParser ::basic_symbol<Base>::basic_symbol ()
     : value ()
   {}
 
   template <typename Base>
   inline
-   Parser ::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
+   SmaliParser ::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
     : Base (other)
     , value ()
     , location (other.location)
   {
       switch (other.type_get ())
     {
-      case 311: // instruction
-        value.copy< OpCode* > (other.value);
-        break;
-
-      case 20: // "flag"
-      case 21: // "v(p)x"
-      case 298: // exp
-      case 299: // classdef
-      case 300: // superdef
-      case 301: // srcdef
-      case 302: // fielddef
-      case 303: // methoddef
-      case 304: // flags
-      case 308: // registers
+      case 48: // "true|false"
+      case 51: // "flag"
+      case 52: // "v(p)x"
         value.copy< int > (other.value);
         break;
 
-      case 295: // "number"
-      case 310: // NUMBER
-        value.copy< long long int > (other.value);
-        break;
-
-      case 4: // "c type string"
-      case 5: // "name string"
-      case 6: // "comment"
-      case 7: // "class name"
-      case 8: // "class type"
-      case 22: // "0xnumber"
-      case 23: // HEXNUMBERSTRING
-      case 307: // comment
-      case 309: // jmplabel
+      case 4: // "lex error"
+      case 39: // "Integer"
+      case 40: // "- Integer"
+      case 41: // "- Integer L"
+      case 42: // "- Integer S"
+      case 43: // "- Integer T"
+      case 44: // "FloatOrID F"
+      case 45: // "FloatOrID D"
+      case 46: // "Float F"
+      case 47: // "Float D"
+      case 53: // "ZBSCIJFDLIT"
+      case 54: // "ZBSCIJFD"
+      case 55: // "Lxxx;"
+      case 56: // "[["
+      case 58: // "simple name"
+      case 59: // "member name"
+      case 60: // "string"
+      case 61: // "char"
+      case 62: // "build runtime system"
+      case 63: // "ver type error"
+      case 64: // "inline@0x"
+      case 65: // "vtable@0x"
+      case 66: // "field@0x"
+      case 67: // "#xxx"
         value.copy< std::string > (other.value);
-        break;
-
-      case 306: // regs
-        value.copy< std::vector<int> > (other.value);
-        break;
-
-      case 305: // args
-        value.copy< std::vector<std::string> > (other.value);
         break;
 
       default:
@@ -2320,7 +2512,7 @@ namespace  Analysis  {
 
   template <typename Base>
   inline
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
     : Base (t)
     , value ()
     , location (l)
@@ -2328,46 +2520,37 @@ namespace  Analysis  {
     (void) v;
       switch (this->type_get ())
     {
-      case 311: // instruction
-        value.copy< OpCode* > (v);
-        break;
-
-      case 20: // "flag"
-      case 21: // "v(p)x"
-      case 298: // exp
-      case 299: // classdef
-      case 300: // superdef
-      case 301: // srcdef
-      case 302: // fielddef
-      case 303: // methoddef
-      case 304: // flags
-      case 308: // registers
+      case 48: // "true|false"
+      case 51: // "flag"
+      case 52: // "v(p)x"
         value.copy< int > (v);
         break;
 
-      case 295: // "number"
-      case 310: // NUMBER
-        value.copy< long long int > (v);
-        break;
-
-      case 4: // "c type string"
-      case 5: // "name string"
-      case 6: // "comment"
-      case 7: // "class name"
-      case 8: // "class type"
-      case 22: // "0xnumber"
-      case 23: // HEXNUMBERSTRING
-      case 307: // comment
-      case 309: // jmplabel
+      case 4: // "lex error"
+      case 39: // "Integer"
+      case 40: // "- Integer"
+      case 41: // "- Integer L"
+      case 42: // "- Integer S"
+      case 43: // "- Integer T"
+      case 44: // "FloatOrID F"
+      case 45: // "FloatOrID D"
+      case 46: // "Float F"
+      case 47: // "Float D"
+      case 53: // "ZBSCIJFDLIT"
+      case 54: // "ZBSCIJFD"
+      case 55: // "Lxxx;"
+      case 56: // "[["
+      case 58: // "simple name"
+      case 59: // "member name"
+      case 60: // "string"
+      case 61: // "char"
+      case 62: // "build runtime system"
+      case 63: // "ver type error"
+      case 64: // "inline@0x"
+      case 65: // "vtable@0x"
+      case 66: // "field@0x"
+      case 67: // "#xxx"
         value.copy< std::string > (v);
-        break;
-
-      case 306: // regs
-        value.copy< std::vector<int> > (v);
-        break;
-
-      case 305: // args
-        value.copy< std::vector<std::string> > (v);
         break;
 
       default:
@@ -2379,49 +2562,21 @@ namespace  Analysis  {
   // Implementation of basic_symbol constructor for each type.
 
   template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
     : Base (t)
     , value ()
     , location (l)
   {}
 
   template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OpCode* v, const location_type& l)
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
   {}
 
   template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const long long int v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<int> v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-   Parser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l)
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -2430,7 +2585,7 @@ namespace  Analysis  {
 
   template <typename Base>
   inline
-   Parser ::basic_symbol<Base>::~basic_symbol ()
+   SmaliParser ::basic_symbol<Base>::~basic_symbol ()
   {
     clear ();
   }
@@ -2438,7 +2593,7 @@ namespace  Analysis  {
   template <typename Base>
   inline
   void
-   Parser ::basic_symbol<Base>::clear ()
+   SmaliParser ::basic_symbol<Base>::clear ()
   {
     // User destructor.
     symbol_number_type yytype = this->type_get ();
@@ -2453,46 +2608,37 @@ namespace  Analysis  {
     // Type destructor.
     switch (yytype)
     {
-      case 311: // instruction
-        value.template destroy< OpCode* > ();
-        break;
-
-      case 20: // "flag"
-      case 21: // "v(p)x"
-      case 298: // exp
-      case 299: // classdef
-      case 300: // superdef
-      case 301: // srcdef
-      case 302: // fielddef
-      case 303: // methoddef
-      case 304: // flags
-      case 308: // registers
+      case 48: // "true|false"
+      case 51: // "flag"
+      case 52: // "v(p)x"
         value.template destroy< int > ();
         break;
 
-      case 295: // "number"
-      case 310: // NUMBER
-        value.template destroy< long long int > ();
-        break;
-
-      case 4: // "c type string"
-      case 5: // "name string"
-      case 6: // "comment"
-      case 7: // "class name"
-      case 8: // "class type"
-      case 22: // "0xnumber"
-      case 23: // HEXNUMBERSTRING
-      case 307: // comment
-      case 309: // jmplabel
+      case 4: // "lex error"
+      case 39: // "Integer"
+      case 40: // "- Integer"
+      case 41: // "- Integer L"
+      case 42: // "- Integer S"
+      case 43: // "- Integer T"
+      case 44: // "FloatOrID F"
+      case 45: // "FloatOrID D"
+      case 46: // "Float F"
+      case 47: // "Float D"
+      case 53: // "ZBSCIJFDLIT"
+      case 54: // "ZBSCIJFD"
+      case 55: // "Lxxx;"
+      case 56: // "[["
+      case 58: // "simple name"
+      case 59: // "member name"
+      case 60: // "string"
+      case 61: // "char"
+      case 62: // "build runtime system"
+      case 63: // "ver type error"
+      case 64: // "inline@0x"
+      case 65: // "vtable@0x"
+      case 66: // "field@0x"
+      case 67: // "#xxx"
         value.template destroy< std::string > ();
-        break;
-
-      case 306: // regs
-        value.template destroy< std::vector<int> > ();
-        break;
-
-      case 305: // args
-        value.template destroy< std::vector<std::string> > ();
         break;
 
       default:
@@ -2505,7 +2651,7 @@ namespace  Analysis  {
   template <typename Base>
   inline
   bool
-   Parser ::basic_symbol<Base>::empty () const
+   SmaliParser ::basic_symbol<Base>::empty () const
   {
     return Base::type_get () == empty_symbol;
   }
@@ -2513,51 +2659,42 @@ namespace  Analysis  {
   template <typename Base>
   inline
   void
-   Parser ::basic_symbol<Base>::move (basic_symbol& s)
+   SmaliParser ::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 311: // instruction
-        value.move< OpCode* > (s.value);
-        break;
-
-      case 20: // "flag"
-      case 21: // "v(p)x"
-      case 298: // exp
-      case 299: // classdef
-      case 300: // superdef
-      case 301: // srcdef
-      case 302: // fielddef
-      case 303: // methoddef
-      case 304: // flags
-      case 308: // registers
+      case 48: // "true|false"
+      case 51: // "flag"
+      case 52: // "v(p)x"
         value.move< int > (s.value);
         break;
 
-      case 295: // "number"
-      case 310: // NUMBER
-        value.move< long long int > (s.value);
-        break;
-
-      case 4: // "c type string"
-      case 5: // "name string"
-      case 6: // "comment"
-      case 7: // "class name"
-      case 8: // "class type"
-      case 22: // "0xnumber"
-      case 23: // HEXNUMBERSTRING
-      case 307: // comment
-      case 309: // jmplabel
+      case 4: // "lex error"
+      case 39: // "Integer"
+      case 40: // "- Integer"
+      case 41: // "- Integer L"
+      case 42: // "- Integer S"
+      case 43: // "- Integer T"
+      case 44: // "FloatOrID F"
+      case 45: // "FloatOrID D"
+      case 46: // "Float F"
+      case 47: // "Float D"
+      case 53: // "ZBSCIJFDLIT"
+      case 54: // "ZBSCIJFD"
+      case 55: // "Lxxx;"
+      case 56: // "[["
+      case 58: // "simple name"
+      case 59: // "member name"
+      case 60: // "string"
+      case 61: // "char"
+      case 62: // "build runtime system"
+      case 63: // "ver type error"
+      case 64: // "inline@0x"
+      case 65: // "vtable@0x"
+      case 66: // "field@0x"
+      case 67: // "#xxx"
         value.move< std::string > (s.value);
-        break;
-
-      case 306: // regs
-        value.move< std::vector<int> > (s.value);
-        break;
-
-      case 305: // args
-        value.move< std::vector<std::string> > (s.value);
         break;
 
       default:
@@ -2569,30 +2706,30 @@ namespace  Analysis  {
 
   // by_type.
   inline
-   Parser ::by_type::by_type ()
+   SmaliParser ::by_type::by_type ()
     : type (empty_symbol)
   {}
 
   inline
-   Parser ::by_type::by_type (const by_type& other)
+   SmaliParser ::by_type::by_type (const by_type& other)
     : type (other.type)
   {}
 
   inline
-   Parser ::by_type::by_type (token_type t)
+   SmaliParser ::by_type::by_type (token_type t)
     : type (yytranslate_ (t))
   {}
 
   inline
   void
-   Parser ::by_type::clear ()
+   SmaliParser ::by_type::clear ()
   {
     type = empty_symbol;
   }
 
   inline
   void
-   Parser ::by_type::move (by_type& that)
+   SmaliParser ::by_type::move (by_type& that)
   {
     type = that.type;
     that.clear ();
@@ -2600,14 +2737,14 @@ namespace  Analysis  {
 
   inline
   int
-   Parser ::by_type::type_get () const
+   SmaliParser ::by_type::type_get () const
   {
     return type;
   }
 
   inline
-   Parser ::token_type
-   Parser ::by_type::token () const
+   SmaliParser ::token_type
+   SmaliParser ::by_type::token () const
   {
     // YYTOKNUM[NUM] -- (External) token number corresponding to the
     // (internal) symbol number NUM (which must be that of a token).  */
@@ -2644,1775 +2781,2031 @@ namespace  Analysis  {
      515,   516,   517,   518,   519,   520,   521,   522,   523,   524,
      525,   526,   527,   528,   529,   530,   531,   532,   533,   534,
      535,   536,   537,   538,   539,   540,   541,   542,   543,   544,
-     545,   546,   547,   548,   549,   550
+     545,   546,   547,   548,   549,   550,   551,   552,   553,   554,
+     555,   556,   557,   558,   559,   560,   561,   562,   563,   564,
+     565,   566,   567,   568,   569,   570,   571,   572,   573,   574,
+     575,   576,   577,   578,   579,   580,   581,   582,   583,   584,
+     585,   586,   587,   588,   589,   590,   591
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
   // Implementation of make_symbol for each symbol type.
-   Parser ::symbol_type
-   Parser ::make_END (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_END, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_EOL (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_EOL (const location_type& l)
   {
     return symbol_type (token::TOKEN_EOL, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_CSTRING (const std::string& v, const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_ERROR (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::TOKEN_CSTRING, v, l);
+    return symbol_type (token::TOKEN_ERROR, v, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_NAMESTRING (const std::string& v, const location_type& l)
-  {
-    return symbol_type (token::TOKEN_NAMESTRING, v, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_COMMENT (const std::string& v, const location_type& l)
-  {
-    return symbol_type (token::TOKEN_COMMENT, v, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_CLASSNAME (const std::string& v, const location_type& l)
-  {
-    return symbol_type (token::TOKEN_CLASSNAME, v, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_CLASSTYPE (const std::string& v, const location_type& l)
-  {
-    return symbol_type (token::TOKEN_CLASSTYPE, v, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_KEYWORD_BEGIN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_KEYWORD_BEGIN (const location_type& l)
   {
     return symbol_type (token::TOKEN_KEYWORD_BEGIN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_CLASSBEG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_CLASS_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_CLASSBEG, l);
+    return symbol_type (token::TOKEN_CLASS_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_SUPERBEG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SUPER_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_SUPERBEG, l);
+    return symbol_type (token::TOKEN_SUPER_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_SRCBEG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_IMPLEMENTS_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_SRCBEG, l);
+    return symbol_type (token::TOKEN_IMPLEMENTS_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_FIELDBEG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SOURCE_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_FIELDBEG, l);
+    return symbol_type (token::TOKEN_SOURCE_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_METHODBEG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_FIELD_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_METHODBEG, l);
+    return symbol_type (token::TOKEN_FIELD_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_METHODEND (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_FIELD_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_METHODEND, l);
+    return symbol_type (token::TOKEN_END_FIELD_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_REGISTERS (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SUBANNOTATION_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_REGISTERS, l);
+    return symbol_type (token::TOKEN_SUBANNOTATION_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_PROLOGUE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_SUBANNOTATION_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_PROLOGUE, l);
+    return symbol_type (token::TOKEN_END_SUBANNOTATION_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_LINE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_ANNOTATION_DIRECTIVE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_LINE, l);
+    return symbol_type (token::TOKEN_ANNOTATION_DIRECTIVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_KEYWORD_END (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_ANNOTATION_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_END_ANNOTATION_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_ENUM_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_ENUM_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_METHOD_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_METHOD_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_METHOD_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_END_METHOD_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_REGISTERS_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_REGISTERS_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_LOCALS_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_LOCALS_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_ARRAY_DATA_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_ARRAY_DATA_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_ARRAY_DATA_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_END_ARRAY_DATA_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_PACKED_SWITCH_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_PACKED_SWITCH_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_PACKED_SWITCH_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_END_PACKED_SWITCH_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SPARSE_SWITCH_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_SPARSE_SWITCH_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_SPARSE_SWITCH_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_END_SPARSE_SWITCH_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_CATCH_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CATCH_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_CATCHALL_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CATCHALL_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_LINE_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_LINE_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_PARAMETER_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_PARAMETER_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_PARAMETER_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_END_PARAMETER_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_LOCAL_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_LOCAL_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_END_LOCAL_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_END_LOCAL_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_RESTART_LOCAL_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_RESTART_LOCAL_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_PROLOGUE_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_PROLOGUE_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_EPILOGUE_DIRECTIVE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_EPILOGUE_DIRECTIVE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_KEYWORD_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_KEYWORD_END, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_FLAG (const int& v, const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_NUMBER_BEGIN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_NUMBER_BEGIN, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_POSITIVE_INTEGER_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_POSITIVE_INTEGER_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_NEGATIVE_INTEGER_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_NEGATIVE_INTEGER_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_LONG_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_LONG_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SHORT_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_SHORT_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_BYTE_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_BYTE_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_FLOAT_LITERAL_OR_ID (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_FLOAT_LITERAL_OR_ID, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_DOUBLE_LITERAL_OR_ID (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_DOUBLE_LITERAL_OR_ID, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_FLOAT_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_FLOAT_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_DOUBLE_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_DOUBLE_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_BOOL_LITERAL (const int& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_BOOL_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_NULL_LITERAL (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_NULL_LITERAL, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_NUMBER_END (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_NUMBER_END, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_FLAG (const int& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_FLAG, v, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_REGD (const int& v, const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_REGISTER (const int& v, const location_type& l)
   {
-    return symbol_type (token::TOKEN_REGD, v, l);
+    return symbol_type (token::TOKEN_REGISTER, v, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_NUMBERSTRING (const std::string& v, const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_PARAM_LIST_OR_ID_PRIMITIVE_TYPE (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::TOKEN_NUMBERSTRING, v, l);
+    return symbol_type (token::TOKEN_PARAM_LIST_OR_ID_PRIMITIVE_TYPE, v, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_HEXNUMBERSTRING (const std::string& v, const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_PRIMITIVE_TYPE (const std::string& v, const location_type& l)
   {
-    return symbol_type (token::TOKEN_HEXNUMBERSTRING, v, l);
+    return symbol_type (token::TOKEN_PRIMITIVE_TYPE, v, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_BEGIN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_CLASS_DESCRIPTOR (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CLASS_DESCRIPTOR, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_ARRAY_TYPE_PREFIX (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_ARRAY_TYPE_PREFIX, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_VOID_TYPE (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_VOID_TYPE, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SIMPLE_NAME (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_SIMPLE_NAME, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_MEMBER_NAME (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_MEMBER_NAME, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_STRING_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_STRING_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_CHAR_LITERAL (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_CHAR_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_ANNOTATION_VISIBILITY (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_ANNOTATION_VISIBILITY, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_VERIFICATION_ERROR_TYPE (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_VERIFICATION_ERROR_TYPE, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_INLINE_INDEX (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_INLINE_INDEX, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_VTABLE_INDEX (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_VTABLE_INDEX, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_FIELD_OFFSET (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_FIELD_OFFSET, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_LINE_COMMENT (const std::string& v, const location_type& l)
+  {
+    return symbol_type (token::TOKEN_LINE_COMMENT, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_BEGIN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_BEGIN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NOP (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NOP (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NOP, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_FROM16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_FROM16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_FROM16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_WIDE_FROM16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_WIDE_FROM16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_WIDE_FROM16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_WIDE_16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_WIDE_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_WIDE_16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_OBJECT_FROM16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_OBJECT_FROM16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_OBJECT_FROM16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_OBJECT_16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_OBJECT_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_OBJECT_16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_RESULT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_RESULT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_RESULT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_RESULT_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_RESULT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_RESULT_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_RESULT_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_RESULT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_RESULT_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MOVE_EXCEPTION (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MOVE_EXCEPTION (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MOVE_EXCEPTION, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_RETURN_VOID (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_RETURN_VOID (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_VOID, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_RETURN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_RETURN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_RETURN_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_RETURN_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_RETURN_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_RETURN_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_4 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_4 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_4, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_HIGH16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_HIGH16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_HIGH16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_WIDE_16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_WIDE_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE_16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_WIDE_32 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_WIDE_32 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE_32, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_WIDE_HIGH16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_WIDE_HIGH16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_WIDE_HIGH16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_STRING (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_STRING (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_STRING, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_STRING_JUMBO (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_STRING_JUMBO (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_STRING_JUMBO, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CONST_CLASS (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CONST_CLASS (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CONST_CLASS, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MONITOR_ENTER (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MONITOR_ENTER (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MONITOR_ENTER, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MONITOR_EXIT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MONITOR_EXIT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MONITOR_EXIT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CHECK_CAST (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CHECK_CAST (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CHECK_CAST, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INSTANCE_OF (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INSTANCE_OF (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INSTANCE_OF, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ARRAY_LENGTH (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ARRAY_LENGTH (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ARRAY_LENGTH, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NEW_INSTANCE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NEW_INSTANCE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEW_INSTANCE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NEW_ARRAY (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NEW_ARRAY (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEW_ARRAY, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_FILLED_NEW_ARRAY (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_FILLED_NEW_ARRAY (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FILLED_NEW_ARRAY, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_FILLED_NEW_ARRAY_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_FILLED_NEW_ARRAY_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FILLED_NEW_ARRAY_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_FILL_ARRAY_DATA (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_FILL_ARRAY_DATA (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FILL_ARRAY_DATA, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_THROW (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_THROW (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_THROW, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_GOTO (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_GOTO (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_GOTO, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_GOTO_16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_GOTO_16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_GOTO_16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_GOTO_32 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_GOTO_32 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_GOTO_32, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_PACKED_SWITCH (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_PACKED_SWITCH (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_PACKED_SWITCH, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPARSE_SWITCH (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPARSE_SWITCH (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPARSE_SWITCH, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CMPL_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CMPL_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPL_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CMPG_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CMPG_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPG_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CMPL_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CMPL_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPL_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CMPG_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CMPG_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMPG_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CMP_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_CMP_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_CMP_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_EQ (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_EQ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_EQ, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_NE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_NE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_NE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_LT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_LT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_GE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_GE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_GT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_GT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_LE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_LE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_EQZ (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_EQZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_EQZ, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_NEZ (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_NEZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_NEZ, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_LTZ (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_LTZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LTZ, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_GEZ (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_GEZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GEZ, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_GTZ (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_GTZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_GTZ, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IF_LEZ (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IF_LEZ (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IF_LEZ, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_3E (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_3E (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_3E, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_3F (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_3F (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_3F, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_40 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_40 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_40, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_41 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_41 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_41, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_42 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_42 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_42, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_43 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_43 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_43, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AGET (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AGET (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AGET_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AGET_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AGET_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AGET_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AGET_BOOLEAN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AGET_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_BOOLEAN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AGET_BYTE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AGET_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_BYTE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AGET_CHAR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AGET_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_CHAR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AGET_SHORT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AGET_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AGET_SHORT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_APUT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_APUT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_APUT_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_APUT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_APUT_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_APUT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_APUT_BOOLEAN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_APUT_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_BOOLEAN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_APUT_BYTE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_APUT_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_BYTE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_APUT_CHAR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_APUT_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_CHAR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_APUT_SHORT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_APUT_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_APUT_SHORT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_BOOLEAN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_BOOLEAN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_BYTE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_BYTE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_CHAR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_CHAR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_SHORT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_SHORT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_BOOLEAN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_BOOLEAN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_BYTE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_BYTE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_CHAR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_CHAR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_SHORT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_SHORT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_BOOLEAN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_BOOLEAN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_BYTE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_BYTE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_CHAR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_CHAR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_SHORT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_SHORT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_WIDE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_WIDE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_WIDE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_OBJECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_OBJECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_OBJECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_BOOLEAN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_BOOLEAN (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_BOOLEAN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_BYTE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_BYTE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_CHAR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_CHAR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_SHORT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_SHORT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_VIRTUAL (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_VIRTUAL (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_SUPER (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_SUPER (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_DIRECT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_DIRECT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_DIRECT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_STATIC (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_STATIC (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_STATIC, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_INTERFACE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_INTERFACE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_INTERFACE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_73 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_73 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_73, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_VIRTUAL_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_VIRTUAL_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_SUPER_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_SUPER_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_DIRECT_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_DIRECT_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_DIRECT_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_STATIC_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_STATIC_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_STATIC_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_INTERFACE_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_INTERFACE_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_INTERFACE_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_79 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_79 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_79, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_7A (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_7A (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_7A, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NEG_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NEG_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NOT_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NOT_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NOT_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NEG_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NEG_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NOT_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NOT_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NOT_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NEG_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NEG_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_NEG_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_NEG_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_NEG_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INT_TO_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INT_TO_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INT_TO_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INT_TO_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INT_TO_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INT_TO_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_LONG_TO_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_LONG_TO_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_LONG_TO_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_LONG_TO_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_LONG_TO_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_LONG_TO_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_LONG_TO_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_LONG_TO_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_LONG_TO_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_FLOAT_TO_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_FLOAT_TO_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FLOAT_TO_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_FLOAT_TO_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_FLOAT_TO_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FLOAT_TO_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_FLOAT_TO_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_FLOAT_TO_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_FLOAT_TO_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DOUBLE_TO_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DOUBLE_TO_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DOUBLE_TO_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DOUBLE_TO_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DOUBLE_TO_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DOUBLE_TO_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DOUBLE_TO_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DOUBLE_TO_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DOUBLE_TO_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INT_TO_BYTE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INT_TO_BYTE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_BYTE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INT_TO_CHAR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INT_TO_CHAR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_CHAR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INT_TO_SHORT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INT_TO_SHORT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INT_TO_SHORT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AND_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AND_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_OR_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_OR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_XOR_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_XOR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHL_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHL_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHR_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_USHR_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_USHR_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AND_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AND_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_OR_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_OR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_XOR_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_XOR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHL_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHL_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHR_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_USHR_LONG (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_USHR_LONG (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_LONG, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_FLOAT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_FLOAT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_FLOAT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_DOUBLE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_DOUBLE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_DOUBLE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AND_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AND_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_OR_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_OR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_XOR_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_XOR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHL_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHL_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHR_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_USHR_INT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_USHR_INT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_INT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AND_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AND_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_OR_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_OR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_XOR_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_XOR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHL_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHL_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHR_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_USHR_LONG_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_USHR_LONG_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_LONG_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_FLOAT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_FLOAT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_FLOAT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_FLOAT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_FLOAT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_FLOAT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_FLOAT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_FLOAT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_FLOAT_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_FLOAT_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_FLOAT_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_DOUBLE_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_DOUBLE_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SUB_DOUBLE_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SUB_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SUB_DOUBLE_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_DOUBLE_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_DOUBLE_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_DOUBLE_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_DOUBLE_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_DOUBLE_2ADDR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_DOUBLE_2ADDR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_DOUBLE_2ADDR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_INT_LIT16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT_LIT16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_RSUB_INT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_RSUB_INT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RSUB_INT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_INT_LIT16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT_LIT16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_INT_LIT16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT_LIT16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_INT_LIT16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT_LIT16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AND_INT_LIT16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AND_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT_LIT16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_OR_INT_LIT16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_OR_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT_LIT16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_XOR_INT_LIT16 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_XOR_INT_LIT16 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT_LIT16, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_ADD_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_ADD_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_ADD_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_RSUB_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_RSUB_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RSUB_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_MUL_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_MUL_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_MUL_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_DIV_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_DIV_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_DIV_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_REM_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_REM_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_REM_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_AND_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_AND_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_AND_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_OR_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_OR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_OR_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_XOR_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_XOR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_XOR_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHL_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHL_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHL_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SHR_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SHR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SHR_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_USHR_INT_LIT8 (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_USHR_INT_LIT8 (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_USHR_INT_LIT8, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_OBJECT_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_OBJECT_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_WIDE_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_WIDE_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_WIDE_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_WIDE_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_WIDE_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_WIDE_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_WIDE_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_WIDE_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_WIDE_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_BREAKPOINT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_BREAKPOINT (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_BREAKPOINT, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_THROW_VERIFICATION_ERROR (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_THROW_VERIFICATION_ERROR (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_THROW_VERIFICATION_ERROR, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_EXECUTE_INLINE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_EXECUTE_INLINE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_EXECUTE_INLINE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_EXECUTE_INLINE_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_EXECUTE_INLINE_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_EXECUTE_INLINE_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_OBJECT_INIT_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_OBJECT_INIT_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_OBJECT_INIT_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_RETURN_VOID_BARRIER (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_RETURN_VOID_BARRIER (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_RETURN_VOID_BARRIER, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_WIDE_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_WIDE_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_WIDE_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IGET_OBJECT_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IGET_OBJECT_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IGET_OBJECT_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_WIDE_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_WIDE_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_WIDE_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_OBJECT_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_OBJECT_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_OBJECT_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_VIRTUAL_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_VIRTUAL_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_VIRTUAL_QUICK_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_VIRTUAL_QUICK_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_SUPER_QUICK (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_SUPER_QUICK (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER_QUICK, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_INVOKE_SUPER_QUICK_RANGE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_INVOKE_SUPER_QUICK_RANGE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_INVOKE_SUPER_QUICK_RANGE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_IPUT_OBJECT_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_IPUT_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_IPUT_OBJECT_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SGET_OBJECT_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SGET_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SGET_OBJECT_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_SPUT_OBJECT_VOLATILE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_SPUT_OBJECT_VOLATILE (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_SPUT_OBJECT_VOLATILE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_UNUSED_FF (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_UNUSED_FF (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_UNUSED_FF, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_CATCH (const location_type& l)
-  {
-    return symbol_type (token::TOKEN_OP_CATCH, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_OP_END (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OP_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_OP_END, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_OP_PACKED_SWITCHDATABEG (const location_type& l)
-  {
-    return symbol_type (token::TOKEN_OP_PACKED_SWITCHDATABEG, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_OP_PACKED_SWITCHDATAEND (const location_type& l)
-  {
-    return symbol_type (token::TOKEN_OP_PACKED_SWITCHDATAEND, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_SYMBOL_BEGIN (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SYMBOL_BEGIN (const location_type& l)
   {
     return symbol_type (token::TOKEN_SYMBOL_BEGIN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_COLON (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_DOTDOT (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_DOTDOT, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_ARROW (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_ARROW, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_EQUAL (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_EQUAL, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_COLON (const location_type& l)
   {
     return symbol_type (token::TOKEN_COLON, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_LEFTPAR (const location_type& l)
-  {
-    return symbol_type (token::TOKEN_LEFTPAR, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_RIGHTPAR (const location_type& l)
-  {
-    return symbol_type (token::TOKEN_RIGHTPAR, l);
-  }
-
-   Parser ::symbol_type
-   Parser ::make_COMMA (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_COMMA (const location_type& l)
   {
     return symbol_type (token::TOKEN_COMMA, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_POINT (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OPEN_BRACE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_POINT, l);
+    return symbol_type (token::TOKEN_OPEN_BRACE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_INIBRACE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_CLOSE_BRACE (const location_type& l)
   {
-    return symbol_type (token::TOKEN_INIBRACE, l);
+    return symbol_type (token::TOKEN_CLOSE_BRACE, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_CLOBRACE (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_OPEN_PAREN (const location_type& l)
   {
-    return symbol_type (token::TOKEN_CLOBRACE, l);
+    return symbol_type (token::TOKEN_OPEN_PAREN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_ELLIPSIS (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_CLOSE_PAREN (const location_type& l)
   {
-    return symbol_type (token::TOKEN_ELLIPSIS, l);
+    return symbol_type (token::TOKEN_CLOSE_PAREN, l);
   }
 
-   Parser ::symbol_type
-   Parser ::make_SYMBOL_END (const location_type& l)
+   SmaliParser ::symbol_type
+   SmaliParser ::make_SYMBOL_END (const location_type& l)
   {
     return symbol_type (token::TOKEN_SYMBOL_END, l);
   }
 
 
-#line 9 "Parser.yy" // lalr1.cc:377
+#line 9 "SmaliParser.yy" // lalr1.cc:377
 } //  Analysis 
-#line 4414 "Parser.hpp" // lalr1.cc:377
+#line 4807 "SmaliParser.hpp" // lalr1.cc:377
 
 
 
 
-#endif // !YY_YY_PARSER_HPP_INCLUDED
+#endif // !YY_YY_SMALIPARSER_HPP_INCLUDED

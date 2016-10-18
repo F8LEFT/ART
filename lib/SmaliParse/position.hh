@@ -50,7 +50,7 @@
 #  endif
 # endif
 
-#line 9 "Parser.yy" // location.cc:296
+#line 9 "SmaliParser.yy" // location.cc:296
 namespace  Analysis  {
 #line 56 "position.hh" // location.cc:296
   /// Abstract a position.
@@ -174,7 +174,7 @@ namespace  Analysis  {
     return ostr << pos.line << '.' << pos.column;
   }
 
-#line 9 "Parser.yy" // location.cc:296
+#line 9 "SmaliParser.yy" // location.cc:296
 } //  Analysis 
 #line 180 "position.hh" // location.cc:296
 #endif // !YY_YY_POSITION_HH_INCLUDED

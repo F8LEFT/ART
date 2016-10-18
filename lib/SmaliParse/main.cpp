@@ -12,33 +12,33 @@
 //===----------------------------------------------------------------------===//
 
 #include <iostream>
-#include "Lexer.h"
+#include "SmaliLexer.h"
 #include <sstream>
 #include <fstream>
-#include "Parser.hpp"
-#include "Interpreter.h"
+#include "SmaliParser.hpp"
 
 using namespace std;
 using namespace Analysis;
 
 int main() {
-    auto l = strtoll ("-0x800000000L", 0, 16);
-    ifstream ifile;
-//    ifile.open ("/home/f8left/CodeSrc/ART/res/StubApplication.smali");
+    string st;
 
+    ifstream ifile;
+    ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");
 
     // test Lexer
     if (ifile.is_open ()) {
-        Lexer lexer;
+        SmaliLexer lexer;
         lexer.switch_streams (&ifile,nullptr);
         while(true) {
             auto token = lexer.get_next_token ();
             if(token.token () == 0)
                 break;
-            if(token.token () == Parser::token::TOKEN_EOL) {
+            if(token.token () == SmaliParser::token::TOKEN_EOL) {
                 continue;
             }
-            cout << " line :" << lexer.line ()
+            cout << "type " << token.token ()
+                 << " line :" << lexer.line ()
                  << " column :" << lexer.column ()
                  << " len :" << lexer.curTokenLen ()
                  << " token :" << lexer.curTokenText () << endl;
@@ -47,21 +47,18 @@ int main() {
     }
     ifile.close ();
     // test parser
-    ifile.open ("/home/f8left/CodeSrc/ART/lib/gui/bin/Projects/app.greyshirts.sslcapture-1/Project/smali/org/spongycastle/crypto/digests/GOST3411Digest.smali");
-    if(ifile.is_open ()) {
-        Interpreter interpreter;
-        SmaliClass sClass;
-        StringPool sp;
-        sClass.setStringPool (&sp);
-        interpreter.switchInputStream (&ifile,&sClass);
-        interpreter.parse ();
-        interpreter.analysis ();
-        cout << "print file tree" << endl;
-        interpreter.print ();
-    }
-    ifile.close ();
-    string a;
-    a.substr (0, a.length () - 12);
-
+//    ifile.open ("/home/f8left/CodeSrc/ART/lib/gui/bin/Projects/app.greyshirts.sslcapture-1/Project/smali/org/spongycastle/crypto/digests/GOST3411Digest.smali");
+//    if(ifile.is_open ()) {
+//        Interpreter interpreter;
+//        SmaliClass sClass;
+//        StringPool sp;
+//        sClass.setStringPool (&sp);
+//        interpreter.switchInputStream (&ifile,&sClass);
+//        interpreter.parse ();
+//        interpreter.analysis ();
+//        cout << "print file tree" << endl;
+//        interpreter.print ();
+//    }
+//    ifile.close ();
     return 0;
 }
