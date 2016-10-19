@@ -287,15 +287,16 @@ enum Opcode {
     // Extra OpCode
     OP_JMPLABEL                     = 0x100,
     OP_CATCH                        = 0x101,
-    OP_PACKED_SWITCHDATA            = 0x102,
-    OP_PACKED_SWITCHDATABEG         = 0x103,
-    OP_PACKED_SWITCHDATAEND         = 0x104,
-    OP_SPARSE_SWITCHDATA            = 0x105,
-    OP_SPARSE_SWITCHDATABEG         = 0x106,
-    OP_SPARSE_SWITCHDATAEND         = 0x107,
-    OP_ARRAY_DATA                   = 0x108,
-    OP_ARRAY_DATABEG                = 0x109,
-    OP_ARRAY_DATAEND                = 0x10a,
+    OP_CATCHALL                     = 0x102,
+    OP_PACKED_SWITCHDATA            = 0x103,
+    OP_PACKED_SWITCHDATABEG         = 0x104,
+    OP_PACKED_SWITCHDATAEND         = 0x105,
+    OP_SPARSE_SWITCHDATA            = 0x106,
+    OP_SPARSE_SWITCHDATABEG         = 0x107,
+    OP_SPARSE_SWITCHDATAEND         = 0x108,
+    OP_ARRAY_DATA                   = 0x109,
+    OP_ARRAY_DATABEG                = 0x10a,
+    OP_ARRAY_DATAEND                = 0x10b,
 };
 
 

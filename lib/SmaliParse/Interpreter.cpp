@@ -42,8 +42,8 @@ void Interpreter::analysis ()
 
 void Interpreter::switchInputStream (std::istream *is,SmaliClass *pClass)
 {
-    mLexer.reset (new Lexer);
-    mParser.reset (new Parser(*mLexer, *this));
+    mLexer.reset (new SmaliLexer);
+    mParser.reset (new SmaliParser(*mLexer, *this));
 
     mLexer->switch_streams (is,nullptr);
     mClass = pClass;
@@ -148,6 +148,23 @@ void Interpreter::analysisMethod (SmaliMethod *method)
 //
 //
 //    }
+}
+
+long long int Interpreter::parseLongInt (std::string s)
+{
+    bool isHex = false;
+    if(s.length () > 2) {
+        const char* c = s.c_str ();
+        if(c[0] == '-')
+            c++;
+        if(c[0] == '0' && (c[1] == 'x' || c[1] == 'X'))
+            isHex = true;
+    }
+    if(isHex) {
+        return strtoll (s.c_str (), 0, 16);
+    } else {
+        return strtoll (s.c_str (), 0, 10);
+    }
 }
 
 

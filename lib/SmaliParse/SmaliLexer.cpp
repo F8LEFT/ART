@@ -2105,10 +2105,10 @@ static yyconst flex_int16_t yy_chk[4298] =
 //===----------------------------------------------------------------------===//
 //
 // The file defines a lexer for smali language. Please use
-// flex++ -o SmaliLexer.cpp SmaliLexer.ll
+// flex -o SmaliLexer.cpp SmaliLexer.ll
 // to generate lex source file
 // or
-// flex++ -s -o SmaliLexer.cpp SmaliLexer.ll
+// flex -s -o SmaliLexer.cpp SmaliLexer.ll
 // to debug
 // some defination is copied from Apktool
 // see https://github.com/iBotPeaches/Apktool
@@ -2125,7 +2125,7 @@ static yyconst flex_int16_t yy_chk[4298] =
 	using namespace Analysis;
 
 
-	#define YY_USER_ACTION acceptToken(yytext, yyleng);
+	#define MATCHT acceptToken(yytext, yyleng)
     #define LOCATION Analysis::location(YY_NULL, line(), column())
     #define yyterminate() SmaliParser::make_END(LOCATION);
     #define makeToken(x) SmaliParser::make_##x(LOCATION)
@@ -2335,254 +2335,255 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 106 "SmaliLexer.ll"
-{ return makeToken(DOTDOT); }
+{ MATCHT; return makeToken(DOTDOT); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 107 "SmaliLexer.ll"
-{ return makeToken(ARROW); }
+{ MATCHT; return makeToken(ARROW); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 108 "SmaliLexer.ll"
-{ return makeToken(EQUAL); }
+{ MATCHT; return makeToken(EQUAL); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 109 "SmaliLexer.ll"
-{ return makeToken(COLON); }
+{ MATCHT; return makeToken(COLON); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 110 "SmaliLexer.ll"
-{ return makeToken(COMMA); }
+{ MATCHT; return makeToken(COMMA); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 111 "SmaliLexer.ll"
-{ return makeToken(OPEN_BRACE); }
+{ MATCHT; return makeToken(OPEN_BRACE); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 112 "SmaliLexer.ll"
-{ return makeToken(CLOSE_BRACE); }
+{ MATCHT; return makeToken(CLOSE_BRACE); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 113 "SmaliLexer.ll"
-{ return makeToken(OPEN_PAREN); }
+{ MATCHT; return makeToken(OPEN_PAREN); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 114 "SmaliLexer.ll"
-{ return makeToken(CLOSE_PAREN); }
+{ MATCHT; return makeToken(CLOSE_PAREN); }
 	YY_BREAK
 /*Directives*/
 case 10:
 YY_RULE_SETUP
 #line 118 "SmaliLexer.ll"
-{ return makeToken(CLASS_DIRECTIVE); }
+{ MATCHT; return makeToken(CLASS_DIRECTIVE); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 119 "SmaliLexer.ll"
-{ return makeToken(SUPER_DIRECTIVE); }
+{ MATCHT; return makeToken(SUPER_DIRECTIVE); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 120 "SmaliLexer.ll"
-{ return makeToken(IMPLEMENTS_DIRECTIVE); }
+{ MATCHT; return makeToken(IMPLEMENTS_DIRECTIVE); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 121 "SmaliLexer.ll"
-{ return makeToken(SOURCE_DIRECTIVE); }
+{ MATCHT; return makeToken(SOURCE_DIRECTIVE); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 122 "SmaliLexer.ll"
-{ return makeToken(FIELD_DIRECTIVE); }
+{ MATCHT; return makeToken(FIELD_DIRECTIVE); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 123 "SmaliLexer.ll"
-{ return makeToken(END_FIELD_DIRECTIVE); }
+{ MATCHT; return makeToken(END_FIELD_DIRECTIVE); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 124 "SmaliLexer.ll"
-{ return makeToken(SUBANNOTATION_DIRECTIVE); }
+{ MATCHT; return makeToken(SUBANNOTATION_DIRECTIVE); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 125 "SmaliLexer.ll"
-{ return makeToken(END_SUBANNOTATION_DIRECTIVE); }
+{ MATCHT; return makeToken(END_SUBANNOTATION_DIRECTIVE); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 126 "SmaliLexer.ll"
-{ return makeToken(ANNOTATION_DIRECTIVE); }
+{ MATCHT; return makeToken(ANNOTATION_DIRECTIVE); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 127 "SmaliLexer.ll"
-{ return makeToken(END_ANNOTATION_DIRECTIVE); }
+{ MATCHT; return makeToken(END_ANNOTATION_DIRECTIVE); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 128 "SmaliLexer.ll"
-{ return makeToken(ENUM_DIRECTIVE); }
+{ MATCHT; return makeToken(ENUM_DIRECTIVE); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 129 "SmaliLexer.ll"
-{ return makeToken(METHOD_DIRECTIVE); }
+{ MATCHT; return makeToken(METHOD_DIRECTIVE); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 130 "SmaliLexer.ll"
-{ return makeToken(END_METHOD_DIRECTIVE); }
+{ MATCHT; return makeToken(END_METHOD_DIRECTIVE); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 131 "SmaliLexer.ll"
-{ return makeToken(REGISTERS_DIRECTIVE); }
+{ MATCHT; return makeToken(REGISTERS_DIRECTIVE); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 132 "SmaliLexer.ll"
-{ return makeToken(LOCALS_DIRECTIVE); }
+{ MATCHT; return makeToken(LOCALS_DIRECTIVE); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 133 "SmaliLexer.ll"
-{ return makeToken(ARRAY_DATA_DIRECTIVE); }
+{ MATCHT; return makeToken(ARRAY_DATA_DIRECTIVE); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 134 "SmaliLexer.ll"
-{ return makeToken(END_ARRAY_DATA_DIRECTIVE); }
+{ MATCHT; return makeToken(END_ARRAY_DATA_DIRECTIVE); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 135 "SmaliLexer.ll"
-{ return makeToken(PACKED_SWITCH_DIRECTIVE); }
+{ MATCHT; return makeToken(PACKED_SWITCH_DIRECTIVE); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 136 "SmaliLexer.ll"
-{ return makeToken(END_PACKED_SWITCH_DIRECTIVE); }
+{ MATCHT; return makeToken(END_PACKED_SWITCH_DIRECTIVE); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 137 "SmaliLexer.ll"
-{ return makeToken(SPARSE_SWITCH_DIRECTIVE); }
+{ MATCHT; return makeToken(SPARSE_SWITCH_DIRECTIVE); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 138 "SmaliLexer.ll"
-{ return makeToken(END_SPARSE_SWITCH_DIRECTIVE); }
+{ MATCHT; return makeToken(END_SPARSE_SWITCH_DIRECTIVE); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 139 "SmaliLexer.ll"
-{ return makeToken(CATCH_DIRECTIVE); }
+{ MATCHT; return makeToken(CATCH_DIRECTIVE); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 140 "SmaliLexer.ll"
-{ return makeToken(CATCHALL_DIRECTIVE); }
+{ MATCHT; return makeToken(CATCHALL_DIRECTIVE); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 141 "SmaliLexer.ll"
-{ return makeToken(LINE_DIRECTIVE); }
+{ MATCHT; return makeToken(LINE_DIRECTIVE); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 142 "SmaliLexer.ll"
-{ return makeToken(PARAMETER_DIRECTIVE); }
+{ MATCHT; return makeToken(PARAMETER_DIRECTIVE); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 143 "SmaliLexer.ll"
-{ return makeToken(END_PARAMETER_DIRECTIVE); }
+{ MATCHT; return makeToken(END_PARAMETER_DIRECTIVE); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 144 "SmaliLexer.ll"
-{ return makeToken(LOCAL_DIRECTIVE); }
+{ MATCHT; return makeToken(LOCAL_DIRECTIVE); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 145 "SmaliLexer.ll"
-{ return makeToken(END_LOCAL_DIRECTIVE); }
+{ MATCHT; return makeToken(END_LOCAL_DIRECTIVE); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 146 "SmaliLexer.ll"
-{ return makeToken(RESTART_LOCAL_DIRECTIVE); }
+{ MATCHT; return makeToken(RESTART_LOCAL_DIRECTIVE); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 147 "SmaliLexer.ll"
-{ return makeToken(PROLOGUE_DIRECTIVE); }
+{ MATCHT; return makeToken(PROLOGUE_DIRECTIVE); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 148 "SmaliLexer.ll"
-{ return makeToken(EPILOGUE_DIRECTIVE); }
+{ MATCHT; return makeToken(EPILOGUE_DIRECTIVE); }
 	YY_BREAK
 /*Literals*/
 case 41:
 YY_RULE_SETUP
 #line 151 "SmaliLexer.ll"
-{ return makeTokenStr(POSITIVE_INTEGER_LITERAL); }
+{ MATCHT; return makeTokenStr(POSITIVE_INTEGER_LITERAL); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 152 "SmaliLexer.ll"
-{ return makeTokenStr(NEGATIVE_INTEGER_LITERAL); }
+{ MATCHT; return makeTokenStr(NEGATIVE_INTEGER_LITERAL); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 153 "SmaliLexer.ll"
-{ return makeTokenStr(LONG_LITERAL); }
+{ MATCHT; return makeTokenStr(LONG_LITERAL); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 154 "SmaliLexer.ll"
-{ return makeTokenStr(SHORT_LITERAL); }
+{ MATCHT; return makeTokenStr(SHORT_LITERAL); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 155 "SmaliLexer.ll"
-{ return makeTokenStr(BYTE_LITERAL); }
+{ MATCHT; return makeTokenStr(BYTE_LITERAL); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 157 "SmaliLexer.ll"
-{ return makeTokenStr(FLOAT_LITERAL_OR_ID); }
+{ MATCHT; return makeTokenStr(FLOAT_LITERAL_OR_ID); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 158 "SmaliLexer.ll"
-{ return makeTokenStr(DOUBLE_LITERAL_OR_ID); }
+{ MATCHT; return makeTokenStr(DOUBLE_LITERAL_OR_ID); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 159 "SmaliLexer.ll"
-{ return makeTokenStr(FLOAT_LITERAL); }
+{ MATCHT; return makeTokenStr(FLOAT_LITERAL); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 160 "SmaliLexer.ll"
-{ return makeTokenStr(DOUBLE_LITERAL); }
+{ MATCHT; return makeTokenStr(DOUBLE_LITERAL); }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 162 "SmaliLexer.ll"
 {
+     MATCHT;
      if (yytext[0] == 'y')
          return makeTokenI(BOOL_LITERAL, 1);
      else
@@ -2590,112 +2591,113 @@ YY_RULE_SETUP
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 168 "SmaliLexer.ll"
-{ return makeToken(NULL_LITERAL); }
+#line 169 "SmaliLexer.ll"
+{ MATCHT; return makeToken(NULL_LITERAL); }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 170 "SmaliLexer.ll"
+#line 171 "SmaliLexer.ll"
 { beginStringOrChar(STRING); sb.push_back('"'); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 172 "SmaliLexer.ll"
+#line 173 "SmaliLexer.ll"
 { beginStringOrChar(CHAR); sb.push_back('\''); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 175 "SmaliLexer.ll"
-{ return makeTokenStr(PARAM_LIST_OR_ID_PRIMITIVE_TYPE); }
+#line 176 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(PARAM_LIST_OR_ID_PRIMITIVE_TYPE); }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 176 "SmaliLexer.ll"
-{ mColumn -= yyleng; yyless(0); BEGIN(INITIAL); }
+#line 177 "SmaliLexer.ll"
+{ yyless(0); BEGIN(INITIAL); }
 	YY_BREAK
 case YY_STATE_EOF(PARAM_LIST_OR_ID):
-#line 177 "SmaliLexer.ll"
+#line 178 "SmaliLexer.ll"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 179 "SmaliLexer.ll"
-{ return makeTokenStr(PRIMITIVE_TYPE); }
+#line 180 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(PRIMITIVE_TYPE); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 180 "SmaliLexer.ll"
-{ return makeTokenStr(CLASS_DESCRIPTOR); }
+#line 181 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(CLASS_DESCRIPTOR); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 181 "SmaliLexer.ll"
-{ return makeTokenStr(ARRAY_TYPE_PREFIX); }
+#line 182 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(ARRAY_TYPE_PREFIX); }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 182 "SmaliLexer.ll"
-{ mColumn -= yyleng; yyless(0); BEGIN(INITIAL);}
+#line 183 "SmaliLexer.ll"
+{ yyless(0); BEGIN(INITIAL);}
 	YY_BREAK
 case YY_STATE_EOF(PARAM_LIST):
-#line 183 "SmaliLexer.ll"
+#line 184 "SmaliLexer.ll"
 { BEGIN(INITIAL);}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 186 "SmaliLexer.ll"
+#line 187 "SmaliLexer.ll"
 {
         sb.push_back('"');
+        acceptToken(sb.c_str(), sb.length());
         return endStringOrChar(SmaliParser::token::TOKEN_STRING_LITERAL); }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 190 "SmaliLexer.ll"
+#line 192 "SmaliLexer.ll"
 { sb.append(yytext, yyleng); }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 191 "SmaliLexer.ll"
+#line 193 "SmaliLexer.ll"
 { sb.push_back('\b'); }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 192 "SmaliLexer.ll"
+#line 194 "SmaliLexer.ll"
 { sb.push_back('\t'); }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 193 "SmaliLexer.ll"
+#line 195 "SmaliLexer.ll"
 { sb.push_back('\n'); }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 194 "SmaliLexer.ll"
+#line 196 "SmaliLexer.ll"
 { sb.push_back('\f'); }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 195 "SmaliLexer.ll"
+#line 197 "SmaliLexer.ll"
 { sb.push_back('\r'); }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 196 "SmaliLexer.ll"
+#line 198 "SmaliLexer.ll"
 { sb.push_back('\''); }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 197 "SmaliLexer.ll"
+#line 199 "SmaliLexer.ll"
 { sb.push_back('"'); }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 198 "SmaliLexer.ll"
+#line 200 "SmaliLexer.ll"
 { sb.push_back('\\'); }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 199 "SmaliLexer.ll"
+#line 201 "SmaliLexer.ll"
 {
         auto i = strtol(yytext+2, 0, 16);
         sb.append((char*)&i, 2);
@@ -2703,7 +2705,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 204 "SmaliLexer.ll"
+#line 206 "SmaliLexer.ll"
 {
         sb.append(yytext, yyleng);
     }
@@ -2711,7 +2713,7 @@ YY_RULE_SETUP
 case 72:
 /* rule 72 can match eol */
 YY_RULE_SETUP
-#line 208 "SmaliLexer.ll"
+#line 210 "SmaliLexer.ll"
 {
         sb.append(yytext, yyleng);
     }
@@ -2719,73 +2721,80 @@ YY_RULE_SETUP
 case 73:
 /* rule 73 can match eol */
 YY_RULE_SETUP
-#line 212 "SmaliLexer.ll"
-{ return makeTokenStr(ERROR); }
+#line 214 "SmaliLexer.ll"
+{
+                BEGIN(INITIAL);
+                acceptToken(sb.c_str(), sb.length());
+                return SmaliParser::make_ERROR(sb, LOCATION); }
 	YY_BREAK
 case YY_STATE_EOF(STRING):
-#line 213 "SmaliLexer.ll"
-{ return makeTokenStr(ERROR); }
+#line 218 "SmaliLexer.ll"
+{
+             BEGIN(INITIAL);
+             acceptToken(sb.c_str(), sb.length());
+             return SmaliParser::make_ERROR(sb, LOCATION); }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 217 "SmaliLexer.ll"
+#line 225 "SmaliLexer.ll"
 {
         sb.push_back('\'');
         if (sb.length() != 3 ) {
-            return makeTokenStr(ERROR);
+            acceptToken(sb.c_str(), sb.length());
+            return SmaliParser::make_ERROR(sb, LOCATION);
         }
-
+        acceptToken(sb.c_str(), sb.length());
         return endStringOrChar(SmaliParser::token::TOKEN_CHAR_LITERAL);
     }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 226 "SmaliLexer.ll"
+#line 235 "SmaliLexer.ll"
 { sb.append(yytext, yyleng); }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 227 "SmaliLexer.ll"
+#line 236 "SmaliLexer.ll"
 { sb.push_back('\b'); }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 228 "SmaliLexer.ll"
+#line 237 "SmaliLexer.ll"
 { sb.push_back('\t'); }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 229 "SmaliLexer.ll"
+#line 238 "SmaliLexer.ll"
 { sb.push_back('\n'); }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 230 "SmaliLexer.ll"
+#line 239 "SmaliLexer.ll"
 { sb.push_back('\f'); }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 231 "SmaliLexer.ll"
+#line 240 "SmaliLexer.ll"
 { sb.push_back('\r'); }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 232 "SmaliLexer.ll"
+#line 241 "SmaliLexer.ll"
 { sb.push_back('\''); }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 233 "SmaliLexer.ll"
+#line 242 "SmaliLexer.ll"
 { sb.push_back('"'); }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 234 "SmaliLexer.ll"
+#line 243 "SmaliLexer.ll"
 { sb.push_back('\\'); }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 235 "SmaliLexer.ll"
+#line 244 "SmaliLexer.ll"
 {
         auto i = strtol(yytext+2, 0, 16);
         sb.append((char*)&i, 2);
@@ -2793,7 +2802,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 240 "SmaliLexer.ll"
+#line 249 "SmaliLexer.ll"
 {
         sb.append(yytext, yyleng);
     }
@@ -2801,7 +2810,7 @@ YY_RULE_SETUP
 case 86:
 /* rule 86 can match eol */
 YY_RULE_SETUP
-#line 244 "SmaliLexer.ll"
+#line 253 "SmaliLexer.ll"
 {
         sb.append(yytext, yyleng);
     }
@@ -2809,1580 +2818,1584 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 248 "SmaliLexer.ll"
-{ return makeTokenStr(ERROR); }
+#line 257 "SmaliLexer.ll"
+{ BEGIN(INITIAL);
+            acceptToken(sb.c_str(), sb.length());
+            return SmaliParser::make_ERROR(sb, LOCATION); }
 	YY_BREAK
 case YY_STATE_EOF(CHAR):
-#line 249 "SmaliLexer.ll"
-{ return makeTokenStr(ERROR); }
+#line 260 "SmaliLexer.ll"
+{ BEGIN(INITIAL);
+            acceptToken(sb.c_str(), sb.length());
+            return SmaliParser::make_ERROR(sb, LOCATION); }
 	YY_BREAK
 /*Misc*/
 case 88:
 YY_RULE_SETUP
-#line 253 "SmaliLexer.ll"
+#line 266 "SmaliLexer.ll"
 {
         int number = strtoull(yytext + 1, 0, 10);
         if (yytext[0] == 'p' || yytext[0] == 'P') {
             number |= 0x100;
         }
-        return makeTokenI(REGISTER, number);
+        MATCHT; return makeTokenI(REGISTER, number);
     }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 261 "SmaliLexer.ll"
+#line 274 "SmaliLexer.ll"
 {
-        return makeTokenStr(ANNOTATION_VISIBILITY);
+        MATCHT; return makeTokenStr(ANNOTATION_VISIBILITY);
     }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 265 "SmaliLexer.ll"
+#line 278 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_PUBLIC);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_PUBLIC);}
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 267 "SmaliLexer.ll"
+#line 280 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_PRIVATE);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_PRIVATE);}
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 269 "SmaliLexer.ll"
+#line 282 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_PROTECTED);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_PROTECTED);}
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 271 "SmaliLexer.ll"
+#line 284 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_STATIC);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_STATIC);}
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 273 "SmaliLexer.ll"
+#line 286 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_FINAL);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_FINAL);}
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 275 "SmaliLexer.ll"
+#line 288 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_SYNCHRONIZED);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_SYNCHRONIZED);}
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 277 "SmaliLexer.ll"
+#line 290 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_SUPER);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_SUPER);}
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 279 "SmaliLexer.ll"
+#line 292 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_VOLATILE);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_VOLATILE);}
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 281 "SmaliLexer.ll"
+#line 294 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_BRIDGE);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_BRIDGE);}
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 283 "SmaliLexer.ll"
+#line 296 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_TRANSIENT);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_TRANSIENT);}
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 285 "SmaliLexer.ll"
+#line 298 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_VARARGS);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_VARARGS);}
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 287 "SmaliLexer.ll"
+#line 300 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_NATIVE);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_NATIVE);}
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 289 "SmaliLexer.ll"
+#line 302 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_INTERFACE);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_INTERFACE);}
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 291 "SmaliLexer.ll"
+#line 304 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_ABSTRACT);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_ABSTRACT);}
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 293 "SmaliLexer.ll"
+#line 306 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_STRICT);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_STRICT);}
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 295 "SmaliLexer.ll"
+#line 308 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_SYNTHETIC);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_SYNTHETIC);}
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 297 "SmaliLexer.ll"
+#line 310 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_ANNOTATION);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_ANNOTATION);}
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 299 "SmaliLexer.ll"
+#line 312 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_ENUM);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_ENUM);}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 301 "SmaliLexer.ll"
+#line 314 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_CONSTRUCTOR);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_CONSTRUCTOR);}
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 303 "SmaliLexer.ll"
+#line 316 "SmaliLexer.ll"
 {
-        return makeTokenI(FLAG, ACC_FLAGS::ACC_DECLARED_SYNCHRONIZED);}
+        MATCHT; return makeTokenI(FLAG, ACC_FLAGS::ACC_DECLARED_SYNCHRONIZED);}
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 306 "SmaliLexer.ll"
+#line 319 "SmaliLexer.ll"
 {
-    return makeTokenStr(VERIFICATION_ERROR_TYPE);
+    MATCHT; return makeTokenStr(VERIFICATION_ERROR_TYPE);
     }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 310 "SmaliLexer.ll"
-{ return makeTokenStr(INLINE_INDEX); }
+#line 323 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(INLINE_INDEX); }
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 311 "SmaliLexer.ll"
-{ return makeTokenStr(VTABLE_INDEX); }
+#line 324 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(VTABLE_INDEX); }
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 312 "SmaliLexer.ll"
-{ return makeTokenStr(FIELD_OFFSET); }
+#line 325 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(FIELD_OFFSET); }
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 314 "SmaliLexer.ll"
-{ return makeTokenStr(LINE_COMMENT); }
+#line 327 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(LINE_COMMENT); }
 	YY_BREAK
 /*      instruction keyword     */
 case 115:
 YY_RULE_SETUP
-#line 317 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NOP(LOCATION);}
+#line 330 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NOP);}
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 318 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE(LOCATION);}
+#line 331 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE);}
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 319 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_FROM16(LOCATION);}
+#line 332 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_FROM16);}
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 320 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_16(LOCATION);}
+#line 333 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_16);}
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 321 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_WIDE(LOCATION);}
+#line 334 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_WIDE);}
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 322 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_WIDE_FROM16(LOCATION);}
+#line 335 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_WIDE_FROM16);}
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 323 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_WIDE_16(LOCATION);}
+#line 336 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_WIDE_16);}
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 324 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_OBJECT(LOCATION);}
+#line 337 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_OBJECT);}
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 325 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_OBJECT_FROM16(LOCATION);}
+#line 338 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_OBJECT_FROM16);}
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 326 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_OBJECT_16(LOCATION);}
+#line 339 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_OBJECT_16);}
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 327 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_RESULT(LOCATION);}
+#line 340 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_RESULT);}
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 328 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_RESULT_WIDE(LOCATION);}
+#line 341 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_RESULT_WIDE);}
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 329 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_RESULT_OBJECT(LOCATION);}
+#line 342 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_RESULT_OBJECT);}
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 330 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MOVE_EXCEPTION(LOCATION);}
+#line 343 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MOVE_EXCEPTION);}
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 331 "SmaliLexer.ll"
-{return SmaliParser::make_OP_RETURN_VOID(LOCATION);}
+#line 344 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_RETURN_VOID);}
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 332 "SmaliLexer.ll"
-{return SmaliParser::make_OP_RETURN(LOCATION);}
+#line 345 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_RETURN);}
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 333 "SmaliLexer.ll"
-{return SmaliParser::make_OP_RETURN_WIDE(LOCATION);}
+#line 346 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_RETURN_WIDE);}
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 334 "SmaliLexer.ll"
-{return SmaliParser::make_OP_RETURN_OBJECT(LOCATION);}
+#line 347 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_RETURN_OBJECT);}
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 335 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_4(LOCATION);}
+#line 348 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_4);}
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 336 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_16(LOCATION);}
+#line 349 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_16);}
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 337 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST(LOCATION);}
+#line 350 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST);}
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 338 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_HIGH16(LOCATION);}
+#line 351 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_HIGH16);}
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 339 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_WIDE_16(LOCATION);}
+#line 352 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_WIDE_16);}
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 340 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_WIDE_32(LOCATION);}
+#line 353 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_WIDE_32);}
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 341 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_WIDE(LOCATION);}
+#line 354 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_WIDE);}
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 342 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_WIDE_HIGH16(LOCATION);}
+#line 355 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_WIDE_HIGH16);}
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 343 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_STRING(LOCATION);}
+#line 356 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_STRING);}
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 344 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_STRING_JUMBO(LOCATION);}
+#line 357 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_STRING_JUMBO);}
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 345 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CONST_CLASS(LOCATION);}
+#line 358 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CONST_CLASS);}
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 346 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MONITOR_ENTER(LOCATION);}
+#line 359 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MONITOR_ENTER);}
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 347 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MONITOR_EXIT(LOCATION);}
+#line 360 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MONITOR_EXIT);}
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 348 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CHECK_CAST(LOCATION);}
+#line 361 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CHECK_CAST);}
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 349 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INSTANCE_OF(LOCATION);}
+#line 362 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INSTANCE_OF);}
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 350 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ARRAY_LENGTH(LOCATION);}
+#line 363 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ARRAY_LENGTH);}
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 351 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NEW_INSTANCE(LOCATION);}
+#line 364 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NEW_INSTANCE);}
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 352 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NEW_ARRAY(LOCATION);}
+#line 365 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NEW_ARRAY);}
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 353 "SmaliLexer.ll"
-{return SmaliParser::make_OP_FILLED_NEW_ARRAY(LOCATION);}
+#line 366 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_FILLED_NEW_ARRAY);}
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 354 "SmaliLexer.ll"
+#line 367 "SmaliLexer.ll"
 {
-                    return SmaliParser::make_OP_FILLED_NEW_ARRAY_RANGE(LOCATION);}
+                    MATCHT; return makeToken(OP_FILLED_NEW_ARRAY_RANGE);}
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 356 "SmaliLexer.ll"
-{return SmaliParser::make_OP_FILL_ARRAY_DATA(LOCATION);}
+#line 369 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_FILL_ARRAY_DATA);}
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 357 "SmaliLexer.ll"
-{return SmaliParser::make_OP_THROW(LOCATION);}
+#line 370 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_THROW);}
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 358 "SmaliLexer.ll"
-{return SmaliParser::make_OP_GOTO(LOCATION);}
+#line 371 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_GOTO);}
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 359 "SmaliLexer.ll"
-{return SmaliParser::make_OP_GOTO_16(LOCATION);}
+#line 372 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_GOTO_16);}
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 360 "SmaliLexer.ll"
-{return SmaliParser::make_OP_GOTO_32(LOCATION);}
+#line 373 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_GOTO_32);}
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 361 "SmaliLexer.ll"
-{return SmaliParser::make_OP_PACKED_SWITCH(LOCATION);}
+#line 374 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_PACKED_SWITCH);}
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 362 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPARSE_SWITCH(LOCATION);}
+#line 375 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPARSE_SWITCH);}
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 363 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CMPL_FLOAT(LOCATION);}
+#line 376 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CMPL_FLOAT);}
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 364 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CMPG_FLOAT(LOCATION);}
+#line 377 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CMPG_FLOAT);}
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 365 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CMPL_DOUBLE(LOCATION);}
+#line 378 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CMPL_DOUBLE);}
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 366 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CMPG_DOUBLE(LOCATION);}
+#line 379 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CMPG_DOUBLE);}
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 367 "SmaliLexer.ll"
-{return SmaliParser::make_OP_CMP_LONG(LOCATION);}
+#line 380 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_CMP_LONG);}
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 368 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_EQ(LOCATION);}
+#line 381 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_EQ);}
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 369 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_NE(LOCATION);}
+#line 382 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_NE);}
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 370 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_LT(LOCATION);}
+#line 383 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_LT);}
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 371 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_GE(LOCATION);}
+#line 384 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_GE);}
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 372 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_GT(LOCATION);}
+#line 385 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_GT);}
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 373 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_LE(LOCATION);}
+#line 386 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_LE);}
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 374 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_EQZ(LOCATION);}
+#line 387 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_EQZ);}
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 375 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_NEZ(LOCATION);}
+#line 388 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_NEZ);}
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 376 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_LTZ(LOCATION);}
+#line 389 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_LTZ);}
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 377 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_GEZ(LOCATION);}
+#line 390 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_GEZ);}
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 378 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_GTZ(LOCATION);}
+#line 391 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_GTZ);}
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 379 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IF_LEZ(LOCATION);}
+#line 392 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IF_LEZ);}
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 380 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_3E(LOCATION);}
+#line 393 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_3E);}
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 381 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_3F(LOCATION);}
+#line 394 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_3F);}
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 382 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_40(LOCATION);}
+#line 395 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_40);}
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 383 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_41(LOCATION);}
+#line 396 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_41);}
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 384 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_42(LOCATION);}
+#line 397 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_42);}
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 385 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_43(LOCATION);}
+#line 398 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_43);}
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 386 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AGET(LOCATION);}
+#line 399 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AGET);}
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 387 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AGET_WIDE(LOCATION);}
+#line 400 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AGET_WIDE);}
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 388 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AGET_OBJECT(LOCATION);}
+#line 401 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AGET_OBJECT);}
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 389 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AGET_BOOLEAN(LOCATION);}
+#line 402 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AGET_BOOLEAN);}
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 390 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AGET_BYTE(LOCATION);}
+#line 403 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AGET_BYTE);}
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 391 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AGET_CHAR(LOCATION);}
+#line 404 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AGET_CHAR);}
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 392 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AGET_SHORT(LOCATION);}
+#line 405 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AGET_SHORT);}
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 393 "SmaliLexer.ll"
-{return SmaliParser::make_OP_APUT(LOCATION);}
+#line 406 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_APUT);}
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 394 "SmaliLexer.ll"
-{return SmaliParser::make_OP_APUT_WIDE(LOCATION);}
+#line 407 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_APUT_WIDE);}
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 395 "SmaliLexer.ll"
-{return SmaliParser::make_OP_APUT_OBJECT(LOCATION);}
+#line 408 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_APUT_OBJECT);}
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 396 "SmaliLexer.ll"
-{return SmaliParser::make_OP_APUT_BOOLEAN(LOCATION);}
+#line 409 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_APUT_BOOLEAN);}
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 397 "SmaliLexer.ll"
-{return SmaliParser::make_OP_APUT_BYTE(LOCATION);}
+#line 410 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_APUT_BYTE);}
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 398 "SmaliLexer.ll"
-{return SmaliParser::make_OP_APUT_CHAR(LOCATION);}
+#line 411 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_APUT_CHAR);}
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 399 "SmaliLexer.ll"
-{return SmaliParser::make_OP_APUT_SHORT(LOCATION);}
+#line 412 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_APUT_SHORT);}
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 400 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET(LOCATION);}
+#line 413 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET);}
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 401 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_WIDE(LOCATION);}
+#line 414 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_WIDE);}
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 402 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_OBJECT(LOCATION);}
+#line 415 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_OBJECT);}
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 403 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_BOOLEAN(LOCATION);}
+#line 416 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_BOOLEAN);}
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 404 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_BYTE(LOCATION);}
+#line 417 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_BYTE);}
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 405 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_CHAR(LOCATION);}
+#line 418 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_CHAR);}
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 406 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_SHORT(LOCATION);}
+#line 419 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_SHORT);}
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 407 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT(LOCATION);}
+#line 420 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT);}
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 408 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_WIDE(LOCATION);}
+#line 421 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_WIDE);}
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 409 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_OBJECT(LOCATION);}
+#line 422 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_OBJECT);}
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 410 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_BOOLEAN(LOCATION);}
+#line 423 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_BOOLEAN);}
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 411 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_BYTE(LOCATION);}
+#line 424 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_BYTE);}
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 412 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_CHAR(LOCATION);}
+#line 425 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_CHAR);}
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 413 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_SHORT(LOCATION);}
+#line 426 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_SHORT);}
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 414 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET(LOCATION);}
+#line 427 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET);}
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 415 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET_WIDE(LOCATION);}
+#line 428 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET_WIDE);}
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 416 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET_OBJECT(LOCATION);}
+#line 429 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET_OBJECT);}
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 417 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET_BOOLEAN(LOCATION);}
+#line 430 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET_BOOLEAN);}
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 418 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET_BYTE(LOCATION);}
+#line 431 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET_BYTE);}
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 419 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET_CHAR(LOCATION);}
+#line 432 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET_CHAR);}
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 420 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET_SHORT(LOCATION);}
+#line 433 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET_SHORT);}
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 421 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT(LOCATION);}
+#line 434 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT);}
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 422 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT_WIDE(LOCATION);}
+#line 435 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT_WIDE);}
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 423 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT_OBJECT(LOCATION);}
+#line 436 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT_OBJECT);}
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 424 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT_BOOLEAN(LOCATION);}
+#line 437 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT_BOOLEAN);}
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 425 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT_BYTE(LOCATION);}
+#line 438 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT_BYTE);}
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 426 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT_CHAR(LOCATION);}
+#line 439 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT_CHAR);}
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 427 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT_SHORT(LOCATION);}
+#line 440 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT_SHORT);}
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-#line 428 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INVOKE_VIRTUAL(LOCATION);}
+#line 441 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INVOKE_VIRTUAL);}
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 429 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INVOKE_SUPER(LOCATION);}
+#line 442 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INVOKE_SUPER);}
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-#line 430 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INVOKE_DIRECT(LOCATION);}
+#line 443 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INVOKE_DIRECT);}
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 431 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INVOKE_STATIC(LOCATION);}
+#line 444 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INVOKE_STATIC);}
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-#line 432 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INVOKE_INTERFACE(LOCATION);}
+#line 445 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INVOKE_INTERFACE);}
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-#line 433 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_73(LOCATION);}
+#line 446 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_73);}
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-#line 434 "SmaliLexer.ll"
+#line 447 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_VIRTUAL_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_VIRTUAL_RANGE);}
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-#line 436 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INVOKE_SUPER_RANGE(LOCATION);}
+#line 449 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INVOKE_SUPER_RANGE);}
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
-#line 437 "SmaliLexer.ll"
+#line 450 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_DIRECT_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_DIRECT_RANGE);}
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
-#line 439 "SmaliLexer.ll"
+#line 452 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_STATIC_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_STATIC_RANGE);}
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-#line 441 "SmaliLexer.ll"
+#line 454 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_INTERFACE_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_INTERFACE_RANGE);}
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
-#line 443 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_79(LOCATION);}
+#line 456 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_79);}
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
-#line 444 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_7A(LOCATION);}
+#line 457 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_7A);}
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 445 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NEG_INT(LOCATION);}
+#line 458 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NEG_INT);}
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 446 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NOT_INT(LOCATION);}
+#line 459 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NOT_INT);}
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-#line 447 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NEG_LONG(LOCATION);}
+#line 460 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NEG_LONG);}
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-#line 448 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NOT_LONG(LOCATION);}
+#line 461 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NOT_LONG);}
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-#line 449 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NEG_FLOAT(LOCATION);}
+#line 462 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NEG_FLOAT);}
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 450 "SmaliLexer.ll"
-{return SmaliParser::make_OP_NEG_DOUBLE(LOCATION);}
+#line 463 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_NEG_DOUBLE);}
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 451 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INT_TO_LONG(LOCATION);}
+#line 464 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INT_TO_LONG);}
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 452 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INT_TO_FLOAT(LOCATION);}
+#line 465 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INT_TO_FLOAT);}
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
-#line 453 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INT_TO_DOUBLE(LOCATION);}
+#line 466 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INT_TO_DOUBLE);}
 	YY_BREAK
 case 247:
 YY_RULE_SETUP
-#line 454 "SmaliLexer.ll"
-{return SmaliParser::make_OP_LONG_TO_INT(LOCATION);}
+#line 467 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_LONG_TO_INT);}
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-#line 455 "SmaliLexer.ll"
-{return SmaliParser::make_OP_LONG_TO_FLOAT(LOCATION);}
+#line 468 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_LONG_TO_FLOAT);}
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 456 "SmaliLexer.ll"
-{return SmaliParser::make_OP_LONG_TO_DOUBLE(LOCATION);}
+#line 469 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_LONG_TO_DOUBLE);}
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 457 "SmaliLexer.ll"
-{return SmaliParser::make_OP_FLOAT_TO_INT(LOCATION);}
+#line 470 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_FLOAT_TO_INT);}
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 458 "SmaliLexer.ll"
-{return SmaliParser::make_OP_FLOAT_TO_LONG(LOCATION);}
+#line 471 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_FLOAT_TO_LONG);}
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 459 "SmaliLexer.ll"
-{return SmaliParser::make_OP_FLOAT_TO_DOUBLE(LOCATION);}
+#line 472 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_FLOAT_TO_DOUBLE);}
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 460 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DOUBLE_TO_INT(LOCATION);}
+#line 473 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DOUBLE_TO_INT);}
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 461 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DOUBLE_TO_LONG(LOCATION);}
+#line 474 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DOUBLE_TO_LONG);}
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 462 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DOUBLE_TO_FLOAT(LOCATION);}
+#line 475 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DOUBLE_TO_FLOAT);}
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 463 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INT_TO_BYTE(LOCATION);}
+#line 476 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INT_TO_BYTE);}
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
-#line 464 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INT_TO_CHAR(LOCATION);}
+#line 477 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INT_TO_CHAR);}
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-#line 465 "SmaliLexer.ll"
-{return SmaliParser::make_OP_INT_TO_SHORT(LOCATION);}
+#line 478 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_INT_TO_SHORT);}
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
-#line 466 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_INT(LOCATION);}
+#line 479 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_INT);}
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-#line 467 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_INT(LOCATION);}
+#line 480 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_INT);}
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 468 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_INT(LOCATION);}
+#line 481 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_INT);}
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
-#line 469 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_INT(LOCATION);}
+#line 482 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_INT);}
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-#line 470 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_INT(LOCATION);}
+#line 483 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_INT);}
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 471 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AND_INT(LOCATION);}
+#line 484 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AND_INT);}
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 472 "SmaliLexer.ll"
-{return SmaliParser::make_OP_OR_INT(LOCATION);}
+#line 485 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_OR_INT);}
 	YY_BREAK
 case 266:
 YY_RULE_SETUP
-#line 473 "SmaliLexer.ll"
-{return SmaliParser::make_OP_XOR_INT(LOCATION);}
+#line 486 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_XOR_INT);}
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
-#line 474 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHL_INT(LOCATION);}
+#line 487 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHL_INT);}
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
-#line 475 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHR_INT(LOCATION);}
+#line 488 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHR_INT);}
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
-#line 476 "SmaliLexer.ll"
-{return SmaliParser::make_OP_USHR_INT(LOCATION);}
+#line 489 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_USHR_INT);}
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
-#line 477 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_LONG(LOCATION);}
+#line 490 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_LONG);}
 	YY_BREAK
 case 271:
 YY_RULE_SETUP
-#line 478 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_LONG(LOCATION);}
+#line 491 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_LONG);}
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 479 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_LONG(LOCATION);}
+#line 492 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_LONG);}
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
-#line 480 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_LONG(LOCATION);}
+#line 493 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_LONG);}
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
-#line 481 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_LONG(LOCATION);}
+#line 494 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_LONG);}
 	YY_BREAK
 case 275:
 YY_RULE_SETUP
-#line 482 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AND_LONG(LOCATION);}
+#line 495 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AND_LONG);}
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 483 "SmaliLexer.ll"
-{return SmaliParser::make_OP_OR_LONG(LOCATION);}
+#line 496 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_OR_LONG);}
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 484 "SmaliLexer.ll"
-{return SmaliParser::make_OP_XOR_LONG(LOCATION);}
+#line 497 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_XOR_LONG);}
 	YY_BREAK
 case 278:
 YY_RULE_SETUP
-#line 485 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHL_LONG(LOCATION);}
+#line 498 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHL_LONG);}
 	YY_BREAK
 case 279:
 YY_RULE_SETUP
-#line 486 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHR_LONG(LOCATION);}
+#line 499 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHR_LONG);}
 	YY_BREAK
 case 280:
 YY_RULE_SETUP
-#line 487 "SmaliLexer.ll"
-{return SmaliParser::make_OP_USHR_LONG(LOCATION);}
+#line 500 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_USHR_LONG);}
 	YY_BREAK
 case 281:
 YY_RULE_SETUP
-#line 488 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_FLOAT(LOCATION);}
+#line 501 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_FLOAT);}
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 489 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_FLOAT(LOCATION);}
+#line 502 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_FLOAT);}
 	YY_BREAK
 case 283:
 YY_RULE_SETUP
-#line 490 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_FLOAT(LOCATION);}
+#line 503 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_FLOAT);}
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 491 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_FLOAT(LOCATION);}
+#line 504 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_FLOAT);}
 	YY_BREAK
 case 285:
 YY_RULE_SETUP
-#line 492 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_FLOAT(LOCATION);}
+#line 505 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_FLOAT);}
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
-#line 493 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_DOUBLE(LOCATION);}
+#line 506 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_DOUBLE);}
 	YY_BREAK
 case 287:
 YY_RULE_SETUP
-#line 494 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_DOUBLE(LOCATION);}
+#line 507 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_DOUBLE);}
 	YY_BREAK
 case 288:
 YY_RULE_SETUP
-#line 495 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_DOUBLE(LOCATION);}
+#line 508 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_DOUBLE);}
 	YY_BREAK
 case 289:
 YY_RULE_SETUP
-#line 496 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_DOUBLE(LOCATION);}
+#line 509 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_DOUBLE);}
 	YY_BREAK
 case 290:
 YY_RULE_SETUP
-#line 497 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_DOUBLE(LOCATION);}
+#line 510 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_DOUBLE);}
 	YY_BREAK
 case 291:
 YY_RULE_SETUP
-#line 498 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_INT_2ADDR(LOCATION);}
+#line 511 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_INT_2ADDR);}
 	YY_BREAK
 case 292:
 YY_RULE_SETUP
-#line 499 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_INT_2ADDR(LOCATION);}
+#line 512 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_INT_2ADDR);}
 	YY_BREAK
 case 293:
 YY_RULE_SETUP
-#line 500 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_INT_2ADDR(LOCATION);}
+#line 513 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_INT_2ADDR);}
 	YY_BREAK
 case 294:
 YY_RULE_SETUP
-#line 501 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_INT_2ADDR(LOCATION);}
+#line 514 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_INT_2ADDR);}
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
-#line 502 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_INT_2ADDR(LOCATION);}
+#line 515 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_INT_2ADDR);}
 	YY_BREAK
 case 296:
 YY_RULE_SETUP
-#line 503 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AND_INT_2ADDR(LOCATION);}
+#line 516 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AND_INT_2ADDR);}
 	YY_BREAK
 case 297:
 YY_RULE_SETUP
-#line 504 "SmaliLexer.ll"
-{return SmaliParser::make_OP_OR_INT_2ADDR(LOCATION);}
+#line 517 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_OR_INT_2ADDR);}
 	YY_BREAK
 case 298:
 YY_RULE_SETUP
-#line 505 "SmaliLexer.ll"
-{return SmaliParser::make_OP_XOR_INT_2ADDR(LOCATION);}
+#line 518 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_XOR_INT_2ADDR);}
 	YY_BREAK
 case 299:
 YY_RULE_SETUP
-#line 506 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHL_INT_2ADDR(LOCATION);}
+#line 519 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHL_INT_2ADDR);}
 	YY_BREAK
 case 300:
 YY_RULE_SETUP
-#line 507 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHR_INT_2ADDR(LOCATION);}
+#line 520 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHR_INT_2ADDR);}
 	YY_BREAK
 case 301:
 YY_RULE_SETUP
-#line 508 "SmaliLexer.ll"
-{return SmaliParser::make_OP_USHR_INT_2ADDR(LOCATION);}
+#line 521 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_USHR_INT_2ADDR);}
 	YY_BREAK
 case 302:
 YY_RULE_SETUP
-#line 509 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_LONG_2ADDR(LOCATION);}
+#line 522 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_LONG_2ADDR);}
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
-#line 510 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_LONG_2ADDR(LOCATION);}
+#line 523 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_LONG_2ADDR);}
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
-#line 511 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_LONG_2ADDR(LOCATION);}
+#line 524 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_LONG_2ADDR);}
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 512 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_LONG_2ADDR(LOCATION);}
+#line 525 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_LONG_2ADDR);}
 	YY_BREAK
 case 306:
 YY_RULE_SETUP
-#line 513 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_LONG_2ADDR(LOCATION);}
+#line 526 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_LONG_2ADDR);}
 	YY_BREAK
 case 307:
 YY_RULE_SETUP
-#line 514 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AND_LONG_2ADDR(LOCATION);}
+#line 527 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AND_LONG_2ADDR);}
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-#line 515 "SmaliLexer.ll"
-{return SmaliParser::make_OP_OR_LONG_2ADDR(LOCATION);}
+#line 528 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_OR_LONG_2ADDR);}
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
-#line 516 "SmaliLexer.ll"
-{return SmaliParser::make_OP_XOR_LONG_2ADDR(LOCATION);}
+#line 529 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_XOR_LONG_2ADDR);}
 	YY_BREAK
 case 310:
 YY_RULE_SETUP
-#line 517 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHL_LONG_2ADDR(LOCATION);}
+#line 530 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHL_LONG_2ADDR);}
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
-#line 518 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHR_LONG_2ADDR(LOCATION);}
+#line 531 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHR_LONG_2ADDR);}
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
-#line 519 "SmaliLexer.ll"
-{return SmaliParser::make_OP_USHR_LONG_2ADDR(LOCATION);}
+#line 532 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_USHR_LONG_2ADDR);}
 	YY_BREAK
 case 313:
 YY_RULE_SETUP
-#line 520 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_FLOAT_2ADDR(LOCATION);}
+#line 533 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_FLOAT_2ADDR);}
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 521 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_FLOAT_2ADDR(LOCATION);}
+#line 534 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_FLOAT_2ADDR);}
 	YY_BREAK
 case 315:
 YY_RULE_SETUP
-#line 522 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_FLOAT_2ADDR(LOCATION);}
+#line 535 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_FLOAT_2ADDR);}
 	YY_BREAK
 case 316:
 YY_RULE_SETUP
-#line 523 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_FLOAT_2ADDR(LOCATION);}
+#line 536 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_FLOAT_2ADDR);}
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
-#line 524 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_FLOAT_2ADDR(LOCATION);}
+#line 537 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_FLOAT_2ADDR);}
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
-#line 525 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_DOUBLE_2ADDR(LOCATION);}
+#line 538 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_DOUBLE_2ADDR);}
 	YY_BREAK
 case 319:
 YY_RULE_SETUP
-#line 526 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SUB_DOUBLE_2ADDR(LOCATION);}
+#line 539 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SUB_DOUBLE_2ADDR);}
 	YY_BREAK
 case 320:
 YY_RULE_SETUP
-#line 527 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_DOUBLE_2ADDR(LOCATION);}
+#line 540 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_DOUBLE_2ADDR);}
 	YY_BREAK
 case 321:
 YY_RULE_SETUP
-#line 528 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_DOUBLE_2ADDR(LOCATION);}
+#line 541 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_DOUBLE_2ADDR);}
 	YY_BREAK
 case 322:
 YY_RULE_SETUP
-#line 529 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_DOUBLE_2ADDR(LOCATION);}
+#line 542 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_DOUBLE_2ADDR);}
 	YY_BREAK
 case 323:
 YY_RULE_SETUP
-#line 530 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_INT_LIT16(LOCATION);}
+#line 543 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_INT_LIT16);}
 	YY_BREAK
 case 324:
 YY_RULE_SETUP
-#line 531 "SmaliLexer.ll"
-{return SmaliParser::make_OP_RSUB_INT(LOCATION);}
+#line 544 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_RSUB_INT);}
 	YY_BREAK
 case 325:
 YY_RULE_SETUP
-#line 532 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_INT_LIT16(LOCATION);}
+#line 545 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_INT_LIT16);}
 	YY_BREAK
 case 326:
 YY_RULE_SETUP
-#line 533 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_INT_LIT16(LOCATION);}
+#line 546 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_INT_LIT16);}
 	YY_BREAK
 case 327:
 YY_RULE_SETUP
-#line 534 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_INT_LIT16(LOCATION);}
+#line 547 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_INT_LIT16);}
 	YY_BREAK
 case 328:
 YY_RULE_SETUP
-#line 535 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AND_INT_LIT16(LOCATION);}
+#line 548 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AND_INT_LIT16);}
 	YY_BREAK
 case 329:
 YY_RULE_SETUP
-#line 536 "SmaliLexer.ll"
-{return SmaliParser::make_OP_OR_INT_LIT16(LOCATION);}
+#line 549 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_OR_INT_LIT16);}
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
-#line 537 "SmaliLexer.ll"
-{return SmaliParser::make_OP_XOR_INT_LIT16(LOCATION);}
+#line 550 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_XOR_INT_LIT16);}
 	YY_BREAK
 case 331:
 YY_RULE_SETUP
-#line 538 "SmaliLexer.ll"
-{return SmaliParser::make_OP_ADD_INT_LIT8(LOCATION);}
+#line 551 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_ADD_INT_LIT8);}
 	YY_BREAK
 case 332:
 YY_RULE_SETUP
-#line 539 "SmaliLexer.ll"
-{return SmaliParser::make_OP_RSUB_INT_LIT8(LOCATION);}
+#line 552 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_RSUB_INT_LIT8);}
 	YY_BREAK
 case 333:
 YY_RULE_SETUP
-#line 540 "SmaliLexer.ll"
-{return SmaliParser::make_OP_MUL_INT_LIT8(LOCATION);}
+#line 553 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_MUL_INT_LIT8);}
 	YY_BREAK
 case 334:
 YY_RULE_SETUP
-#line 541 "SmaliLexer.ll"
-{return SmaliParser::make_OP_DIV_INT_LIT8(LOCATION);}
+#line 554 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_DIV_INT_LIT8);}
 	YY_BREAK
 case 335:
 YY_RULE_SETUP
-#line 542 "SmaliLexer.ll"
-{return SmaliParser::make_OP_REM_INT_LIT8(LOCATION);}
+#line 555 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_REM_INT_LIT8);}
 	YY_BREAK
 case 336:
 YY_RULE_SETUP
-#line 543 "SmaliLexer.ll"
-{return SmaliParser::make_OP_AND_INT_LIT8(LOCATION);}
+#line 556 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_AND_INT_LIT8);}
 	YY_BREAK
 case 337:
 YY_RULE_SETUP
-#line 544 "SmaliLexer.ll"
-{return SmaliParser::make_OP_OR_INT_LIT8(LOCATION);}
+#line 557 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_OR_INT_LIT8);}
 	YY_BREAK
 case 338:
 YY_RULE_SETUP
-#line 545 "SmaliLexer.ll"
-{return SmaliParser::make_OP_XOR_INT_LIT8(LOCATION);}
+#line 558 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_XOR_INT_LIT8);}
 	YY_BREAK
 case 339:
 YY_RULE_SETUP
-#line 546 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHL_INT_LIT8(LOCATION);}
+#line 559 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHL_INT_LIT8);}
 	YY_BREAK
 case 340:
 YY_RULE_SETUP
-#line 547 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SHR_INT_LIT8(LOCATION);}
+#line 560 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SHR_INT_LIT8);}
 	YY_BREAK
 case 341:
 YY_RULE_SETUP
-#line 548 "SmaliLexer.ll"
-{return SmaliParser::make_OP_USHR_INT_LIT8(LOCATION);}
+#line 561 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_USHR_INT_LIT8);}
 	YY_BREAK
 case 342:
 YY_RULE_SETUP
-#line 549 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_VOLATILE(LOCATION);}
+#line 562 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_VOLATILE);}
 	YY_BREAK
 case 343:
 YY_RULE_SETUP
-#line 550 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_VOLATILE(LOCATION);}
+#line 563 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_VOLATILE);}
 	YY_BREAK
 case 344:
 YY_RULE_SETUP
-#line 551 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SGET_VOLATILE(LOCATION);}
+#line 564 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SGET_VOLATILE);}
 	YY_BREAK
 case 345:
 YY_RULE_SETUP
-#line 552 "SmaliLexer.ll"
-{return SmaliParser::make_OP_SPUT_VOLATILE(LOCATION);}
+#line 565 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_SPUT_VOLATILE);}
 	YY_BREAK
 case 346:
 YY_RULE_SETUP
-#line 553 "SmaliLexer.ll"
+#line 566 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_IGET_OBJECT_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_IGET_OBJECT_VOLATILE);}
 	YY_BREAK
 case 347:
 YY_RULE_SETUP
-#line 555 "SmaliLexer.ll"
+#line 568 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_IGET_WIDE_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_IGET_WIDE_VOLATILE);}
 	YY_BREAK
 case 348:
 YY_RULE_SETUP
-#line 557 "SmaliLexer.ll"
+#line 570 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_IPUT_WIDE_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_IPUT_WIDE_VOLATILE);}
 	YY_BREAK
 case 349:
 YY_RULE_SETUP
-#line 559 "SmaliLexer.ll"
+#line 572 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_SGET_WIDE_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_SGET_WIDE_VOLATILE);}
 	YY_BREAK
 case 350:
 YY_RULE_SETUP
-#line 561 "SmaliLexer.ll"
+#line 574 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_SPUT_WIDE_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_SPUT_WIDE_VOLATILE);}
 	YY_BREAK
 case 351:
 YY_RULE_SETUP
-#line 563 "SmaliLexer.ll"
-{return SmaliParser::make_OP_BREAKPOINT(LOCATION);}
+#line 576 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_BREAKPOINT);}
 	YY_BREAK
 case 352:
 YY_RULE_SETUP
-#line 564 "SmaliLexer.ll"
+#line 577 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_THROW_VERIFICATION_ERROR(LOCATION);}
+                        MATCHT; return makeToken(OP_THROW_VERIFICATION_ERROR);}
 	YY_BREAK
 case 353:
 YY_RULE_SETUP
-#line 566 "SmaliLexer.ll"
-{return SmaliParser::make_OP_EXECUTE_INLINE(LOCATION);}
+#line 579 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_EXECUTE_INLINE);}
 	YY_BREAK
 case 354:
 YY_RULE_SETUP
-#line 567 "SmaliLexer.ll"
+#line 580 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_EXECUTE_INLINE_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_EXECUTE_INLINE_RANGE);}
 	YY_BREAK
 case 355:
 YY_RULE_SETUP
-#line 569 "SmaliLexer.ll"
+#line 582 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_OBJECT_INIT_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_OBJECT_INIT_RANGE);}
 	YY_BREAK
 case 356:
 YY_RULE_SETUP
-#line 571 "SmaliLexer.ll"
+#line 584 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_RETURN_VOID_BARRIER(LOCATION);}
+                        MATCHT; return makeToken(OP_RETURN_VOID_BARRIER);}
 	YY_BREAK
 case 357:
 YY_RULE_SETUP
-#line 573 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_QUICK(LOCATION);}
+#line 586 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_QUICK);}
 	YY_BREAK
 case 358:
 YY_RULE_SETUP
-#line 574 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_WIDE_QUICK(LOCATION);}
+#line 587 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_WIDE_QUICK);}
 	YY_BREAK
 case 359:
 YY_RULE_SETUP
-#line 575 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IGET_OBJECT_QUICK(LOCATION);}
+#line 588 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IGET_OBJECT_QUICK);}
 	YY_BREAK
 case 360:
 YY_RULE_SETUP
-#line 576 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_QUICK(LOCATION);}
+#line 589 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_QUICK);}
 	YY_BREAK
 case 361:
 YY_RULE_SETUP
-#line 577 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_WIDE_QUICK(LOCATION);}
+#line 590 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_WIDE_QUICK);}
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 578 "SmaliLexer.ll"
-{return SmaliParser::make_OP_IPUT_OBJECT_QUICK(LOCATION);}
+#line 591 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_IPUT_OBJECT_QUICK);}
 	YY_BREAK
 case 363:
 YY_RULE_SETUP
-#line 579 "SmaliLexer.ll"
+#line 592 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_VIRTUAL_QUICK(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_VIRTUAL_QUICK);}
 	YY_BREAK
 case 364:
 YY_RULE_SETUP
-#line 581 "SmaliLexer.ll"
+#line 594 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_VIRTUAL_QUICK_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_VIRTUAL_QUICK_RANGE);}
 	YY_BREAK
 case 365:
 YY_RULE_SETUP
-#line 583 "SmaliLexer.ll"
+#line 596 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_SUPER_QUICK(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_SUPER_QUICK);}
 	YY_BREAK
 case 366:
 YY_RULE_SETUP
-#line 585 "SmaliLexer.ll"
+#line 598 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_INVOKE_SUPER_QUICK_RANGE(LOCATION);}
+                        MATCHT; return makeToken(OP_INVOKE_SUPER_QUICK_RANGE);}
 	YY_BREAK
 case 367:
 YY_RULE_SETUP
-#line 587 "SmaliLexer.ll"
+#line 600 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_IPUT_OBJECT_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_IPUT_OBJECT_VOLATILE);}
 	YY_BREAK
 case 368:
 YY_RULE_SETUP
-#line 589 "SmaliLexer.ll"
+#line 602 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_SGET_OBJECT_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_SGET_OBJECT_VOLATILE);}
 	YY_BREAK
 case 369:
 YY_RULE_SETUP
-#line 591 "SmaliLexer.ll"
+#line 604 "SmaliLexer.ll"
 {
-                        return SmaliParser::make_OP_SPUT_OBJECT_VOLATILE(LOCATION);}
+                        MATCHT; return makeToken(OP_SPUT_OBJECT_VOLATILE);}
 	YY_BREAK
 case 370:
 YY_RULE_SETUP
-#line 593 "SmaliLexer.ll"
-{return SmaliParser::make_OP_UNUSED_FF(LOCATION);}
+#line 606 "SmaliLexer.ll"
+{MATCHT; return makeToken(OP_UNUSED_FF);}
 	YY_BREAK
 case 371:
 YY_RULE_SETUP
-#line 596 "SmaliLexer.ll"
-{ BEGIN(INITIAL); return makeTokenStr(PRIMITIVE_TYPE); }
+#line 609 "SmaliLexer.ll"
+{ BEGIN(INITIAL); MATCHT; return makeTokenStr(PRIMITIVE_TYPE); }
 	YY_BREAK
 case 372:
 YY_RULE_SETUP
-#line 597 "SmaliLexer.ll"
-{ BEGIN(INITIAL); return makeTokenStr(CLASS_DESCRIPTOR); }
+#line 610 "SmaliLexer.ll"
+{ BEGIN(INITIAL); MATCHT; return makeTokenStr(CLASS_DESCRIPTOR); }
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 598 "SmaliLexer.ll"
-{ mColumn -= yyleng; yyless(0); BEGIN(INITIAL); }
+#line 611 "SmaliLexer.ll"
+{ yyless(0); BEGIN(INITIAL); }
 	YY_BREAK
 case YY_STATE_EOF(ARRAY_DESCRIPTOR):
-#line 599 "SmaliLexer.ll"
+#line 612 "SmaliLexer.ll"
 { BEGIN(INITIAL); }
 	YY_BREAK
 /*Types*/
 case 374:
 YY_RULE_SETUP
-#line 603 "SmaliLexer.ll"
-{ return makeTokenStr(PRIMITIVE_TYPE); }
+#line 616 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(PRIMITIVE_TYPE); }
 	YY_BREAK
 case 375:
 YY_RULE_SETUP
-#line 604 "SmaliLexer.ll"
-{ return makeToken(VOID_TYPE); }
+#line 617 "SmaliLexer.ll"
+{ MATCHT; return makeToken(VOID_TYPE); }
 	YY_BREAK
 case 376:
 YY_RULE_SETUP
-#line 605 "SmaliLexer.ll"
-{ return makeTokenStr(CLASS_DESCRIPTOR); }
+#line 618 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(CLASS_DESCRIPTOR); }
 	YY_BREAK
 /* we have to drop into a separate state so that we don't parse something like */
 /* "[I->" as "[" followed by "I-" as a SIMPLE_NAME */
 case 377:
 YY_RULE_SETUP
-#line 609 "SmaliLexer.ll"
+#line 622 "SmaliLexer.ll"
 {
       BEGIN(ARRAY_DESCRIPTOR);
-      return makeTokenStr(ARRAY_TYPE_PREFIX);
+      MATCHT; return makeTokenStr(ARRAY_TYPE_PREFIX);
     }
 	YY_BREAK
 case 378:
 YY_RULE_SETUP
-#line 614 "SmaliLexer.ll"
+#line 627 "SmaliLexer.ll"
 {
         // go back and re-lex it as a PARAM_LIST_OR_ID
-        mColumn -= yyleng; yyless(0);
+        yyless(0);
         BEGIN(PARAM_LIST_OR_ID);
     }
 	YY_BREAK
 case 379:
 YY_RULE_SETUP
-#line 620 "SmaliLexer.ll"
+#line 633 "SmaliLexer.ll"
 {
         // go back and re-lex it as a PARAM_LIST
-        mColumn -= yyleng; yyless(0);
+        yyless(0);
         BEGIN(PARAM_LIST);
     }
 	YY_BREAK
 case 380:
 YY_RULE_SETUP
-#line 626 "SmaliLexer.ll"
-{ return makeTokenStr(SIMPLE_NAME); }
+#line 639 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(SIMPLE_NAME); }
 	YY_BREAK
 case 381:
 YY_RULE_SETUP
-#line 627 "SmaliLexer.ll"
-{ return makeTokenStr(MEMBER_NAME); }
+#line 640 "SmaliLexer.ll"
+{ MATCHT; return makeTokenStr(MEMBER_NAME); }
 	YY_BREAK
 case 382:
 YY_RULE_SETUP
-#line 630 "SmaliLexer.ll"
-
+#line 643 "SmaliLexer.ll"
+{ MATCHT; }
 	YY_BREAK
 case 383:
 /* rule 383 can match eol */
 YY_RULE_SETUP
-#line 631 "SmaliLexer.ll"
-{ return makeToken(EOL); }
+#line 644 "SmaliLexer.ll"
+{ MATCHT; return makeToken(EOL); }
 	YY_BREAK
 case 384:
 YY_RULE_SETUP
-#line 632 "SmaliLexer.ll"
-{ ;}
+#line 645 "SmaliLexer.ll"
+{ MATCHT; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 633 "SmaliLexer.ll"
+#line 646 "SmaliLexer.ll"
 { return yyterminate(); }
 	YY_BREAK
 case 385:
 YY_RULE_SETUP
-#line 635 "SmaliLexer.ll"
+#line 648 "SmaliLexer.ll"
 ECHO;
 	YY_BREAK
-#line 4385 "SmaliLexer.cpp"
+#line 4398 "SmaliLexer.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -5335,7 +5348,7 @@ void Analysis_free (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 635 "SmaliLexer.ll"
+#line 648 "SmaliLexer.ll"
 
 
 void Analysis::SmaliLexer::yyBegin(int type) {

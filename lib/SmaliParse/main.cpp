@@ -16,13 +16,13 @@
 #include <sstream>
 #include <fstream>
 #include "SmaliParser.hpp"
+#include "Interpreter.h"
 
 using namespace std;
 using namespace Analysis;
 
 int main() {
     string st;
-
     ifstream ifile;
     ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");
 
@@ -47,18 +47,18 @@ int main() {
     }
     ifile.close ();
     // test parser
-//    ifile.open ("/home/f8left/CodeSrc/ART/lib/gui/bin/Projects/app.greyshirts.sslcapture-1/Project/smali/org/spongycastle/crypto/digests/GOST3411Digest.smali");
-//    if(ifile.is_open ()) {
-//        Interpreter interpreter;
-//        SmaliClass sClass;
-//        StringPool sp;
-//        sClass.setStringPool (&sp);
-//        interpreter.switchInputStream (&ifile,&sClass);
-//        interpreter.parse ();
-//        interpreter.analysis ();
-//        cout << "print file tree" << endl;
-//        interpreter.print ();
-//    }
-//    ifile.close ();
+    ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");
+    if(ifile.is_open ()) {
+        Interpreter interpreter;
+        SmaliClass sClass;
+        StringPool sp;
+        sClass.setStringPool (&sp);
+        interpreter.switchInputStream (&ifile,&sClass);
+        interpreter.parse ();
+        interpreter.analysis ();
+        cout << "print file tree" << endl;
+        interpreter.print ();
+    }
+    ifile.close ();
     return 0;
 }

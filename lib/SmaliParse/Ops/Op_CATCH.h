@@ -18,6 +18,7 @@
 
 namespace Analysis {
     /* .catch classtype {:labelstart .. :labelend} :label
+     * .catchall {:labelstart .. :labelend} :label
      * */
 
     class Op_CATCH: public OpCode {
@@ -34,8 +35,19 @@ namespace Analysis {
         }
         std::string toString() {
             std::string rel = ".catch";
-            rel += std::string(" ") + (*mStringPool)[expClass]
-                   + " {:" + (*mStringPool)[tryStart] + " .. :" + (*mStringPool)[tryEnd] + "} :"
+            switch(op) {
+                case OP_CATCH:
+                    rel += std::string(" ") + (*mStringPool)[expClass];
+                    break;
+                case OP_CATCHALL:
+                    rel += "all";
+                    break;
+                default:
+                    break;
+            }
+
+            rel += std::string(" {:") + (*mStringPool)[tryStart]
+                   + " .. :" + (*mStringPool)[tryEnd] + "} :"
                    + (*mStringPool)[catchStart];
             return move(rel);
         }

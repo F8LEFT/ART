@@ -84,8 +84,6 @@ namespace Analysis {
         }
         Analysis::SmaliParser::symbol_type endStringOrChar(int type) {
             yyBegin(0);
-            mCurTokenText = sb;
-            mColumn -= sb.length () - 1;
             switch(type) {
                 case SmaliParser::token::TOKEN_STRING_LITERAL:
                     return SmaliParser::make_STRING_LITERAL (sb, Analysis::location(nullptr, line(), column()));

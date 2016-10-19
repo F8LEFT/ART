@@ -40,7 +40,6 @@
 %code top
 {
     #include <iostream>
-    #include "Lexer.h"
     #include "Parser.hpp"
     #include "location.hh"
     #include "Interpreter.h"

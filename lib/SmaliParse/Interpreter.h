@@ -17,9 +17,9 @@
 
 #include <iostream>
 #include <memory>
-//#include "Parser.hpp"
+#include "SmaliParser.hpp"
 #include "SmaliAst/SmaliClass.h"
-//#include "Lexer.h"
+#include "SmaliLexer.h"
 
 #define DEBUG
 
@@ -45,8 +45,8 @@ namespace Analysis {
          * print AST message
          */
         void print();
-        friend class Lexer;
-        friend class Parser;
+        friend class SmaliLexer;
+        friend class SmaliParser;
 
     private:
         void setClassDefine(int flag,std::string& type);
@@ -65,12 +65,15 @@ namespace Analysis {
         void analysisMethod(SmaliMethod* method);
 
     private:
-        std::shared_ptr<Lexer> mLexer;
-        std::shared_ptr<Parser> mParser;
+        std::shared_ptr<SmaliLexer> mLexer;
+        std::shared_ptr<SmaliParser> mParser;
 
         SmaliClass* mClass;
         SmaliMethod* mCurMethod;
         StringPool* mStringPool;
+
+    private:
+        long long int parseLongInt(std::string s);
     };
 }
 

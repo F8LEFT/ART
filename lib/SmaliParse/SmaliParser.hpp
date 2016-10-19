@@ -313,10 +313,25 @@ namespace  Analysis  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // instruction
+      char dummy1[sizeof(OpCode*)];
+
       // "true|false"
       // "flag"
       // "v(p)x"
-      char dummy1[sizeof(int)];
+      // exp
+      // classdef
+      // superdef
+      // srcdef
+      // fielddef
+      // methoddef
+      // flags
+      // registers
+      char dummy2[sizeof(int)];
+
+      // "integer"
+      // integer
+      char dummy3[sizeof(long long int)];
 
       // "lex error"
       // "Integer"
@@ -341,8 +356,24 @@ namespace  Analysis  {
       // "inline@0x"
       // "vtable@0x"
       // "field@0x"
-      // "#xxx"
-      char dummy2[sizeof(std::string)];
+      // "# comments"
+      // "classtype"
+      // "[classtype"
+      // "field or class name"
+      // "integer-str"
+      // namestring
+      // classtype
+      // classtypeOrArray
+      // comment
+      // jmplabel
+      // INTEGER_LITERAL
+      char dummy4[sizeof(std::string)];
+
+      // regs
+      char dummy5[sizeof(std::vector<int>)];
+
+      // args
+      char dummy6[sizeof(std::vector<std::string>)];
 };
 
     /// Symbol semantic values.
@@ -416,290 +447,294 @@ namespace  Analysis  {
         TOKEN_NUMBER_END = 305,
         TOKEN_FLAG = 306,
         TOKEN_REGISTER = 307,
-        TOKEN_PARAM_LIST_OR_ID_PRIMITIVE_TYPE = 308,
-        TOKEN_PRIMITIVE_TYPE = 309,
-        TOKEN_CLASS_DESCRIPTOR = 310,
-        TOKEN_ARRAY_TYPE_PREFIX = 311,
-        TOKEN_VOID_TYPE = 312,
-        TOKEN_SIMPLE_NAME = 313,
-        TOKEN_MEMBER_NAME = 314,
-        TOKEN_STRING_LITERAL = 315,
-        TOKEN_CHAR_LITERAL = 316,
-        TOKEN_ANNOTATION_VISIBILITY = 317,
-        TOKEN_VERIFICATION_ERROR_TYPE = 318,
-        TOKEN_INLINE_INDEX = 319,
-        TOKEN_VTABLE_INDEX = 320,
-        TOKEN_FIELD_OFFSET = 321,
-        TOKEN_LINE_COMMENT = 322,
-        TOKEN_OP_BEGIN = 323,
-        TOKEN_OP_NOP = 324,
-        TOKEN_OP_MOVE = 325,
-        TOKEN_OP_MOVE_FROM16 = 326,
-        TOKEN_OP_MOVE_16 = 327,
-        TOKEN_OP_MOVE_WIDE = 328,
-        TOKEN_OP_MOVE_WIDE_FROM16 = 329,
-        TOKEN_OP_MOVE_WIDE_16 = 330,
-        TOKEN_OP_MOVE_OBJECT = 331,
-        TOKEN_OP_MOVE_OBJECT_FROM16 = 332,
-        TOKEN_OP_MOVE_OBJECT_16 = 333,
-        TOKEN_OP_MOVE_RESULT = 334,
-        TOKEN_OP_MOVE_RESULT_WIDE = 335,
-        TOKEN_OP_MOVE_RESULT_OBJECT = 336,
-        TOKEN_OP_MOVE_EXCEPTION = 337,
-        TOKEN_OP_RETURN_VOID = 338,
-        TOKEN_OP_RETURN = 339,
-        TOKEN_OP_RETURN_WIDE = 340,
-        TOKEN_OP_RETURN_OBJECT = 341,
-        TOKEN_OP_CONST_4 = 342,
-        TOKEN_OP_CONST_16 = 343,
-        TOKEN_OP_CONST = 344,
-        TOKEN_OP_CONST_HIGH16 = 345,
-        TOKEN_OP_CONST_WIDE_16 = 346,
-        TOKEN_OP_CONST_WIDE_32 = 347,
-        TOKEN_OP_CONST_WIDE = 348,
-        TOKEN_OP_CONST_WIDE_HIGH16 = 349,
-        TOKEN_OP_CONST_STRING = 350,
-        TOKEN_OP_CONST_STRING_JUMBO = 351,
-        TOKEN_OP_CONST_CLASS = 352,
-        TOKEN_OP_MONITOR_ENTER = 353,
-        TOKEN_OP_MONITOR_EXIT = 354,
-        TOKEN_OP_CHECK_CAST = 355,
-        TOKEN_OP_INSTANCE_OF = 356,
-        TOKEN_OP_ARRAY_LENGTH = 357,
-        TOKEN_OP_NEW_INSTANCE = 358,
-        TOKEN_OP_NEW_ARRAY = 359,
-        TOKEN_OP_FILLED_NEW_ARRAY = 360,
-        TOKEN_OP_FILLED_NEW_ARRAY_RANGE = 361,
-        TOKEN_OP_FILL_ARRAY_DATA = 362,
-        TOKEN_OP_THROW = 363,
-        TOKEN_OP_GOTO = 364,
-        TOKEN_OP_GOTO_16 = 365,
-        TOKEN_OP_GOTO_32 = 366,
-        TOKEN_OP_PACKED_SWITCH = 367,
-        TOKEN_OP_SPARSE_SWITCH = 368,
-        TOKEN_OP_CMPL_FLOAT = 369,
-        TOKEN_OP_CMPG_FLOAT = 370,
-        TOKEN_OP_CMPL_DOUBLE = 371,
-        TOKEN_OP_CMPG_DOUBLE = 372,
-        TOKEN_OP_CMP_LONG = 373,
-        TOKEN_OP_IF_EQ = 374,
-        TOKEN_OP_IF_NE = 375,
-        TOKEN_OP_IF_LT = 376,
-        TOKEN_OP_IF_GE = 377,
-        TOKEN_OP_IF_GT = 378,
-        TOKEN_OP_IF_LE = 379,
-        TOKEN_OP_IF_EQZ = 380,
-        TOKEN_OP_IF_NEZ = 381,
-        TOKEN_OP_IF_LTZ = 382,
-        TOKEN_OP_IF_GEZ = 383,
-        TOKEN_OP_IF_GTZ = 384,
-        TOKEN_OP_IF_LEZ = 385,
-        TOKEN_OP_UNUSED_3E = 386,
-        TOKEN_OP_UNUSED_3F = 387,
-        TOKEN_OP_UNUSED_40 = 388,
-        TOKEN_OP_UNUSED_41 = 389,
-        TOKEN_OP_UNUSED_42 = 390,
-        TOKEN_OP_UNUSED_43 = 391,
-        TOKEN_OP_AGET = 392,
-        TOKEN_OP_AGET_WIDE = 393,
-        TOKEN_OP_AGET_OBJECT = 394,
-        TOKEN_OP_AGET_BOOLEAN = 395,
-        TOKEN_OP_AGET_BYTE = 396,
-        TOKEN_OP_AGET_CHAR = 397,
-        TOKEN_OP_AGET_SHORT = 398,
-        TOKEN_OP_APUT = 399,
-        TOKEN_OP_APUT_WIDE = 400,
-        TOKEN_OP_APUT_OBJECT = 401,
-        TOKEN_OP_APUT_BOOLEAN = 402,
-        TOKEN_OP_APUT_BYTE = 403,
-        TOKEN_OP_APUT_CHAR = 404,
-        TOKEN_OP_APUT_SHORT = 405,
-        TOKEN_OP_IGET = 406,
-        TOKEN_OP_IGET_WIDE = 407,
-        TOKEN_OP_IGET_OBJECT = 408,
-        TOKEN_OP_IGET_BOOLEAN = 409,
-        TOKEN_OP_IGET_BYTE = 410,
-        TOKEN_OP_IGET_CHAR = 411,
-        TOKEN_OP_IGET_SHORT = 412,
-        TOKEN_OP_IPUT = 413,
-        TOKEN_OP_IPUT_WIDE = 414,
-        TOKEN_OP_IPUT_OBJECT = 415,
-        TOKEN_OP_IPUT_BOOLEAN = 416,
-        TOKEN_OP_IPUT_BYTE = 417,
-        TOKEN_OP_IPUT_CHAR = 418,
-        TOKEN_OP_IPUT_SHORT = 419,
-        TOKEN_OP_SGET = 420,
-        TOKEN_OP_SGET_WIDE = 421,
-        TOKEN_OP_SGET_OBJECT = 422,
-        TOKEN_OP_SGET_BOOLEAN = 423,
-        TOKEN_OP_SGET_BYTE = 424,
-        TOKEN_OP_SGET_CHAR = 425,
-        TOKEN_OP_SGET_SHORT = 426,
-        TOKEN_OP_SPUT = 427,
-        TOKEN_OP_SPUT_WIDE = 428,
-        TOKEN_OP_SPUT_OBJECT = 429,
-        TOKEN_OP_SPUT_BOOLEAN = 430,
-        TOKEN_OP_SPUT_BYTE = 431,
-        TOKEN_OP_SPUT_CHAR = 432,
-        TOKEN_OP_SPUT_SHORT = 433,
-        TOKEN_OP_INVOKE_VIRTUAL = 434,
-        TOKEN_OP_INVOKE_SUPER = 435,
-        TOKEN_OP_INVOKE_DIRECT = 436,
-        TOKEN_OP_INVOKE_STATIC = 437,
-        TOKEN_OP_INVOKE_INTERFACE = 438,
-        TOKEN_OP_UNUSED_73 = 439,
-        TOKEN_OP_INVOKE_VIRTUAL_RANGE = 440,
-        TOKEN_OP_INVOKE_SUPER_RANGE = 441,
-        TOKEN_OP_INVOKE_DIRECT_RANGE = 442,
-        TOKEN_OP_INVOKE_STATIC_RANGE = 443,
-        TOKEN_OP_INVOKE_INTERFACE_RANGE = 444,
-        TOKEN_OP_UNUSED_79 = 445,
-        TOKEN_OP_UNUSED_7A = 446,
-        TOKEN_OP_NEG_INT = 447,
-        TOKEN_OP_NOT_INT = 448,
-        TOKEN_OP_NEG_LONG = 449,
-        TOKEN_OP_NOT_LONG = 450,
-        TOKEN_OP_NEG_FLOAT = 451,
-        TOKEN_OP_NEG_DOUBLE = 452,
-        TOKEN_OP_INT_TO_LONG = 453,
-        TOKEN_OP_INT_TO_FLOAT = 454,
-        TOKEN_OP_INT_TO_DOUBLE = 455,
-        TOKEN_OP_LONG_TO_INT = 456,
-        TOKEN_OP_LONG_TO_FLOAT = 457,
-        TOKEN_OP_LONG_TO_DOUBLE = 458,
-        TOKEN_OP_FLOAT_TO_INT = 459,
-        TOKEN_OP_FLOAT_TO_LONG = 460,
-        TOKEN_OP_FLOAT_TO_DOUBLE = 461,
-        TOKEN_OP_DOUBLE_TO_INT = 462,
-        TOKEN_OP_DOUBLE_TO_LONG = 463,
-        TOKEN_OP_DOUBLE_TO_FLOAT = 464,
-        TOKEN_OP_INT_TO_BYTE = 465,
-        TOKEN_OP_INT_TO_CHAR = 466,
-        TOKEN_OP_INT_TO_SHORT = 467,
-        TOKEN_OP_ADD_INT = 468,
-        TOKEN_OP_SUB_INT = 469,
-        TOKEN_OP_MUL_INT = 470,
-        TOKEN_OP_DIV_INT = 471,
-        TOKEN_OP_REM_INT = 472,
-        TOKEN_OP_AND_INT = 473,
-        TOKEN_OP_OR_INT = 474,
-        TOKEN_OP_XOR_INT = 475,
-        TOKEN_OP_SHL_INT = 476,
-        TOKEN_OP_SHR_INT = 477,
-        TOKEN_OP_USHR_INT = 478,
-        TOKEN_OP_ADD_LONG = 479,
-        TOKEN_OP_SUB_LONG = 480,
-        TOKEN_OP_MUL_LONG = 481,
-        TOKEN_OP_DIV_LONG = 482,
-        TOKEN_OP_REM_LONG = 483,
-        TOKEN_OP_AND_LONG = 484,
-        TOKEN_OP_OR_LONG = 485,
-        TOKEN_OP_XOR_LONG = 486,
-        TOKEN_OP_SHL_LONG = 487,
-        TOKEN_OP_SHR_LONG = 488,
-        TOKEN_OP_USHR_LONG = 489,
-        TOKEN_OP_ADD_FLOAT = 490,
-        TOKEN_OP_SUB_FLOAT = 491,
-        TOKEN_OP_MUL_FLOAT = 492,
-        TOKEN_OP_DIV_FLOAT = 493,
-        TOKEN_OP_REM_FLOAT = 494,
-        TOKEN_OP_ADD_DOUBLE = 495,
-        TOKEN_OP_SUB_DOUBLE = 496,
-        TOKEN_OP_MUL_DOUBLE = 497,
-        TOKEN_OP_DIV_DOUBLE = 498,
-        TOKEN_OP_REM_DOUBLE = 499,
-        TOKEN_OP_ADD_INT_2ADDR = 500,
-        TOKEN_OP_SUB_INT_2ADDR = 501,
-        TOKEN_OP_MUL_INT_2ADDR = 502,
-        TOKEN_OP_DIV_INT_2ADDR = 503,
-        TOKEN_OP_REM_INT_2ADDR = 504,
-        TOKEN_OP_AND_INT_2ADDR = 505,
-        TOKEN_OP_OR_INT_2ADDR = 506,
-        TOKEN_OP_XOR_INT_2ADDR = 507,
-        TOKEN_OP_SHL_INT_2ADDR = 508,
-        TOKEN_OP_SHR_INT_2ADDR = 509,
-        TOKEN_OP_USHR_INT_2ADDR = 510,
-        TOKEN_OP_ADD_LONG_2ADDR = 511,
-        TOKEN_OP_SUB_LONG_2ADDR = 512,
-        TOKEN_OP_MUL_LONG_2ADDR = 513,
-        TOKEN_OP_DIV_LONG_2ADDR = 514,
-        TOKEN_OP_REM_LONG_2ADDR = 515,
-        TOKEN_OP_AND_LONG_2ADDR = 516,
-        TOKEN_OP_OR_LONG_2ADDR = 517,
-        TOKEN_OP_XOR_LONG_2ADDR = 518,
-        TOKEN_OP_SHL_LONG_2ADDR = 519,
-        TOKEN_OP_SHR_LONG_2ADDR = 520,
-        TOKEN_OP_USHR_LONG_2ADDR = 521,
-        TOKEN_OP_ADD_FLOAT_2ADDR = 522,
-        TOKEN_OP_SUB_FLOAT_2ADDR = 523,
-        TOKEN_OP_MUL_FLOAT_2ADDR = 524,
-        TOKEN_OP_DIV_FLOAT_2ADDR = 525,
-        TOKEN_OP_REM_FLOAT_2ADDR = 526,
-        TOKEN_OP_ADD_DOUBLE_2ADDR = 527,
-        TOKEN_OP_SUB_DOUBLE_2ADDR = 528,
-        TOKEN_OP_MUL_DOUBLE_2ADDR = 529,
-        TOKEN_OP_DIV_DOUBLE_2ADDR = 530,
-        TOKEN_OP_REM_DOUBLE_2ADDR = 531,
-        TOKEN_OP_ADD_INT_LIT16 = 532,
-        TOKEN_OP_RSUB_INT = 533,
-        TOKEN_OP_MUL_INT_LIT16 = 534,
-        TOKEN_OP_DIV_INT_LIT16 = 535,
-        TOKEN_OP_REM_INT_LIT16 = 536,
-        TOKEN_OP_AND_INT_LIT16 = 537,
-        TOKEN_OP_OR_INT_LIT16 = 538,
-        TOKEN_OP_XOR_INT_LIT16 = 539,
-        TOKEN_OP_ADD_INT_LIT8 = 540,
-        TOKEN_OP_RSUB_INT_LIT8 = 541,
-        TOKEN_OP_MUL_INT_LIT8 = 542,
-        TOKEN_OP_DIV_INT_LIT8 = 543,
-        TOKEN_OP_REM_INT_LIT8 = 544,
-        TOKEN_OP_AND_INT_LIT8 = 545,
-        TOKEN_OP_OR_INT_LIT8 = 546,
-        TOKEN_OP_XOR_INT_LIT8 = 547,
-        TOKEN_OP_SHL_INT_LIT8 = 548,
-        TOKEN_OP_SHR_INT_LIT8 = 549,
-        TOKEN_OP_USHR_INT_LIT8 = 550,
-        TOKEN_OP_IGET_VOLATILE = 551,
-        TOKEN_OP_IPUT_VOLATILE = 552,
-        TOKEN_OP_SGET_VOLATILE = 553,
-        TOKEN_OP_SPUT_VOLATILE = 554,
-        TOKEN_OP_IGET_OBJECT_VOLATILE = 555,
-        TOKEN_OP_IGET_WIDE_VOLATILE = 556,
-        TOKEN_OP_IPUT_WIDE_VOLATILE = 557,
-        TOKEN_OP_SGET_WIDE_VOLATILE = 558,
-        TOKEN_OP_SPUT_WIDE_VOLATILE = 559,
-        TOKEN_OP_BREAKPOINT = 560,
-        TOKEN_OP_THROW_VERIFICATION_ERROR = 561,
-        TOKEN_OP_EXECUTE_INLINE = 562,
-        TOKEN_OP_EXECUTE_INLINE_RANGE = 563,
-        TOKEN_OP_INVOKE_OBJECT_INIT_RANGE = 564,
-        TOKEN_OP_RETURN_VOID_BARRIER = 565,
-        TOKEN_OP_IGET_QUICK = 566,
-        TOKEN_OP_IGET_WIDE_QUICK = 567,
-        TOKEN_OP_IGET_OBJECT_QUICK = 568,
-        TOKEN_OP_IPUT_QUICK = 569,
-        TOKEN_OP_IPUT_WIDE_QUICK = 570,
-        TOKEN_OP_IPUT_OBJECT_QUICK = 571,
-        TOKEN_OP_INVOKE_VIRTUAL_QUICK = 572,
-        TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE = 573,
-        TOKEN_OP_INVOKE_SUPER_QUICK = 574,
-        TOKEN_OP_INVOKE_SUPER_QUICK_RANGE = 575,
-        TOKEN_OP_IPUT_OBJECT_VOLATILE = 576,
-        TOKEN_OP_SGET_OBJECT_VOLATILE = 577,
-        TOKEN_OP_SPUT_OBJECT_VOLATILE = 578,
-        TOKEN_OP_UNUSED_FF = 579,
-        TOKEN_OP_END = 580,
-        TOKEN_SYMBOL_BEGIN = 581,
-        TOKEN_DOTDOT = 582,
-        TOKEN_ARROW = 583,
-        TOKEN_EQUAL = 584,
-        TOKEN_COLON = 585,
-        TOKEN_COMMA = 586,
-        TOKEN_OPEN_BRACE = 587,
-        TOKEN_CLOSE_BRACE = 588,
-        TOKEN_OPEN_PAREN = 589,
-        TOKEN_CLOSE_PAREN = 590,
-        TOKEN_SYMBOL_END = 591
+        TOKEN_PARAM_BEGIN = 308,
+        TOKEN_PARAM_LIST_OR_ID_PRIMITIVE_TYPE = 309,
+        TOKEN_PRIMITIVE_TYPE = 310,
+        TOKEN_CLASS_DESCRIPTOR = 311,
+        TOKEN_ARRAY_TYPE_PREFIX = 312,
+        TOKEN_VOID_TYPE = 313,
+        TOKEN_PARAM_END = 314,
+        TOKEN_SIMPLE_NAME = 315,
+        TOKEN_MEMBER_NAME = 316,
+        TOKEN_STRING_LITERAL = 317,
+        TOKEN_CHAR_LITERAL = 318,
+        TOKEN_MISC_BEGIN = 319,
+        TOKEN_ANNOTATION_VISIBILITY = 320,
+        TOKEN_VERIFICATION_ERROR_TYPE = 321,
+        TOKEN_INLINE_INDEX = 322,
+        TOKEN_VTABLE_INDEX = 323,
+        TOKEN_FIELD_OFFSET = 324,
+        TOKEN_MISC_END = 325,
+        TOKEN_LINE_COMMENT = 326,
+        TOKEN_OP_BEGIN = 327,
+        TOKEN_OP_NOP = 328,
+        TOKEN_OP_MOVE = 329,
+        TOKEN_OP_MOVE_FROM16 = 330,
+        TOKEN_OP_MOVE_16 = 331,
+        TOKEN_OP_MOVE_WIDE = 332,
+        TOKEN_OP_MOVE_WIDE_FROM16 = 333,
+        TOKEN_OP_MOVE_WIDE_16 = 334,
+        TOKEN_OP_MOVE_OBJECT = 335,
+        TOKEN_OP_MOVE_OBJECT_FROM16 = 336,
+        TOKEN_OP_MOVE_OBJECT_16 = 337,
+        TOKEN_OP_MOVE_RESULT = 338,
+        TOKEN_OP_MOVE_RESULT_WIDE = 339,
+        TOKEN_OP_MOVE_RESULT_OBJECT = 340,
+        TOKEN_OP_MOVE_EXCEPTION = 341,
+        TOKEN_OP_RETURN_VOID = 342,
+        TOKEN_OP_RETURN = 343,
+        TOKEN_OP_RETURN_WIDE = 344,
+        TOKEN_OP_RETURN_OBJECT = 345,
+        TOKEN_OP_CONST_4 = 346,
+        TOKEN_OP_CONST_16 = 347,
+        TOKEN_OP_CONST = 348,
+        TOKEN_OP_CONST_HIGH16 = 349,
+        TOKEN_OP_CONST_WIDE_16 = 350,
+        TOKEN_OP_CONST_WIDE_32 = 351,
+        TOKEN_OP_CONST_WIDE = 352,
+        TOKEN_OP_CONST_WIDE_HIGH16 = 353,
+        TOKEN_OP_CONST_STRING = 354,
+        TOKEN_OP_CONST_STRING_JUMBO = 355,
+        TOKEN_OP_CONST_CLASS = 356,
+        TOKEN_OP_MONITOR_ENTER = 357,
+        TOKEN_OP_MONITOR_EXIT = 358,
+        TOKEN_OP_CHECK_CAST = 359,
+        TOKEN_OP_INSTANCE_OF = 360,
+        TOKEN_OP_ARRAY_LENGTH = 361,
+        TOKEN_OP_NEW_INSTANCE = 362,
+        TOKEN_OP_NEW_ARRAY = 363,
+        TOKEN_OP_FILLED_NEW_ARRAY = 364,
+        TOKEN_OP_FILLED_NEW_ARRAY_RANGE = 365,
+        TOKEN_OP_FILL_ARRAY_DATA = 366,
+        TOKEN_OP_THROW = 367,
+        TOKEN_OP_GOTO = 368,
+        TOKEN_OP_GOTO_16 = 369,
+        TOKEN_OP_GOTO_32 = 370,
+        TOKEN_OP_PACKED_SWITCH = 371,
+        TOKEN_OP_SPARSE_SWITCH = 372,
+        TOKEN_OP_CMPL_FLOAT = 373,
+        TOKEN_OP_CMPG_FLOAT = 374,
+        TOKEN_OP_CMPL_DOUBLE = 375,
+        TOKEN_OP_CMPG_DOUBLE = 376,
+        TOKEN_OP_CMP_LONG = 377,
+        TOKEN_OP_IF_EQ = 378,
+        TOKEN_OP_IF_NE = 379,
+        TOKEN_OP_IF_LT = 380,
+        TOKEN_OP_IF_GE = 381,
+        TOKEN_OP_IF_GT = 382,
+        TOKEN_OP_IF_LE = 383,
+        TOKEN_OP_IF_EQZ = 384,
+        TOKEN_OP_IF_NEZ = 385,
+        TOKEN_OP_IF_LTZ = 386,
+        TOKEN_OP_IF_GEZ = 387,
+        TOKEN_OP_IF_GTZ = 388,
+        TOKEN_OP_IF_LEZ = 389,
+        TOKEN_OP_UNUSED_3E = 390,
+        TOKEN_OP_UNUSED_3F = 391,
+        TOKEN_OP_UNUSED_40 = 392,
+        TOKEN_OP_UNUSED_41 = 393,
+        TOKEN_OP_UNUSED_42 = 394,
+        TOKEN_OP_UNUSED_43 = 395,
+        TOKEN_OP_AGET = 396,
+        TOKEN_OP_AGET_WIDE = 397,
+        TOKEN_OP_AGET_OBJECT = 398,
+        TOKEN_OP_AGET_BOOLEAN = 399,
+        TOKEN_OP_AGET_BYTE = 400,
+        TOKEN_OP_AGET_CHAR = 401,
+        TOKEN_OP_AGET_SHORT = 402,
+        TOKEN_OP_APUT = 403,
+        TOKEN_OP_APUT_WIDE = 404,
+        TOKEN_OP_APUT_OBJECT = 405,
+        TOKEN_OP_APUT_BOOLEAN = 406,
+        TOKEN_OP_APUT_BYTE = 407,
+        TOKEN_OP_APUT_CHAR = 408,
+        TOKEN_OP_APUT_SHORT = 409,
+        TOKEN_OP_IGET = 410,
+        TOKEN_OP_IGET_WIDE = 411,
+        TOKEN_OP_IGET_OBJECT = 412,
+        TOKEN_OP_IGET_BOOLEAN = 413,
+        TOKEN_OP_IGET_BYTE = 414,
+        TOKEN_OP_IGET_CHAR = 415,
+        TOKEN_OP_IGET_SHORT = 416,
+        TOKEN_OP_IPUT = 417,
+        TOKEN_OP_IPUT_WIDE = 418,
+        TOKEN_OP_IPUT_OBJECT = 419,
+        TOKEN_OP_IPUT_BOOLEAN = 420,
+        TOKEN_OP_IPUT_BYTE = 421,
+        TOKEN_OP_IPUT_CHAR = 422,
+        TOKEN_OP_IPUT_SHORT = 423,
+        TOKEN_OP_SGET = 424,
+        TOKEN_OP_SGET_WIDE = 425,
+        TOKEN_OP_SGET_OBJECT = 426,
+        TOKEN_OP_SGET_BOOLEAN = 427,
+        TOKEN_OP_SGET_BYTE = 428,
+        TOKEN_OP_SGET_CHAR = 429,
+        TOKEN_OP_SGET_SHORT = 430,
+        TOKEN_OP_SPUT = 431,
+        TOKEN_OP_SPUT_WIDE = 432,
+        TOKEN_OP_SPUT_OBJECT = 433,
+        TOKEN_OP_SPUT_BOOLEAN = 434,
+        TOKEN_OP_SPUT_BYTE = 435,
+        TOKEN_OP_SPUT_CHAR = 436,
+        TOKEN_OP_SPUT_SHORT = 437,
+        TOKEN_OP_INVOKE_VIRTUAL = 438,
+        TOKEN_OP_INVOKE_SUPER = 439,
+        TOKEN_OP_INVOKE_DIRECT = 440,
+        TOKEN_OP_INVOKE_STATIC = 441,
+        TOKEN_OP_INVOKE_INTERFACE = 442,
+        TOKEN_OP_UNUSED_73 = 443,
+        TOKEN_OP_INVOKE_VIRTUAL_RANGE = 444,
+        TOKEN_OP_INVOKE_SUPER_RANGE = 445,
+        TOKEN_OP_INVOKE_DIRECT_RANGE = 446,
+        TOKEN_OP_INVOKE_STATIC_RANGE = 447,
+        TOKEN_OP_INVOKE_INTERFACE_RANGE = 448,
+        TOKEN_OP_UNUSED_79 = 449,
+        TOKEN_OP_UNUSED_7A = 450,
+        TOKEN_OP_NEG_INT = 451,
+        TOKEN_OP_NOT_INT = 452,
+        TOKEN_OP_NEG_LONG = 453,
+        TOKEN_OP_NOT_LONG = 454,
+        TOKEN_OP_NEG_FLOAT = 455,
+        TOKEN_OP_NEG_DOUBLE = 456,
+        TOKEN_OP_INT_TO_LONG = 457,
+        TOKEN_OP_INT_TO_FLOAT = 458,
+        TOKEN_OP_INT_TO_DOUBLE = 459,
+        TOKEN_OP_LONG_TO_INT = 460,
+        TOKEN_OP_LONG_TO_FLOAT = 461,
+        TOKEN_OP_LONG_TO_DOUBLE = 462,
+        TOKEN_OP_FLOAT_TO_INT = 463,
+        TOKEN_OP_FLOAT_TO_LONG = 464,
+        TOKEN_OP_FLOAT_TO_DOUBLE = 465,
+        TOKEN_OP_DOUBLE_TO_INT = 466,
+        TOKEN_OP_DOUBLE_TO_LONG = 467,
+        TOKEN_OP_DOUBLE_TO_FLOAT = 468,
+        TOKEN_OP_INT_TO_BYTE = 469,
+        TOKEN_OP_INT_TO_CHAR = 470,
+        TOKEN_OP_INT_TO_SHORT = 471,
+        TOKEN_OP_ADD_INT = 472,
+        TOKEN_OP_SUB_INT = 473,
+        TOKEN_OP_MUL_INT = 474,
+        TOKEN_OP_DIV_INT = 475,
+        TOKEN_OP_REM_INT = 476,
+        TOKEN_OP_AND_INT = 477,
+        TOKEN_OP_OR_INT = 478,
+        TOKEN_OP_XOR_INT = 479,
+        TOKEN_OP_SHL_INT = 480,
+        TOKEN_OP_SHR_INT = 481,
+        TOKEN_OP_USHR_INT = 482,
+        TOKEN_OP_ADD_LONG = 483,
+        TOKEN_OP_SUB_LONG = 484,
+        TOKEN_OP_MUL_LONG = 485,
+        TOKEN_OP_DIV_LONG = 486,
+        TOKEN_OP_REM_LONG = 487,
+        TOKEN_OP_AND_LONG = 488,
+        TOKEN_OP_OR_LONG = 489,
+        TOKEN_OP_XOR_LONG = 490,
+        TOKEN_OP_SHL_LONG = 491,
+        TOKEN_OP_SHR_LONG = 492,
+        TOKEN_OP_USHR_LONG = 493,
+        TOKEN_OP_ADD_FLOAT = 494,
+        TOKEN_OP_SUB_FLOAT = 495,
+        TOKEN_OP_MUL_FLOAT = 496,
+        TOKEN_OP_DIV_FLOAT = 497,
+        TOKEN_OP_REM_FLOAT = 498,
+        TOKEN_OP_ADD_DOUBLE = 499,
+        TOKEN_OP_SUB_DOUBLE = 500,
+        TOKEN_OP_MUL_DOUBLE = 501,
+        TOKEN_OP_DIV_DOUBLE = 502,
+        TOKEN_OP_REM_DOUBLE = 503,
+        TOKEN_OP_ADD_INT_2ADDR = 504,
+        TOKEN_OP_SUB_INT_2ADDR = 505,
+        TOKEN_OP_MUL_INT_2ADDR = 506,
+        TOKEN_OP_DIV_INT_2ADDR = 507,
+        TOKEN_OP_REM_INT_2ADDR = 508,
+        TOKEN_OP_AND_INT_2ADDR = 509,
+        TOKEN_OP_OR_INT_2ADDR = 510,
+        TOKEN_OP_XOR_INT_2ADDR = 511,
+        TOKEN_OP_SHL_INT_2ADDR = 512,
+        TOKEN_OP_SHR_INT_2ADDR = 513,
+        TOKEN_OP_USHR_INT_2ADDR = 514,
+        TOKEN_OP_ADD_LONG_2ADDR = 515,
+        TOKEN_OP_SUB_LONG_2ADDR = 516,
+        TOKEN_OP_MUL_LONG_2ADDR = 517,
+        TOKEN_OP_DIV_LONG_2ADDR = 518,
+        TOKEN_OP_REM_LONG_2ADDR = 519,
+        TOKEN_OP_AND_LONG_2ADDR = 520,
+        TOKEN_OP_OR_LONG_2ADDR = 521,
+        TOKEN_OP_XOR_LONG_2ADDR = 522,
+        TOKEN_OP_SHL_LONG_2ADDR = 523,
+        TOKEN_OP_SHR_LONG_2ADDR = 524,
+        TOKEN_OP_USHR_LONG_2ADDR = 525,
+        TOKEN_OP_ADD_FLOAT_2ADDR = 526,
+        TOKEN_OP_SUB_FLOAT_2ADDR = 527,
+        TOKEN_OP_MUL_FLOAT_2ADDR = 528,
+        TOKEN_OP_DIV_FLOAT_2ADDR = 529,
+        TOKEN_OP_REM_FLOAT_2ADDR = 530,
+        TOKEN_OP_ADD_DOUBLE_2ADDR = 531,
+        TOKEN_OP_SUB_DOUBLE_2ADDR = 532,
+        TOKEN_OP_MUL_DOUBLE_2ADDR = 533,
+        TOKEN_OP_DIV_DOUBLE_2ADDR = 534,
+        TOKEN_OP_REM_DOUBLE_2ADDR = 535,
+        TOKEN_OP_ADD_INT_LIT16 = 536,
+        TOKEN_OP_RSUB_INT = 537,
+        TOKEN_OP_MUL_INT_LIT16 = 538,
+        TOKEN_OP_DIV_INT_LIT16 = 539,
+        TOKEN_OP_REM_INT_LIT16 = 540,
+        TOKEN_OP_AND_INT_LIT16 = 541,
+        TOKEN_OP_OR_INT_LIT16 = 542,
+        TOKEN_OP_XOR_INT_LIT16 = 543,
+        TOKEN_OP_ADD_INT_LIT8 = 544,
+        TOKEN_OP_RSUB_INT_LIT8 = 545,
+        TOKEN_OP_MUL_INT_LIT8 = 546,
+        TOKEN_OP_DIV_INT_LIT8 = 547,
+        TOKEN_OP_REM_INT_LIT8 = 548,
+        TOKEN_OP_AND_INT_LIT8 = 549,
+        TOKEN_OP_OR_INT_LIT8 = 550,
+        TOKEN_OP_XOR_INT_LIT8 = 551,
+        TOKEN_OP_SHL_INT_LIT8 = 552,
+        TOKEN_OP_SHR_INT_LIT8 = 553,
+        TOKEN_OP_USHR_INT_LIT8 = 554,
+        TOKEN_OP_IGET_VOLATILE = 555,
+        TOKEN_OP_IPUT_VOLATILE = 556,
+        TOKEN_OP_SGET_VOLATILE = 557,
+        TOKEN_OP_SPUT_VOLATILE = 558,
+        TOKEN_OP_IGET_OBJECT_VOLATILE = 559,
+        TOKEN_OP_IGET_WIDE_VOLATILE = 560,
+        TOKEN_OP_IPUT_WIDE_VOLATILE = 561,
+        TOKEN_OP_SGET_WIDE_VOLATILE = 562,
+        TOKEN_OP_SPUT_WIDE_VOLATILE = 563,
+        TOKEN_OP_BREAKPOINT = 564,
+        TOKEN_OP_THROW_VERIFICATION_ERROR = 565,
+        TOKEN_OP_EXECUTE_INLINE = 566,
+        TOKEN_OP_EXECUTE_INLINE_RANGE = 567,
+        TOKEN_OP_INVOKE_OBJECT_INIT_RANGE = 568,
+        TOKEN_OP_RETURN_VOID_BARRIER = 569,
+        TOKEN_OP_IGET_QUICK = 570,
+        TOKEN_OP_IGET_WIDE_QUICK = 571,
+        TOKEN_OP_IGET_OBJECT_QUICK = 572,
+        TOKEN_OP_IPUT_QUICK = 573,
+        TOKEN_OP_IPUT_WIDE_QUICK = 574,
+        TOKEN_OP_IPUT_OBJECT_QUICK = 575,
+        TOKEN_OP_INVOKE_VIRTUAL_QUICK = 576,
+        TOKEN_OP_INVOKE_VIRTUAL_QUICK_RANGE = 577,
+        TOKEN_OP_INVOKE_SUPER_QUICK = 578,
+        TOKEN_OP_INVOKE_SUPER_QUICK_RANGE = 579,
+        TOKEN_OP_IPUT_OBJECT_VOLATILE = 580,
+        TOKEN_OP_SGET_OBJECT_VOLATILE = 581,
+        TOKEN_OP_SPUT_OBJECT_VOLATILE = 582,
+        TOKEN_OP_UNUSED_FF = 583,
+        TOKEN_OP_END = 584,
+        TOKEN_SYMBOL_BEGIN = 585,
+        TOKEN_DOTDOT = 586,
+        TOKEN_ARROW = 587,
+        TOKEN_EQUAL = 588,
+        TOKEN_COLON = 589,
+        TOKEN_COMMA = 590,
+        TOKEN_OPEN_BRACE = 591,
+        TOKEN_CLOSE_BRACE = 592,
+        TOKEN_OPEN_PAREN = 593,
+        TOKEN_CLOSE_PAREN = 594,
+        TOKEN_SYMBOL_END = 595
       };
     };
 
@@ -737,9 +772,17 @@ namespace  Analysis  {
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
 
+  basic_symbol (typename Base::kind_type t, const OpCode* v, const location_type& l);
+
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
+  basic_symbol (typename Base::kind_type t, const long long int v, const location_type& l);
+
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::vector<int> v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l);
 
 
       /// Constructor for symbols with semantic value.
@@ -1014,6 +1057,10 @@ namespace  Analysis  {
 
     static inline
     symbol_type
+    make_PARAM_BEGIN (const location_type& l);
+
+    static inline
+    symbol_type
     make_PARAM_LIST_OR_ID_PRIMITIVE_TYPE (const std::string& v, const location_type& l);
 
     static inline
@@ -1034,6 +1081,10 @@ namespace  Analysis  {
 
     static inline
     symbol_type
+    make_PARAM_END (const location_type& l);
+
+    static inline
+    symbol_type
     make_SIMPLE_NAME (const std::string& v, const location_type& l);
 
     static inline
@@ -1047,6 +1098,10 @@ namespace  Analysis  {
     static inline
     symbol_type
     make_CHAR_LITERAL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_MISC_BEGIN (const location_type& l);
 
     static inline
     symbol_type
@@ -1067,6 +1122,10 @@ namespace  Analysis  {
     static inline
     symbol_type
     make_FIELD_OFFSET (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_MISC_END (const location_type& l);
 
     static inline
     symbol_type
@@ -2206,7 +2265,7 @@ namespace  Analysis  {
     /// \param yyvalue   the value to check
     static bool yy_table_value_is_error_ (int yyvalue);
 
-    static const signed char yypact_ninf_;
+    static const short int yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -2215,25 +2274,25 @@ namespace  Analysis  {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const signed char yypact_[];
+  static const short int yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
   // means the default is an error.
-  static const unsigned char yydefact_[];
+  static const unsigned short int yydefact_[];
 
   // YYPGOTO[NTERM-NUM].
-  static const signed char yypgoto_[];
+  static const short int yypgoto_[];
 
   // YYDEFGOTO[NTERM-NUM].
-  static const signed char yydefgoto_[];
+  static const short int yydefgoto_[];
 
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned char yytable_[];
+  static const unsigned short int yytable_[];
 
-  static const unsigned char yycheck_[];
+  static const short int yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -2353,12 +2412,12 @@ namespace  Analysis  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 0,     ///< Last index in yytable_.
-      yynnts_ = 2,  ///< Number of nonterminal symbols.
+      yylast_ = 1611,     ///< Last index in yytable_.
+      yynnts_ = 20,  ///< Number of nonterminal symbols.
       yyfinal_ = 2, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 337  ///< Number of tokens.
+      yyntokens_ = 346  ///< Number of tokens.
     };
 
 
@@ -2435,9 +2494,10 @@ namespace  Analysis  {
      305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
      315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
      325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
-     335,   336
+     335,   336,   337,   338,   339,   340,   341,   342,   343,   344,
+     345
     };
-    const unsigned int user_token_number_max_ = 591;
+    const unsigned int user_token_number_max_ = 600;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -2470,10 +2530,27 @@ namespace  Analysis  {
   {
       switch (other.type_get ())
     {
+      case 365: // instruction
+        value.copy< OpCode* > (other.value);
+        break;
+
       case 48: // "true|false"
       case 51: // "flag"
       case 52: // "v(p)x"
+      case 348: // exp
+      case 349: // classdef
+      case 350: // superdef
+      case 351: // srcdef
+      case 352: // fielddef
+      case 353: // methoddef
+      case 354: // flags
+      case 361: // registers
         value.copy< int > (other.value);
+        break;
+
+      case 341: // "integer"
+      case 363: // integer
+        value.copy< long long int > (other.value);
         break;
 
       case 4: // "lex error"
@@ -2486,21 +2563,39 @@ namespace  Analysis  {
       case 45: // "FloatOrID D"
       case 46: // "Float F"
       case 47: // "Float D"
-      case 53: // "ZBSCIJFDLIT"
-      case 54: // "ZBSCIJFD"
-      case 55: // "Lxxx;"
-      case 56: // "[["
-      case 58: // "simple name"
-      case 59: // "member name"
-      case 60: // "string"
-      case 61: // "char"
-      case 62: // "build runtime system"
-      case 63: // "ver type error"
-      case 64: // "inline@0x"
-      case 65: // "vtable@0x"
-      case 66: // "field@0x"
-      case 67: // "#xxx"
+      case 54: // "ZBSCIJFDLIT"
+      case 55: // "ZBSCIJFD"
+      case 56: // "Lxxx;"
+      case 57: // "[["
+      case 60: // "simple name"
+      case 61: // "member name"
+      case 62: // "string"
+      case 63: // "char"
+      case 65: // "build runtime system"
+      case 66: // "ver type error"
+      case 67: // "inline@0x"
+      case 68: // "vtable@0x"
+      case 69: // "field@0x"
+      case 71: // "# comments"
+      case 342: // "classtype"
+      case 343: // "[classtype"
+      case 344: // "field or class name"
+      case 345: // "integer-str"
+      case 355: // namestring
+      case 356: // classtype
+      case 357: // classtypeOrArray
+      case 360: // comment
+      case 362: // jmplabel
+      case 364: // INTEGER_LITERAL
         value.copy< std::string > (other.value);
+        break;
+
+      case 359: // regs
+        value.copy< std::vector<int> > (other.value);
+        break;
+
+      case 358: // args
+        value.copy< std::vector<std::string> > (other.value);
         break;
 
       default:
@@ -2520,10 +2615,27 @@ namespace  Analysis  {
     (void) v;
       switch (this->type_get ())
     {
+      case 365: // instruction
+        value.copy< OpCode* > (v);
+        break;
+
       case 48: // "true|false"
       case 51: // "flag"
       case 52: // "v(p)x"
+      case 348: // exp
+      case 349: // classdef
+      case 350: // superdef
+      case 351: // srcdef
+      case 352: // fielddef
+      case 353: // methoddef
+      case 354: // flags
+      case 361: // registers
         value.copy< int > (v);
+        break;
+
+      case 341: // "integer"
+      case 363: // integer
+        value.copy< long long int > (v);
         break;
 
       case 4: // "lex error"
@@ -2536,21 +2648,39 @@ namespace  Analysis  {
       case 45: // "FloatOrID D"
       case 46: // "Float F"
       case 47: // "Float D"
-      case 53: // "ZBSCIJFDLIT"
-      case 54: // "ZBSCIJFD"
-      case 55: // "Lxxx;"
-      case 56: // "[["
-      case 58: // "simple name"
-      case 59: // "member name"
-      case 60: // "string"
-      case 61: // "char"
-      case 62: // "build runtime system"
-      case 63: // "ver type error"
-      case 64: // "inline@0x"
-      case 65: // "vtable@0x"
-      case 66: // "field@0x"
-      case 67: // "#xxx"
+      case 54: // "ZBSCIJFDLIT"
+      case 55: // "ZBSCIJFD"
+      case 56: // "Lxxx;"
+      case 57: // "[["
+      case 60: // "simple name"
+      case 61: // "member name"
+      case 62: // "string"
+      case 63: // "char"
+      case 65: // "build runtime system"
+      case 66: // "ver type error"
+      case 67: // "inline@0x"
+      case 68: // "vtable@0x"
+      case 69: // "field@0x"
+      case 71: // "# comments"
+      case 342: // "classtype"
+      case 343: // "[classtype"
+      case 344: // "field or class name"
+      case 345: // "integer-str"
+      case 355: // namestring
+      case 356: // classtype
+      case 357: // classtypeOrArray
+      case 360: // comment
+      case 362: // jmplabel
+      case 364: // INTEGER_LITERAL
         value.copy< std::string > (v);
+        break;
+
+      case 359: // regs
+        value.copy< std::vector<int> > (v);
+        break;
+
+      case 358: // args
+        value.copy< std::vector<std::string> > (v);
         break;
 
       default:
@@ -2569,6 +2699,13 @@ namespace  Analysis  {
   {}
 
   template <typename Base>
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const OpCode* v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
    SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
     : Base (t)
     , value (v)
@@ -2576,7 +2713,28 @@ namespace  Analysis  {
   {}
 
   template <typename Base>
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const long long int v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
    SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<int> v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
+   SmaliParser ::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -2608,10 +2766,27 @@ namespace  Analysis  {
     // Type destructor.
     switch (yytype)
     {
+      case 365: // instruction
+        value.template destroy< OpCode* > ();
+        break;
+
       case 48: // "true|false"
       case 51: // "flag"
       case 52: // "v(p)x"
+      case 348: // exp
+      case 349: // classdef
+      case 350: // superdef
+      case 351: // srcdef
+      case 352: // fielddef
+      case 353: // methoddef
+      case 354: // flags
+      case 361: // registers
         value.template destroy< int > ();
+        break;
+
+      case 341: // "integer"
+      case 363: // integer
+        value.template destroy< long long int > ();
         break;
 
       case 4: // "lex error"
@@ -2624,21 +2799,39 @@ namespace  Analysis  {
       case 45: // "FloatOrID D"
       case 46: // "Float F"
       case 47: // "Float D"
-      case 53: // "ZBSCIJFDLIT"
-      case 54: // "ZBSCIJFD"
-      case 55: // "Lxxx;"
-      case 56: // "[["
-      case 58: // "simple name"
-      case 59: // "member name"
-      case 60: // "string"
-      case 61: // "char"
-      case 62: // "build runtime system"
-      case 63: // "ver type error"
-      case 64: // "inline@0x"
-      case 65: // "vtable@0x"
-      case 66: // "field@0x"
-      case 67: // "#xxx"
+      case 54: // "ZBSCIJFDLIT"
+      case 55: // "ZBSCIJFD"
+      case 56: // "Lxxx;"
+      case 57: // "[["
+      case 60: // "simple name"
+      case 61: // "member name"
+      case 62: // "string"
+      case 63: // "char"
+      case 65: // "build runtime system"
+      case 66: // "ver type error"
+      case 67: // "inline@0x"
+      case 68: // "vtable@0x"
+      case 69: // "field@0x"
+      case 71: // "# comments"
+      case 342: // "classtype"
+      case 343: // "[classtype"
+      case 344: // "field or class name"
+      case 345: // "integer-str"
+      case 355: // namestring
+      case 356: // classtype
+      case 357: // classtypeOrArray
+      case 360: // comment
+      case 362: // jmplabel
+      case 364: // INTEGER_LITERAL
         value.template destroy< std::string > ();
+        break;
+
+      case 359: // regs
+        value.template destroy< std::vector<int> > ();
+        break;
+
+      case 358: // args
+        value.template destroy< std::vector<std::string> > ();
         break;
 
       default:
@@ -2664,10 +2857,27 @@ namespace  Analysis  {
     super_type::move(s);
       switch (this->type_get ())
     {
+      case 365: // instruction
+        value.move< OpCode* > (s.value);
+        break;
+
       case 48: // "true|false"
       case 51: // "flag"
       case 52: // "v(p)x"
+      case 348: // exp
+      case 349: // classdef
+      case 350: // superdef
+      case 351: // srcdef
+      case 352: // fielddef
+      case 353: // methoddef
+      case 354: // flags
+      case 361: // registers
         value.move< int > (s.value);
+        break;
+
+      case 341: // "integer"
+      case 363: // integer
+        value.move< long long int > (s.value);
         break;
 
       case 4: // "lex error"
@@ -2680,21 +2890,39 @@ namespace  Analysis  {
       case 45: // "FloatOrID D"
       case 46: // "Float F"
       case 47: // "Float D"
-      case 53: // "ZBSCIJFDLIT"
-      case 54: // "ZBSCIJFD"
-      case 55: // "Lxxx;"
-      case 56: // "[["
-      case 58: // "simple name"
-      case 59: // "member name"
-      case 60: // "string"
-      case 61: // "char"
-      case 62: // "build runtime system"
-      case 63: // "ver type error"
-      case 64: // "inline@0x"
-      case 65: // "vtable@0x"
-      case 66: // "field@0x"
-      case 67: // "#xxx"
+      case 54: // "ZBSCIJFDLIT"
+      case 55: // "ZBSCIJFD"
+      case 56: // "Lxxx;"
+      case 57: // "[["
+      case 60: // "simple name"
+      case 61: // "member name"
+      case 62: // "string"
+      case 63: // "char"
+      case 65: // "build runtime system"
+      case 66: // "ver type error"
+      case 67: // "inline@0x"
+      case 68: // "vtable@0x"
+      case 69: // "field@0x"
+      case 71: // "# comments"
+      case 342: // "classtype"
+      case 343: // "[classtype"
+      case 344: // "field or class name"
+      case 345: // "integer-str"
+      case 355: // namestring
+      case 356: // classtype
+      case 357: // classtypeOrArray
+      case 360: // comment
+      case 362: // jmplabel
+      case 364: // INTEGER_LITERAL
         value.move< std::string > (s.value);
+        break;
+
+      case 359: // regs
+        value.move< std::vector<int> > (s.value);
+        break;
+
+      case 358: // args
+        value.move< std::vector<std::string> > (s.value);
         break;
 
       default:
@@ -2785,7 +3013,8 @@ namespace  Analysis  {
      555,   556,   557,   558,   559,   560,   561,   562,   563,   564,
      565,   566,   567,   568,   569,   570,   571,   572,   573,   574,
      575,   576,   577,   578,   579,   580,   581,   582,   583,   584,
-     585,   586,   587,   588,   589,   590,   591
+     585,   586,   587,   588,   589,   590,   591,   592,   593,   594,
+     595,   596,   597,   598,   599,   600
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -3097,6 +3326,12 @@ namespace  Analysis  {
   }
 
    SmaliParser ::symbol_type
+   SmaliParser ::make_PARAM_BEGIN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_PARAM_BEGIN, l);
+  }
+
+   SmaliParser ::symbol_type
    SmaliParser ::make_PARAM_LIST_OR_ID_PRIMITIVE_TYPE (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_PARAM_LIST_OR_ID_PRIMITIVE_TYPE, v, l);
@@ -3127,6 +3362,12 @@ namespace  Analysis  {
   }
 
    SmaliParser ::symbol_type
+   SmaliParser ::make_PARAM_END (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_PARAM_END, l);
+  }
+
+   SmaliParser ::symbol_type
    SmaliParser ::make_SIMPLE_NAME (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_SIMPLE_NAME, v, l);
@@ -3148,6 +3389,12 @@ namespace  Analysis  {
    SmaliParser ::make_CHAR_LITERAL (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_CHAR_LITERAL, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_MISC_BEGIN (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_MISC_BEGIN, l);
   }
 
    SmaliParser ::symbol_type
@@ -3178,6 +3425,12 @@ namespace  Analysis  {
    SmaliParser ::make_FIELD_OFFSET (const std::string& v, const location_type& l)
   {
     return symbol_type (token::TOKEN_FIELD_OFFSET, v, l);
+  }
+
+   SmaliParser ::symbol_type
+   SmaliParser ::make_MISC_END (const location_type& l)
+  {
+    return symbol_type (token::TOKEN_MISC_END, l);
   }
 
    SmaliParser ::symbol_type
@@ -4803,7 +5056,7 @@ namespace  Analysis  {
 
 #line 9 "SmaliParser.yy" // lalr1.cc:377
 } //  Analysis 
-#line 4807 "SmaliParser.hpp" // lalr1.cc:377
+#line 5060 "SmaliParser.hpp" // lalr1.cc:377
 
 
 

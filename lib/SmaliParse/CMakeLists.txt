@@ -1,6 +1,6 @@
 SET(TARGET_NAME SmaliParse)
 
-set(SRC_FILE SmaliLexer.cpp SmaliParser.cpp SmaliParser.hpp)
+set(SRC_FILE SmaliLexer.cpp SmaliParser.cpp Interpreter.cpp)
 
 FILE(GLOB_RECURSE ART_HEADER ${ART_INCLUDE_DIR}/${TARGET_NAME}/*.h Ops/*.h)
 aux_source_directory(SmaliAst SMALIAST_SRC)

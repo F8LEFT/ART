@@ -38,7 +38,7 @@ namespace Analysis {
                 default:
                     break;
             }
-            rel += " " + r1.toString () + ", \"" + (*mStringPool)[s] + "\"";
+            rel += " " + r1.toString () + ", " + (*mStringPool)[s];
             return move(rel);
          }
 
