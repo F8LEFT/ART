@@ -506,7 +506,16 @@ namestring :
     | ANNOTATION_VISIBILITY { $$ = $1; }
     | PRIMITIVE_TYPE { $$ = $1; }
     | VOID_TYPE { $$ = "V"; }
+    | OP_NOP { $$ = "nop"; }
+    | OP_MOVE { $$ = "move"; }
+    | OP_AGET { $$ = "aget"; }
+    | OP_APUT { $$ = "aput"; }
+    | OP_IGET { $$ = "iget"; }
+    | OP_IPUT { $$ = "iput"; }
+    | OP_SGET { $$ = "sget"; }
+    | OP_SPUT { $$ = "sput"; }
     ;
+
 
 classtype:
       CLASS_DESCRIPTOR { $$ = $1; }
@@ -1321,6 +1330,8 @@ instruction :
 %%
 
 void Analysis::SmaliParser::error(const location &loc, const std::string &message) {
+#ifdef DEBUG
 	cout << "Parse error: " << message << endl
 	    << "Error location: " << loc << endl << driver.mLexer->text() << endl;
+#endif
 }

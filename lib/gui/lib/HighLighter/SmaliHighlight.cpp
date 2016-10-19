@@ -88,6 +88,7 @@ void SmaliHighlight::highlightBlock (const QString &text)
                 case SmaliParser::token::TOKEN_PRIMITIVE_TYPE:
                 case SmaliParser::token::TOKEN_ARRAY_TYPE_PREFIX:
                 case SmaliParser::token::TOKEN_VOID_TYPE:
+                case SmaliParser::token::TOKEN_PARAM_LIST_OR_ID_PRIMITIVE_TYPE:
                     format = &mClassTypeFormat;
                     break;
                 case SmaliParser::token::TOKEN_FLAG:

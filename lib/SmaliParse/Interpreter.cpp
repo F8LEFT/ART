@@ -85,6 +85,9 @@ void Interpreter::addField (std::string &name,int flag,std::string &type)
 
 void Interpreter::addMethod (std::string &name,int flag,std::string &type,std::vector<std::string> &args)
 {
+    if(mCurMethod != nullptr) {
+        std::cout << "warning : current method not end!!" << std::endl;
+    }
     mCurMethod = mClass->addMethod (name,args);
     mCurMethod->setFlag (flag);
     mCurMethod->setType (type);
@@ -92,6 +95,10 @@ void Interpreter::addMethod (std::string &name,int flag,std::string &type,std::v
 
 void Interpreter::setCurMethodRegSize (int size)
 {
+    if(mCurMethod == nullptr) {
+        std::cout << "warning : method not exit!!" << std::endl;
+        return;
+    }
     mCurMethod->setRegSize (size);
 }
 
@@ -104,8 +111,12 @@ void Interpreter::addOpcode (OpCode *code)
         std::string codeStr = code->toString ();
         assert (codeStr == tStr);
     }
-
 #endif
+    if(mCurMethod == nullptr) {
+        std::cout << "warning : method not exit!!" << std::endl;
+        return;
+    }
+
     mCurMethod->mInsList.push_back (code);
 }
 
