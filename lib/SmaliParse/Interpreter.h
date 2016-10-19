@@ -21,7 +21,7 @@
 #include "SmaliAst/SmaliClass.h"
 #include "SmaliLexer.h"
 
-#define DEBUG
+//#define DEBUG
 
 namespace Analysis {
     class Interpreter

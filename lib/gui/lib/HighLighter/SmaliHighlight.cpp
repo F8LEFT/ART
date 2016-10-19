@@ -13,6 +13,7 @@
 
 #include <sstream>
 #include <QTextDocument>
+#include <QDebug>
 
 using namespace Analysis;
 
@@ -109,7 +110,7 @@ void SmaliHighlight::highlightBlock (const QString &text)
                     format = &mNumberFormat;
                     break;
                 default:
-                    Q_ASSERT (false && "unknown token!!");
+                    qDebug() << "[SmaliHighlight]unknown token type" << type;
                     break;
             }
         }

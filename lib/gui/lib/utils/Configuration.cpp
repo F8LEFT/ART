@@ -159,7 +159,7 @@ void Configuration::save()
             itSub != itSubEnd; itSub++) {
             QString category = it.key ();
             QDomElement element =  domDocument.createElement("string");
-            writeCfgElement (domDocument,element, "font",category,
+            writeCfgElement (domDocument,element, "string",category,
                              itSub.key (), itSub.value ());
             root.appendChild (element);
         }

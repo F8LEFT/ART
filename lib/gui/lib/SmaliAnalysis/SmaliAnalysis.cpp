@@ -66,7 +66,7 @@ bool SmaliAnalysis::addDirectory (QDir dir)
             qDebug()<< "[SmaliAnalysis] addDirectory parse File :"
                     << mfi.absoluteFilePath ();
             if(mfi.fileName ().endsWith (".smali"))
-                parseFile (mfi.absoluteFilePath ());
+                ;//parseFile (mfi.absoluteFilePath ());
         }
     return true;
 }

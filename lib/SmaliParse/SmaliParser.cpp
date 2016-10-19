@@ -4170,6 +4170,8 @@ namespace  Analysis  {
 
 
 void Analysis::SmaliParser::error(const location &loc, const std::string &message) {
-	//cout << "Parse error: " << message << endl
-	//    << "Error location: " << loc << endl << driver.mLexer->text() << endl;
+#ifdef DEBUG
+	cout << "Parse error: " << message << endl
+	    << "Error location: " << loc << endl << driver.mLexer->text() << endl;
+#endif
 }
