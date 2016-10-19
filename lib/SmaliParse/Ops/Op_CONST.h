@@ -63,11 +63,14 @@ namespace Analysis {
             }
             rel += " " + rx.toString () + ", " + formater::int2hexStr (val);
             switch(op) {
+                case OP_CONST_WIDE:
+                    rel += "L";
+                    break;
                 case OP_CONST_HIGH16:
                     rel += "0000";
                     break;
                 case OP_CONST_WIDE_HIGH16:
-                    rel += "000000000000";
+                    rel += "000000000000L";
                     break;
                 default:
                     break;

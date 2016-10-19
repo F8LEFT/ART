@@ -9,7 +9,7 @@
 
 
 #include "SmaliHighlight.h"
-#include "Lexer.h"
+#include "SmaliLexer.h"
 
 #include <sstream>
 #include <QTextDocument>
@@ -45,7 +45,7 @@ SmaliHighlight::SmaliHighlight (QTextDocument *parent,QString fileName)
 
 void SmaliHighlight::highlightBlock (const QString &text)
 {
-    Lexer lexer;
+    SmaliLexer lexer;
     auto str = text.toStdString ();
     std::istringstream is(str);
     lexer.switch_streams (&is,nullptr);
@@ -53,47 +53,58 @@ void SmaliHighlight::highlightBlock (const QString &text)
     {
         auto token = lexer.get_next_token ();
         auto type = token.token ();
-        if (type == Parser::token::TOKEN_END)
+        if (type == SmaliParser::token::TOKEN_END)
             break;
-        if (type == Parser::token::TOKEN_EOL)
+        if (type == SmaliParser::token::TOKEN_EOL)
         {
             continue;
         }
         QTextCharFormat* format;
-        if(type > Parser::token::TOKEN_KEYWORD_BEGIN
-           && type < Parser::token::TOKEN_KEYWORD_END) {
+        if(type > SmaliParser::token::TOKEN_KEYWORD_BEGIN
+           && type < SmaliParser::token::TOKEN_KEYWORD_END) {
             format = &mKeywordFormat;
         } else
-        if (type > Parser::token::TOKEN_OP_BEGIN
-            && type < Parser::token::TOKEN_OP_END) {
+        if (type > SmaliParser::token::TOKEN_OP_BEGIN
+            && type < SmaliParser::token::TOKEN_OP_END) {
             format = &mOpFormat;
         } else
-        if (type > Parser::token::TOKEN_SYMBOL_BEGIN
-              && type < Parser::token::TOKEN_SYMBOL_END) {
+        if (type > SmaliParser::token::TOKEN_SYMBOL_BEGIN
+              && type < SmaliParser::token::TOKEN_SYMBOL_END) {
             format = &mSymbolFormat;
         } else {
             switch (type) {
-                case Parser::token::TOKEN_CSTRING:
+                case SmaliParser::token::TOKEN_STRING_LITERAL:
+                case SmaliParser::token::TOKEN_CHAR_LITERAL:
                     format = &mCStringFormat;
                     break;
-                case Parser::token::TOKEN_NAMESTRING:
+                case SmaliParser::token::TOKEN_SIMPLE_NAME:
+                case SmaliParser::token::TOKEN_MEMBER_NAME:
                     format = &mNameStringFormat;
                     break;
-                case Parser::token::TOKEN_COMMENT:
+                case SmaliParser::token::TOKEN_LINE_COMMENT:
                     format = &mCommentFormat;
                     break;
-                case Parser::token::TOKEN_CLASSNAME:
-                case Parser::token::TOKEN_CLASSTYPE:
+                case SmaliParser::token::TOKEN_CLASS_DESCRIPTOR:
+                case SmaliParser::token::TOKEN_PRIMITIVE_TYPE:
+                case SmaliParser::token::TOKEN_ARRAY_TYPE_PREFIX:
+                case SmaliParser::token::TOKEN_VOID_TYPE:
                     format = &mClassTypeFormat;
                     break;
-                case Parser::token::TOKEN_FLAG:
+                case SmaliParser::token::TOKEN_FLAG:
                     format = &mFlagFormat;
                     break;
-                case Parser::token::TOKEN_REGD:
+                case SmaliParser::token::TOKEN_REGISTER:
                     format = &mREGDFormat;
                     break;
-                case Parser::token::TOKEN_NUMBERSTRING:
-                case Parser::token::TOKEN_HEXNUMBERSTRING:
+                case SmaliParser::token::TOKEN_NEGATIVE_INTEGER_LITERAL:
+                case SmaliParser::token::TOKEN_POSITIVE_INTEGER_LITERAL:
+                case SmaliParser::token::TOKEN_LONG_LITERAL:
+                case SmaliParser::token::TOKEN_SHORT_LITERAL:
+                case SmaliParser::token::TOKEN_BYTE_LITERAL:
+                case SmaliParser::token::TOKEN_FLOAT_LITERAL_OR_ID:
+                case SmaliParser::token::TOKEN_DOUBLE_LITERAL_OR_ID:
+                case SmaliParser::token::TOKEN_FLOAT_LITERAL:
+                case SmaliParser::token::TOKEN_DOUBLE_LITERAL:
                     format = &mNumberFormat;
                     break;
                 default:

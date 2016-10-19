@@ -17,15 +17,20 @@
 
 #include "trie.hpp"
 #include <vector>
+#include <map>
+#include <string>
 
 class StringPool {
 public:
     int insert(const std::string &s) {
-        if (tree.has (s)) {
-            return tree[s];
+        auto it = mStrsMap.find (s);
+        if(it != mStrsMap.end ()) {
+            return it->second;
         }
-        std::string *b;
-        tree.insert (s, &b) = count ;
+        mStrsMap[s] = count;
+        const std::string *b;
+        it = mStrsMap.find (s);
+        b = &it->first;
         strs.push_back ((*b).c_str ());
         return count++;
     }
@@ -41,8 +46,9 @@ public:
         return insert (s);
     }
 protected:
-    trie<std::string> tree;
     std::vector<const char*> strs;
+
+    std::map<std::string, int> mStrsMap;
     int count = 0;
 };
 #endif //SMALIPARSER_STRINGPOOL_H

@@ -503,6 +503,9 @@ flags: %empty {$$ = 0;}
 namestring :
       SIMPLE_NAME { $$ = $1; }
     | MEMBER_NAME { $$ = $1; }
+    | ANNOTATION_VISIBILITY { $$ = $1; }
+    | PRIMITIVE_TYPE { $$ = $1; }
+    | VOID_TYPE { $$ = "V"; }
     ;
 
 classtype:
@@ -778,12 +781,24 @@ instruction :
    | OP_IF_LEZ REGISTER COMMA jmplabel{
       $$ = new Op_IF_XXZ(OP_IF_LEZ, driver.stringPool(), $2, $4);
     }
-   | OP_UNUSED_3E
-   | OP_UNUSED_3F
-   | OP_UNUSED_40
-   | OP_UNUSED_41
-   | OP_UNUSED_42
-   | OP_UNUSED_43
+   | OP_UNUSED_3E {
+      $$ = new Op_UNUSED(OP_UNUSED_3E, driver.stringPool());
+    }
+   | OP_UNUSED_3F {
+      $$ = new Op_UNUSED(OP_UNUSED_3F, driver.stringPool());
+    }
+   | OP_UNUSED_40 {
+      $$ = new Op_UNUSED(OP_UNUSED_40, driver.stringPool());
+    }
+   | OP_UNUSED_41 {
+      $$ = new Op_UNUSED(OP_UNUSED_41, driver.stringPool());
+    }
+   | OP_UNUSED_42 {
+      $$ = new Op_UNUSED(OP_UNUSED_42, driver.stringPool());
+    }
+   | OP_UNUSED_43 {
+      $$ = new Op_UNUSED(OP_UNUSED_43, driver.stringPool());
+    }
    | OP_AGET REGISTER COMMA REGISTER COMMA REGISTER {
        $$ = new Op_AGET(OP_AGET, driver.stringPool(), $2, $4, $6);
     }
@@ -925,7 +940,9 @@ instruction :
    | OP_INVOKE_INTERFACE OPEN_BRACE regs CLOSE_BRACE COMMA classtypeOrArray ARROW namestring OPEN_PAREN args CLOSE_PAREN classtypeOrArray {
        $$ = new Op_INVOKE(OP_INVOKE_INTERFACE, driver.stringPool(), $3, $6, $8, $10, $12);
     }
-   | OP_UNUSED_73
+   | OP_UNUSED_73 {
+      $$ = new Op_UNUSED(OP_UNUSED_73, driver.stringPool());
+    }
    | OP_INVOKE_VIRTUAL_RANGE OPEN_BRACE REGISTER DOTDOT REGISTER CLOSE_BRACE COMMA classtypeOrArray ARROW namestring OPEN_PAREN args CLOSE_PAREN classtypeOrArray {
        $$ = new Op_INVOKE_X_RANGE(OP_INVOKE_VIRTUAL_RANGE, driver.stringPool(), $3, $5, $8, $10, $12, $14);
     }
@@ -941,8 +958,12 @@ instruction :
    | OP_INVOKE_INTERFACE_RANGE OPEN_BRACE REGISTER DOTDOT REGISTER CLOSE_BRACE COMMA classtypeOrArray ARROW namestring OPEN_PAREN args CLOSE_PAREN classtypeOrArray {
        $$ = new Op_INVOKE_X_RANGE(OP_INVOKE_INTERFACE_RANGE, driver.stringPool(), $3, $5, $8, $10, $12, $14);
     }
-   | OP_UNUSED_79
-   | OP_UNUSED_7A
+   | OP_UNUSED_79 {
+      $$ = new Op_UNUSED(OP_UNUSED_79, driver.stringPool());
+    }
+   | OP_UNUSED_7A {
+      $$ = new Op_UNUSED(OP_UNUSED_7A, driver.stringPool());
+    }
    | OP_NEG_INT REGISTER COMMA REGISTER {
        $$ = new Op_NEGNOT_X(OP_NEG_INT, driver.stringPool(), $2, $4);
     }
@@ -1255,7 +1276,7 @@ instruction :
    | OP_USHR_INT_LIT8 REGISTER COMMA REGISTER COMMA integer {
        $$ = new Op_X_INT_LIT(OP_USHR_INT_LIT8, driver.stringPool(), $2, $4, $6);
     }
-   | OP_IGET_VOLATILE
+   /* | OP_IGET_VOLATILE
    | OP_IPUT_VOLATILE
    | OP_SGET_VOLATILE
    | OP_SPUT_VOLATILE
@@ -1282,8 +1303,10 @@ instruction :
    | OP_INVOKE_SUPER_QUICK_RANGE
    | OP_IPUT_OBJECT_VOLATILE
    | OP_SGET_OBJECT_VOLATILE
-   | OP_SPUT_OBJECT_VOLATILE
-   | OP_UNUSED_FF
+   | OP_SPUT_OBJECT_VOLATILE */
+   | OP_UNUSED_FF  {
+      $$ = new Op_UNUSED(OP_UNUSED_FF, driver.stringPool());
+    }
    | COLON namestring {
        $$ = new Op_JmpLabel(OP_JMPLABEL, driver.stringPool(), $2);
     }

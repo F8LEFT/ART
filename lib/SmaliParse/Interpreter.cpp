@@ -98,10 +98,13 @@ void Interpreter::setCurMethodRegSize (int size)
 void Interpreter::addOpcode (OpCode *code)
 {
 #ifdef DEBUG
-    std::string tStr = trim(mLexer->text ());
+    if(code->op != OP_CONST_STRING && code->op != OP_CONST_STRING_JUMBO) {
+        std::string tStr = trim(mLexer->text ());
 //    std::cout << tStr << std::endl;
-    std::string codeStr = code->toString ();
-    assert (codeStr == tStr);
+        std::string codeStr = code->toString ();
+        assert (codeStr == tStr);
+    }
+
 #endif
     mCurMethod->mInsList.push_back (code);
 }
