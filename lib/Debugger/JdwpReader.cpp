@@ -1,0 +1,98 @@
+//===- JdwpReader.cpp - ART-DEBUGGER ----------------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===----------------------------------------------------------------------===//
+
+#include "Debugger/JdwpReader.h"
+
+#include <netinet/in.h>
+using namespace JDWP;
+JdwpReader::JdwpReader (const uint8_t *bytes,uint32_t available)
+        : p_(bytes)
+{
+    end_ =  bytes + available;
+}
+
+
+uint8_t JdwpReader::Read1 ()
+{
+    if(error)
+        return -1;
+    if(size() >= 1)
+        return *p_++;
+    error = true;
+    return -1;
+}
+
+uint16_t JdwpReader::Read2 ()
+{
+    if(error)
+        return -1;
+    if(size() >= 2) {
+        uint16_t d = *((uint16_t *) p_);
+        uint16_t result = ntohs(d);;
+        p_ += 2;
+        return result;
+    }
+    error = true;
+    return -1;
+
+}
+
+uint32_t JdwpReader::Read4 ()
+{
+    if(error)
+        return -1;
+    if(size() >= 4) {
+        uint32_t d = *((uint32_t *) p_);
+        uint32_t result = ntohl (d);;
+        p_ += 4;
+        return result;
+    }
+    error = true;
+    return -1;
+}
+
+uint64_t JdwpReader::Read8 ()
+{
+    if(error)
+        return -1;
+    if(size() >= 8 ) {
+        uint64_t high = Read4();
+        uint64_t low = Read4 ();
+        return (high << 32) | low;
+    }
+    error = true;
+    return -1;
+}
+
+uint64_t JdwpReader::ReadValue (size_t width)
+{
+    uint64_t value = -1;
+    switch (width) {
+        case 1: value = Read1(); break;
+        case 2: value = Read2(); break;
+        case 4: value = Read4(); break;
+        case 8: value = Read8(); break;
+        default: break;
+    }
+    return value;
+}
+
+std::string JdwpReader::ReadString ()
+{
+    if(error)
+        return "";
+    auto len = Read4 ();
+    if(size() >= len) {
+        std::string rel((char*)p_, len);
+        p_+= len;
+        return move(rel);
+    }
+    error = true;
+    return "";
+}
