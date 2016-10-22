@@ -34,6 +34,12 @@ namespace JDWP {
 
         uint64_t ReadValue(size_t width);
 
+        uint32_t ReadFieldId() {return Read4 (); }
+        uint32_t ReadMethodId() {return Read4 ();}
+        uint64_t ReadObjectId() {return Read8 ();}
+        uint64_t ReadRefTypeId() {return Read8 ();}
+        uint64_t ReadFrameId() { return Read8();}
+
         std::string ReadString();
 
         // Returns the number of bytes remaining.

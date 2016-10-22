@@ -152,7 +152,7 @@
 
 namespace JDWP {
     namespace VirtualMachine {
-        static uint8_t set_ = 1;
+        uint8_t set_ = 1;
 
         struct Version : public JdwpReader {
             Version(const uint8_t* bytes, uint32_t available);
@@ -187,6 +187,345 @@ namespace JDWP {
             static std::string buildReq(int id = 0);
             const static uint8_t cmd = 3;
         };
+
+        struct AllThreads : public JdwpReader {
+            AllThreads(const uint8_t* bytes, uint32_t available);
+            uint32_t mSize;
+            std::vector<ObjectId> mThreadIds;
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 4;
+        };
+
+        struct TopLevelThreadGroups : public JdwpReader {
+            TopLevelThreadGroups(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mGroups;
+            ObjectId mThreadGroupId;
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 5;
+        };
+
+        struct Dispose : public JdwpReader {
+            Dispose(const uint8_t* bytes, uint32_t available);
+
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 6;
+        };
+
+        struct IDSizes : public JdwpReader {
+            IDSizes(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mFieldIdSize;
+            uint32_t mMethodIdSize;
+            uint32_t mObjectIdSize;
+            uint32_t mRefTypeIdSize;
+            uint32_t mFrameIdSize;
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 7;
+        };
+
+        struct Suspend : public JdwpReader {
+            Suspend(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 8;
+        };
+
+        struct Resume : public JdwpReader {
+            Resume(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 9;
+        };
+
+        struct Exit : public JdwpReader {
+            Exit(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 10;
+        };
+
+        struct CreateString : public JdwpReader {
+            CreateString(const uint8_t* bytes, uint32_t available);
+            ObjectId mStringId;
+
+            static std::string buildReq(const std::string str, int id = 0);
+            const static uint8_t cmd = 11;
+        };
+
+        struct Capabilities : public JdwpReader {
+            Capabilities(const uint8_t* bytes, uint32_t available);
+
+            uint8_t mCanWatchFieldModification;
+            uint8_t mCanWatchFieldAccess;
+            uint8_t mCanGetBytecodes;
+            uint8_t mCanGetSyntheticAttribute;
+            uint8_t mCanGetOwnedMonitorInfo;
+            uint8_t mCanGetCurrentContendedMonitor;
+            uint8_t mCanGetMonitorInfo;
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 12;
+        };
+
+        struct ClassPaths : public JdwpReader {
+            ClassPaths(const uint8_t* bytes, uint32_t available);
+
+            std::string mSlash; // string "/"?
+            uint32_t mClassPathSize;
+            std::vector<std::string> mClassPath;
+            uint32_t mBootClassPathSize;
+            std::vector<std::string> mBootClassPath;
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 13;
+        };
+
+        struct DisposeObjects : public JdwpReader {
+            DisposeObjects(const uint8_t* bytes, uint32_t available);
+
+            struct DispObj {
+                ObjectId id;
+                uint32_t refCount;
+            };
+            static std::string buildReq (
+                    const std::vector<DispObj> &objs,int id = 0);
+            const static uint8_t cmd = 14;
+        };
+
+        struct HoldEvents : public JdwpReader {
+            HoldEvents(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 15;
+        };
+
+        struct ReleaseEvents : public JdwpReader {
+            ReleaseEvents(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 16;
+        };
+
+        struct CapabilitiesNew : public Capabilities {
+            CapabilitiesNew(const uint8_t* bytes, uint32_t available);
+
+            uint8_t mCanRedefineClasses;
+            uint8_t mCanAddMethod;
+            uint8_t mCanUnrestrictedlyRedefineClasses;
+            uint8_t mCanPopFrames;
+            uint8_t mCanUseInstanceFilters;
+            uint8_t mCanGetSourceDebugExtension;
+            uint8_t mCanRequestVMDeathEvent;
+            uint8_t mCanSetDefaultStratum;
+            uint8_t mCanGetInstanceInfo;
+            uint8_t mCanRequestMonitorEvents;
+            uint8_t mCanGetMonitorFrameInfo;
+            uint8_t mCanUseSourceNameFilters;
+            uint8_t mCanGetConstantPool;
+            uint8_t mCanForceEarlyReturn;
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 17;
+        };
+
+        struct RedefineClasses : public JdwpReader {
+            RedefineClasses(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 18;
+        };
+
+        struct SetDefaultStratum : public JdwpReader {
+            SetDefaultStratum(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 19;
+        };
+
+        struct AllClassesWithGeneric : public JdwpReader {
+            AllClassesWithGeneric(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mSize;
+            std::vector<ClassInfo> mInfos;
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 20;
+        };
+
+        struct InstanceCounts : public JdwpReader {
+            InstanceCounts(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mCountSize;
+            std::vector<uint64_t > mCounts;
+
+            static std::string buildReq(
+                    const std::vector<RefTypeId > &class_ids, int id = 0);
+            const static uint8_t cmd = 21;
+        };
+    }
+    namespace ReferenceType
+    {
+        uint8_t set_ = 2;
+
+        struct Signature : public JdwpReader {
+            Signature(const uint8_t* bytes, uint32_t available);
+
+            std::string mSignature;
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 1;
+        };
+
+        struct ClassLoader : public JdwpReader {
+            ClassLoader(const uint8_t* bytes, uint32_t available);
+            ObjectId mClassId;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 2;
+        };
+
+        struct Modifiers : public JdwpReader {
+            Modifiers(const uint8_t* bytes, uint32_t available);
+            uint32_t mFlags;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 3;
+        };
+
+        struct Fields : public JdwpReader {
+            Fields(const uint8_t* bytes, uint32_t available);
+            uint32_t mSize;
+            std::vector<FieldInfo> mFields;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 4;
+        };
+
+        struct Methods : public JdwpReader {
+            Methods(const uint8_t* bytes, uint32_t available);
+            uint32_t mSize;
+            std::vector<MethodInfo> mMethods;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 5;
+        };
+
+        struct GetValues : public JdwpReader {
+            GetValues(const uint8_t* bytes, uint32_t available);
+            bool isPrimateTag;
+
+            JValue_Private mPrivateValue;
+            ObjectId mObjId;
+            static std::string buildReq(RefTypeId refTypeId, int32_t field_count,
+                                const std::vector<FieldId > &fieldids, int id = 0);
+            const static uint8_t cmd = 6;
+        };
+
+        struct SourceFile : public JdwpReader {
+            SourceFile(const uint8_t* bytes, uint32_t available);
+
+            std::string mSourceFile;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 7;
+        };
+
+        struct NestedTypes : public JdwpReader {
+            NestedTypes(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 8;
+        };
+
+        struct Status : public JdwpReader {
+            Status(const uint8_t* bytes, uint32_t available);
+            uint32_t mClassStatus;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 9;
+        };
+
+        struct Interfaces : public JdwpReader {
+            Interfaces(const uint8_t* bytes, uint32_t available);
+            uint32_t mCounts;
+            std::vector<RefTypeId> mDirectInterfaces;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 10;
+        };
+
+        struct ClassObject : public JdwpReader {
+            ClassObject(const uint8_t* bytes, uint32_t available);
+            ObjectId mClassId;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 11;
+        };
+
+        struct SourceDebugExtension : public JdwpReader {
+            SourceDebugExtension(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 12;
+        };
+
+        struct SignatureWithGeneric : public Signature {
+            SignatureWithGeneric(const uint8_t* bytes, uint32_t available);
+            std::string mSignatureGeneric;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 13;
+        };
+
+        struct FieldsWithGeneric : public JdwpReader {
+            FieldsWithGeneric(const uint8_t* bytes, uint32_t available);
+            uint32_t mSize;
+            std::vector<FieldInfo> mFields;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 14;
+        };
+
+        struct MethodsWithGeneric : public JdwpReader {
+            MethodsWithGeneric(const uint8_t* bytes, uint32_t available);
+            uint32_t mSize;
+            std::vector<MethodInfo> mMethods;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 15;
+        };
+
+        struct Instances : public JdwpReader {
+            Instances(const uint8_t* bytes, uint32_t available);
+            struct tagObj {
+                JDWP::JdwpTag tag;
+                ObjectId objectId;
+            };
+            uint32_t mSize;
+            std::vector<tagObj> mObjTags;
+
+            static std::string buildReq(RefTypeId refTypeId, int32_t maxcount,
+                                        int id = 0);
+            const static uint8_t cmd = 16;
+        };
+
+        struct ClassFileVersion : public JdwpReader {
+            ClassFileVersion(const uint8_t* bytes, uint32_t available);
+
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 17;
+        };
+
+        struct ConstantPool : public JdwpReader {
+            ConstantPool(const uint8_t* bytes, uint32_t available);
+
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 18;
+        };
     }
 
     bool Write1(std::string &s, uint8_t v);
@@ -194,6 +533,11 @@ namespace JDWP {
     bool Write4(std::string &s, uint32_t v);
     bool Write8(std::string &s, uint64_t v);
     bool WriteString(std::string &s, const std::string &l);
+    bool WriteFieldId(std::string &s, uint32_t v);
+    bool WriteMethodId(std::string &s, uint32_t v);
+    bool WriteObjectId(std::string &s, uint64_t v);
+    bool WriteRefTypeId(std::string &s, uint64_t v);
+    bool WriteFrameId(std::string &s, uint64_t v);
     std::string BuildReq(int id, int cmdset, int cmd, const std::string &extra);
 }
 

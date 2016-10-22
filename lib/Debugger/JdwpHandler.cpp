@@ -38,7 +38,7 @@ VirtualMachine::ClassesBySignature::ClassesBySignature (
     for(int i = 0; i < mSize; i++) {
         auto &info = mInfos[i];
         info.mRefTypeTag = Read1 ();
-        info.mTypeId = Read8 ();
+        info.mTypeId = ReadRefTypeId ();
         info.mStatus = Read4 ();
     }
 }
@@ -88,6 +88,32 @@ bool JDWP::WriteString(std::string &s, const std::string &v)
     return true;
 }
 
+
+bool ::JDWP::WriteFieldId (std::string &s,uint32_t v)
+{
+    return Write4 (s, v);
+}
+
+bool ::JDWP::WriteMethodId (std::string &s,uint32_t v)
+{
+    return Write4 (s, v);
+}
+
+bool ::JDWP::WriteObjectId (std::string &s,uint64_t v)
+{
+    return Write8 (s, v);
+}
+
+bool ::JDWP::WriteRefTypeId (std::string &s,uint64_t v)
+{
+    return Write8 (s, v);
+}
+
+bool ::JDWP::WriteFrameId (std::string &s,uint64_t v)
+{
+    return Write8 (s, v);
+}
+
 std::string JDWP::BuildReq (int id,int cmdset,int cmd,
                               const std::string &extra)
 {
@@ -102,8 +128,9 @@ std::string JDWP::BuildReq (int id,int cmdset,int cmd,
     return move(rel);
 }
 
-
-VirtualMachine::AllClasses::AllClasses (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+VirtualMachine::AllClasses::AllClasses (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mSize = Read4 ();
     mInfos.resize (mSize);
@@ -111,7 +138,7 @@ VirtualMachine::AllClasses::AllClasses (const uint8_t *bytes,uint32_t available)
         auto &info = mInfos[i];
 
         info.mRefTypeTag = Read1 ();
-        info.mTypeId = Read8 ();
+        info.mTypeId = ReadRefTypeId ();
         info.mDescriptor = ReadString ();
         info.mStatus = Read4 ();
     }
@@ -120,5 +147,650 @@ VirtualMachine::AllClasses::AllClasses (const uint8_t *bytes,uint32_t available)
 std::string VirtualMachine::AllClasses::buildReq (int id)
 {
     std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::AllThreads::AllThreads (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSize = Read4 ();
+    mThreadIds.resize (mSize);
+    for(int i = 0; i < mSize; i++) {
+        mThreadIds[i] = ReadObjectId ();
+    }
+}
+
+std::string VirtualMachine::AllThreads::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::TopLevelThreadGroups::TopLevelThreadGroups (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mGroups = Read4 ();
+    mThreadGroupId = ReadObjectId ();
+}
+
+std::string VirtualMachine::TopLevelThreadGroups::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::Dispose::Dispose (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+}
+
+std::string VirtualMachine::Dispose::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::IDSizes::IDSizes (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mFieldIdSize = Read4 ();
+    mMethodIdSize = Read4 ();
+    mObjectIdSize = Read4 ();
+    mRefTypeIdSize = Read4 ();
+    mFrameIdSize = Read4 ();
+}
+
+std::string VirtualMachine::IDSizes::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::Suspend::Suspend (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string VirtualMachine::Suspend::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::Resume::Resume (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string VirtualMachine::Resume::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::Exit::Exit (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string VirtualMachine::Exit::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::CreateString::CreateString (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mStringId = ReadObjectId ();
+}
+
+std::string VirtualMachine::CreateString::buildReq (
+        const std::string str,int id)
+{
+    std::string rel;
+    WriteString (rel, str);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::Capabilities::Capabilities (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mCanWatchFieldModification = Read1 ();
+    mCanWatchFieldAccess = Read1 ();
+    mCanGetBytecodes = Read1 ();
+    mCanGetSyntheticAttribute = Read1 ();
+    mCanGetOwnedMonitorInfo = Read1 ();
+    mCanGetCurrentContendedMonitor = Read1 ();
+    mCanGetMonitorInfo = Read1 ();
+}
+
+std::string VirtualMachine::Capabilities::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::ClassPaths::ClassPaths (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSlash = ReadString ();
+
+    mClassPathSize = Read4 ();
+    mClassPath.resize (mClassPathSize);
+    for(int i = 0; i < mClassPathSize; i++) {
+        mClassPath[i] = ReadString ();
+    }
+
+    mBootClassPathSize = Read4 ();
+    mBootClassPath.resize (mBootClassPathSize);
+    for(int i = 0; i < mBootClassPathSize; i++) {
+        mBootClassPath[i] = ReadString ();
+    }
+}
+
+std::string VirtualMachine::ClassPaths::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::DisposeObjects::DisposeObjects (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+}
+
+std::string VirtualMachine::DisposeObjects::buildReq (
+        const std::vector<DispObj> &objs,int id)
+{
+    std::string rel;
+    Write4 (rel, objs.size ());
+    for(auto it = objs.begin (), itEnd = objs.end ();
+            it != itEnd; it++) {
+        WriteObjectId (rel, it->id);
+        Write4 (rel, it->refCount);
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::HoldEvents::HoldEvents (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string VirtualMachine::HoldEvents::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::ReleaseEvents::ReleaseEvents (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string VirtualMachine::ReleaseEvents::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::CapabilitiesNew::CapabilitiesNew (
+        const uint8_t *bytes,uint32_t available)
+        : Capabilities (bytes,available)
+{
+    mCanRedefineClasses = Read1 ();
+    mCanAddMethod = Read1 ();
+    mCanUnrestrictedlyRedefineClasses = Read1 ();
+    mCanPopFrames = Read1 ();
+    mCanUseInstanceFilters = Read1 ();
+    mCanGetSourceDebugExtension = Read1 ();
+    mCanRequestVMDeathEvent = Read1 ();
+    mCanSetDefaultStratum = Read1 ();
+    mCanGetInstanceInfo = Read1 ();
+    mCanRequestMonitorEvents = Read1 ();
+    mCanGetMonitorFrameInfo = Read1 ();
+    mCanUseSourceNameFilters = Read1 ();
+    mCanGetConstantPool = Read1 ();
+    mCanForceEarlyReturn = Read1 ();
+
+    // Fill in reserved22 through reserved32; note count started at 1.
+    for (size_t i = 22; i <= 32; ++i) {
+        auto reversed = Read1 ();
+    }
+}
+
+std::string VirtualMachine::CapabilitiesNew::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::RedefineClasses::RedefineClasses (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string VirtualMachine::RedefineClasses::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+VirtualMachine::SetDefaultStratum::SetDefaultStratum (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string VirtualMachine::SetDefaultStratum::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::AllClassesWithGeneric::AllClassesWithGeneric (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSize = Read4 ();
+    mInfos.resize (mSize);
+    for(int i = 0; i < mSize; i++) {
+        auto &info = mInfos[i];
+
+        info.mRefTypeTag = Read1 ();
+        info.mTypeId = ReadRefTypeId ();
+        info.mDescriptor = ReadString ();
+        info.mGenericSignature = ReadString ();
+        info.mStatus = Read4 ();
+    }
+}
+
+std::string VirtualMachine::AllClassesWithGeneric::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+VirtualMachine::InstanceCounts::InstanceCounts (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mCountSize = Read4 ();
+    mCounts.resize (mCountSize);
+    for(auto i = 0; i < mCountSize; i++) {
+        mCounts[i] = Read8 ();
+    }
+}
+
+std::string VirtualMachine::InstanceCounts::buildReq (
+        const std::vector<RefTypeId> &class_ids,int id)
+{
+    std::string rel;
+    Write4(rel, class_ids.size ());
+    for(auto it = class_ids.begin (), itEnd = class_ids.end ();
+            it != itEnd; it++) {
+        WriteRefTypeId (rel, *it);
+    }
+
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::Signature::Signature (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSignature = ReadString ();
+}
+
+std::string ReferenceType::Signature::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+ReferenceType::ClassLoader::ClassLoader (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mClassId = ReadObjectId ();
+}
+
+std::string ReferenceType::ClassLoader::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::Modifiers::Modifiers (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mFlags = Read4 ();
+}
+
+std::string ReferenceType::Modifiers::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::Fields::Fields (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSize = Read4 ();
+    mFields.resize (mSize);
+    for (int i = 0; i<mSize; ++i)
+    {
+        mFields[i].mFieldId = ReadFieldId ();
+        mFields[i].mName = ReadString ();
+        mFields[i].mDescriptor = ReadString ();
+        mFields[i].mFlags = Read4 ();
+    }
+}
+
+std::string ReferenceType::Fields::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::Methods::Methods (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSize = Read4 ();
+    mMethods.resize (mSize);
+    for (int i = 0; i<mSize; ++i)
+    {
+        mMethods[i].mMethodId = ReadMethodId ();
+        mMethods[i].mName = ReadString ();
+        mMethods[i].mSignature = ReadString ();
+        mMethods[i].mFlags = Read4 ();
+    }
+}
+
+std::string ReferenceType::Methods::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::GetValues::GetValues (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    JdwpTag tag = (JdwpTag)Read1 ();
+    isPrimateTag = IsPrimitiveTag (tag);
+    if(isPrimateTag) {
+        mPrivateValue.tag = tag;
+        if (tag == JDWP::JT_BOOLEAN || tag == JDWP::JT_BYTE) {
+            auto c = Read1 ();
+            mPrivateValue.c = c;
+        } else if (tag == JDWP::JT_CHAR || tag == JDWP::JT_SHORT) {
+            auto s = Read2();
+            mPrivateValue.s = s;
+        } else if (tag == JDWP::JT_FLOAT || tag == JDWP::JT_INT) {
+            auto i = Read4 ();
+            mPrivateValue.i = i;
+        } else if (tag == JDWP::JT_DOUBLE || tag == JDWP::JT_LONG) {
+            auto l = Read8 ();
+            mPrivateValue.j = l;
+        } else {
+            // unknown tag
+        }
+    } else {
+        mObjId = ReadObjectId ();
+    }
+}
+
+std::string ReferenceType::GetValues::buildReq (
+        RefTypeId refTypeId,int32_t field_count,
+        const std::vector<FieldId> &fieldids,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    Write4 (rel, field_count);
+    for(auto it = fieldids.begin (), itEnd = fieldids.end ();
+            it != itEnd; it++) {
+        WriteFieldId (rel, *it);
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::SourceFile::SourceFile (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSourceFile = ReadString ();
+}
+
+std::string ReferenceType::SourceFile::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::NestedTypes::NestedTypes (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string ReferenceType::NestedTypes::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::Status::Status (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mClassStatus = Read4 ();
+}
+
+std::string ReferenceType::Status::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+ReferenceType::Interfaces::Interfaces (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mCounts = Read4 ();
+    mDirectInterfaces.resize (mCounts);
+    for(auto i = 0; i < mCounts; i++) {
+        mDirectInterfaces[i] = ReadRefTypeId ();
+    }
+}
+
+std::string ReferenceType::Interfaces::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::ClassObject::ClassObject (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mClassId = ReadObjectId ();
+}
+
+std::string ReferenceType::ClassObject::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+ReferenceType::SourceDebugExtension::SourceDebugExtension (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string ReferenceType::SourceDebugExtension::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::SignatureWithGeneric::SignatureWithGeneric (
+        const uint8_t *bytes,uint32_t available)
+    : Signature (bytes,available)
+{
+    mSignatureGeneric = ReadString ();
+}
+
+std::string ReferenceType::SignatureWithGeneric::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel,refTypeId);
+    return move (BuildReq (id,set_,cmd,rel));
+}
+
+ReferenceType::FieldsWithGeneric::FieldsWithGeneric (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSize = Read4 ();
+    mFields.resize (mSize);
+    for (int i = 0; i<mSize; ++i)
+    {
+        mFields[i].mFieldId = ReadFieldId ();
+        mFields[i].mName = ReadString ();
+        mFields[i].mDescriptor = ReadString ();
+        mFields[i].mGenericSignature = ReadString ();
+        mFields[i].mFlags = Read4 ();
+    }
+}
+
+std::string ReferenceType::FieldsWithGeneric::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::MethodsWithGeneric::MethodsWithGeneric (
+        const uint8_t *bytes,uint32_t available):
+        JdwpReader (bytes,available)
+{
+    mSize = Read4 ();
+    mMethods.resize (mSize);
+    for (int i = 0; i<mSize; ++i)
+    {
+        mMethods[i].mMethodId = ReadMethodId ();
+        mMethods[i].mName = ReadString ();
+        mMethods[i].mSignature = ReadString ();
+        mMethods[i].mGenericSignature = ReadString ();
+        mMethods[i].mFlags = Read4 ();
+    }
+}
+
+std::string ReferenceType::MethodsWithGeneric::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::Instances::Instances (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSize = Read4 ();
+    mObjTags.resize (mSize);
+    for(auto i = 0; i < mSize; i++) {
+        mObjTags[i].tag = (JDWP::JdwpTag)Read1 ();
+        mObjTags[i].objectId = ReadObjectId ();
+    }
+}
+
+std::string ReferenceType::Instances::buildReq (
+        RefTypeId refTypeId, int32_t maxcount, int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    Write4(rel, maxcount);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::ClassFileVersion::ClassFileVersion (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string ReferenceType::ClassFileVersion::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ReferenceType::ConstantPool::ConstantPool (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string ReferenceType::ConstantPool::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
     return move(BuildReq (id, set_, cmd, rel));
 }

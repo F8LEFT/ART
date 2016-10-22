@@ -30,16 +30,16 @@ namespace JDWP {
 #define kInputBufferSize    (256*1024)
 #define kMagicHandshakeLen  14      /* "JDWP-Handshake" */
 
-#pragma pack (1)
-    struct JdwpReqHeader {
-        u4  length;
-        u4  id;
-        u1  flag;
-        u1  cmdSet;
-        u1  cmd;
-        u1  extradata[0];
-    };
-#pragma pack ()
+//#pragma pack (1)
+//    struct JdwpReqHeader {
+//        u4  length;
+//        u4  id;
+//        u1  flag;
+//        u1  cmdSet;
+//        u1  cmd;
+//        u1  extradata[0];
+//    };
+//#pragma pack ()
 
 }
 
