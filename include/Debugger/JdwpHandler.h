@@ -586,6 +586,96 @@ namespace JDWP {
         };
     }
 
+    namespace InterfaceType
+    {
+        uint8_t set_ = 5;
+    }
+
+    namespace Method
+    {
+        uint8_t set_ = 6;
+
+        struct LineTable : public JdwpReader {
+            struct LineLabel {
+                uint64_t address;
+                uint32_t line_number;
+            };
+        public:
+            LineTable(const uint8_t* bytes, uint32_t available);
+
+            uint64_t mStart;
+            uint64_t mEnd;
+
+            size_t mNumLines;
+            std::vector<LineLabel> mItems;
+
+            static std::string buildReq(RefTypeId refTypeId, MethodId method_id,
+                                        int id = 0);
+            const static uint8_t cmd = 1;
+        };
+
+        struct VariableTable : public JdwpReader {
+            struct VarLabel {
+                uint64_t startAddress;
+                std::string name;
+                std::string descriptor;
+                std::string signature;
+                uint32_t size;
+                uint32_t slot;
+            };
+        public:
+            VariableTable(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mNumArgRegisters;
+            size_t mVariableCount;
+            std::vector<VarLabel> mItems;
+
+            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+                                        int id = 0);
+            const static uint8_t cmd = 2;
+        };
+
+        struct Bytecodes : public JdwpReader {
+            Bytecodes(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mByteCodesSize;
+            std::vector<uint8_t > mByteCodes;
+            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+                                        int id = 0);
+            const static uint8_t cmd = 3;
+        };
+
+        struct IsObsolete : public JdwpReader {
+            IsObsolete(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+                                        int id = 0);
+            const static uint8_t cmd = 4;
+        };
+
+        struct VariableTableWithGeneric : public JdwpReader {
+            struct VarLabel {
+                uint64_t startAddress;
+                std::string name;
+                std::string descriptor;
+                std::string signature;
+                uint32_t size;
+                uint32_t slot;
+            };
+        public:
+            VariableTableWithGeneric(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mNumArgRegisters;
+            size_t mVariableCount;
+            std::vector<VarLabel> mItems;
+
+            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+                                        int id = 0);
+            const static uint8_t cmd = 5;
+        };
+
+    }
+
     bool Write1(std::string &s, uint8_t v);
     bool Write2(std::string &s, uint16_t v);
     bool Write4(std::string &s, uint32_t v);

@@ -909,3 +909,112 @@ std::string ArrayType::NewInstance::buildReq (
     return move(BuildReq (id, set_, cmd, rel));
 }
 
+Method::LineTable::LineTable (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mStart = Read8 ();
+    mEnd = Read8();
+    mNumLines = Read4();
+    mItems.resize (mNumLines);
+    for(auto i = 0; i < mNumLines; i++) {
+        mItems[i].address = Read8 ();
+        mItems[i].line_number = Read4 ();
+    }
+}
+
+std::string Method::LineTable::buildReq (
+        RefTypeId refTypeId,MethodId method_id,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    WriteMethodId (rel, method_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+Method::VariableTable::VariableTable (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mNumArgRegisters = Read4 ();
+    mVariableCount = Read4();
+    mItems.resize (mVariableCount);
+    for(auto i = 0; i < mVariableCount; i++) {
+        mItems[i].startAddress = Read8 ();
+        mItems[i].name = ReadString ();
+        mItems[i].descriptor = ReadString ();
+        mItems[i].size = Read4 ();
+        mItems[i].slot = Read4 ();
+    }
+}
+
+std::string Method::VariableTable::buildReq (
+        RefTypeId class_id,MethodId method_id,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, class_id);
+    WriteMethodId (rel, method_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+Method::Bytecodes::Bytecodes (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mByteCodesSize = Read4();
+    mByteCodes.resize (mByteCodesSize);
+    for(auto i = 0; i < mByteCodesSize; i++) {
+        mByteCodes[i] = Read1 ();
+    }
+}
+
+std::string Method::Bytecodes::buildReq (
+        RefTypeId class_id,MethodId method_id,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, class_id);
+    WriteMethodId (rel, method_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+Method::IsObsolete::IsObsolete (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string Method::IsObsolete::buildReq (
+        RefTypeId class_id,MethodId method_id,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, class_id);
+    WriteMethodId (rel, method_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+Method::VariableTableWithGeneric::VariableTableWithGeneric (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mNumArgRegisters = Read4 ();
+    mVariableCount = Read4();
+    mItems.resize (mVariableCount);
+    for(auto i = 0; i < mVariableCount; i++) {
+        mItems[i].startAddress = Read8 ();
+        mItems[i].name = ReadString ();
+        mItems[i].descriptor = ReadString ();
+        mItems[i].signature = ReadString ();
+        mItems[i].size = Read4 ();
+        mItems[i].slot = Read4 ();
+    }
+}
+
+std::string Method::VariableTableWithGeneric::buildReq (
+        RefTypeId class_id,MethodId method_id,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, class_id);
+    WriteMethodId (rel, method_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
