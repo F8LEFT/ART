@@ -893,3 +893,19 @@ std::string ClassType::NewInstance::buildReq (
     return move(BuildReq (id, set_, cmd, rel));
 }
 
+ArrayType::NewInstance::NewInstance (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mObject.tag = (JdwpTag)Read1 ();
+    mObject.L = ReadObjectId ();
+}
+
+std::string ArrayType::NewInstance::buildReq (
+        RefTypeId arrayTypeId,uint32_t length,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, arrayTypeId);
+    Write4 (rel, length);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+

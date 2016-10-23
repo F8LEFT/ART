@@ -571,6 +571,21 @@ namespace JDWP {
         };
     }
 
+    namespace ArrayType
+    {
+        uint8_t set_ = 4;
+
+        struct NewInstance : public JdwpReader {
+            NewInstance(const uint8_t* bytes, uint32_t available);
+
+            JValue mObject;
+
+            static std::string buildReq(RefTypeId arrayTypeId, uint32_t length,
+                                        int id = 0);
+            const static uint8_t cmd = 1;
+        };
+    }
+
     bool Write1(std::string &s, uint8_t v);
     bool Write2(std::string &s, uint16_t v);
     bool Write4(std::string &s, uint32_t v);
