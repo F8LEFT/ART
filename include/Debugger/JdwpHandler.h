@@ -416,8 +416,7 @@ namespace JDWP {
             GetValues(const uint8_t* bytes, uint32_t available);
             bool isPrimateTag;
 
-            JValue_Private mPrivateValue;
-            ObjectId mObjId;
+            JValue mValue;
             static std::string buildReq(RefTypeId refTypeId, int32_t field_count,
                                 const std::vector<FieldId > &fieldids, int id = 0);
             const static uint8_t cmd = 6;
@@ -527,17 +526,63 @@ namespace JDWP {
             const static uint8_t cmd = 18;
         };
     }
+    namespace ClassType
+    {
+        uint8_t set_ = 3;
+
+        struct Superclass : public JdwpReader {
+            Superclass(const uint8_t* bytes, uint32_t available);
+            RefTypeId mSuperClassId;
+
+            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            const static uint8_t cmd = 1;
+        };
+
+        struct SetValues : public JdwpReader {
+            SetValues(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(RefTypeId refTypeId,
+                                        const std::vector<FieldInfo> &infos, int id = 0);
+            const static uint8_t cmd = 2;
+        };
+
+        struct InvokeMethod : public JdwpReader {
+            InvokeMethod(const uint8_t* bytes, uint32_t available);
+
+            JValue mResult;
+            JValue mObject;
+
+            static std::string buildReq(RefTypeId class_id, ObjectId thread_id,
+                          MethodId method_id,const std::vector<JValue> &argValues,
+                          uint32_t options, int id = 0);
+            const static uint8_t cmd = 3;
+        };
+
+        struct NewInstance : public JdwpReader {
+            NewInstance(const uint8_t* bytes, uint32_t available);
+
+            JValue mResult;
+            JValue mObject;
+
+            static std::string buildReq(RefTypeId class_id, ObjectId thread_id,
+                         MethodId method_id,const std::vector<JValue> &argValues,
+                         uint32_t options, int id = 0);
+            const static uint8_t cmd = 4;
+        };
+    }
 
     bool Write1(std::string &s, uint8_t v);
     bool Write2(std::string &s, uint16_t v);
     bool Write4(std::string &s, uint32_t v);
     bool Write8(std::string &s, uint64_t v);
+    bool WriteValue(std::string &s, uint64_t v, size_t width);
     bool WriteString(std::string &s, const std::string &l);
     bool WriteFieldId(std::string &s, uint32_t v);
     bool WriteMethodId(std::string &s, uint32_t v);
     bool WriteObjectId(std::string &s, uint64_t v);
     bool WriteRefTypeId(std::string &s, uint64_t v);
     bool WriteFrameId(std::string &s, uint64_t v);
+    bool WriteThreadId(std::string &s, uint64_t v);
     std::string BuildReq(int id, int cmdset, int cmd, const std::string &extra);
 }
 

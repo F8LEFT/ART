@@ -128,6 +128,27 @@ std::string JDWP::BuildReq (int id,int cmdset,int cmd,
     return move(rel);
 }
 
+bool ::JDWP::WriteValue (std::string &s,uint64_t v,size_t width)
+{
+    switch (width) {
+        case 1:
+            return Write1 (s, v); break;
+        case 2:
+            return Write2 (s, v); break;
+        case 4:
+            return Write4 (s, v); break;
+        case 8:
+            return Write8 (s, v); break;
+        default: break;
+    }
+    return false;
+}
+
+bool ::JDWP::WriteThreadId (std::string &s,uint64_t v)
+{
+    return Write8 (s, v);
+}
+
 VirtualMachine::AllClasses::AllClasses (
         const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)
@@ -560,26 +581,9 @@ ReferenceType::GetValues::GetValues (
 {
     JdwpTag tag = (JdwpTag)Read1 ();
     isPrimateTag = IsPrimitiveTag (tag);
-    if(isPrimateTag) {
-        mPrivateValue.tag = tag;
-        if (tag == JDWP::JT_BOOLEAN || tag == JDWP::JT_BYTE) {
-            auto c = Read1 ();
-            mPrivateValue.c = c;
-        } else if (tag == JDWP::JT_CHAR || tag == JDWP::JT_SHORT) {
-            auto s = Read2();
-            mPrivateValue.s = s;
-        } else if (tag == JDWP::JT_FLOAT || tag == JDWP::JT_INT) {
-            auto i = Read4 ();
-            mPrivateValue.i = i;
-        } else if (tag == JDWP::JT_DOUBLE || tag == JDWP::JT_LONG) {
-            auto l = Read8 ();
-            mPrivateValue.j = l;
-        } else {
-            // unknown tag
-        }
-    } else {
-        mObjId = ReadObjectId ();
-    }
+    mValue.tag = tag;
+    auto len = GetTagWidth (tag);
+    mValue.L = ReadValue (len);
 }
 
 std::string ReferenceType::GetValues::buildReq (
@@ -679,7 +683,8 @@ ReferenceType::SourceDebugExtension::SourceDebugExtension (
 
 }
 
-std::string ReferenceType::SourceDebugExtension::buildReq (RefTypeId refTypeId,int id)
+std::string ReferenceType::SourceDebugExtension::buildReq (
+        RefTypeId refTypeId,int id)
 {
     std::string rel;
     WriteRefTypeId (rel, refTypeId);
@@ -693,7 +698,8 @@ ReferenceType::SignatureWithGeneric::SignatureWithGeneric (
     mSignatureGeneric = ReadString ();
 }
 
-std::string ReferenceType::SignatureWithGeneric::buildReq (RefTypeId refTypeId,int id)
+std::string ReferenceType::SignatureWithGeneric::buildReq (
+        RefTypeId refTypeId,int id)
 {
     std::string rel;
     WriteRefTypeId (rel,refTypeId);
@@ -716,7 +722,8 @@ ReferenceType::FieldsWithGeneric::FieldsWithGeneric (
     }
 }
 
-std::string ReferenceType::FieldsWithGeneric::buildReq (RefTypeId refTypeId,int id)
+std::string ReferenceType::FieldsWithGeneric::buildReq (
+        RefTypeId refTypeId,int id)
 {
     std::string rel;
     WriteRefTypeId (rel, refTypeId);
@@ -739,7 +746,8 @@ ReferenceType::MethodsWithGeneric::MethodsWithGeneric (
     }
 }
 
-std::string ReferenceType::MethodsWithGeneric::buildReq (RefTypeId refTypeId,int id)
+std::string ReferenceType::MethodsWithGeneric::buildReq (
+        RefTypeId refTypeId,int id)
 {
     std::string rel;
     WriteRefTypeId (rel, refTypeId);
@@ -774,7 +782,8 @@ ReferenceType::ClassFileVersion::ClassFileVersion (
 
 }
 
-std::string ReferenceType::ClassFileVersion::buildReq (RefTypeId refTypeId,int id)
+std::string ReferenceType::ClassFileVersion::buildReq (
+        RefTypeId refTypeId,int id)
 {
     std::string rel;
     WriteRefTypeId (rel, refTypeId);
@@ -794,3 +803,93 @@ std::string ReferenceType::ConstantPool::buildReq (RefTypeId refTypeId,int id)
     WriteRefTypeId (rel, refTypeId);
     return move(BuildReq (id, set_, cmd, rel));
 }
+
+ClassType::Superclass::Superclass (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSuperClassId = ReadRefTypeId ();
+}
+
+std::string ClassType::Superclass::buildReq (RefTypeId refTypeId,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ClassType::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string ClassType::SetValues::buildReq (
+        RefTypeId refTypeId,const std::vector<FieldInfo> &infos,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, refTypeId);
+    Write4 (rel, infos.size ());
+    for(auto it = infos.begin (), itEnd = infos.end ();
+            it != itEnd; it++) {
+        WriteFieldId (rel, it->mFieldId);
+        auto &value = it->mValue;
+        WriteValue (rel, value.L, GetTagWidth (value.tag));
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ClassType::InvokeMethod::InvokeMethod (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mResult.tag = (JdwpTag)Read1 ();
+    mResult.L = ReadValue (GetTagWidth (mResult.tag));
+    mObject.tag = (JdwpTag)Read1 ();
+    mObject.L = ReadObjectId ();
+}
+
+std::string ClassType::InvokeMethod::buildReq (
+        RefTypeId class_id,ObjectId thread_id,MethodId method_id,
+        const std::vector<JValue> &argValues,uint32_t options,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, class_id);
+    WriteThreadId (rel, thread_id);
+    WriteMethodId (rel, method_id);
+    Write4 (rel, argValues.size ());
+    for(auto it = argValues.begin (), itEnd = argValues.end ();
+            it != itEnd; it ++) {
+        Write1 (rel, it->tag);
+        WriteValue (rel, it->L, GetTagWidth (it->tag));
+    }
+    Write4 (rel, options);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ClassType::NewInstance::NewInstance (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mResult.tag = (JdwpTag)Read1 ();
+    mResult.L = ReadValue (GetTagWidth (mResult.tag));
+    mObject.tag = (JdwpTag)Read1 ();
+    mObject.L = ReadObjectId ();
+}
+
+std::string ClassType::NewInstance::buildReq (
+        RefTypeId class_id,ObjectId thread_id,MethodId method_id,
+         const std::vector<JValue> &argValues,uint32_t options,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, class_id);
+    WriteThreadId (rel, thread_id);
+    WriteMethodId (rel, method_id);
+    Write4 (rel, argValues.size ());
+    for(auto it = argValues.begin (), itEnd = argValues.end ();
+        it != itEnd; it ++) {
+        Write1 (rel, it->tag);
+        WriteValue (rel, it->L, GetTagWidth (it->tag));
+    }
+    Write4 (rel, options);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+

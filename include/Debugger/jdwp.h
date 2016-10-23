@@ -30,6 +30,7 @@ namespace JDWP {
     typedef uint64_t RefTypeId;   /* like ObjectID, but unique for Class objects */
     typedef uint64_t FrameId;     /* short-lived stack frame ID */
 
+    struct JValue;
     struct ClassInfo {
         uint8_t    mRefTypeTag;	    // Kind of following reference type.
         RefTypeId  mTypeId;         // Loaded reference type
@@ -52,6 +53,7 @@ namespace JDWP {
         std::string	 mDescriptor;
         std::string	 mGenericSignature;
         uint32_t	 mFlags;
+        JValue       mValue;
     };
 
 
@@ -74,72 +76,6 @@ namespace JDWP {
         JT_CLASS_OBJECT          = 'c',
     };
 
-    struct JValue_Private {
-        union {
-            unsigned char b;
-            int16_t c;
-            float f;
-            double d;
-            int32_t i;
-            int64_t j;
-            int16_t s;
-            void* v;    // void v
-            bool z;
-        };
-        JdwpTag tag;
-    public:
-        JValue_Private(unsigned char v) {
-            b = v; tag = JT_BYTE;
-        }
-        JValue_Private(char v) {
-            c = v; tag = JT_CHAR;
-        }
-        JValue_Private(float v) {
-            f = v; tag = JT_FLOAT;
-        }
-        JValue_Private(double v) {
-            d = v; tag = JT_DOUBLE;
-        }
-        JValue_Private(int32_t v) {
-            i = v; tag = JT_INT;
-        }
-        JValue_Private(int64_t v) {
-            j = v; tag = JT_LONG;
-        }
-        JValue_Private(int16_t v) {
-            s = v; tag = JT_SHORT;
-        }
-        JValue_Private(bool v) {
-            b = v; tag = JT_BOOLEAN;
-        }
-        JValue_Private() {
-            tag = JT_VOID;
-        }
-        JValue_Private(JDWP::JdwpTag tag, const void* p) {
-            switch (tag) {
-                case JDWP::JT_BOOLEAN:
-                case JDWP::JT_BYTE:
-                    memcpy(v, p, 1);
-                    break;
-                case JDWP::JT_CHAR:
-                case JDWP::JT_SHORT:
-                    memcpy(v, p, 2);
-                    break;
-                case JDWP::JT_INT:
-                case JDWP::JT_FLOAT:
-                    memcpy (v, p, 4);
-                    break;
-                case JDWP::JT_DOUBLE:
-                case JDWP::JT_LONG:
-                    memcpy (v, p, 8);
-                    break;
-                case JDWP::JT_VOID:
-                default:
-                    break;
-            }
-        }
-    };
-
     bool IsPrimitiveTag(JDWP::JdwpTag tag) {
         switch (tag) {
             case JDWP::JT_BOOLEAN:
@@ -156,6 +92,82 @@ namespace JDWP {
                 return false;
         }
     }
+    size_t GetTagWidth(JDWP::JdwpTag tag) {
+        switch (tag) {
+            case JDWP::JT_VOID:
+                return 0;
+            case JDWP::JT_BYTE:
+            case JDWP::JT_BOOLEAN:
+                return 1;
+            case JDWP::JT_CHAR:
+            case JDWP::JT_SHORT:
+                return 2;
+            case JDWP::JT_FLOAT:
+            case JDWP::JT_INT:
+                return 4;
+            case JDWP::JT_ARRAY:
+            case JDWP::JT_OBJECT:
+            case JDWP::JT_STRING:
+            case JDWP::JT_THREAD:
+            case JDWP::JT_THREAD_GROUP:
+            case JDWP::JT_CLASS_LOADER:
+            case JDWP::JT_CLASS_OBJECT:
+                return sizeof(JDWP::ObjectId);
+            case JDWP::JT_DOUBLE:
+            case JDWP::JT_LONG:
+                return 8;
+            default:
+                return -1;
+        }
+    }
+
+    struct JValue {
+        union {
+            // 0
+            void* V;            // JT_VOID
+            //1
+            unsigned char B;    // JT_BYTE
+            bool Z;             // JT_BOOLEAN
+            //2
+            int16_t C;          // JT_CHAR
+            int16_t S;          // JT_SHORT
+            //4
+            float F;            // JT_FLOAT
+            int32_t I;          // JT_INT
+            //8
+            ObjectId a;         // JT_ARRAY
+            ObjectId L;         // JT_OBJECT
+            ObjectId s;         // JT_STRING
+            ObjectId t;         // JT_THREAD
+            ObjectId g;         // JT_THREAD_GROUP
+            ObjectId l;         // JT_CLASS_LOADER
+            ObjectId c;         // JT_CLASS_OBJECT
+            //8
+            double D;           // JT_DOUBLE
+            int64_t J;          // JT_LONG
+        };
+        JdwpTag tag;
+    public:
+        JValue():tag(JT_VOID), V(nullptr) { }
+        JValue(unsigned char B_):tag(JT_BYTE), B(B_) { }
+        JValue(bool Z_):tag(JT_BOOLEAN), Z(Z_) { }
+        JValue(int16_t C_, JDWP::JdwpTag tag_ = JT_CHAR):tag(tag_), C(C_) { }
+        JValue(float F_):tag(JT_FLOAT), F(F_) { }
+        JValue(int32_t I_):tag(JT_INT), I(I_) { }
+        JValue(ObjectId L_, JDWP::JdwpTag tag_ = JT_OBJECT):tag(tag), L(L_) { }
+        JValue(double D_):tag(JT_DOUBLE), D(D_) { }
+        JValue(int64_t J_):tag(JT_LONG), J(J_) { }
+
+        JValue(JDWP::JdwpTag tag, const void* p) {
+            this->tag = tag;
+            auto w = GetTagWidth(tag);
+            memcpy(V, p, w);
+        }
+    };
+
+
+
+
 
 }
 #endif //PROJECT_JDWP_H

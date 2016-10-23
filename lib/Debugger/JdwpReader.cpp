@@ -74,6 +74,7 @@ uint64_t JdwpReader::ReadValue (size_t width)
 {
     uint64_t value = -1;
     switch (width) {
+        case 0: value = 0; break;
         case 1: value = Read1(); break;
         case 2: value = Read2(); break;
         case 4: value = Read4(); break;

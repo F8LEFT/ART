@@ -39,6 +39,8 @@ namespace JDWP {
         uint64_t ReadObjectId() {return Read8 ();}
         uint64_t ReadRefTypeId() {return Read8 ();}
         uint64_t ReadFrameId() { return Read8();}
+        uint64_t ReadThreadId() {return Read8 (); }
+
 
         std::string ReadString();
 
