@@ -1018,13 +1018,16 @@ std::string Method::VariableTableWithGeneric::buildReq (
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ObjectReference::ReferenceType::ReferenceType (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ObjectReference::ReferenceType::ReferenceType (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     tag = (JdwpTypeTag) Read1 ();
     mTypeId = ReadRefTypeId ();
 }
 
-std::string ObjectReference::ReferenceType::buildReq (ObjectId object_id,int id)
+std::string ObjectReference::ReferenceType::buildReq (
+        ObjectId object_id,int id)
 {
     std::string rel;
     WriteObjectId (rel, object_id);
@@ -1032,13 +1035,16 @@ std::string ObjectReference::ReferenceType::buildReq (ObjectId object_id,int id)
 }
 
 
-ObjectReference::GetValues::GetValues (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ObjectReference::GetValues::GetValues (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mValue.tag = (JdwpTag)Read1 ();
     mValue.L = ReadValue (GetTagWidth (mValue.tag));
 }
 
-std::string ObjectReference::GetValues::buildReq (ObjectId object_id,const std::vector<FieldId > &fields,int id)
+std::string ObjectReference::GetValues::buildReq (
+        ObjectId object_id,const std::vector<FieldId > &fields,int id)
 {
     std::string rel;
     WriteObjectId (rel, object_id);
@@ -1050,11 +1056,14 @@ std::string ObjectReference::GetValues::buildReq (ObjectId object_id,const std::
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ObjectReference::SetValues::SetValues (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ObjectReference::SetValues::SetValues (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 }
 
-std::string ObjectReference::SetValues::buildReq (ObjectId object_id,const std::vector<FieldInfo> &fields,int id)
+std::string ObjectReference::SetValues::buildReq (
+        ObjectId object_id,const std::vector<FieldInfo> &fields,int id)
 {
     std::string rel;
     WriteObjectId (rel, object_id);
@@ -1069,7 +1078,8 @@ std::string ObjectReference::SetValues::buildReq (ObjectId object_id,const std::
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ObjectReference::UNUSED::UNUSED (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ObjectReference::UNUSED::UNUSED (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 
 }
@@ -1080,7 +1090,9 @@ std::string ObjectReference::UNUSED::buildReq (int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ObjectReference::MonitorInfo::MonitorInfo (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ObjectReference::MonitorInfo::MonitorInfo (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mMonitorInfo = ReadObjectId ();
     mEntryCount = Read4 ();
@@ -1099,7 +1111,9 @@ std::string ObjectReference::MonitorInfo::buildReq (ObjectId object_id,int id)
 }
 
 
-ObjectReference::InvokeMethod::InvokeMethod (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ObjectReference::InvokeMethod::InvokeMethod (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mResult.tag = (JdwpTag)Read1 ();
     mResult.L = ReadValue (GetTagWidth (mResult.tag));
@@ -1108,8 +1122,10 @@ ObjectReference::InvokeMethod::InvokeMethod (const uint8_t *bytes,uint32_t avail
 }
 
 std::string
-ObjectReference::InvokeMethod::buildReq (ObjectId object_id,ObjectId thread_id,RefTypeId class_id,MethodId method_id,
-                                         const std::vector<JValue> &argValues,uint32_t options,int id)
+ObjectReference::InvokeMethod::buildReq (
+        ObjectId object_id,ObjectId thread_id,RefTypeId class_id,
+        MethodId method_id, const std::vector<JValue> &argValues,
+        uint32_t options,int id)
 {
     std::string rel;
     WriteObjectId (rel, object_id);
@@ -1128,33 +1144,39 @@ ObjectReference::InvokeMethod::buildReq (ObjectId object_id,ObjectId thread_id,R
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ObjectReference::DisableCollection::DisableCollection (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,
-                                                                                                             available)
+ObjectReference::DisableCollection::DisableCollection (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 
 }
 
-std::string ObjectReference::DisableCollection::buildReq (ObjectId object_id,int id)
-{
-    std::string rel;
-    WriteObjectId (rel, object_id);
-    return move(BuildReq (id, set_, cmd, rel));
-}
-
-ObjectReference::EnableCollection::EnableCollection (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,
-                                                                                                           available)
-{
-
-}
-
-std::string ObjectReference::EnableCollection::buildReq (ObjectId object_id,int id)
+std::string ObjectReference::DisableCollection::buildReq (
+        ObjectId object_id,int id)
 {
     std::string rel;
     WriteObjectId (rel, object_id);
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ObjectReference::IsCollected::IsCollected (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ObjectReference::EnableCollection::EnableCollection (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string ObjectReference::EnableCollection::buildReq (
+        ObjectId object_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::IsCollected::IsCollected (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mIsCollected = Read1 ();
 }
@@ -1166,8 +1188,9 @@ std::string ObjectReference::IsCollected::buildReq (ObjectId object_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ObjectReference::ReferringObjects::ReferringObjects (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,
-                                                                                                           available)
+ObjectReference::ReferringObjects::ReferringObjects (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mSize = Read4 ();
     mObjs.resize (mSize);
@@ -1177,7 +1200,8 @@ ObjectReference::ReferringObjects::ReferringObjects (const uint8_t *bytes,uint32
     }
 }
 
-std::string ObjectReference::ReferringObjects::buildReq (ObjectId object_id,int32_t max_count,int id)
+std::string ObjectReference::ReferringObjects::buildReq (
+        ObjectId object_id,int32_t max_count,int id)
 {
     std::string rel;
     WriteObjectId (rel, object_id);
@@ -1185,7 +1209,8 @@ std::string ObjectReference::ReferringObjects::buildReq (ObjectId object_id,int3
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-StringReference::Value::Value (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+StringReference::Value::Value (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mStr = ReadString ();
 }
@@ -1197,7 +1222,8 @@ std::string StringReference::Value::buildReq (ObjectId stringObject,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::Name::Name (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::Name::Name (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mName = ReadString ();
 }
@@ -1210,7 +1236,8 @@ std::string ThreadReference::Name::buildReq (ObjectId thread_id,int id)
 }
 
 
-ThreadReference::Suspend::Suspend (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::Suspend::Suspend (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 
 }
@@ -1222,7 +1249,8 @@ std::string ThreadReference::Suspend::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::Resume::Resume (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::Resume::Resume (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 
 }
@@ -1234,7 +1262,8 @@ std::string ThreadReference::Resume::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::Status::Status (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::Status::Status (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mThreadStatus = Read4 ();
     mSuspendStatus = Read4();
@@ -1247,7 +1276,9 @@ std::string ThreadReference::Status::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::ThreadGroup::ThreadGroup (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::ThreadGroup::ThreadGroup (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mThreadGroupId = ReadObjectId ();
 }
@@ -1259,7 +1290,8 @@ std::string ThreadReference::ThreadGroup::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::Frames::Frames (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::Frames::Frames (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mFrameCount = Read4 ();
     mFrames.resize (mFrameCount);
@@ -1269,7 +1301,8 @@ ThreadReference::Frames::Frames (const uint8_t *bytes,uint32_t available): JdwpR
     }
 }
 
-std::string ThreadReference::Frames::buildReq (ObjectId thread_id,uint32_t start_frame,uint32_t length,int id)
+std::string ThreadReference::Frames::buildReq (
+        ObjectId thread_id,uint32_t start_frame,uint32_t length,int id)
 {
     std::string rel;
     WriteObjectId (rel, thread_id);
@@ -1278,7 +1311,9 @@ std::string ThreadReference::Frames::buildReq (ObjectId thread_id,uint32_t start
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::FrameCount::FrameCount (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::FrameCount::FrameCount (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mFrameCount = Read4 ();
 }
@@ -1290,7 +1325,9 @@ std::string ThreadReference::FrameCount::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::OwnedMonitors::OwnedMonitors (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::OwnedMonitors::OwnedMonitors (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 
     mMonitorSize = Read4 ();
@@ -1309,14 +1346,16 @@ std::string ThreadReference::OwnedMonitors::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::CurrentContendedMonitor::CurrentContendedMonitor (const uint8_t *bytes,uint32_t available)
+ThreadReference::CurrentContendedMonitor::CurrentContendedMonitor (
+        const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)
 {
     mContendedMonitor.tag = (JdwpTag)Read1 ();
     mContendedMonitor.L = ReadObjectId ();
 }
 
-std::string ThreadReference::CurrentContendedMonitor::buildReq (ObjectId thread_id,int id)
+std::string ThreadReference::CurrentContendedMonitor::buildReq (
+        ObjectId thread_id,int id)
 {
     std::string rel;
     WriteObjectId (rel, thread_id);
@@ -1324,7 +1363,8 @@ std::string ThreadReference::CurrentContendedMonitor::buildReq (ObjectId thread_
 }
 
 
-ThreadReference::Stop::Stop (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::Stop::Stop (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 
 }
@@ -1336,7 +1376,8 @@ std::string ThreadReference::Stop::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::Interrupt::Interrupt (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::Interrupt::Interrupt (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
 
 }
@@ -1348,12 +1389,15 @@ std::string ThreadReference::Interrupt::buildReq (ObjectId thread_id,int id)
     return move(BuildReq (id, set_, cmd, rel));
 }
 
-ThreadReference::SuspendCount::SuspendCount (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+ThreadReference::SuspendCount::SuspendCount (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
 {
     mSuspendCount = Read4 ();
 }
 
-std::string ThreadReference::SuspendCount::buildReq (ObjectId thread_id,int id)
+std::string ThreadReference::SuspendCount::buildReq (
+        ObjectId thread_id,int id)
 {
     std::string rel;
     WriteObjectId (rel, thread_id);
@@ -1361,7 +1405,8 @@ std::string ThreadReference::SuspendCount::buildReq (ObjectId thread_id,int id)
 }
 
 
-ThreadReference::OwnedMonitorsStackDepthInfo::OwnedMonitorsStackDepthInfo (const uint8_t *bytes,uint32_t available)
+ThreadReference::OwnedMonitorsStackDepthInfo::OwnedMonitorsStackDepthInfo (
+        const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)
 {
     mMonitorSize = Read4 ();
@@ -1373,7 +1418,8 @@ ThreadReference::OwnedMonitorsStackDepthInfo::OwnedMonitorsStackDepthInfo (const
     }
 }
 
-std::string ThreadReference::OwnedMonitorsStackDepthInfo::buildReq (ObjectId thread_id,int id)
+std::string ThreadReference::OwnedMonitorsStackDepthInfo::buildReq (
+        ObjectId thread_id,int id)
 {
     std::string rel;
     WriteObjectId (rel, thread_id);
@@ -1381,15 +1427,79 @@ std::string ThreadReference::OwnedMonitorsStackDepthInfo::buildReq (ObjectId thr
 }
 
 
-ThreadReference::ForceEarlyReturn::ForceEarlyReturn (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,
-                                                                                                           available)
+ThreadReference::ForceEarlyReturn::ForceEarlyReturn (
+        const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
 {
 
 }
 
-std::string ThreadReference::ForceEarlyReturn::buildReq (ObjectId thread_id,int id)
+std::string ThreadReference::ForceEarlyReturn::buildReq (
+        ObjectId thread_id,int id)
 {
     std::string rel;
     WriteObjectId (rel, thread_id);
     return move(BuildReq (id, set_, cmd, rel));
 }
+
+ThreadGroupReference::ForceEarlyReturn::ForceEarlyReturn (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mThreadGroupName = ReadString ();
+}
+
+std::string ThreadGroupReference::ForceEarlyReturn::buildReq (
+        ObjectId thread_group_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, thread_group_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ThreadGroupReference::Parent::Parent (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mThreadParentgroup = ReadObjectId ();
+}
+
+std::string ThreadGroupReference::Parent::buildReq (
+        ObjectId thread_group_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, thread_group_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+ThreadGroupReference::Children::Children (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mThreadIdSize = Read4 ();
+    mThreadIds.resize (mThreadIdSize);
+    for(auto i = 0; i < mThreadIdSize; i++) {
+        mThreadIds[i] = ReadObjectId ();
+    }
+
+    mChildThreadGroupIdSize = Read4 ();
+    for(auto i = 0; i < mChildThreadGroupIdSize; i++) {
+        mChildThreadGroupsIds[i] = ReadObjectId ();
+    }
+}
+
+std::string ThreadGroupReference::Children::buildReq (
+        ObjectId thread_group_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, thread_group_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+
+
+
+
+
+
+

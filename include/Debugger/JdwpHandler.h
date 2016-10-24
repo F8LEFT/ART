@@ -928,7 +928,42 @@ namespace JDWP {
         };
     }
 
+    namespace ThreadGroupReference
+    {
+        uint8_t set_ = 12;
+        struct ForceEarlyReturn : public JdwpReader {
+            ForceEarlyReturn(const uint8_t* bytes, uint32_t available);
 
+            std::string mThreadGroupName;
+
+            static std::string buildReq(ObjectId thread_group_id, int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+
+        struct Parent : public JdwpReader {
+            Parent(const uint8_t* bytes, uint32_t available);
+
+            ObjectId mThreadParentgroup;
+
+            static std::string buildReq(ObjectId thread_group_id, int id = 0);
+
+            const static uint8_t cmd = 2;
+        };
+
+        struct Children : public JdwpReader {
+            Children(const uint8_t* bytes, uint32_t available);
+
+            int mThreadIdSize;
+            std::vector<ObjectId> mThreadIds;
+            int mChildThreadGroupIdSize;
+            std::vector<ObjectId> mChildThreadGroupsIds;
+
+            static std::string buildReq(ObjectId thread_group_id, int id = 0);
+
+            const static uint8_t cmd = 3;
+        };
+    }
 
 
     bool Write1(std::string &s, uint8_t v);
