@@ -1185,3 +1185,14 @@ std::string ObjectReference::ReferringObjects::buildReq (ObjectId object_id,int3
     return move(BuildReq (id, set_, cmd, rel));
 }
 
+StringReference::Value::Value (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+    mStr = ReadString ();
+}
+
+std::string StringReference::Value::buildReq (ObjectId stringObject,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, stringObject);
+    return move(BuildReq (id, set_, cmd, rel));
+}

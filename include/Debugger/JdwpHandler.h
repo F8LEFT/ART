@@ -781,7 +781,21 @@ namespace JDWP {
         };
     }
 
-    bool Write1(std::string &s, uint8_t v);
+    namespace StringReference
+    {
+        uint8_t set_ = 10;
+
+        struct Value : public JdwpReader {
+            Value(const uint8_t* bytes, uint32_t available);
+
+            std::string mStr;
+            static std::string buildReq(ObjectId stringObject, int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+    }
+
+        bool Write1(std::string &s, uint8_t v);
     bool Write2(std::string &s, uint16_t v);
     bool Write4(std::string &s, uint32_t v);
     bool Write8(std::string &s, uint64_t v);
