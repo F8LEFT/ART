@@ -673,7 +673,112 @@ namespace JDWP {
                                         int id = 0);
             const static uint8_t cmd = 5;
         };
+    }
 
+    namespace Field
+    {
+        uint8_t set_ = 8;
+    }
+
+    namespace ObjectReference
+    {
+        uint8_t set_ = 9;
+
+        struct ReferenceType : public JdwpReader {
+            ReferenceType(const uint8_t* bytes, uint32_t available);
+
+            JdwpTypeTag tag;
+            RefTypeId mTypeId;
+
+            static std::string buildReq(ObjectId object_id, int id = 0);
+            const static uint8_t cmd = 1;
+        };
+
+        struct GetValues : public JdwpReader {
+            GetValues(const uint8_t* bytes, uint32_t available);
+            JValue mValue;
+
+            static std::string buildReq(ObjectId object_id, const std::vector<FieldId > &fields,
+                                        int id = 0);
+            const static uint8_t cmd = 2;
+        };
+
+        struct SetValues : public JdwpReader {
+            SetValues(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(ObjectId object_id, const std::vector<FieldInfo> &fields,
+                                        int id = 0);
+            const static uint8_t cmd = 3;
+        };
+
+        struct UNUSED : public JdwpReader {
+            UNUSED(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+            const static uint8_t cmd = 4;
+        };
+
+        struct MonitorInfo : public JdwpReader {
+            MonitorInfo(const uint8_t* bytes, uint32_t available);
+
+            ObjectId mMonitorInfo;
+            uint32_t mEntryCount;
+            uint32_t mWaiterSize;
+            std::vector<ObjectId> mWaiters;
+
+            static std::string buildReq(ObjectId object_id, int id = 0);
+            const static uint8_t cmd = 5;
+        };
+
+        struct InvokeMethod : public JdwpReader {
+            InvokeMethod(const uint8_t* bytes, uint32_t available);
+
+            JValue mResult;
+            JValue mObject;
+
+            static std::string buildReq(ObjectId object_id, ObjectId thread_id,
+                                        RefTypeId class_id, MethodId method_id,
+                                        const std::vector<JValue> &argValues,uint32_t options,
+                                        int id = 0);
+
+
+            const static uint8_t cmd = 6;
+        };
+
+        struct DisableCollection : public JdwpReader {
+            DisableCollection(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(ObjectId object_id,int id = 0);
+
+            const static uint8_t cmd = 7;
+        };
+
+        struct EnableCollection : public JdwpReader {
+            EnableCollection(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(ObjectId object_id,int id = 0);
+
+            const static uint8_t cmd = 8;
+        };
+
+        struct IsCollected : public JdwpReader {
+            IsCollected(const uint8_t* bytes, uint32_t available);
+
+            bool mIsCollected;
+            static std::string buildReq(ObjectId object_id,int id = 0);
+
+            const static uint8_t cmd = 9;
+        };
+
+        struct ReferringObjects : public JdwpReader {
+            ReferringObjects(const uint8_t* bytes, uint32_t available);
+
+            int mSize;
+            std::vector<JValue> mObjs;
+            static std::string buildReq(ObjectId object_id, int32_t max_count, int id = 0);
+
+            const static uint8_t cmd = 10;
+        };
     }
 
     bool Write1(std::string &s, uint8_t v);

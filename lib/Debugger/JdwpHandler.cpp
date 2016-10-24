@@ -1018,3 +1018,170 @@ std::string Method::VariableTableWithGeneric::buildReq (
     return move(BuildReq (id, set_, cmd, rel));
 }
 
+ObjectReference::ReferenceType::ReferenceType (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+    tag = (JdwpTypeTag) Read1 ();
+    mTypeId = ReadRefTypeId ();
+}
+
+std::string ObjectReference::ReferenceType::buildReq (ObjectId object_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+ObjectReference::GetValues::GetValues (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+    mValue.tag = (JdwpTag)Read1 ();
+    mValue.L = ReadValue (GetTagWidth (mValue.tag));
+}
+
+std::string ObjectReference::GetValues::buildReq (ObjectId object_id,const std::vector<FieldId > &fields,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    Write4 (rel, fields.size ());
+    for(auto it = fields.begin (), itEnd = fields.end ();
+            it != itEnd; it++) {
+        WriteFieldId (rel, *it);
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::SetValues::SetValues (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+}
+
+std::string ObjectReference::SetValues::buildReq (ObjectId object_id,const std::vector<FieldInfo> &fields,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    Write4 (rel, fields.size ());
+    for(auto it = fields.begin (), itEnd = fields.end ();
+        it != itEnd; it++) {
+        WriteFieldId (rel, it->mFieldId);
+        auto &value = it->mValue;
+        Write1 (rel, value.tag);
+        WriteValue (rel, value.L, GetTagWidth (value.tag));
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::UNUSED::UNUSED (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+
+}
+
+std::string ObjectReference::UNUSED::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::MonitorInfo::MonitorInfo (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+    mMonitorInfo = ReadObjectId ();
+    mEntryCount = Read4 ();
+    mWaiterSize = Read4 ();
+    mWaiters.resize (mWaiterSize);
+    for(auto i = 0; i < mWaiterSize; i++) {
+        mWaiters[i] = ReadObjectId ();
+    }
+}
+
+std::string ObjectReference::MonitorInfo::buildReq (ObjectId object_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+ObjectReference::InvokeMethod::InvokeMethod (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+    mResult.tag = (JdwpTag)Read1 ();
+    mResult.L = ReadValue (GetTagWidth (mResult.tag));
+    mObject.tag = (JdwpTag)Read1 ();
+    mObject.L = ReadObjectId ();
+}
+
+std::string
+ObjectReference::InvokeMethod::buildReq (ObjectId object_id,ObjectId thread_id,RefTypeId class_id,MethodId method_id,
+                                         const std::vector<JValue> &argValues,uint32_t options,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    WriteThreadId (rel, thread_id);
+
+    WriteRefTypeId (rel, class_id);
+    WriteMethodId (rel, method_id);
+
+    Write4 (rel, argValues.size ());
+    for(auto it = argValues.begin (), itEnd = argValues.end ();
+        it != itEnd; it ++) {
+        Write1 (rel, it->tag);
+        WriteValue (rel, it->L, GetTagWidth (it->tag));
+    }
+    Write4 (rel, options);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::DisableCollection::DisableCollection (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,
+                                                                                                             available)
+{
+
+}
+
+std::string ObjectReference::DisableCollection::buildReq (ObjectId object_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::EnableCollection::EnableCollection (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,
+                                                                                                           available)
+{
+
+}
+
+std::string ObjectReference::EnableCollection::buildReq (ObjectId object_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::IsCollected::IsCollected (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,available)
+{
+    mIsCollected = Read1 ();
+}
+
+std::string ObjectReference::IsCollected::buildReq (ObjectId object_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ObjectReference::ReferringObjects::ReferringObjects (const uint8_t *bytes,uint32_t available): JdwpReader (bytes,
+                                                                                                           available)
+{
+    mSize = Read4 ();
+    mObjs.resize (mSize);
+    for(auto i = 0; i < mSize; i++) {
+        mObjs[i].tag = (JdwpTag)Read1 ();
+        mObjs[i].L = ReadValue (GetTagWidth (mObjs[i].tag));
+    }
+}
+
+std::string ObjectReference::ReferringObjects::buildReq (ObjectId object_id,int32_t max_count,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, object_id);
+    Write4(rel, max_count);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+

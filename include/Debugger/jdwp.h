@@ -30,33 +30,6 @@ namespace JDWP {
     typedef uint64_t RefTypeId;   /* like ObjectID, but unique for Class objects */
     typedef uint64_t FrameId;     /* short-lived stack frame ID */
 
-    struct JValue;
-    struct ClassInfo {
-        uint8_t    mRefTypeTag;	    // Kind of following reference type.
-        RefTypeId  mTypeId;         // Loaded reference type
-        std::string mDescriptor;    // The JNI signature of the loaded reference type.
-        std::string mGenericSignature;  // The generic signature of the loaded reference type.
-        uint32_t   mStatus;	        // The current class status.
-    };
-
-    struct MethodInfo {
-        MethodId	 mMethodId;
-        std::string	 mName;
-        std::string	 mSignature;
-        std::string	 mGenericSignature;
-        uint32_t	 mFlags;
-    };
-
-    struct FieldInfo {
-        FieldId	     mFieldId;
-        std::string	 mName;
-        std::string	 mDescriptor;
-        std::string	 mGenericSignature;
-        uint32_t	 mFlags;
-        JValue       mValue;
-    };
-
-
     enum JdwpTag {
         JT_ARRAY                 = '[',
         JT_BYTE                  = 'B',
@@ -74,6 +47,12 @@ namespace JDWP {
         JT_THREAD_GROUP          = 'g',
         JT_CLASS_LOADER          = 'l',
         JT_CLASS_OBJECT          = 'c',
+    };
+
+    enum JdwpTypeTag {
+        TT_CLASS                = 1,
+        TT_INTERFACE            = 2,
+        TT_ARRAY                = 3,
     };
 
     bool IsPrimitiveTag(JDWP::JdwpTag tag) {
@@ -165,7 +144,30 @@ namespace JDWP {
         }
     };
 
+    struct ClassInfo {
+        uint8_t    mRefTypeTag;	    // Kind of following reference type.
+        RefTypeId  mTypeId;         // Loaded reference type
+        std::string mDescriptor;    // The JNI signature of the loaded reference type.
+        std::string mGenericSignature;  // The generic signature of the loaded reference type.
+        uint32_t   mStatus;	        // The current class status.
+    };
 
+    struct MethodInfo {
+        MethodId	 mMethodId;
+        std::string	 mName;
+        std::string	 mSignature;
+        std::string	 mGenericSignature;
+        uint32_t	 mFlags;
+    };
+
+    struct FieldInfo {
+        FieldId	     mFieldId;
+        std::string	 mName;
+        std::string	 mDescriptor;
+        std::string	 mGenericSignature;
+        uint32_t	 mFlags;
+        JValue       mValue;
+    };
 
 
 
