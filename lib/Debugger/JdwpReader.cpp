@@ -97,3 +97,12 @@ std::string JdwpReader::ReadString ()
     error = true;
     return "";
 }
+
+JdwpLocation JdwpReader::ReadJdwpLocation ()
+{
+    JdwpLocation location;
+    location.type_tag = (JdwpTypeTag)Read1 ();
+    location.class_id = ReadObjectId ();
+    location.method_id = ReadMethodId ();
+    location.dex_pc = Read8 ();
+}

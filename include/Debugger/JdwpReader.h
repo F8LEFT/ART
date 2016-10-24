@@ -18,6 +18,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <string>
+#include "jdwp.h"
 
 namespace JDWP {
     class JdwpReader {
@@ -40,6 +41,7 @@ namespace JDWP {
         uint64_t ReadRefTypeId() {return Read8 ();}
         uint64_t ReadFrameId() { return Read8();}
         uint64_t ReadThreadId() {return Read8 (); }
+        JdwpLocation ReadJdwpLocation();
 
 
         std::string ReadString();

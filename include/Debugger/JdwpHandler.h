@@ -795,7 +795,143 @@ namespace JDWP {
         };
     }
 
-        bool Write1(std::string &s, uint8_t v);
+    namespace ThreadReference
+    {
+        uint8_t set_ = 11;
+
+        struct Name : public JdwpReader {
+            Name(const uint8_t* bytes, uint32_t available);
+
+            std::string mName;
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+
+        struct Suspend : public JdwpReader {
+            Suspend(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 2;
+        };
+
+        struct Resume : public JdwpReader {
+            Resume(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 3;
+        };
+
+        struct Status : public JdwpReader {
+            Status(const uint8_t* bytes, uint32_t available);
+            uint32_t mThreadStatus;
+            uint32_t mSuspendStatus;
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 4;
+        };
+
+        struct ThreadGroup : public JdwpReader {
+            ThreadGroup(const uint8_t* bytes, uint32_t available);
+            ObjectId mThreadGroupId;
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 5;
+        };
+
+        struct Frames : public JdwpReader {
+            struct Frame {
+                ObjectId frame_id;
+                JdwpLocation location;
+            };
+        public:
+            Frames(const uint8_t* bytes, uint32_t available);
+            int mFrameCount;
+            std::vector<Frame> mFrames;
+
+            static std::string buildReq(ObjectId thread_id, uint32_t start_frame,
+                                        uint32_t length, int id = 0);
+
+            const static uint8_t cmd = 6;
+        };
+
+        struct FrameCount : public JdwpReader {
+            FrameCount(const uint8_t* bytes, uint32_t available);
+            int mFrameCount;
+
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 7;
+        };
+
+        struct OwnedMonitors : public JdwpReader {
+            OwnedMonitors(const uint8_t* bytes, uint32_t available);
+            int mMonitorSize;
+            std::vector<JValue> mMonitors;
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 8;
+        };
+
+        struct CurrentContendedMonitor : public JdwpReader {
+            CurrentContendedMonitor(const uint8_t* bytes, uint32_t available);
+            JValue mContendedMonitor;
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 9;
+        };
+
+        struct Stop : public JdwpReader {
+            Stop(const uint8_t* bytes, uint32_t available);
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 10;
+        };
+
+        struct Interrupt : public JdwpReader {
+            Interrupt(const uint8_t* bytes, uint32_t available);
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 11;
+        };
+
+        struct SuspendCount : public JdwpReader {
+            SuspendCount(const uint8_t* bytes, uint32_t available);
+            uint32_t mSuspendCount;
+
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 12;
+        };
+
+        struct OwnedMonitorsStackDepthInfo : public JdwpReader {
+            struct Monitor{
+                JValue monitor;
+                uint32_t depth;
+            };
+        public:
+            OwnedMonitorsStackDepthInfo(const uint8_t* bytes, uint32_t available);
+            int mMonitorSize;
+            std::vector<Monitor> mMonitors;
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 13;
+        };
+
+        struct ForceEarlyReturn : public JdwpReader {
+            ForceEarlyReturn(const uint8_t* bytes, uint32_t available);
+            static std::string buildReq(ObjectId thread_id, int id = 0);
+
+            const static uint8_t cmd = 14;
+        };
+    }
+
+
+
+
+    bool Write1(std::string &s, uint8_t v);
     bool Write2(std::string &s, uint16_t v);
     bool Write4(std::string &s, uint32_t v);
     bool Write8(std::string &s, uint64_t v);
