@@ -6,7 +6,7 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-#include "Debugger/jdwp.h"
+#include "Jdwp/jdwp.h"
 
 bool ::JDWP::IsPrimitiveTag (JDWP::JdwpTag tag)
 {

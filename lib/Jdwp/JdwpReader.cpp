@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Debugger/JdwpReader.h"
+#include "Jdwp/JdwpReader.h"
 
 #include <netinet/in.h>
 using namespace JDWP;

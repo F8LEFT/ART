@@ -16,7 +16,7 @@
 
 
 
-#include "Debugger/JdwpReader.h"
+#include "Jdwp/JdwpReader.h"
 
 namespace JDWP {
     class Request: public JdwpReader
