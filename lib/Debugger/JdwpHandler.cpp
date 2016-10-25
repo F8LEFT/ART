@@ -10,6 +10,7 @@
 #include "Debugger/JdwpHandler.h"
 #include "JdwpHeader.h"
 #include <netinet/in.h>
+#include <Debugger/jdwp.h>
 
 using namespace JDWP;
 
@@ -115,7 +116,7 @@ bool ::JDWP::WriteFrameId (std::string &s,uint64_t v)
 }
 
 std::string JDWP::BuildReq (int id,int cmdset,int cmd,
-                              const std::string &extra)
+                            const std::string &extra)
 {
     std::string rel;
     auto len = extra.length () + kJDWPHeaderLen;
@@ -147,6 +148,14 @@ bool ::JDWP::WriteValue (std::string &s,uint64_t v,size_t width)
 bool ::JDWP::WriteThreadId (std::string &s,uint64_t v)
 {
     return Write8 (s, v);
+}
+
+bool ::JDWP::WriteJdwpLocation (std::string &s,const JdwpLocation &location)
+{
+    Write1 (s,location.type_tag);
+    WriteObjectId (s,location.class_id);
+    WriteMethodId (s,location.method_id);
+    Write8 (s,location.dex_pc);
 }
 
 VirtualMachine::AllClasses::AllClasses (
@@ -346,7 +355,7 @@ std::string VirtualMachine::DisposeObjects::buildReq (
     std::string rel;
     Write4 (rel, objs.size ());
     for(auto it = objs.begin (), itEnd = objs.end ();
-            it != itEnd; it++) {
+        it != itEnd; it++) {
         WriteObjectId (rel, it->id);
         Write4 (rel, it->refCount);
     }
@@ -481,7 +490,7 @@ std::string VirtualMachine::InstanceCounts::buildReq (
     std::string rel;
     Write4(rel, class_ids.size ());
     for(auto it = class_ids.begin (), itEnd = class_ids.end ();
-            it != itEnd; it++) {
+        it != itEnd; it++) {
         WriteRefTypeId (rel, *it);
     }
 
@@ -594,7 +603,7 @@ std::string ReferenceType::GetValues::buildReq (
     WriteRefTypeId (rel, refTypeId);
     Write4 (rel, field_count);
     for(auto it = fieldids.begin (), itEnd = fieldids.end ();
-            it != itEnd; it++) {
+        it != itEnd; it++) {
         WriteFieldId (rel, *it);
     }
     return move(BuildReq (id, set_, cmd, rel));
@@ -693,7 +702,7 @@ std::string ReferenceType::SourceDebugExtension::buildReq (
 
 ReferenceType::SignatureWithGeneric::SignatureWithGeneric (
         const uint8_t *bytes,uint32_t available)
-    : Signature (bytes,available)
+        : Signature (bytes,available)
 {
     mSignatureGeneric = ReadString ();
 }
@@ -830,7 +839,7 @@ std::string ClassType::SetValues::buildReq (
     WriteRefTypeId (rel, refTypeId);
     Write4 (rel, infos.size ());
     for(auto it = infos.begin (), itEnd = infos.end ();
-            it != itEnd; it++) {
+        it != itEnd; it++) {
         WriteFieldId (rel, it->mFieldId);
         auto &value = it->mValue;
         WriteValue (rel, value.L, GetTagWidth (value.tag));
@@ -858,7 +867,7 @@ std::string ClassType::InvokeMethod::buildReq (
     WriteMethodId (rel, method_id);
     Write4 (rel, argValues.size ());
     for(auto it = argValues.begin (), itEnd = argValues.end ();
-            it != itEnd; it ++) {
+        it != itEnd; it ++) {
         Write1 (rel, it->tag);
         WriteValue (rel, it->L, GetTagWidth (it->tag));
     }
@@ -877,7 +886,7 @@ ClassType::NewInstance::NewInstance (const uint8_t *bytes,uint32_t available)
 
 std::string ClassType::NewInstance::buildReq (
         RefTypeId class_id,ObjectId thread_id,MethodId method_id,
-         const std::vector<JValue> &argValues,uint32_t options,int id)
+        const std::vector<JValue> &argValues,uint32_t options,int id)
 {
     std::string rel;
     WriteRefTypeId (rel, class_id);
@@ -1050,7 +1059,7 @@ std::string ObjectReference::GetValues::buildReq (
     WriteObjectId (rel, object_id);
     Write4 (rel, fields.size ());
     for(auto it = fields.begin (), itEnd = fields.end ();
-            it != itEnd; it++) {
+        it != itEnd; it++) {
         WriteFieldId (rel, *it);
     }
     return move(BuildReq (id, set_, cmd, rel));
@@ -1593,129 +1602,96 @@ EventRequest::Set::Set (const uint8_t *bytes,uint32_t available)
     mRequestId = Read4 ();
 }
 
-std::string EventRequest::Set::buildReq (int id)
+std::string EventRequest::Set::buildReq (
+        JdwpEventKind eventkind,JdwpSuspendPolicy policy,
+        const std::vector<JdwpEventMod>& mod, int id)
 {
-    // TODO add request
-
-//    JdwpEventKind event_kind = request.ReadEnum1<JdwpEventKind>("event kind");
-//    JdwpSuspendPolicy suspend_policy = request.ReadEnum1<JdwpSuspendPolicy>("suspend policy");
-//    int32_t modifier_count = request.ReadSigned32("modifier count");
-//
-//    CHECK_LT(modifier_count, 256);    /* reasonableness check */
-//
-//    JdwpEvent* pEvent = EventAlloc(modifier_count);
-//    pEvent->eventKind = event_kind;
-//    pEvent->suspend_policy = suspend_policy;
-//    pEvent->modCount = modifier_count;
-//
-//    /*
-//     * Read modifiers.  Ordering may be significant (see explanation of Count
-//     * mods in JDWP doc).
-//     */
-//    for (int32_t i = 0; i < modifier_count; ++i) {
-//        JdwpEventMod& mod = pEvent->mods[i];
-//        mod.modKind = request.ReadModKind();
-//        switch (mod.modKind) {
-//            case MK_COUNT:
-//            {
-//                // Report once, when "--count" reaches 0.
-//                uint32_t count = request.ReadUnsigned32("count");
-//                if (count == 0) {
-//                    return ERR_INVALID_COUNT;
-//                }
-//                mod.count.count = count;
-//            }
-//                break;
-//            case MK_CONDITIONAL:
-//            {
-//                // Conditional on expression.
-//                uint32_t exprId = request.ReadUnsigned32("expr id");
-//                mod.conditional.exprId = exprId;
-//            }
-//                break;
-//            case MK_THREAD_ONLY:
-//            {
-//                // Only report events in specified thread.
-//                ObjectId thread_id = request.ReadThreadId();
-//                mod.threadOnly.threadId = thread_id;
-//            }
-//                break;
-//            case MK_CLASS_ONLY:
-//            {
-//                // For ClassPrepare, MethodEntry.
-//                RefTypeId class_id = request.ReadRefTypeId();
-//                mod.classOnly.refTypeId = class_id;
-//            }
-//                break;
-//            case MK_CLASS_MATCH:
-//            {
-//                // Restrict events to matching classes.
-//                // pattern is "java.foo.*", we want "java/foo/*".
-//                std::string pattern(request.ReadUtf8String());
-//                std::replace(pattern.begin(), pattern.end(), '.', '/');
-//                mod.classMatch.classPattern = strdup(pattern.c_str());
-//            }
-//                break;
-//            case MK_CLASS_EXCLUDE:
-//            {
-//                // Restrict events to non-matching classes.
-//                // pattern is "java.foo.*", we want "java/foo/*".
-//                std::string pattern(request.ReadUtf8String());
-//                std::replace(pattern.begin(), pattern.end(), '.', '/');
-//                mod.classExclude.classPattern = strdup(pattern.c_str());
-//            }
-//                break;
-//            case MK_LOCATION_ONLY:
-//            {
-//                // Restrict certain events based on location.
-//                JdwpLocation location = request.ReadLocation();
-//                mod.locationOnly.loc = location;
-//            }
-//                break;
-//            case MK_EXCEPTION_ONLY:
-//            {
-//                // Modifies EK_EXCEPTION events,
-//                mod.exceptionOnly.refTypeId = request.ReadRefTypeId();  // null => all exceptions.
-//                mod.exceptionOnly.caught = request.ReadEnum1<uint8_t>("caught");
-//                mod.exceptionOnly.uncaught = request.ReadEnum1<uint8_t>("uncaught");
-//            }
-//                break;
-//            case MK_FIELD_ONLY:
-//            {
-//                // For field access/modification events.
-//                RefTypeId declaring = request.ReadRefTypeId();
-//                FieldId fieldId = request.ReadFieldId();
-//                mod.fieldOnly.refTypeId = declaring;
-//                mod.fieldOnly.fieldId = fieldId;
-//            }
-//                break;
-//            case MK_STEP:
-//            {
-//                // For use with EK_SINGLE_STEP.
-//                ObjectId thread_id = request.ReadThreadId();
-//                uint32_t size = request.ReadUnsigned32("step size");
-//                uint32_t depth = request.ReadUnsigned32("step depth");
-//                VLOG(jdwp) << StringPrintf("    Step: thread=%#llx", thread_id)
-//                           << " size=" << JdwpStepSize(size) << " depth=" << JdwpStepDepth(depth);
-//
-//                mod.step.threadId = thread_id;
-//                mod.step.size = size;
-//                mod.step.depth = depth;
-//            }
-//                break;
-//            case MK_INSTANCE_ONLY:
-//            {
-//                // Report events related to a specific object.
-//                ObjectId instance = request.ReadObjectId();
-//                mod.instanceOnly.objectId = instance;
-//            }
-//                break;
-//            default:
-//                LOG(WARNING) << "GLITCH: unsupported modKind=" << mod.modKind;
-//                break;
-//        }
-//    }
-    return std::__cxx11::string ();
+    std::string rel;
+    Write1 (rel,eventkind);
+    Write1 (rel, policy);
+    Write4 (rel, mod.size ());
+    for(auto it = mod.begin (), itEnd = mod.end ();
+        it != itEnd; it++) {
+        Write1 (rel, it->modKind);
+        switch(it->modKind) {
+            case MK_COUNT:
+            {
+                // Report once, when "--count" reaches 0.
+                Write4 (rel, it->count.count);
+            }
+                break;
+            case MK_CONDITIONAL:
+            {
+                // Conditional on expression.
+                Write4 (rel, it->conditional.exprId);
+            }
+                break;
+            case MK_THREAD_ONLY:
+            {
+                // Only report events in specified thread.
+                WriteThreadId (rel, it->threadOnly.threadId);
+            }
+                break;
+            case MK_CLASS_ONLY:
+            {
+                // For ClassPrepare, MethodEntry.
+                WriteRefTypeId (rel,it->classOnly.refTypeId);
+            }
+                break;
+            case MK_CLASS_MATCH:
+            {
+                // Restrict events to matching classes.
+                // pattern is "java.foo.*", we want "java/foo/*".
+                WriteString (rel,it->classMatch.classPattern);
+            }
+                break;
+            case MK_CLASS_EXCLUDE:
+            {
+                // Restrict events to non-matching classes.
+                // pattern is "java.foo.*", we want "java/foo/*".
+                WriteString (rel,it->classExclude.classPattern);
+            }
+                break;
+            case MK_LOCATION_ONLY:
+            {
+                // Restrict certain events based on location.
+                WriteJdwpLocation (rel, it->locationOnly.loc);
+            }
+                break;
+            case MK_EXCEPTION_ONLY:
+            {
+                // Modifies EK_EXCEPTION events,
+                WriteRefTypeId (rel,it->exceptionOnly.refTypeId);
+                Write1 (rel,it->exceptionOnly.caught);
+                Write1 (rel,it->exceptionOnly.uncaught);
+            }
+                break;
+            case MK_FIELD_ONLY:
+            {
+                // For field access/modification events.
+                WriteRefTypeId (rel, it->fieldOnly.refTypeId);
+                WriteFieldId (rel, it->fieldOnly.fieldId);
+            }
+                break;
+            case MK_STEP:
+            {
+                // For use with EK_SINGLE_STEP.
+                WriteThreadId (rel,it->step.threadId);
+                Write4 (rel,it->step.size);
+                Write4 (rel,it->step.depth);
+            }
+                break;
+            case MK_INSTANCE_ONLY:
+            {
+                // Report events related to a specific object.
+                WriteObjectId (rel,it->instanceOnly.objectId);
+            }
+                break;
+            default:
+                break;
+        }
+    }
+    return move(BuildReq (id, set_, cmd, rel));
 }
 
 EventRequest::Clear::Clear (const uint8_t *bytes,uint32_t available)
@@ -1781,7 +1757,7 @@ StackFrame::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
 
 std::string StackFrame::SetValues::buildReq (
         ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &slots,
-         const std::vector<JValue> &reqSig,int id)
+        const std::vector<JValue> &reqSig,int id)
 {
     if(slots.size () != reqSig.size ())
         return "";

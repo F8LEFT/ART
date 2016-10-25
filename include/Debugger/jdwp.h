@@ -82,6 +82,27 @@ namespace JDWP {
         EK_VM_DISCONNECTED      = 100,  // "Never sent across JDWP".
     };
 
+    enum JdwpSuspendPolicy {
+        SP_NONE                 = 0,    // Suspend no threads.
+        SP_EVENT_THREAD         = 1,    // Suspend event thread.
+        SP_ALL                  = 2,    // Suspend all threads.
+    };
+
+    enum JdwpModKind {
+        MK_COUNT                = 1,
+        MK_CONDITIONAL          = 2,
+        MK_THREAD_ONLY          = 3,
+        MK_CLASS_ONLY           = 4,
+        MK_CLASS_MATCH          = 5,
+        MK_CLASS_EXCLUDE        = 6,
+        MK_LOCATION_ONLY        = 7,
+        MK_EXCEPTION_ONLY       = 8,
+        MK_FIELD_ONLY           = 9,
+        MK_STEP                 = 10,
+        MK_INSTANCE_ONLY        = 11,
+        MK_SOURCE_NAME_MATCH    = 12,  // Since Java 6.
+    };
+
     bool IsPrimitiveTag(JDWP::JdwpTag tag);
 
     size_t GetTagWidth(JDWP::JdwpTag tag);
@@ -162,7 +183,58 @@ namespace JDWP {
         uint64_t dex_pc;
     };
 
-
+    union JdwpEventMod {
+        JdwpModKind modKind;
+        struct {
+            JdwpModKind modKind;
+            int         count;
+        } count;
+        struct {
+            JdwpModKind modKind;
+            uint32_t          exprId;
+        } conditional;
+        struct {
+            JdwpModKind modKind;
+            ObjectId    threadId;
+        } threadOnly;
+        struct {
+            JdwpModKind modKind;
+            RefTypeId   refTypeId;
+        } classOnly;
+        struct {
+            JdwpModKind modKind;
+            char*       classPattern;
+        } classMatch;
+        struct {
+            JdwpModKind modKind;
+            char*       classPattern;
+        } classExclude;
+        struct {
+            JdwpModKind modKind;
+            JdwpLocation loc;
+        } locationOnly;
+        struct {
+            JdwpModKind modKind;
+            uint8_t          caught;
+            uint8_t          uncaught;
+            RefTypeId   refTypeId;
+        } exceptionOnly;
+        struct {
+            JdwpModKind modKind;
+            RefTypeId   refTypeId;
+            FieldId     fieldId;
+        } fieldOnly;
+        struct {
+            JdwpModKind modKind;
+            ObjectId    threadId;
+            int         size;           /* JdwpStepSize */
+            int         depth;          /* JdwpStepDepth */
+        } step;
+        struct {
+            JdwpModKind modKind;
+            ObjectId    objectId;
+        } instanceOnly;
+    };
 
 }
 #endif //PROJECT_JDWP_H

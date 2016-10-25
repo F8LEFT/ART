@@ -1028,7 +1028,9 @@ namespace JDWP {
 
             uint32_t mRequestId;
 
-            static std::string buildReq(int id = 0);
+            static std::string buildReq(JdwpEventKind eventkind,
+                    JdwpSuspendPolicy policy, const std::vector<JdwpEventMod>& mod,
+                    int id = 0);
 
             const static uint8_t cmd = 1;
         };
@@ -1154,6 +1156,7 @@ namespace JDWP {
     bool WriteRefTypeId(std::string &s, uint64_t v);
     bool WriteFrameId(std::string &s, uint64_t v);
     bool WriteThreadId(std::string &s, uint64_t v);
+    bool WriteJdwpLocation(std::string &s, const JdwpLocation &location);
     std::string BuildReq(int id, int cmdset, int cmd, const std::string &extra);
 }
 
