@@ -111,6 +111,7 @@ void SmaliHighlight::highlightBlock (const QString &text)
                     break;
                 default:
                     qDebug() << "[SmaliHighlight]unknown token type" << type;
+                    Q_ASSERT (false && "unknown type");
                     break;
             }
         }
