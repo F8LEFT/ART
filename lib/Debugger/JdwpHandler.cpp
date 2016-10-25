@@ -1339,7 +1339,8 @@ ThreadReference::OwnedMonitors::OwnedMonitors (
 }
 
 
-std::string ThreadReference::OwnedMonitors::buildReq (ObjectId thread_id,int id)
+std::string ThreadReference::OwnedMonitors::buildReq (
+        ObjectId thread_id,int id)
 {
     std::string rel;
     WriteObjectId (rel, thread_id);
@@ -1496,10 +1497,451 @@ std::string ThreadGroupReference::Children::buildReq (
 }
 
 
+ArrayReference::Length::Length (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mLength = Read4 ();
+}
+
+std::string ArrayReference::Length::buildReq (ObjectId array_id,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, array_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
 
 
+ArrayReference::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mTag = (JdwpTag)Read1 ();
+    mCount = Read4 ();
+    mElements.resize (mCount);
+    bool primateTag = IsPrimitiveTag (mTag);
+    size_t width = GetTagWidth (mTag);
+    if(primateTag) {
+        for(auto i = 0; i < mCount; i++) {
+            mElements[i].tag = mTag;
+            mElements[i].L = ReadValue (width);
+        }
+    } else {
+        for(auto i = 0; i < mCount; i++) {
+            mElements[i].tag = (JdwpTag)Read1 ();
+            mElements[i].L = ReadObjectId ();
+        }
+    }
+}
+
+std::string ArrayReference::GetValues::buildReq (
+        ObjectId array_id,uint32_t offset,uint32_t length,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, array_id);
+    Write4 (rel, offset);
+    Write4 (rel, length);
+    return move(BuildReq (id, set_, cmd, rel));
+}
 
 
+ArrayReference::SetValues::SetValues (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+}
+
+std::string ArrayReference::SetValues::buildReq (
+        ObjectId array_id,uint32_t offset,JdwpTag tag,
+        const std::vector<JValue> &elements,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, array_id);
+    Write4 (rel, offset);
+    Write4 (rel, elements.size ());
+    auto width = GetTagWidth (tag);
+    for(auto it = elements.begin (), itEnd = elements.end ();
+        it != itEnd; it++)
+    {
+        WriteValue (rel,it->L,width);
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
 
 
+ClassLoaderReference::VisibleClasses::VisibleClasses (
+        const uint8_t *bytes,uint32_t available):
+        JdwpReader (bytes,available)
+{
+    mClassSize = Read4 ();
+    mClasses.resize (mClassSize);
+    for(auto i = 0; i < mClassSize; i++) {
+        mClasses[i].tag = (JdwpTag)Read1 ();
+        mClasses[i].L = ReadRefTypeId ();
+    }
+}
 
+std::string ClassLoaderReference::VisibleClasses::buildReq (
+        ObjectId classLoaderObject,int id)
+{
+    std::string rel;
+    WriteObjectId (rel, classLoaderObject);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+EventRequest::Set::Set (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mRequestId = Read4 ();
+}
+
+std::string EventRequest::Set::buildReq (int id)
+{
+    // TODO add request
+
+//    JdwpEventKind event_kind = request.ReadEnum1<JdwpEventKind>("event kind");
+//    JdwpSuspendPolicy suspend_policy = request.ReadEnum1<JdwpSuspendPolicy>("suspend policy");
+//    int32_t modifier_count = request.ReadSigned32("modifier count");
+//
+//    CHECK_LT(modifier_count, 256);    /* reasonableness check */
+//
+//    JdwpEvent* pEvent = EventAlloc(modifier_count);
+//    pEvent->eventKind = event_kind;
+//    pEvent->suspend_policy = suspend_policy;
+//    pEvent->modCount = modifier_count;
+//
+//    /*
+//     * Read modifiers.  Ordering may be significant (see explanation of Count
+//     * mods in JDWP doc).
+//     */
+//    for (int32_t i = 0; i < modifier_count; ++i) {
+//        JdwpEventMod& mod = pEvent->mods[i];
+//        mod.modKind = request.ReadModKind();
+//        switch (mod.modKind) {
+//            case MK_COUNT:
+//            {
+//                // Report once, when "--count" reaches 0.
+//                uint32_t count = request.ReadUnsigned32("count");
+//                if (count == 0) {
+//                    return ERR_INVALID_COUNT;
+//                }
+//                mod.count.count = count;
+//            }
+//                break;
+//            case MK_CONDITIONAL:
+//            {
+//                // Conditional on expression.
+//                uint32_t exprId = request.ReadUnsigned32("expr id");
+//                mod.conditional.exprId = exprId;
+//            }
+//                break;
+//            case MK_THREAD_ONLY:
+//            {
+//                // Only report events in specified thread.
+//                ObjectId thread_id = request.ReadThreadId();
+//                mod.threadOnly.threadId = thread_id;
+//            }
+//                break;
+//            case MK_CLASS_ONLY:
+//            {
+//                // For ClassPrepare, MethodEntry.
+//                RefTypeId class_id = request.ReadRefTypeId();
+//                mod.classOnly.refTypeId = class_id;
+//            }
+//                break;
+//            case MK_CLASS_MATCH:
+//            {
+//                // Restrict events to matching classes.
+//                // pattern is "java.foo.*", we want "java/foo/*".
+//                std::string pattern(request.ReadUtf8String());
+//                std::replace(pattern.begin(), pattern.end(), '.', '/');
+//                mod.classMatch.classPattern = strdup(pattern.c_str());
+//            }
+//                break;
+//            case MK_CLASS_EXCLUDE:
+//            {
+//                // Restrict events to non-matching classes.
+//                // pattern is "java.foo.*", we want "java/foo/*".
+//                std::string pattern(request.ReadUtf8String());
+//                std::replace(pattern.begin(), pattern.end(), '.', '/');
+//                mod.classExclude.classPattern = strdup(pattern.c_str());
+//            }
+//                break;
+//            case MK_LOCATION_ONLY:
+//            {
+//                // Restrict certain events based on location.
+//                JdwpLocation location = request.ReadLocation();
+//                mod.locationOnly.loc = location;
+//            }
+//                break;
+//            case MK_EXCEPTION_ONLY:
+//            {
+//                // Modifies EK_EXCEPTION events,
+//                mod.exceptionOnly.refTypeId = request.ReadRefTypeId();  // null => all exceptions.
+//                mod.exceptionOnly.caught = request.ReadEnum1<uint8_t>("caught");
+//                mod.exceptionOnly.uncaught = request.ReadEnum1<uint8_t>("uncaught");
+//            }
+//                break;
+//            case MK_FIELD_ONLY:
+//            {
+//                // For field access/modification events.
+//                RefTypeId declaring = request.ReadRefTypeId();
+//                FieldId fieldId = request.ReadFieldId();
+//                mod.fieldOnly.refTypeId = declaring;
+//                mod.fieldOnly.fieldId = fieldId;
+//            }
+//                break;
+//            case MK_STEP:
+//            {
+//                // For use with EK_SINGLE_STEP.
+//                ObjectId thread_id = request.ReadThreadId();
+//                uint32_t size = request.ReadUnsigned32("step size");
+//                uint32_t depth = request.ReadUnsigned32("step depth");
+//                VLOG(jdwp) << StringPrintf("    Step: thread=%#llx", thread_id)
+//                           << " size=" << JdwpStepSize(size) << " depth=" << JdwpStepDepth(depth);
+//
+//                mod.step.threadId = thread_id;
+//                mod.step.size = size;
+//                mod.step.depth = depth;
+//            }
+//                break;
+//            case MK_INSTANCE_ONLY:
+//            {
+//                // Report events related to a specific object.
+//                ObjectId instance = request.ReadObjectId();
+//                mod.instanceOnly.objectId = instance;
+//            }
+//                break;
+//            default:
+//                LOG(WARNING) << "GLITCH: unsupported modKind=" << mod.modKind;
+//                break;
+//        }
+//    }
+    return std::__cxx11::string ();
+}
+
+EventRequest::Clear::Clear (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+}
+
+std::string EventRequest::Clear::buildReq (
+        JdwpEventKind kind,uint32_t requestId, int id)
+{
+    std::string rel;
+    Write1 (rel, kind);
+    Write4 (rel, requestId);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+EventRequest::ClearAllBreakpoints::ClearAllBreakpoints (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string EventRequest::ClearAllBreakpoints::buildReq (int id)
+{
+    std::string rel;
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+StackFrame::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mSlotCount = Read4 ();
+    mSlots.resize (mSlotCount);
+    for(auto i = 0; i < mSlotCount; i++) {
+        mSlots[i].tag = (JdwpTag)Read1 ();
+        mSlots[i].L = ReadValue (GetTagWidth (mSlots[i].tag));
+    }
+}
+
+std::string StackFrame::GetValues::buildReq (
+        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &slots,
+        const std::vector<JdwpTag> &reqSig,int id)
+{
+    if(slots.size () != reqSig.size ())
+        return "";
+    std::string rel;
+    WriteThreadId (rel, thread_id);
+    WriteFrameId (rel, frame_id);
+    int count = slots.size ();
+    Write4 (rel, count);
+    for(auto i = 0; i < count; i++) {
+        Write4 (rel, slots[i]);
+        Write1 (rel, reqSig[i]);
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+StackFrame::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+}
+
+std::string StackFrame::SetValues::buildReq (
+        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &slots,
+         const std::vector<JValue> &reqSig,int id)
+{
+    if(slots.size () != reqSig.size ())
+        return "";
+    std::string rel;
+    WriteThreadId (rel, thread_id);
+    WriteFrameId (rel, frame_id);
+    int count = slots.size ();
+    Write4 (rel, count);
+    for(auto i = 0; i < count; i++) {
+        Write4 (rel, slots[i]);
+        Write1 (rel, reqSig[i].tag);
+        WriteValue (rel, reqSig[i].L, GetTagWidth (reqSig[i].tag));
+    }
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+StackFrame::ThisObject::ThisObject (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mObject.tag = (JdwpTag)Read1 ();
+    mObject.L = ReadValue (GetTagWidth (mObject.tag));
+}
+
+std::string StackFrame::ThisObject::buildReq (
+        ObjectId thread_id,FrameId frame_id,int id)
+{
+    std::string rel;
+    WriteThreadId (rel, thread_id);
+    WriteFrameId (rel, frame_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+
+StackFrame::PopFrames::PopFrames (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string StackFrame::PopFrames::buildReq (
+        ObjectId thread_id,FrameId frame_id,int id)
+{
+    std::string rel;
+    WriteThreadId (rel, thread_id);
+    WriteFrameId (rel, frame_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+ClassObjectReference::ReflectedType::ReflectedType (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+    mClass.tag = (JdwpTag)Read1 ();
+    mClass.L = ReadValue (GetTagWidth (mClass.tag));
+}
+
+std::string ClassObjectReference::ReflectedType::buildReq (
+        RefTypeId class_object_id,int id)
+{
+    std::string rel;
+    WriteRefTypeId (rel, class_object_id);
+    return move(BuildReq (id, set_, cmd, rel));
+}
+
+Composite::ReflectedType::ReflectedType (
+        const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+
+}
+
+std::string Composite::ReflectedType::buildReq (int id)
+{
+    return std::__cxx11::string ();
+}
+
+DDM::Chunk::Chunk (const uint8_t *bytes,uint32_t available)
+        : JdwpReader (bytes,available)
+{
+//    Thread* self = Thread::Current();
+//    JNIEnv* env = self->GetJniEnv();
+//
+//    uint32_t type = request.ReadUnsigned32("type");
+//    uint32_t length = request.ReadUnsigned32("length");
+//
+//    // Create a byte[] corresponding to 'request'.
+//    size_t request_length = request.size();
+//    ScopedLocalRef<jbyteArray> dataArray(env, env->NewByteArray(request_length));
+//    if (dataArray.get() == NULL) {
+//        LOG(WARNING) << "byte[] allocation failed: " << request_length;
+//        env->ExceptionClear();
+//        return false;
+//    }
+//    env->SetByteArrayRegion(dataArray.get(), 0, request_length, reinterpret_cast<const jbyte*>(request.data()));
+//    request.Skip(request_length);
+//
+//    // Run through and find all chunks.  [Currently just find the first.]
+//    ScopedByteArrayRO contents(env, dataArray.get());
+//    if (length != request_length) {
+//        LOG(WARNING) << StringPrintf("bad chunk found (len=%u pktLen=%d)", length, request_length);
+//        return false;
+//    }
+//
+//    // Call "private static Chunk dispatch(int type, byte[] data, int offset, int length)".
+//    ScopedLocalRef<jobject> chunk(env, env->CallStaticObjectMethod(WellKnownClasses::org_apache_harmony_dalvik_ddmc_DdmServer,
+//                                                                   WellKnownClasses::org_apache_harmony_dalvik_ddmc_DdmServer_dispatch,
+//                                                                   type, dataArray.get(), 0, length));
+//    if (env->ExceptionCheck()) {
+//        LOG(INFO) << StringPrintf("Exception thrown by dispatcher for 0x%08x", type);
+//        env->ExceptionDescribe();
+//        env->ExceptionClear();
+//        return false;
+//    }
+//
+//    if (chunk.get() == NULL) {
+//        return false;
+//    }
+//
+//    /*
+//     * Pull the pieces out of the chunk.  We copy the results into a
+//     * newly-allocated buffer that the caller can free.  We don't want to
+//     * continue using the Chunk object because nothing has a reference to it.
+//     *
+//     * We could avoid this by returning type/data/offset/length and having
+//     * the caller be aware of the object lifetime issues, but that
+//     * integrates the JDWP code more tightly into the rest of the runtime, and doesn't work
+//     * if we have responses for multiple chunks.
+//     *
+//     * So we're pretty much stuck with copying data around multiple times.
+//     */
+//    ScopedLocalRef<jbyteArray> replyData(env, reinterpret_cast<jbyteArray>(env->GetObjectField(chunk.get(), WellKnownClasses::org_apache_harmony_dalvik_ddmc_Chunk_data)));
+//    jint offset = env->GetIntField(chunk.get(), WellKnownClasses::org_apache_harmony_dalvik_ddmc_Chunk_offset);
+//    length = env->GetIntField(chunk.get(), WellKnownClasses::org_apache_harmony_dalvik_ddmc_Chunk_length);
+//    type = env->GetIntField(chunk.get(), WellKnownClasses::org_apache_harmony_dalvik_ddmc_Chunk_type);
+//
+//    VLOG(jdwp) << StringPrintf("DDM reply: type=0x%08x data=%p offset=%d length=%d", type, replyData.get(), offset, length);
+//    if (length == 0 || replyData.get() == NULL) {
+//        return false;
+//    }
+//
+//    const int kChunkHdrLen = 8;
+//    uint8_t* reply = new uint8_t[length + kChunkHdrLen];
+//    if (reply == NULL) {
+//        LOG(WARNING) << "malloc failed: " << (length + kChunkHdrLen);
+//        return false;
+//    }
+//    JDWP::Set4BE(reply + 0, type);
+//    JDWP::Set4BE(reply + 4, length);
+//    env->GetByteArrayRegion(replyData.get(), offset, length, reinterpret_cast<jbyte*>(reply + kChunkHdrLen));
+//
+//    *pReplyBuf = reply;
+//    *pReplyLen = length + kChunkHdrLen;
+//
+//    VLOG(jdwp) << StringPrintf("dvmHandleDdm returning type=%.4s %p len=%d", reinterpret_cast<char*>(reply), reply, length);
+//    return true;
+}
+
+std::string DDM::Chunk::buildReq (int id)
+{
+    // TODO Chunk
+    return "";
+}

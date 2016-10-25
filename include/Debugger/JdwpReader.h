@@ -38,9 +38,10 @@ namespace JDWP {
         uint32_t ReadFieldId() {return Read4 (); }
         uint32_t ReadMethodId() {return Read4 ();}
         uint64_t ReadObjectId() {return Read8 ();}
-        uint64_t ReadRefTypeId() {return Read8 ();}
-        uint64_t ReadFrameId() { return Read8();}
-        uint64_t ReadThreadId() {return Read8 (); }
+        uint64_t ReadRefTypeId() {return ReadObjectId ();}
+        uint64_t ReadFrameId() { return ReadObjectId();}
+        uint64_t ReadThreadId() {return ReadObjectId (); }
+        uint64_t ReadArrayId() { return ReadObjectId ();}
         JdwpLocation ReadJdwpLocation();
 
 

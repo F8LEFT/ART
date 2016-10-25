@@ -56,6 +56,32 @@ namespace JDWP {
         TT_ARRAY                = 3,
     };
 
+    enum JdwpEventKind {
+        EK_SINGLE_STEP          = 1,
+        EK_BREAKPOINT           = 2,
+        EK_FRAME_POP            = 3,
+        EK_EXCEPTION            = 4,
+        EK_USER_DEFINED         = 5,
+        EK_THREAD_START         = 6,
+        EK_THREAD_DEATH         = 7,  // Formerly known as THREAD_END.
+        EK_CLASS_PREPARE        = 8,
+        EK_CLASS_UNLOAD         = 9,
+        EK_CLASS_LOAD           = 10,
+        EK_FIELD_ACCESS         = 20,
+        EK_FIELD_MODIFICATION   = 21,
+        EK_EXCEPTION_CATCH      = 30,
+        EK_METHOD_ENTRY         = 40,
+        EK_METHOD_EXIT          = 41,
+        EK_METHOD_EXIT_WITH_RETURN_VALUE = 42,
+        EK_MONITOR_CONTENDED_ENTER       = 43,
+        EK_MONITOR_CONTENDED_ENTERED     = 44,
+        EK_MONITOR_WAIT         = 45,
+        EK_MONITOR_WAITED       = 46,
+        EK_VM_START             = 90,  // Formerly known as VM_INIT.
+        EK_VM_DEATH             = 99,
+        EK_VM_DISCONNECTED      = 100,  // "Never sent across JDWP".
+    };
+
     bool IsPrimitiveTag(JDWP::JdwpTag tag);
 
     size_t GetTagWidth(JDWP::JdwpTag tag);

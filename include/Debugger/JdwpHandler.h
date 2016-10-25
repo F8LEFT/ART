@@ -149,6 +149,7 @@
 #include "JdwpReader.h"
 #include "jdwp.h"
 #include <vector>
+#include <jerror.h>
 
 namespace JDWP {
     namespace VirtualMachine {
@@ -965,7 +966,182 @@ namespace JDWP {
         };
     }
 
+    namespace ArrayReference
+    {
+        uint8_t set_ = 13;
 
+        struct Length : public JdwpReader {
+            Length(const uint8_t* bytes, uint32_t available);
+
+            int mLength;
+
+            static std::string buildReq(ObjectId array_id, int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+
+        struct GetValues : public JdwpReader {
+            GetValues(const uint8_t* bytes, uint32_t available);
+
+            JdwpTag mTag;
+            int mCount;
+            std::vector<JValue> mElements;
+
+
+            static std::string buildReq(ObjectId array_id, uint32_t offset,
+                                        uint32_t length, int id = 0);
+
+            const static uint8_t cmd = 2;
+        };
+
+        struct SetValues : public JdwpReader {
+            SetValues(const uint8_t* bytes, uint32_t available);
+            static std::string buildReq (ObjectId array_id,uint32_t offset,JdwpTag tag,
+                                         const std::vector<JValue> &elements,int id = 0);
+
+            const static uint8_t cmd = 3;
+        };
+    }
+
+    namespace ClassLoaderReference
+    {
+        uint8_t set_ = 14;
+
+        struct VisibleClasses : public JdwpReader {
+            VisibleClasses(const uint8_t* bytes, uint32_t available);
+
+            int mClassSize;
+            std::vector<JValue> mClasses;
+
+            static std::string buildReq(ObjectId classLoaderObject, int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+    }
+
+    namespace EventRequest
+    {
+        uint8_t set_ = 15;
+
+        struct Set : public JdwpReader {
+            Set(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mRequestId;
+
+            static std::string buildReq(int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+
+        struct Clear : public JdwpReader {
+            Clear(const uint8_t* bytes, uint32_t available);
+
+
+            static std::string buildReq(JdwpEventKind kind, uint32_t requestId,
+                                        int id = 0);
+
+            const static uint8_t cmd = 2;
+        };
+
+        struct ClearAllBreakpoints : public JdwpReader {
+            ClearAllBreakpoints(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+
+            const static uint8_t cmd = 3;
+        };
+    }
+
+    namespace StackFrame
+    {
+        uint8_t set_ = 16;
+
+        struct GetValues : public JdwpReader {
+            GetValues(const uint8_t* bytes, uint32_t available);
+
+            uint32_t mSlotCount;
+            std::vector<JValue> mSlots;
+
+            static std::string buildReq (ObjectId thread_id,FrameId frame_id,
+                                         const std::vector<uint32_t> &slots,
+                                         const std::vector<JdwpTag> &reqSig,int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+
+        struct SetValues : public JdwpReader {
+            SetValues(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(ObjectId thread_id, FrameId frame_id,
+                            const std::vector<uint32_t > &slots,
+                             const std::vector<JValue> &reqSig, int id = 0);
+
+            const static uint8_t cmd = 2;
+        };
+
+        struct ThisObject : public JdwpReader {
+            ThisObject(const uint8_t* bytes, uint32_t available);
+
+            JValue mObject;
+
+            static std::string buildReq(ObjectId thread_id, FrameId frame_id,
+                                        int id = 0);
+
+            const static uint8_t cmd = 3;
+        };
+
+        struct PopFrames : public JdwpReader {
+            PopFrames(const uint8_t* bytes, uint32_t available);
+
+
+            static std::string buildReq(ObjectId thread_id, FrameId frame_id,
+                                        int id = 0);
+
+            const static uint8_t cmd = 4;
+        };
+    }
+
+    namespace ClassObjectReference
+    {
+        uint8_t set_ = 17;
+
+        struct ReflectedType : public JdwpReader {
+            ReflectedType(const uint8_t* bytes, uint32_t available);
+
+            JValue mClass;
+
+            static std::string buildReq(RefTypeId class_object_id,
+                                        int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+    }
+
+    namespace Composite
+    {
+        uint8_t set_ = 64;
+
+        struct ReflectedType : public JdwpReader {
+            ReflectedType(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+
+            const static uint8_t cmd = 100;
+        };
+    }
+
+    namespace DDM
+    {
+        uint8_t set_ = 199;
+
+        struct Chunk : public JdwpReader {
+            Chunk(const uint8_t* bytes, uint32_t available);
+
+            static std::string buildReq(int id = 0);
+
+            const static uint8_t cmd = 1;
+        };
+    }
     bool Write1(std::string &s, uint8_t v);
     bool Write2(std::string &s, uint16_t v);
     bool Write4(std::string &s, uint32_t v);
