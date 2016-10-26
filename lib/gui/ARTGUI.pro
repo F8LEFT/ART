@@ -28,7 +28,9 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/ProjectTab/ProjectTab.cpp \
     lib/EditorTab/EditorTab.cpp \
     lib/BookMark/BookMark.cpp \
-    lib/RunDevice/RunDevice.cpp
+    lib/RunDevice/RunDevice.cpp \
+    lib/Config/Config.cpp \
+    lib/Config/FileEditor.cpp
 
 
 HEADERS  += \
@@ -48,7 +50,9 @@ HEADERS  += \
     include/EditorTab/EditorTab.h \
     lib/BookMark/BookMark.h \
     include/BookMark/BookMark.h \
-    lib/RunDevice/RunDevice.h
+    lib/RunDevice/RunDevice.h \
+    lib/Config/Config.h \
+    lib/Config/FileEditor.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
@@ -61,7 +65,9 @@ FORMS    += \
     include/EditorTab/EditorTab.ui \
     lib/EditorTab/EditorTab.ui \
     lib/BookMark/BookMark.ui \
-    lib/RunDevice/RunDevice.ui
+    lib/RunDevice/RunDevice.ui \
+    lib/Config/Config.ui \
+    lib/Config/FileEditor.ui
 
 RESOURCES += \
     ART.qrc \

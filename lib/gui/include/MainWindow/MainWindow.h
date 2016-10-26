@@ -53,6 +53,8 @@ protected slots:
 
     void actionSaveAll();
 
+    void actionOption();
+
     // Help Menu
     void actionAboutArt();
 
@@ -78,6 +80,7 @@ private:
     StatusLabel* mStatusLabel;
     StatusLabel* mLastLogLabel;
     CommandLineEdit* mCmdLineEdit;
+
 
     RunDevice* mRunDevice;
 };

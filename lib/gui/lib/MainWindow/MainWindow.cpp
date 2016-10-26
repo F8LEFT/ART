@@ -14,6 +14,7 @@
 #include "AboutArt/AboutArt.h"
 #include "OpenApk/OpenApk.h"
 #include "RunDevice/RunDevice.h"
+#include "Config/Config.h"
 
 #include "utils/CmdMsgUtil.h"
 #include <utils/Configuration.h>
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClose_Project, SIGNAL(triggered(bool)),
             this, SLOT(actionCloseProject()));
     connect(ui->actionSave_All, SIGNAL(triggered(bool)), this, SLOT(actionSaveAll()));
+    connect(ui->actionOption, SIGNAL(triggered(bool)), this, SLOT(actionOption()));
 
     // run
     connect(ui->actionBuild, SIGNAL(triggered(bool)), this, SLOT(actionBuild()));
@@ -185,6 +187,12 @@ void MainWindow::actionCloseProject()
 void MainWindow::actionSaveAll()
 {
     cmdexec("SaveAll");
+}
+
+void MainWindow::actionOption()
+{
+    Config config;
+    config.exec();
 }
 
 void MainWindow::actionAboutArt()

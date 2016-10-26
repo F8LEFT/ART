@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>710</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -35,6 +35,7 @@
     <addaction name="separator"/>
     <addaction name="actionSave_All"/>
     <addaction name="separator"/>
+    <addaction name="actionOption"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -219,6 +220,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionOption">
+   <property name="text">
+    <string>Option</string>
    </property>
   </action>
  </widget>
