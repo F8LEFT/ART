@@ -15,6 +15,14 @@ public:
     explicit FileEditor(QWidget *parent = 0);
     ~FileEditor();
 
+protected slots:
+    void onForegroundColorBtnClick();
+    void onForegroundClearBtnClick();
+    void onBackgroundColorBtnClick();
+    void onBackgroundClearBtnClick();
+    void onUnderlineColorBtnClick();
+    void onUnderlineClearBtnClick();
+
 private:
     Ui::FileEditor *ui;
 };
