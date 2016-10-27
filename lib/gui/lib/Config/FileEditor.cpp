@@ -9,6 +9,8 @@ FileEditor::FileEditor(QWidget *parent) :
     ui(new Ui::FileEditor)
 {
     ui->setupUi(this);
+//    ui->mColorTab.set ("Color");
+//    ui->mFontTab->setWindowTitle ("Font");
 
     ui->mForegroundColorBtn->setAutoFillBackground(true);
     ui->mBackgroundColorBtn->setAutoFillBackground(true);
@@ -26,7 +28,6 @@ FileEditor::FileEditor(QWidget *parent) :
             this, SLOT(onUnderlineColorBtnClick()));
     connect(ui->mUnderlineClearBtn, SIGNAL(clicked(bool)),
             this, SLOT(onUnderlineClearBtnClick()));
-
 }
 
 FileEditor::~FileEditor()
@@ -36,23 +37,25 @@ FileEditor::~FileEditor()
 
 void FileEditor::onForegroundColorBtnClick()
 {
-    QColor color = QColorDialog::getColor(Qt::white, this, "Select ForegroundColor", QColorDialog::ShowAlphaChannel);
+    QColor color = QColorDialog::getColor(Qt::white, this);
     if(color.isValid ()) {
+        mForegroundColor = color;
         QString style = "background-color: " + color.name ();
         ui->mForegroundColorBtn->setStyleSheet (style);
     }
-
 }
 
 void FileEditor::onForegroundClearBtnClick()
 {
+    mForegroundColor.setNamedColor ("transparent");
     ui->mForegroundColorBtn->setStyleSheet ("");
 }
 
 void FileEditor::onBackgroundColorBtnClick()
 {
-    QColor color = QColorDialog::getColor(Qt::white, this, "Select ForegroundColor", QColorDialog::ShowAlphaChannel);
+    QColor color = QColorDialog::getColor(Qt::white, this);
     if(color.isValid ()) {
+        mBackgroundColor = color;
         QString style = "background-color: " + color.name ();
         ui->mBackgroundColorBtn->setStyleSheet (style);
     }
@@ -60,13 +63,15 @@ void FileEditor::onBackgroundColorBtnClick()
 
 void FileEditor::onBackgroundClearBtnClick()
 {
+    mBackgroundColor.setNamedColor ("transparent");
     ui->mBackgroundColorBtn->setStyleSheet ("");
 }
 
 void FileEditor::onUnderlineColorBtnClick()
 {
-    QColor color = QColorDialog::getColor(Qt::white, this, "Select ForegroundColor", QColorDialog::ShowAlphaChannel);
+    QColor color = QColorDialog::getColor(Qt::white, this);
     if(color.isValid ()) {
+        mUnderlineColor = color;
         QString style = "background-color: " + color.name ();
         ui->mUnderlineColorBtn->setStyleSheet (style);
     }
@@ -74,5 +79,6 @@ void FileEditor::onUnderlineColorBtnClick()
 
 void FileEditor::onUnderlineClearBtnClick()
 {
+    mUnderlineColor.setNamedColor ("transparent");
     ui->mUnderlineColorBtn->setStyleSheet ("");
 }

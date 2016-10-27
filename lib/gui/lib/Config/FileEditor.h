@@ -2,6 +2,8 @@
 #define FILEEDITOR_H
 
 #include <QWidget>
+#include <QColor>
+#include <>
 
 namespace Ui {
 class FileEditor;
@@ -25,6 +27,10 @@ protected slots:
 
 private:
     Ui::FileEditor *ui;
+
+    QColor mForegroundColor;
+    QColor mBackgroundColor;
+    QColor mUnderlineColor;
 };
 
 #endif // FILEEDITOR_H
