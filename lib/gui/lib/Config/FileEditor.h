@@ -1,14 +1,20 @@
 #ifndef FILEEDITOR_H
 #define FILEEDITOR_H
 
+#include "HighLighter/HighLightConfig.h"
+
 #include <QWidget>
 #include <QColor>
-#include <>
+#include <QtGui/QSyntaxHighlighter>
+#include <QMap>
+#include <QtWidgets/QListWidgetItem>
+#include  <QFont>
 
 namespace Ui {
 class FileEditor;
 }
 
+class QuickSmaliHighilght;
 class FileEditor : public QWidget
 {
     Q_OBJECT
@@ -25,12 +31,42 @@ protected slots:
     void onUnderlineColorBtnClick();
     void onUnderlineClearBtnClick();
 
+    void onUnderlineComboboxChange(int index);
+    void onColorListItemChange(QListWidgetItem* current, QListWidgetItem* prev);
+
+    void onFormatUpdate();
+
+public slots:
+    void save();
+
+private:
+    void initColorListWidget();
+    void initUnderlineCombobox();
+    void initSizeCombobox();
 private:
     Ui::FileEditor *ui;
+    QuickSmaliHighilght* mHighlight;
 
     QColor mForegroundColor;
     QColor mBackgroundColor;
     QColor mUnderlineColor;
+
+    HighLightConfig* mCurrentConfig;
 };
+class QuickSmaliHighilght : public QSyntaxHighlighter
+{
+Q_OBJECT
+public:
+    QuickSmaliHighilght(QTextDocument *parent);
+
+
+protected:
+    void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
+
+public:
+    QMap<HighLightConfig::FORMAT , QTextCharFormat> mFormatMap;
+
+};
+
 
 #endif // FILEEDITOR_H

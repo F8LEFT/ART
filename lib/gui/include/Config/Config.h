@@ -17,6 +17,7 @@ public:
     explicit Config(QWidget *parent = 0);
     ~Config();
 
+
 private:
     Ui::Config *ui;
 

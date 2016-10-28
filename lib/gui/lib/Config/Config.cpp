@@ -14,6 +14,8 @@ Config::Config(QWidget *parent) :
 
     mFileEditor = new FileEditor((QWidget*)this);
     ui->mConfigWidget->layout()->addWidget(mFileEditor);
+
+    connect(ui->buttonBox, SIGNAL(accepted ()), mFileEditor, SLOT(save()));
 }
 
 Config::~Config()
