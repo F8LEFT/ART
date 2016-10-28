@@ -25,6 +25,8 @@ SmaliHighlight::SmaliHighlight (QTextDocument *parent,QString fileName)
           mFormatMap(HighLightConfig::instance (GetCfgsPath ("smaliTheme/" +
                       ConfigString("FileEdit", "SmaliHighlight")))->mFormatMap)
 {
+    auto hightlightCfg = HighLightConfig::instance ();
+    connect(hightlightCfg, SIGNAL(onConfigUpdate()), this, SLOT(rehighlight()));
 }
 
 void SmaliHighlight::highlightBlock (const QString &text)

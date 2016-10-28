@@ -37,6 +37,9 @@ protected slots:
 
     void onFormatUpdate();
 
+    void onSchemeCopyBtnClick();
+    void onSchemeDeleteBtnClick();
+
 public slots:
     void save();
 

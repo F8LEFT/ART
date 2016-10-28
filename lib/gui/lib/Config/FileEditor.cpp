@@ -11,6 +11,8 @@
 #include <QColorDialog>
 #include <QBrush>
 #include <utils/Configuration.h>
+#include <QInputDialog>
+#include <QtWidgets/QMessageBox>
 
 using namespace Analysis;
 
@@ -20,6 +22,9 @@ FileEditor::FileEditor(QWidget *parent) :
     mUnderlineColor(Qt::black), ui(new Ui::FileEditor)
 {
     ui->setupUi(this);
+
+    ui->mTabWidget->setTabText (0, tr("Color && Font"));
+
     QFile file(GetCfgsPath("sample.smali"));
     if(file.open (QFile::ReadOnly | QFile::Text)) {
         ui->mColorEditor->setPlainText (file.readAll ());
@@ -27,10 +32,11 @@ FileEditor::FileEditor(QWidget *parent) :
     }
     mHighlight = new QuickSmaliHighilght (ui->mColorEditor->document ());
 
-    initSchemeCombobox ();
-    initUnderlineCombobox ();
-    initColorListWidget ();
     initSizeCombobox ();
+    initColorListWidget ();
+    initUnderlineCombobox ();
+    initSchemeCombobox ();
+
     // signal slots
     connect(ui->mForegroundColorBtn, SIGNAL(clicked(bool)),
             this, SLOT(onForegroundColorBtnClick()));
@@ -47,8 +53,6 @@ FileEditor::FileEditor(QWidget *parent) :
 
     connect(ui->mColorListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
             this, SLOT(onColorListItemChange(QListWidgetItem*,QListWidgetItem*)));
-    connect(ui->mSchemeComboBox, SIGNAL(currentTextChanged(const QString &)),
-            this, SLOT(onSchemeComboboxChange (const QString &)));
 
     connect (ui->mForegroundColorBtn, SIGNAL(clicked(bool)),
             this, SLOT(onFormatUpdate ()));
@@ -77,8 +81,12 @@ FileEditor::FileEditor(QWidget *parent) :
     connect(ui->mBoldCheck, SIGNAL(stateChanged(int)),
             this, SLOT(onFormatUpdate ()));
 
+    connect(ui->mCopyBtn, SIGNAL(clicked(bool)),
+            this, SLOT(onSchemeCopyBtnClick ()));
+    connect(ui->mDeleteBtn, SIGNAL(clicked(bool)),
+            this, SLOT(onSchemeDeleteBtnClick ()));
 
-    mHighlight->mFormatMap = mCurrentConfig->mFormatMap;
+
 }
 
 FileEditor::~FileEditor()
@@ -192,6 +200,20 @@ void FileEditor::onSchemeComboboxChange (const QString &text)
         mCurrentConfig->deleteLater ();
     mCurrentConfig = new HighLightConfig(
             GetCfgsPath ("smaliTheme/" + text), this);
+
+    auto colorCount = ui->mColorListWidget->count ();
+    for(auto i = 0; i < colorCount; i++) {
+        auto item = ui->mColorListWidget->item (i);
+        auto &format = mCurrentConfig->mFormatMap[
+                (HighLightConfig::FORMAT)item->type ()];
+        item->setForeground (format.foreground ());
+        item->setBackground (format.background ());
+    }
+
+    ui->mColorListWidget->setCurrentRow (0);
+
+    mHighlight->mFormatMap = mCurrentConfig->mFormatMap;
+    mHighlight->rehighlight ();
 }
 
 void FileEditor::onFormatUpdate()
@@ -228,6 +250,54 @@ void FileEditor::onFormatUpdate()
     mCurrentConfig->mFormatMap[ (HighLightConfig::FORMAT)
             ui->mColorListWidget->currentItem ()->type ()] = format;
     mHighlight->rehighlight ();
+}
+
+void FileEditor::onSchemeCopyBtnClick ()
+{
+    auto curScheme = ui->mSchemeComboBox->currentText ();
+
+    bool doCopy;
+    auto fileName = QInputDialog::getText(nullptr, tr("Input filename"),
+                      tr("Please input your scheme name"), QLineEdit::Normal,
+                                          curScheme ,&doCopy);
+    if(doCopy) {
+        if(!fileName.endsWith (".xml")) {
+            fileName += ".xml";
+        }
+        if(ui->mSchemeComboBox->findText (fileName) != -1) {
+            QMessageBox::warning(nullptr, tr("Copy Error"),
+                        tr("you must input a different file name!"));
+            return;
+        }
+        if(!QFile::copy (GetCfgsPath ("smaliTheme/" + curScheme),
+                      GetCfgsPath ("smaliTheme/" + fileName))) {
+            QMessageBox::warning(nullptr, tr("Copy Error"),
+                        tr("Some error occurred while copying file!"));
+            return;
+        }
+        ui->mSchemeComboBox->addItem (fileName);
+        ui->mSchemeComboBox->setCurrentText (fileName);
+    }
+}
+
+void FileEditor::onSchemeDeleteBtnClick ()
+{
+    auto curScheme = ui->mSchemeComboBox->currentText ();
+    if(curScheme == "default.xml") {
+        QMessageBox::warning (nullptr, tr("Delete Error"),
+                    tr("You can't delete default scheme file"));
+        return;
+    }
+    ui->mSchemeComboBox->setCurrentText ("default.xml");
+    QFile file(GetCfgsPath ("smaliTheme/" + curScheme));
+    if(!file.remove ()) {
+        QMessageBox::warning(nullptr, tr("Delete Error"),
+                    tr("Some error occurred while deleting file!"));
+    } else {
+        ui->mSchemeComboBox->removeItem (
+                ui->mSchemeComboBox->findText (curScheme));
+    }
+
 }
 
 void FileEditor::initColorListWidget ()
@@ -310,18 +380,22 @@ void FileEditor::initSchemeCombobox ()
                 }
             }
     }
+
+    connect(ui->mSchemeComboBox, SIGNAL(currentTextChanged(const QString &)),
+            this, SLOT(onSchemeComboboxChange (const QString &)));
+
+    if(combobox->findText ("default.xml") == -1) {
+        combobox->addItem (0, "default.xml");
+    }
     auto curTheme = ConfigString("FileEdit", "SmaliHighlight");
     if(curTheme.isEmpty ())
         curTheme = "default.xml";
     auto index = combobox->findText (curTheme);
     if(index == -1) {
-        combobox->addItem (0, "default.xml");
-        combobox->setCurrentIndex (0);
+        combobox->setCurrentText ("default.xml");
     } else {
         combobox->setCurrentIndex (index);
     }
-    mCurrentConfig = new HighLightConfig(
-                GetCfgsPath ("smaliTheme/" + curTheme), this);
 
 }
 
@@ -332,7 +406,10 @@ void FileEditor::save ()
     mCurrentConfig->save ();
     auto configFileName = QFileInfo(mCurrentConfig->mSetFile).fileName ();
     cfg->setString ("FileEdit", "SmaliHighlight", configFileName);
-    // TODO tell all Editor to repaint smali file
+    auto pHighLightConfig = HighLightConfig::instance (
+            GetCfgsPath ("smaliTheme/" + configFileName));
+    pHighLightConfig->mFormatMap = mCurrentConfig->mFormatMap;
+    pHighLightConfig->onConfigUpdate ();
 }
 
 

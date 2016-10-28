@@ -16,6 +16,8 @@ Config::Config(QWidget *parent) :
     ui->mConfigWidget->layout()->addWidget(mFileEditor);
 
     connect(ui->buttonBox, SIGNAL(accepted ()), mFileEditor, SLOT(save()));
+    connect((const QObject*)ui->buttonBox->button (QDialogButtonBox::Apply), SIGNAL(clicked()),
+            mFileEditor, SLOT(save()));
 }
 
 Config::~Config()
