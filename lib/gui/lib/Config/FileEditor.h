@@ -31,8 +31,9 @@ protected slots:
     void onUnderlineColorBtnClick();
     void onUnderlineClearBtnClick();
 
-    void onUnderlineComboboxChange(int index);
     void onColorListItemChange(QListWidgetItem* current, QListWidgetItem* prev);
+
+    void onSchemeComboboxChange(const QString &text);
 
     void onFormatUpdate();
 
@@ -43,6 +44,7 @@ private:
     void initColorListWidget();
     void initUnderlineCombobox();
     void initSizeCombobox();
+    void initSchemeCombobox();
 private:
     Ui::FileEditor *ui;
     QuickSmaliHighilght* mHighlight;

@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QColorDialog>
 #include <QBrush>
+#include <utils/Configuration.h>
 
 using namespace Analysis;
 
@@ -26,8 +27,7 @@ FileEditor::FileEditor(QWidget *parent) :
     }
     mHighlight = new QuickSmaliHighilght (ui->mColorEditor->document ());
 
-    mCurrentConfig = new HighLightConfig(GetCfgsPath ("smaliTheme/default.xml"));
-
+    initSchemeCombobox ();
     initUnderlineCombobox ();
     initColorListWidget ();
     initSizeCombobox ();
@@ -45,10 +45,10 @@ FileEditor::FileEditor(QWidget *parent) :
     connect(ui->mUnderlineClearBtn, SIGNAL(clicked(bool)),
             this, SLOT(onUnderlineClearBtnClick()));
 
-    connect(ui->mUnderlineCombobox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUnderlineComboboxChange(int)));
     connect(ui->mColorListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
             this, SLOT(onColorListItemChange(QListWidgetItem*,QListWidgetItem*)));
+    connect(ui->mSchemeComboBox, SIGNAL(currentTextChanged(const QString &)),
+            this, SLOT(onSchemeComboboxChange (const QString &)));
 
     connect (ui->mForegroundColorBtn, SIGNAL(clicked(bool)),
             this, SLOT(onFormatUpdate ()));
@@ -66,7 +66,7 @@ FileEditor::FileEditor(QWidget *parent) :
             this, SLOT(onFormatUpdate ()));
     connect (ui->mFontComboBox, SIGNAL(currentIndexChanged(int)),
              this, SLOT(onFormatUpdate()));
-    connect(ui->mSizeComboBox, SIGNAL(currentTextChanged(const QString &text)),
+    connect(ui->mSizeComboBox, SIGNAL(currentTextChanged(const QString &)),
             this, SLOT(onFormatUpdate()));
     connect (ui->mZoomCombobox, SIGNAL(currentIndexChanged(int)),
              this, SLOT(onFormatUpdate()));
@@ -77,8 +77,8 @@ FileEditor::FileEditor(QWidget *parent) :
     connect(ui->mBoldCheck, SIGNAL(stateChanged(int)),
             this, SLOT(onFormatUpdate ()));
 
+
     mHighlight->mFormatMap = mCurrentConfig->mFormatMap;
-    ui->mColorListWidget->setCurrentRow (0);
 }
 
 FileEditor::~FileEditor()
@@ -144,11 +144,6 @@ void FileEditor::onUnderlineClearBtnClick()
     ui->mUnderlineColorBtn->setStyleSheet ("");
 }
 
-void FileEditor::onUnderlineComboboxChange (int index)
-{
-
-}
-
 void FileEditor::onColorListItemChange(
         QListWidgetItem *current, QListWidgetItem *prev)
 {
@@ -189,6 +184,14 @@ void FileEditor::onColorListItemChange(
             font.styleStrategy () == QFont::PreferAntialias);
     ui->mSizeComboBox->setEditText (QString::number (font.pointSize ()));
 
+}
+
+void FileEditor::onSchemeComboboxChange (const QString &text)
+{
+    if(mCurrentConfig != nullptr)
+        mCurrentConfig->deleteLater ();
+    mCurrentConfig = new HighLightConfig(
+            GetCfgsPath ("smaliTheme/" + text), this);
 }
 
 void FileEditor::onFormatUpdate()
@@ -291,11 +294,48 @@ void FileEditor::initSizeCombobox ()
     combobox->addItem ("72");
 }
 
+void FileEditor::initSchemeCombobox ()
+{
+    auto combobox = ui->mSchemeComboBox;
+    QDir dir(GetCfgsPath ("smaliTheme"));
+    if (dir.exists()) {
+        dir.setFilter(QDir::Files | QDir::NoSymLinks);
+                foreach(QFileInfo mfi ,dir.entryInfoList())
+            {
+                if(mfi.isFile ())
+                {
+                    if(mfi.fileName ().endsWith (".xml")) {
+                        combobox->addItem (mfi.fileName ());
+                    }
+                }
+            }
+    }
+    auto curTheme = ConfigString("FileEdit", "SmaliHighlight");
+    if(curTheme.isEmpty ())
+        curTheme = "default.xml";
+    auto index = combobox->findText (curTheme);
+    if(index == -1) {
+        combobox->addItem (0, "default.xml");
+        combobox->setCurrentIndex (0);
+    } else {
+        combobox->setCurrentIndex (index);
+    }
+    mCurrentConfig = new HighLightConfig(
+                GetCfgsPath ("smaliTheme/" + curTheme), this);
+
+}
+
 
 void FileEditor::save ()
 {
+    auto cfg = Config ();
     mCurrentConfig->save ();
+    auto configFileName = QFileInfo(mCurrentConfig->mSetFile).fileName ();
+    cfg->setString ("FileEdit", "SmaliHighlight", configFileName);
+    // TODO tell all Editor to repaint smali file
 }
+
+
 
 
 QuickSmaliHighilght::QuickSmaliHighilght (QTextDocument *parent)
@@ -374,6 +414,5 @@ void QuickSmaliHighilght::highlightBlock (const QString &text)
             }
         }
         setFormat (lexer.column () - 1, lexer.curTokenLen (), mFormatMap[format]);
-
     }
 }

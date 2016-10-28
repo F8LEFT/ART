@@ -14,34 +14,17 @@
 #include <sstream>
 #include <QTextDocument>
 #include <QDebug>
+#include <Config/Config.h>
+#include <utils/StringUtil.h>
+#include <utils/Configuration.h>
 
 using namespace Analysis;
 
 SmaliHighlight::SmaliHighlight (QTextDocument *parent,QString fileName)
-        : QSyntaxHighlighter(parent)
+        : QSyntaxHighlighter(parent),
+          mFormatMap(HighLightConfig::instance (GetCfgsPath ("smaliTheme/" +
+                      ConfigString("FileEdit", "SmaliHighlight")))->mFormatMap)
 {
-    mKeywordFormat.setForeground(QBrush(QColor(175,215,231)));
-    mOpFormat.setForeground(QBrush(QColor(128,0,128)));
-    mSymbolFormat.setForeground(QBrush(QColor(0,0,128)));
-    mCStringFormat.setForeground(QBrush(QColor(0,128,0)));
-    mNameStringFormat.setForeground(QBrush(QColor(102,163,52)));
-    mCommentFormat.setForeground(QBrush(QColor(0,128,0)));
-    mClassTypeFormat.setForeground(QBrush(QColor(0,0,0)));
-    mFlagFormat.setForeground(QBrush(QColor(128,0,128)));
-    mREGDFormat.setForeground(QBrush(QColor(0,0,255)));
-    mNumberFormat.setForeground(QBrush(QColor(0,0,128)));
-
-    auto font = parent->defaultFont ();
-    mKeywordFormat.setFont (font);
-    mOpFormat.setFont (font);
-    mSymbolFormat.setFont (font);
-    mCStringFormat.setFont (font);
-    mNameStringFormat.setFont (font);
-    mCommentFormat.setFont (font);
-    mClassTypeFormat.setFont (font);
-    mFlagFormat.setFont (font);
-    mREGDFormat.setFont (font);
-    mNumberFormat.setFont (font);
 }
 
 void SmaliHighlight::highlightBlock (const QString &text)
@@ -60,43 +43,43 @@ void SmaliHighlight::highlightBlock (const QString &text)
         {
             continue;
         }
-        QTextCharFormat* format;
+        HighLightConfig::FORMAT format;
         if(type > SmaliParser::token::TOKEN_KEYWORD_BEGIN
            && type < SmaliParser::token::TOKEN_KEYWORD_END) {
-            format = &mKeywordFormat;
+            format = HighLightConfig::FKeyword;
         } else
         if (type > SmaliParser::token::TOKEN_OP_BEGIN
             && type < SmaliParser::token::TOKEN_OP_END) {
-            format = &mOpFormat;
+            format = HighLightConfig::FOp;
         } else
         if (type > SmaliParser::token::TOKEN_SYMBOL_BEGIN
-              && type < SmaliParser::token::TOKEN_SYMBOL_END) {
-            format = &mSymbolFormat;
+            && type < SmaliParser::token::TOKEN_SYMBOL_END) {
+            format = HighLightConfig::FSymbol;
         } else {
             switch (type) {
                 case SmaliParser::token::TOKEN_STRING_LITERAL:
                 case SmaliParser::token::TOKEN_CHAR_LITERAL:
-                    format = &mCStringFormat;
+                    format = HighLightConfig::FCString;
                     break;
                 case SmaliParser::token::TOKEN_SIMPLE_NAME:
                 case SmaliParser::token::TOKEN_MEMBER_NAME:
-                    format = &mNameStringFormat;
+                    format = HighLightConfig::FNameString;
                     break;
                 case SmaliParser::token::TOKEN_LINE_COMMENT:
-                    format = &mCommentFormat;
+                    format = HighLightConfig::FComment;
                     break;
                 case SmaliParser::token::TOKEN_CLASS_DESCRIPTOR:
                 case SmaliParser::token::TOKEN_PRIMITIVE_TYPE:
                 case SmaliParser::token::TOKEN_ARRAY_TYPE_PREFIX:
                 case SmaliParser::token::TOKEN_VOID_TYPE:
                 case SmaliParser::token::TOKEN_PARAM_LIST_OR_ID_PRIMITIVE_TYPE:
-                    format = &mClassTypeFormat;
+                    format = HighLightConfig::FClassType;
                     break;
                 case SmaliParser::token::TOKEN_FLAG:
-                    format = &mFlagFormat;
+                    format = HighLightConfig::FFlag;
                     break;
                 case SmaliParser::token::TOKEN_REGISTER:
-                    format = &mREGDFormat;
+                    format = HighLightConfig::FRegd;
                     break;
                 case SmaliParser::token::TOKEN_NEGATIVE_INTEGER_LITERAL:
                 case SmaliParser::token::TOKEN_POSITIVE_INTEGER_LITERAL:
@@ -107,14 +90,13 @@ void SmaliHighlight::highlightBlock (const QString &text)
                 case SmaliParser::token::TOKEN_DOUBLE_LITERAL_OR_ID:
                 case SmaliParser::token::TOKEN_FLOAT_LITERAL:
                 case SmaliParser::token::TOKEN_DOUBLE_LITERAL:
-                    format = &mNumberFormat;
+                    format = HighLightConfig::FNumber;
                     break;
                 default:
-                    qDebug() << "[SmaliHighlight]unknown token type" << type;
-                    Q_ASSERT (false && "unknown type");
+                    format = HighLightConfig::FDefault;
                     break;
             }
         }
-        setFormat(lexer.column () - 1, lexer.curTokenLen (), *format);
+        setFormat (lexer.column () - 1, lexer.curTokenLen (), mFormatMap[format]);
     }
 }

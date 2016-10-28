@@ -16,6 +16,7 @@
 #ifndef PROJECT_SMALIHIGHLIGHT_H
 #define PROJECT_SMALIHIGHLIGHT_H
 #include <QSyntaxHighlighter>
+#include <HighLighter/HighLightConfig.h>
 
 
 class SmaliHighlight: public QSyntaxHighlighter
@@ -29,16 +30,8 @@ protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
-    QTextCharFormat mKeywordFormat;
-    QTextCharFormat mOpFormat;
-    QTextCharFormat mSymbolFormat;
-    QTextCharFormat mCStringFormat;
-    QTextCharFormat mNameStringFormat;
-    QTextCharFormat mCommentFormat;
-    QTextCharFormat mClassTypeFormat;
-    QTextCharFormat mFlagFormat;
-    QTextCharFormat mREGDFormat;
-    QTextCharFormat mNumberFormat;
+    QMap<HighLightConfig::FORMAT , QTextCharFormat> &mFormatMap;
+
 };
 
 
