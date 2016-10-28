@@ -11,3 +11,7 @@ LICENSE.txt.
 Please see the documentation provided in docs/ for further
 assistance with ART.
 
+Recently, the software is still in beta.
+There are some screenshots for the sofeware.
+![image](https://github.com/F8LEFT/ART/raw/master/docs/image/About.png)
+![image](https://github.com/F8LEFT/ART/raw/master/docs/image/Editor.png)
