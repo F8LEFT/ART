@@ -11,5 +11,6 @@
         <file>images/refresh.png</file>
         <file>images/devices.png</file>
         <file>images/bookmark.png</file>
+        <file>images/editorsettings.png</file>
     </qresource>
 </RCC>

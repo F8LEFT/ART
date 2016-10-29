@@ -19,7 +19,7 @@ using namespace Analysis;
 
 FileEditor::FileEditor(QWidget *parent) :
     QWidget(parent), mForegroundColor(Qt::black), mBackgroundColor(Qt::black),
-    mUnderlineColor(Qt::black), ui(new Ui::FileEditor)
+    mUnderlineColor(Qt::black), ui(new Ui::FileEditor), mCurrentConfig(nullptr)
 {
     ui->setupUi(this);
 
@@ -155,6 +155,8 @@ void FileEditor::onUnderlineClearBtnClick()
 void FileEditor::onColorListItemChange(
         QListWidgetItem *current, QListWidgetItem *prev)
 {
+    if(current == nullptr)
+        return;
     HighLightConfig::FORMAT type = (HighLightConfig::FORMAT)current->type ();
     auto &format = mCurrentConfig->mFormatMap[type];
     auto fColor = format.foreground ().color ();
@@ -196,8 +198,10 @@ void FileEditor::onColorListItemChange(
 
 void FileEditor::onSchemeComboboxChange (const QString &text)
 {
-    if(mCurrentConfig != nullptr)
+    if(mCurrentConfig != nullptr) {
         mCurrentConfig->deleteLater ();
+        mCurrentConfig = nullptr;
+    }
     mCurrentConfig = new HighLightConfig(
             GetCfgsPath ("smaliTheme/" + text), this);
 
@@ -210,7 +214,6 @@ void FileEditor::onSchemeComboboxChange (const QString &text)
         item->setBackground (format.background ());
     }
 
-    ui->mColorListWidget->setCurrentRow (0);
 
     mHighlight->mFormatMap = mCurrentConfig->mFormatMap;
     mHighlight->rehighlight ();
@@ -288,6 +291,13 @@ void FileEditor::onSchemeDeleteBtnClick ()
                     tr("You can't delete default scheme file"));
         return;
     }
+    auto doDelete = QMessageBox::information( this, tr("Delete Scheme"),
+                           tr("Do you really want to delete ") + curScheme + "?",
+                           tr("No"), tr("Yes"),
+                           0, 1 );
+    if(!doDelete)
+        return;;
+
     ui->mSchemeComboBox->setCurrentText ("default.xml");
     QFile file(GetCfgsPath ("smaliTheme/" + curScheme));
     if(!file.remove ()) {
@@ -366,6 +376,9 @@ void FileEditor::initSizeCombobox ()
 
 void FileEditor::initSchemeCombobox ()
 {
+    connect(ui->mSchemeComboBox, SIGNAL(currentTextChanged(const QString &)),
+            this, SLOT(onSchemeComboboxChange (const QString &)));
+
     auto combobox = ui->mSchemeComboBox;
     QDir dir(GetCfgsPath ("smaliTheme"));
     if (dir.exists()) {
@@ -381,8 +394,7 @@ void FileEditor::initSchemeCombobox ()
             }
     }
 
-    connect(ui->mSchemeComboBox, SIGNAL(currentTextChanged(const QString &)),
-            this, SLOT(onSchemeComboboxChange (const QString &)));
+
 
     if(combobox->findText ("default.xml") == -1) {
         combobox->addItem (0, "default.xml");
