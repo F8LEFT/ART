@@ -106,6 +106,9 @@ void ProjectTab::openProject (QString projectName)
     mProjectName = projectName;
 
     readProjectInfo();
+    projinfoset ("PackageName", mPackageName);
+    projinfoset ("ActivityEntryName", mActivityEntryName);
+
     cmdexec("ProjectOpened", projectName);
 }
 
@@ -118,6 +121,9 @@ void ProjectTab::closeProject()
 
     projinfoset ("ProjectName", QString());
     projinfoset ("ProjectLast", mProjectName);
+    projinfoset ("PackageName", QString());
+    projinfoset ("ActivityEntryName", QString());
+
 
     QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
     QFile cfgFile(cfgPath);

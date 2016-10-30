@@ -256,29 +256,28 @@ void WorkSpace::bookmarkClick(QListWidgetItem *item)
 
 void WorkSpace::onCmdBtnClick ()
 {
-    if(mCmdWidget != nullptr) {
-        mCmdWidget->hide ();
-    }
-    if(mCmdWidget == mCmdTextBrowser) {
-        mCmdWidget = nullptr;
-        return;
-    }
-    mCmdWidget = mCmdTextBrowser;
-    mCmdWidget->show ();
+    changeCommandWidget (mCmdTextBrowser);
 }
 
 void WorkSpace::onSearchBtnClick ()
 {
+    changeCommandWidget (mFindDialog);
+}
+
+void WorkSpace::changeCommandWidget (QWidget *wiget)
+{
     if(mCmdWidget != nullptr) {
         mCmdWidget->hide ();
     }
-    if(mCmdWidget == mFindDialog) {
+    if(mCmdWidget == wiget) {
         mCmdWidget = nullptr;
         return;
     }
-    mCmdWidget = mFindDialog;
+    mCmdWidget = wiget;
     mCmdWidget->show ();
 }
+
+
 
 void WorkSpace::initProjectDocumentTreeView()
 {

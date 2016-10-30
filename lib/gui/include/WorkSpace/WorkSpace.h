@@ -72,6 +72,8 @@ private:
     void initProjectDocumentTreeView();
     void setProjectDocumentTree(QString path);
     void clearProjectDocumentTree();
+
+    void changeCommandWidget(QWidget* wiget);
 private:
     Ui::WorkSpace *ui;
     MHTabWidget* mTabWidget;

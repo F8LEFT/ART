@@ -105,6 +105,7 @@ void RunDevice::onInstallAction()
     QString devId = getValidDeviceId();
     if (devId.isEmpty())
         return;
+    cmdmsg()->addCmdMsg ("install apk package " + project->getInfo ("PackageName"));
 
     QString projectRoot = project->getProjectPath();
     QStringList args;
@@ -125,6 +126,9 @@ void RunDevice::onRunAction()
     QString devId = getValidDeviceId();
     if (devId.isEmpty())
         return;
+
+    cmdmsg()->addCmdMsg ("Running apk file " + project->getInfo ("PackageName"));
+
 
     QString projectRoot = project->getProjectPath();
     QStringList args;
@@ -147,6 +151,8 @@ void RunDevice::onStopAction()
     QString devId = getValidDeviceId();
     if (devId.isEmpty())
         return;
+
+    cmdmsg()->addCmdMsg ("Stoping apk file " + project->getInfo ("PackageName"));
 
     QString projectRoot = project->getProjectPath();
     QStringList args;
