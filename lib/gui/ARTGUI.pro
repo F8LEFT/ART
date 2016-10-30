@@ -30,7 +30,8 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/BookMark/BookMark.cpp \
     lib/RunDevice/RunDevice.cpp \
     lib/Config/Config.cpp \
-    lib/Config/FileEditor.cpp
+    lib/Config/FileEditor.cpp \
+    lib/Find/FindDialog.cpp
 
 
 HEADERS  += \
@@ -52,7 +53,8 @@ HEADERS  += \
     include/BookMark/BookMark.h \
     lib/RunDevice/RunDevice.h \
     lib/Config/Config.h \
-    lib/Config/FileEditor.h
+    lib/Config/FileEditor.h \
+    lib/Find/FindDialog.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
@@ -67,7 +69,8 @@ FORMS    += \
     lib/BookMark/BookMark.ui \
     lib/RunDevice/RunDevice.ui \
     lib/Config/Config.ui \
-    lib/Config/FileEditor.ui
+    lib/Config/FileEditor.ui \
+    lib/Find/FindDialog.ui
 
 RESOURCES += \
     ART.qrc \

@@ -50,6 +50,7 @@ SmaliAnalysis *SmaliAnalysis::instance ()
 
 bool SmaliAnalysis::addDirectory (QDir dir)
 {
+    return true;
     qDebug() << "[SmaliAnalysis] addDirectory Entry Dir"
              << dir.absolutePath ();
     if(!dir.exists ())

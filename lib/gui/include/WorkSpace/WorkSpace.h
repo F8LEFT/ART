@@ -18,7 +18,9 @@
 #include "ProjectTab/ProjectTab.h"
 #include "EditorTab/EditorTab.h"
 #include "BookMark/BookMarkManager.h"
+#include "Find/FindDialog.h"
 #include <QWidget>
+#include <QTextBrowser>
 
 namespace Ui {
 class WorkSpace;
@@ -63,6 +65,9 @@ public slots:
     void delBookMark(QListWidgetItem *pItem);
     void bookmarkClick(QListWidgetItem* item);
 
+    // Command Btn message
+    void onCmdBtnClick();
+    void onSearchBtnClick();
 private:
     void initProjectDocumentTreeView();
     void setProjectDocumentTree(QString path);
@@ -82,6 +87,11 @@ private:
 
     // BookMark
     BookMarkManager* mBookMarkManager;
+
+    // Command Area
+    QTextBrowser *mCmdTextBrowser;
+    FindDialog* mFindDialog;
+    QWidget* mCmdWidget = nullptr;
 };
 
 #endif // WORKSPACE_H

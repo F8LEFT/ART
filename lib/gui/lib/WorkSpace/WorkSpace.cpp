@@ -16,6 +16,7 @@
 #include <utils/ScriptEngine.h>
 #include <utils/ProjectInfo.h>
 #include <utils/StringUtil.h>
+#include <QGridLayout>
 
 WorkSpace::WorkSpace(QWidget *parent) :
     QWidget(parent),
@@ -41,6 +42,14 @@ WorkSpace::WorkSpace(QWidget *parent) :
     mWidgetList.push_back (mEditorTab);
     mWidgetNativeNameList.push_back ("EditorTab");
 
+    // init Command Area
+    mFindDialog = new FindDialog (this);
+    mFindDialog->hide ();
+    mCmdTextBrowser = new QTextBrowser(this);
+    mCmdTextBrowser->hide ();
+
+    ui->mRightBotFrameLayout->addWidget (mCmdTextBrowser);
+    ui->mRightBotFrameLayout->addWidget (mFindDialog);
 
     // connect signal / slots
     // file tree view signal
@@ -63,6 +72,10 @@ WorkSpace::WorkSpace(QWidget *parent) :
     auto *cmdMsgUtil = CmdMsg::instance ();
     connect(cmdMsgUtil, SIGNAL(addCmdMsg(QString)), this, SLOT(onCmdMessage(QString)));
 
+    // command line Button signal
+    connect(ui->mCmdBtn, SIGNAL(clicked(bool)), this, SLOT(onCmdBtnClick ()));
+    connect(ui->mSearchBtn, SIGNAL(clicked(bool)), this, SLOT(onSearchBtnClick ()));
+
     // script signal
     ScriptEngine* script = ScriptEngine::instance();
     connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
@@ -70,6 +83,7 @@ WorkSpace::WorkSpace(QWidget *parent) :
 
     loadFromConfig();
     showQWidgetTab(mProjectTab);
+    ui->mCmdBtn->click ();
 }
 
 WorkSpace::~WorkSpace()
@@ -124,12 +138,6 @@ void WorkSpace::loadFromConfig()
                   << config->getUint("WorkSpace", "LeftBotSplitterHeight");
     ui->mLeftVSplitter->setSizes(lLeftSplitter);
 
-
-    QList<int> lRightSplitter;
-    lRightSplitter << config->getUint("WorkSpace", "RightTopSplitterHeight")
-                   << config->getUint("WorkSpace", "RightBotSplitterHeight");
-    ui->mRightVSplitter->setSizes(lRightSplitter);
-
     loadTabOrder();
 }
 
@@ -144,11 +152,6 @@ void WorkSpace::saveToConfig()
     QList<int> lLeftSplitter = ui->mLeftVSplitter->sizes();
     config->setUint("WorkSpace", "LeftTopSplitterHeight", lLeftSplitter[0]);
     config->setUint("WorkSpace", "LeftBotSplitterHeight", lLeftSplitter[1]);
-
-    QList<int> lRightSplitter = ui->mRightVSplitter->sizes();
-    config->setUint("WorkSpace", "RightTopSplitterHeight", lRightSplitter[0]);
-    config->setUint("WorkSpace", "RightBotSplitterHeight", lRightSplitter[1]);
-
 }
 
 void WorkSpace::addQWidgetTab(QWidget *qWidget, QString nativeName)
@@ -194,13 +197,13 @@ void WorkSpace::onCmdMessage(QString msg)
 {
     QStringList lineList = msg.split(QRegExp("\\n+"), QString::SkipEmptyParts);
     foreach(QString m, lineList) {
-        ui->mCmdTextBrowser->append(m);
+        mCmdTextBrowser->append(m);
     }
 }
 
 void WorkSpace::onCmdClear()
 {
-    ui->mCmdTextBrowser->clear();
+    mCmdTextBrowser->clear();
 }
 
 void WorkSpace::treeFileOpen(const QModelIndex &index)
@@ -251,6 +254,31 @@ void WorkSpace::bookmarkClick(QListWidgetItem *item)
     emit pBook->onClicked(pBook);
 }
 
+void WorkSpace::onCmdBtnClick ()
+{
+    if(mCmdWidget != nullptr) {
+        mCmdWidget->hide ();
+    }
+    if(mCmdWidget == mCmdTextBrowser) {
+        mCmdWidget = nullptr;
+        return;
+    }
+    mCmdWidget = mCmdTextBrowser;
+    mCmdWidget->show ();
+}
+
+void WorkSpace::onSearchBtnClick ()
+{
+    if(mCmdWidget != nullptr) {
+        mCmdWidget->hide ();
+    }
+    if(mCmdWidget == mFindDialog) {
+        mCmdWidget = nullptr;
+        return;
+    }
+    mCmdWidget = mFindDialog;
+    mCmdWidget->show ();
+}
 
 void WorkSpace::initProjectDocumentTreeView()
 {
@@ -278,3 +306,4 @@ void WorkSpace::clearProjectDocumentTree()
 {
     ui->mFileTreeView->setModel(nullptr);
 }
+

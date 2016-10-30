@@ -23,7 +23,6 @@ FileEditor::FileEditor(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->mTabWidget->setTabText (0, tr("Color && Font"));
 
     QFile file(GetCfgsPath("sample.smali"));
     if(file.open (QFile::ReadOnly | QFile::Text)) {
