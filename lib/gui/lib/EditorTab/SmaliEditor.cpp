@@ -13,6 +13,7 @@
 
 #include <sstream>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QVBoxLayout>
 
 using namespace Analysis;
 
@@ -37,7 +38,7 @@ SmaliEditor::~SmaliEditor ()
 
 void SmaliEditor::setTextLayout ()
 {
-    QLayout* layout = new QGridLayout(this);
+    QLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins (0,0,0,0);
     mVSplitter = new QSplitter(Qt::Orientation::Vertical, this);
     mFileEdit->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
@@ -45,6 +46,7 @@ void SmaliEditor::setTextLayout ()
     mVSplitter->addWidget (mFileEdit);
     mVSplitter->addWidget (mHintEdit);
     layout->addWidget (mVSplitter);
+    layout->addWidget (mFindWidget);
     setLayout (layout);
 
     mVSplitter->setSizes (mVSplitterSize);

@@ -50,6 +50,9 @@ private slots:
 
     void updateLineNumberArea (const QRect &,int);
 
+signals:
+    void onCTRL_F_Click();
+
 private:
     void updateCurrentLineBookMark();       // add or delete bookmark for currentline
 

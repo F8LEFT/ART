@@ -31,7 +31,8 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/RunDevice/RunDevice.cpp \
     lib/Config/Config.cpp \
     lib/Config/FileEditor.cpp \
-    lib/Find/FindDialog.cpp
+    lib/Find/FindDialog.cpp \
+    lib/Find/FindWidget.cpp
 
 
 HEADERS  += \
@@ -54,7 +55,8 @@ HEADERS  += \
     lib/RunDevice/RunDevice.h \
     lib/Config/Config.h \
     lib/Config/FileEditor.h \
-    lib/Find/FindDialog.h
+    lib/Find/FindDialog.h \
+    lib/Find/FindWidget.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
@@ -70,7 +72,8 @@ FORMS    += \
     lib/RunDevice/RunDevice.ui \
     lib/Config/Config.ui \
     lib/Config/FileEditor.ui \
-    lib/Find/FindDialog.ui
+    lib/Find/FindDialog.ui \
+    lib/Find/FindWidget.ui
 
 RESOURCES += \
     ART.qrc \

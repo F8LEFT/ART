@@ -277,8 +277,6 @@ void WorkSpace::changeCommandWidget (QWidget *wiget)
     mCmdWidget->show ();
 }
 
-
-
 void WorkSpace::initProjectDocumentTreeView()
 {
     ui->mFileTreeView->setModel(nullptr);

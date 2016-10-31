@@ -14,6 +14,7 @@
 #include <QTextStream>
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QVBoxLayout>
 #include <QFileInfo>
 #include <QWidget>
 
@@ -25,11 +26,15 @@ Editor::Editor(QWidget *parent) :
 {
     mFileChangedTimer = new QTimer(this);
     mFileEdit = new TextEditorWidget(this);
+    mFindWidget = new FindWidget(this);
+
 
     connect(this, SIGNAL(readLine(QString)), this, SLOT(appendLine(QString)));
     connect(this, SIGNAL(readEnd()), this, SLOT(readFileEnd()));
 
     connect(mFileChangedTimer, SIGNAL(timeout()), this, SLOT(textChangedTimeOut()));
+
+    connect(mFileEdit, SIGNAL(onCTRL_F_Click()), this, SLOT(onFindAction ()));
 
     QFont font;
     font.setFamily("Courier");
@@ -37,7 +42,7 @@ Editor::Editor(QWidget *parent) :
     font.setPointSize(10);
 
     mFileEdit->setFont(font);
-
+    mFindWidget->hide ();
     loadFromConfig();
 }
 
@@ -47,12 +52,13 @@ Editor::~Editor()
     saveToConfig();
 }
 
-// TODO this method should be invoked after init.
+// INFO this method should be invoked after init.
 void Editor::setTextLayout ()
 {
-    QLayout* layout = new QGridLayout(this);
+    QLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins (0,0,0,0);
     layout->addWidget (mFileEdit);
+    layout->addWidget (mFindWidget);
     setLayout (layout);
 }
 
@@ -139,6 +145,11 @@ void Editor::textChanged()
 void Editor::textChangedTimeOut()
 {
     saveFile();
+}
+
+void Editor::onFindAction ()
+{
+    mFindWidget->setVisible (!mFindWidget->isVisible ());
 }
 
 void readFileThread(Editor* e, QString filePath) {

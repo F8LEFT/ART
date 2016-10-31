@@ -17,11 +17,14 @@
 #include "TextEditorWidget.h"
 
 #include <BookMark/BookMark.h>
+#include <Find/FindWidget.h>
+
 
 #include <QWidget>
 #include <QThread>
 #include <QTimer>
 #include <QSyntaxHighlighter>
+#include <QAction>
 
 class Editor : public QWidget
 {
@@ -56,6 +59,7 @@ public slots:
     void textChanged();
     void textChangedTimeOut();
 
+    void onFindAction();
 protected:
     QString fp;
     QString fn;
@@ -64,6 +68,9 @@ protected:
     QTimer* mFileChangedTimer;
     TextEditorWidget* mFileEdit;
     QSyntaxHighlighter* mHighlighter;
+
+    FindWidget* mFindWidget;
+
     int mLine;
 };
 

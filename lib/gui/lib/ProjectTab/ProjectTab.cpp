@@ -43,7 +43,7 @@ ProjectTab::ProjectTab(QWidget *parent) :
         QHeaderView * hHeader = ui->mProjectList->horizontalHeader();
         hHeader->setSectionResizeMode(QHeaderView::Stretch);
         hHeader->setStretchLastSection(false);
-        hHeader->setSortIndicator(1, Qt::AscendingOrder);    // sort by date
+        hHeader->setSortIndicator(1, Qt::DescendingOrder);    // sort by date
         hHeader->hide();
         ui->mProjectList->verticalHeader()->hide();
     }
@@ -219,7 +219,7 @@ void ProjectTab::readProjectManifestInfo ()
         file.close();
         return;
     }
-    // 根元素
+    // Root Element
     QDomElement docElem= doc.firstChildElement("manifest");
     if (!docElem.isNull()) {
         mPackageName = docElem.attribute("package");
