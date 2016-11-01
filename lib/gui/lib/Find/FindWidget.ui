@@ -95,7 +95,12 @@
        </spacer>
       </item>
       <item>
-       <widget class="QToolButton" name="mCloseButton"/>
+       <widget class="QToolButton" name="mCloseButton">
+        <property name="icon">
+         <iconset resource="../../ART.qrc">
+          <normaloff>:/images/close.png</normaloff>:/images/close.png</iconset>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -272,6 +277,8 @@
   <zorder>findButtonsWidget</zorder>
   <zorder></zorder>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../ART.qrc"/>
+ </resources>
  <connections/>
 </ui>

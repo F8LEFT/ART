@@ -55,6 +55,7 @@ Editor::Editor(QWidget *parent) :
     mFileEdit->setFont(font);
     mFindWidget->hide ();
     loadFromConfig();
+
 }
 
 Editor::~Editor()
@@ -179,7 +180,17 @@ void Editor::onFindClose ()
 void Editor::onFind(const QString &subString, QTextDocument::FindFlags options)
 {
     if(!mFileEdit->find (subString, options)) {
-        // TODO research from top or buttom
+        // research from top or buttom
+        auto cursor = mFileEdit->textCursor ();
+        if(options == QTextDocument::FindBackward) {
+            mFileEdit->moveCursor (QTextCursor::End);
+        } else {
+            mFileEdit->moveCursor (QTextCursor::Start);
+        }
+        if(!mFileEdit->find (subString, options)) {
+            // restore backup cursor
+            mFileEdit->setTextCursor (cursor);
+        }
     }
 }
 
