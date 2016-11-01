@@ -36,6 +36,17 @@ Editor::Editor(QWidget *parent) :
 
     connect(mFileEdit, SIGNAL(onCTRL_F_Click()), this, SLOT(onFindAction ()));
 
+    // FindWidget signal
+    connect(mFindWidget, SIGNAL(find(QString,QTextDocument::FindFlags)),
+            this, SLOT(onFind(QString,QTextDocument::FindFlags)));
+    connect(mFindWidget, SIGNAL(replace(QString,QString)),
+            this, SLOT(onReplace(QString,QString)));
+    connect(mFindWidget, SIGNAL(replaceAll(QString,QString)),
+            this, SLOT(onReplaceAll(QString,QString)));
+    connect(mFindWidget, SIGNAL(closeWidget()),
+            this, SLOT(onFindClose ()));
+
+
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -151,8 +162,46 @@ void Editor::textChangedTimeOut()
 
 void Editor::onFindAction ()
 {
-    mFindWidget->setVisible (!mFindWidget->isVisible ());
+    mFindWidget->show ();
+    auto text = mFileEdit->textCursor ().selectedText ();
+    if(!text.isEmpty ()) {
+        mFindWidget->setFindText (text);
+    }
+    mFindWidget->setFindEditFocus ();
 }
+
+void Editor::onFindClose ()
+{
+    mFindWidget->hide ();
+    mFileEdit->setFocus ();
+}
+
+void Editor::onFind(const QString &subString, QTextDocument::FindFlags options)
+{
+    if(!mFileEdit->find (subString, options)) {
+        // TODO research from top or buttom
+    }
+}
+
+void Editor::onReplace(const QString &subString, const QString &replaceWith)
+{
+    auto select = mFileEdit->textCursor ().selectedText ();
+    if(select == subString) {
+        mFileEdit->insertPlainText (replaceWith);
+    }
+}
+
+void Editor::onReplaceAll(const QString &subString, const QString &replaceWith)
+{
+    auto document = mFileEdit->document ();
+    auto cursor = document->find (subString);
+    while(!cursor.isNull ()) {
+        cursor.insertText (replaceWith);
+        cursor = document->find (subString, cursor);
+    }
+}
+
+
 
 void readFileThread(Editor* e, QString filePath) {
     QFile file(filePath);

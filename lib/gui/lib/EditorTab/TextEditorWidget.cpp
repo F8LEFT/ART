@@ -120,18 +120,21 @@ void TextEditorWidget::resizeEvent(QResizeEvent *e)
 
 void TextEditorWidget::keyPressEvent(QKeyEvent *e)
 {
-    if (e->modifiers() == (Qt::CTRL)) {
-        switch (e->key()) {
-            case Qt::Key_M:           // BookMark
-                updateCurrentLineBookMark();
-                return;
-            case Qt::Key_F:
-                onCTRL_F_Click();
-                return;
-            default:
-                break;
+    if(e->type() == QEvent::KeyPress ) {
+        if (e->modifiers() == (Qt::CTRL)) {
+            switch (e->key()) {
+                case Qt::Key_M:           // BookMark
+                    updateCurrentLineBookMark();
+                    return;
+                case Qt::Key_F:
+                    onCTRL_F_Click();
+                    return;
+                default:
+                    break;
+            }
         }
     }
+
     QPlainTextEdit::keyPressEvent(e);
 }
 

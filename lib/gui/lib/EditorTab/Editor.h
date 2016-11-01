@@ -60,6 +60,13 @@ public slots:
     void textChangedTimeOut();
 
     void onFindAction();
+    void onFindClose();
+
+    // find && replace text in document
+    void onFind(const QString &subString, QTextDocument::FindFlags options);
+    void onReplace(const QString &subString, const QString &replaceWith);
+    void onReplaceAll(const QString &subString, const QString &replaceWith);
+
 protected:
     QString fp;
     QString fn;

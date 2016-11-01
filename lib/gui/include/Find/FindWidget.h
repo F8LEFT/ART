@@ -27,10 +27,27 @@ class FindWidget : public QWidget
 public:
     explicit FindWidget(QWidget *parent = 0);
     ~FindWidget();
+    void setFindEditFocus();
+    void setFindText(const QString s);
+
+signals:
+    void closeWidget();
+    void find(const QString &subString, QTextDocument::FindFlags options
+                                        = QTextDocument::FindFlags());
+    void replace(const QString &subString, const QString &replaceWith);
+    void replaceAll(const QString &subString, const QString &replaceWith);
+public slots:
+    void onFindPrevBtnClick();
+    void onFindNextBtnClick();
+    void onReplaceBtnClick();
+    void onReplaceNextBtnClick();
+    void onReplaceAllBtnClick();
+
+    void onCloseBtnClicked();
+
 
 private:
     Ui::FindWidget *ui;
-    QTextDocument* mDocument;
 };
 
 #endif // FINDWIDGET_H
