@@ -149,7 +149,8 @@ bool EditorTab::saveFile(QString filePath)
 bool EditorTab::saveAll()
 {
     int idx;
-    while((idx = ui->mDocumentCombo->currentIndex()) != -1) {
+    for(auto idx = 0, count = ui->mDocumentCombo->count ();
+            idx < count; idx ++) {
         saveFile(ui->mDocumentCombo->itemData(idx).toString());
     }
     return true;
