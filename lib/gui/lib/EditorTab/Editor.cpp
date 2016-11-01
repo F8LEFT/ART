@@ -91,12 +91,14 @@ bool Editor::saveFile()
     }
 
     isUpdated = false;
+    return true;
 }
 
 bool Editor::reload()
 {
     mFileEdit->clear();
     QtConcurrent::run(readFileThread, this, fp);
+    return true;
 }
 
 void Editor::closeFile()

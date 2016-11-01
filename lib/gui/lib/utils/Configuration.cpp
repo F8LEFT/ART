@@ -347,4 +347,5 @@ bool Configuration::writeCfgElement (QDomDocument &doc,QDomElement &element,
     QDomAttr valueAttr = doc.createAttribute("value");
     element.setAttributeNode(valueAttr);
     element.setAttribute("value",value);
+    return true;
 }

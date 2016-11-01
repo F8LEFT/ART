@@ -37,6 +37,8 @@ namespace Analysis {
                 case OP_MONITOR_EXIT:
                     rel = "monitor-exit";
                     break;
+                default:
+                    break;
             }
             rel += " " + rx.toString ();
             return move(rel);

@@ -49,6 +49,8 @@ namespace Analysis {
                 case OP_REM_FLOAT_2ADDR:
                     rel = "rem-float/2addr";
                     break;
+                default:
+                    break;
             }
             rel += " " + r1.toString () + ", " + r2.toString ();
             return move(rel);

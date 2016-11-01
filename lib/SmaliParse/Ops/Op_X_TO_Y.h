@@ -90,6 +90,8 @@ namespace Analysis {
                 case OP_INT_TO_SHORT:
                     rel = "int-to-short";
                     break;
+                default:
+                    break;
             }
             rel += " " + r1.toString () + ", " + r2.toString ();
             return move(rel);

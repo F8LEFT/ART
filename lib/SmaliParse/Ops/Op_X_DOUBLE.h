@@ -49,6 +49,8 @@ namespace Analysis {
                 case OP_REM_DOUBLE:
                     rel = "rem-double";
                     break;
+                default:
+                    break;
             }
             rel += " " + r1.toString ()
                    + ", " + r2.toString ()

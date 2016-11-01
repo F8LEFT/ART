@@ -19,9 +19,9 @@ mkdir build
 
 cd build
 
-cmake -DRELEASE=1 -DQTGCCDIR=${QTGCCDIR} -D[WIN32|APPLE|UNIX] --build ..
+cmake -DRELEASE=1 -DQTGCCDIR=${QTGCCDIR} -D[WIN32|APPLE|UNIX]=1 --build ..
 
 make MainWindow
 
 You can see generated files in lib/gui/bin.
-
+QTGCCDIR is the compile toolkit from qt. For example,

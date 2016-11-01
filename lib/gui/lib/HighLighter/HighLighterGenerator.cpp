@@ -65,6 +65,7 @@ bool HighLighterGenerator::addXmlsPath(QString xmlsPath) {
             }
         }
     }
+    return true;
 }
 
 QSharedPointer<HighlightDefinition> HighLighterGenerator::getHighLightReader(QString fileType) {

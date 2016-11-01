@@ -54,6 +54,7 @@ bool BookMarkManager::delBookMark(QString file, BookMark *bookMark)
         emit delBookMark(it.value());
         pFileBookMap.erase(it);
     }
+    return true;
 }
 
 QMap<BookMark *,QListWidgetItem *> &BookMarkManager::getFileBookMark (QString file)

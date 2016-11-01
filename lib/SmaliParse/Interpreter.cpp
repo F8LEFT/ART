@@ -29,7 +29,7 @@ int Interpreter::parse ()
         mParser->parse ();
         analysis ();
     }
-
+    return 1;
 }
 
 void Interpreter::analysis ()

@@ -54,6 +54,8 @@ namespace Analysis {
                 case OP_NEG_DOUBLE:
                     rel = "neg-double";
                     break;
+                default:
+                    break;
             }
             rel += " " + r1.toString () + ", " + r2.toString ();
             return move(rel);

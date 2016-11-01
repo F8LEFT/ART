@@ -54,6 +54,8 @@ namespace Analysis {
                     }
                     rel += " {" + regs[0].toString () + " .. " + regs[1].toString ();
                     break;
+                default:
+                    break;
             }
             rel += std::string("}, ")
                    + (*mStringPool)[jmplabel];

@@ -50,6 +50,8 @@ namespace Analysis {
                 case OP_REM_FLOAT:
                     rel = "rem-float";
                     break;
+                default:
+                    break;
             }
             rel += " " + r1.toString ()
                     + ", " + r2.toString ()
