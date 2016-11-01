@@ -1,10 +1,7 @@
 How to build:
 
-Important: Building has only been tested in Ubuntu 15 so far.
-
 Before building this project, you must conform that you have installed
-the latest Qt program(Qt5.7) and cmake. Then set CMAKE_PREFIX_PATH variable
-in lib/gui/CMakeLists.txt to your Qt build tool path.
+the latest Qt program(Qt5.7) and cmake.
 
 git clone https://github.com/F8LEFT/ART
 
@@ -18,7 +15,13 @@ git submodule init
 
 git submodule update
 
-cmake -DRELEASE=1 ..
+mkdir build
 
-make
+cd build
+
+cmake -DRELEASE=1 -DQTGCCDIR=${QTGCCDIR} -D[WIN32|APPLE|UNIX] --build ..
+
+make MainWindow
+
+You can see generated files in lib/gui/bin.
 

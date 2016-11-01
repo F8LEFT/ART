@@ -1,3 +1,16 @@
+//===- FindDialog.h - ART-GUI Find -----------------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===---------------------------------------------------------------------===//
+//
+// Show find dialog and search all project file.
+//
+//===----------------------------------------------------------------------===//
+
 #ifndef FINDDIALOG_H
 #define FINDDIALOG_H
 

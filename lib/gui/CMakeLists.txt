@@ -7,7 +7,12 @@ add_definitions(-DARTGUI_MINOR=${ART_VERSION_MINOR})
 add_definitions(-DARTGUI_PATCH=${ART_VERSION_PATCH})
 add_definitions(-DARTGUI_VERSION="${ART_VERSION}")
 
-SET(CMAKE_PREFIX_PATH /home/f8left/CodeProgram/QT/5.7/gcc_64)
+if(QTGCCDIR)
+    SET(CMAKE_PREFIX_PATH ${QTGCCDIR})
+else()
+    SET(CMAKE_PREFIX_PATH /home/f8left/CodeProgram/QT/5.7/gcc_64)
+endif()
+MESSAGE("Building ART GUI with QPath ${CMAKE_PREFIX_PATH} version.")
 
 
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)

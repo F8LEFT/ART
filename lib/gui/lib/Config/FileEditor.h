@@ -1,3 +1,15 @@
+//===- FileEditor.h - ART-GUI Config ---------------------------*- C++ -*-===//
+//
+//                     ANDROID REVERSE TOOLKIT
+//
+// This file is distributed under the GNU GENERAL PUBLIC LICENSE
+// V3 License. See LICENSE.TXT for details.
+//
+//===---------------------------------------------------------------------===//
+//
+// Set Text Editor config.
+//
+//===----------------------------------------------------------------------===//
 #ifndef FILEEDITOR_H
 #define FILEEDITOR_H
 

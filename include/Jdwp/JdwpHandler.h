@@ -149,7 +149,7 @@
 #include "JdwpReader.h"
 #include "jdwp.h"
 #include <vector>
-#include <jerror.h>
+//#include <jerror.h>
 
 namespace JDWP {
     namespace VirtualMachine {
