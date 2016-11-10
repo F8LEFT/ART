@@ -15,10 +15,13 @@
 #define FINDDIALOG_H
 
 #include <QWidget>
+#include <QtGui/QTextDocument>
 
 namespace Ui {
 class FindDialog;
 }
+
+class FindConfig;
 
 class FindDialog : public QWidget
 {
@@ -29,10 +32,19 @@ public:
     ~FindDialog();
 
 public slots:
-    void onSearchStart();
+    bool closeAll();
 
+    void onProjectOpened(QStringList args);
+    void onProjectClosed ();
+    void onSearchDirectory(const QString& dir);
+
+    void onNewFind(const QString &subString, const QString &directory,
+                   QTextDocument::FindFlags options,
+                   bool useRegexp, bool needReplace);
 private:
     Ui::FindDialog *ui;
+
+    FindConfig* mFindConfig;
 };
 
 #endif // FINDDIALOG_H

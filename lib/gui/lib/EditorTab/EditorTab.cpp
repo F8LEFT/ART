@@ -36,8 +36,10 @@ EditorTab::EditorTab(QWidget *parent) :
     connect(script, SIGNAL(closeFile(QStringList)), this, SLOT(closeFile(QStringList)));
     connect(script, SIGNAL(openFile(QStringList)), this, SLOT(openFile(QStringList)));
 
-    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
+    connect(script, SIGNAL(projectOpened(QStringList)),
+            this, SLOT(onProjectOpened(QStringList)));
+    connect(script, SIGNAL(projectClosed(QStringList)),
+            this, SLOT(onProjectClosed ()));
 }
 
 EditorTab::~EditorTab()

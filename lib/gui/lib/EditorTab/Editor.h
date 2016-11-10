@@ -67,6 +67,8 @@ public slots:
     void onReplace(const QString &subString, const QString &replaceWith);
     void onReplaceAll(const QString &subString, const QString &replaceWith);
 
+private:
+    void highlightWord(const QString &subString, QTextDocument::FindFlags  options);
 protected:
     QString fp;
     QString fn;

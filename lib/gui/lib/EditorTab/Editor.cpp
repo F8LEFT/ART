@@ -183,24 +183,7 @@ void Editor::onFindClose ()
 
 void Editor::onFind(const QString &subString, QTextDocument::FindFlags options)
 {
-    // highlight all match words
-    QList<QTextEdit::ExtraSelection> extraSelections;
-    extraSelections.push_front (mFileEdit->extraSelections ().front ());
-    {
-        auto document = mFileEdit->document ();
-        auto cursor = document->find (subString, 0,
-                                      options & (~QTextDocument::FindBackward));
-        while(!cursor.isNull ()) {
-            QTextEdit::ExtraSelection selection;
-            QColor lineColor = QColor(Qt::yellow).lighter(160);
-            selection.format.setBackground(lineColor);
-            selection.cursor = cursor;
-            extraSelections.append(selection);
-            cursor = document->find (subString, cursor,
-                                     options & (~QTextDocument::FindBackward));
-        }
-    }
-    mFileEdit->setExtraSelections(extraSelections);
+    highlightWord (subString, options);
 
     auto select = mFileEdit->textCursor ().selectedText ();
     if(select != subString) {
@@ -242,6 +225,24 @@ void Editor::onReplaceAll(const QString &subString, const QString &replaceWith)
     }
 }
 
+void Editor::highlightWord (const QString &subString,QTextDocument::FindFlags options)
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    extraSelections.push_front (mFileEdit->extraSelections ().front ());
+    auto document = mFileEdit->document ();
+    auto cursor = document->find (subString, 0,
+                                  options & (~QTextDocument::FindBackward));
+    while(!cursor.isNull ()) {
+        QTextEdit::ExtraSelection selection;
+        QColor lineColor = QColor(Qt::yellow).lighter(100);
+        selection.format.setBackground(lineColor);
+        selection.cursor = cursor;
+        extraSelections.append(selection);
+        cursor = document->find (subString, cursor,
+                                 options & (~QTextDocument::FindBackward));
+    }
+    mFileEdit->setExtraSelections(extraSelections);
+}
 
 
 void readFileThread(Editor* e, QString filePath) {

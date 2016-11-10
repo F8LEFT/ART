@@ -32,7 +32,9 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/Config/Config.cpp \
     lib/Config/FileEditor.cpp \
     lib/Find/FindDialog.cpp \
-    lib/Find/FindWidget.cpp
+    lib/Find/FindWidget.cpp \
+    lib/Find/FindConfig.cpp \
+    lib/Find/FindResult.cpp
 
 
 HEADERS  += \
@@ -56,7 +58,9 @@ HEADERS  += \
     lib/Config/Config.h \
     lib/Config/FileEditor.h \
     lib/Find/FindDialog.h \
-    lib/Find/FindWidget.h
+    lib/Find/FindWidget.h \
+    lib/Find/FindConfig.h \
+    lib/Find/FindResult.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
@@ -73,7 +77,9 @@ FORMS    += \
     lib/Config/Config.ui \
     lib/Config/FileEditor.ui \
     lib/Find/FindDialog.ui \
-    lib/Find/FindWidget.ui
+    lib/Find/FindWidget.ui \
+    lib/Find/FindConfig.ui \
+    lib/Find/FindResult.ui
 
 RESOURCES += \
     ART.qrc \

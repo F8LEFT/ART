@@ -24,7 +24,6 @@ FindWidget::FindWidget(QWidget *parent) :
     connect(ui->mFindEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onFindNextBtnClick()));
 
-
     connect(ui->mFindNextButton, SIGNAL(clicked(bool)),
             this, SLOT(onFindNextBtnClick()));
     connect(ui->mFindPreviousButton, SIGNAL(clicked(bool)),
