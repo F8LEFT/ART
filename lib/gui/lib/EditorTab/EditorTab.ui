@@ -24,7 +24,7 @@
        <item>
         <widget class="QComboBox" name="mDocumentCombo">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -46,7 +46,7 @@
        <item>
         <widget class="QPushButton" name="mCloseButton">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -75,7 +75,7 @@
        <item>
         <widget class="QComboBox" name="mMethodCombo">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
            <horstretch>7</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

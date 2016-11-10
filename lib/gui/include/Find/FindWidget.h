@@ -34,6 +34,7 @@ signals:
     void closeWidget();
     void find(const QString &subString, QTextDocument::FindFlags options
                                         = QTextDocument::FindFlags());
+
     void replace(const QString &subString, const QString &replaceWith);
     void replaceAll(const QString &subString, const QString &replaceWith);
 public slots:

@@ -17,16 +17,27 @@ FindWidget::FindWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->mCloseButton->setShortcut (Qt::Key_Escape);
 
-    connect(ui->mFindEdit, SIGNAL(returnPressed()), this, SLOT(onFindNextBtnClick ()));
-    connect(ui->mReplaceEdit, SIGNAL(returnPressed()), this, SLOT(onFindNextBtnClick ()));
+    connect(ui->mFindEdit, SIGNAL(returnPressed()),
+            this, SLOT(onFindNextBtnClick ()));
+    connect(ui->mReplaceEdit, SIGNAL(returnPressed()),
+            this, SLOT(onFindNextBtnClick ()));
+    connect(ui->mFindEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(onFindNextBtnClick()));
 
-    connect(ui->mFindNextButton, SIGNAL(clicked(bool)), this, SLOT(onFindNextBtnClick()));
-    connect(ui->mFindPreviousButton, SIGNAL(clicked(bool)), this, SLOT(onFindPrevBtnClick()));
-    connect(ui->mReplaceButton, SIGNAL(clicked(bool)), this, SLOT(onReplaceBtnClick()));
-    connect(ui->mReplaceNextButton, SIGNAL(clicked(bool)), this, SLOT(onReplaceNextBtnClick()));
-    connect(ui->mReplaceAllButton, SIGNAL(clicked(bool)), this, SLOT(onReplaceAllBtnClick()));
 
-    connect(ui->mCloseButton, SIGNAL(clicked(bool)), this, SLOT(onCloseBtnClicked()));
+    connect(ui->mFindNextButton, SIGNAL(clicked(bool)),
+            this, SLOT(onFindNextBtnClick()));
+    connect(ui->mFindPreviousButton, SIGNAL(clicked(bool)),
+            this, SLOT(onFindPrevBtnClick()));
+    connect(ui->mReplaceButton, SIGNAL(clicked(bool)),
+            this, SLOT(onReplaceBtnClick()));
+    connect(ui->mReplaceNextButton, SIGNAL(clicked(bool)),
+            this, SLOT(onReplaceNextBtnClick()));
+    connect(ui->mReplaceAllButton, SIGNAL(clicked(bool)),
+            this, SLOT(onReplaceAllBtnClick()));
+
+    connect(ui->mCloseButton, SIGNAL(clicked(bool)),
+            this, SLOT(onCloseBtnClicked()));
 }
 
 FindWidget::~FindWidget()
@@ -85,7 +96,6 @@ void FindWidget::onCloseBtnClicked ()
 {
     emit closeWidget ();
 }
-
 
 
 

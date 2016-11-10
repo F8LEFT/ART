@@ -28,6 +28,8 @@ public:
     explicit FindDialog(QWidget *parent = 0);
     ~FindDialog();
 
+public slots:
+    void onSearchStart();
 
 private:
     Ui::FindDialog *ui;

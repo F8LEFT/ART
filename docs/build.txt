@@ -24,4 +24,7 @@ cmake -DRELEASE=1 -DQTGCCDIR=${QTGCCDIR} -D[WIN32|APPLE|UNIX]=1 --build ..
 make MainWindow
 
 You can see generated files in lib/gui/bin.
-QTGCCDIR is the compile toolkit from qt. For example,
+QTGCCDIR is the compile toolkit path from qt.
+In Linux, it means ${QTINSTALL}/5.7/gcc_64
+In Mac, it means ${QTINSTALL}/5.7/clang_64
+In Windows, it means ${QTINSTALL}/5.7/mingw53_32

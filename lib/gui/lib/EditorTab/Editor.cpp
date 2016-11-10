@@ -175,10 +175,40 @@ void Editor::onFindClose ()
 {
     mFindWidget->hide ();
     mFileEdit->setFocus ();
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    extraSelections.push_front (mFileEdit->extraSelections ().front ());
+    mFileEdit->setExtraSelections(extraSelections);
+
 }
 
 void Editor::onFind(const QString &subString, QTextDocument::FindFlags options)
 {
+    // highlight all match words
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    extraSelections.push_front (mFileEdit->extraSelections ().front ());
+    {
+        auto document = mFileEdit->document ();
+        auto cursor = document->find (subString, 0,
+                                      options & (~QTextDocument::FindBackward));
+        while(!cursor.isNull ()) {
+            QTextEdit::ExtraSelection selection;
+            QColor lineColor = QColor(Qt::yellow).lighter(160);
+            selection.format.setBackground(lineColor);
+            selection.cursor = cursor;
+            extraSelections.append(selection);
+            cursor = document->find (subString, cursor,
+                                     options & (~QTextDocument::FindBackward));
+        }
+    }
+    mFileEdit->setExtraSelections(extraSelections);
+
+    auto select = mFileEdit->textCursor ().selectedText ();
+    if(select != subString) {
+        auto cursor = mFileEdit->textCursor ();
+        cursor.setPosition (cursor.selectionStart ());
+        mFileEdit->setTextCursor (cursor);
+    }
+    // find current
     if(!mFileEdit->find (subString, options)) {
         // research from top or buttom
         auto cursor = mFileEdit->textCursor ();

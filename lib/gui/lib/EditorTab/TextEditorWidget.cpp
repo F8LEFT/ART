@@ -11,6 +11,7 @@
 #include <QTextBlock>
 #include <QDebug>
 #include <BookMark/BookMarkManager.h>
+#include <QList>
 
 TextEditorWidget::TextEditorWidget(QWidget *parent):
         QPlainTextEdit(parent)
@@ -107,7 +108,8 @@ int TextEditorWidget::currentLine ()
     QTextCursor cursor = textCursor();
     QTextLayout *pLayout = cursor.block().layout();
     int nCurpos = cursor.position() - cursor.block().position();
-    return pLayout->lineForTextPosition(nCurpos).lineNumber() + cursor.block().firstLineNumber() + 1;
+    return pLayout->lineForTextPosition(nCurpos).lineNumber()
+           + cursor.block().firstLineNumber() + 1;
 }
 
 void TextEditorWidget::resizeEvent(QResizeEvent *e)
@@ -115,7 +117,8 @@ void TextEditorWidget::resizeEvent(QResizeEvent *e)
     QPlainTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(),
+                                      lineNumberAreaWidth(), cr.height()));
 }
 
 void TextEditorWidget::keyPressEvent(QKeyEvent *e)
@@ -145,7 +148,11 @@ void TextEditorWidget::updateLineNumberAreaWidth(int newBlockCount)
 
 void TextEditorWidget::highlightCurrentLine()
 {
-    QList<QTextEdit::ExtraSelection> extraSelections;
+    auto extra = extraSelections ();
+    if(!extra.isEmpty ()) {
+        extra.pop_front ();
+    }
+
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
@@ -155,9 +162,9 @@ void TextEditorWidget::highlightCurrentLine()
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
         selection.cursor.clearSelection();
-        extraSelections.append(selection);
+        extra.push_front (selection);
     }
-    setExtraSelections(extraSelections);
+    setExtraSelections(extra);
 }
 
 void TextEditorWidget::updateLineNumberArea(const QRect &rect, int dy)

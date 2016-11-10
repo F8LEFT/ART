@@ -14,10 +14,24 @@ FindDialog::FindDialog(QWidget *parent) :
     ui(new Ui::FindDialog)
 {
     ui->setupUi(this);
+
+    ui->mFilterList->addItem ("Project");
+    ui->mFilterList->setCurrentIndex (0);
+
+    // signal slots
+    connect(ui->mSearchTerm, SIGNAL(returnPressed()), this, SLOT(onSearchStart()));
+    connect(ui->mSearchButton, SIGNAL(clicked(bool)), this, SLOT(onSearchStart()));
+//    connect(ui->mReplaceButton, SIGNAL(clicked(bool)), this, SLOT(onSearchStart()));
+
 }
 
 FindDialog::~FindDialog()
 {
     delete ui;
+}
+
+void FindDialog::onSearchStart ()
+{
+
 }
 
