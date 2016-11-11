@@ -17,6 +17,7 @@
 #include <utils/ProjectInfo.h>
 #include <utils/StringUtil.h>
 #include <QGridLayout>
+#include <QtGui/QDesktopServices>
 
 WorkSpace::WorkSpace(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +27,9 @@ WorkSpace::WorkSpace(QWidget *parent) :
 
     initProjectDocumentTreeView();
     mBookMarkManager = BookMarkManager::instance(this);
+
+    // init Project TreeView
+    ui->mFileTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     // init Tabs
     mProjectTab = new ProjectTab(this);
@@ -55,6 +59,8 @@ WorkSpace::WorkSpace(QWidget *parent) :
     // file tree view signal
     connect(ui->mFileTreeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(treeFileOpen(QModelIndex)));
+    connect(ui->mFileTreeView, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(treeFileMenuRequested(QPoint)));
 
     // tab signal
     connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)),
@@ -215,6 +221,26 @@ void WorkSpace::treeFileOpen(const QModelIndex &index)
     }
 }
 
+void WorkSpace::treeFileMenuRequested (const QPoint &point)
+{
+    QModelIndex index=ui->mFileTreeView->currentIndex();
+    if(!index.isValid ())
+        return;
+
+    QMenu* menu=new QMenu(this);
+    menu->addAction(tr("Show in Files"), this, SLOT(treeFileShowInFile()));
+    menu->exec(QCursor::pos());
+    menu->deleteLater ();
+}
+
+void WorkSpace::treeFileShowInFile ()
+{
+    QModelIndex index=ui->mFileTreeView->currentIndex();
+    auto fileinfo = mFileModel->fileInfo(index);
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(fileinfo.absolutePath ()));
+}
+
 void WorkSpace::onProjectOpened(QStringList args)
 {
     if(args.empty())
@@ -303,4 +329,7 @@ void WorkSpace::clearProjectDocumentTree()
 {
     ui->mFileTreeView->setModel(nullptr);
 }
+
+
+
 

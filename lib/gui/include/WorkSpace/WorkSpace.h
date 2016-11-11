@@ -55,6 +55,9 @@ public slots:
 
     // fileTree
     void treeFileOpen(const QModelIndex &index);
+    void treeFileMenuRequested(const QPoint & point);
+    // fileTreeMenuSlot
+    void treeFileShowInFile();
 
     // script Message
     void onProjectOpened(QStringList args);
