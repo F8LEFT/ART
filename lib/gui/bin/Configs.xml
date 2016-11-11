@@ -1,17 +1,17 @@
 <configs>
-    <cfg value="778" id="height" type="uint" category="MainWindow"/>
-    <cfg value="1155" id="width" type="uint" category="MainWindow"/>
-    <cfg value="454" id="x" type="uint" category="MainWindow"/>
-    <cfg value="76" id="y" type="uint" category="MainWindow"/>
-    <cfg value="38" id="BotSplitterHeight" type="uint" category="SmaliEditor"/>
-    <cfg value="291" id="TopSplitterHeight" type="uint" category="SmaliEditor"/>
-    <cfg value="0" id="EditorTab" type="uint" category="TabOrder"/>
-    <cfg value="1" id="ProjectTab" type="uint" category="TabOrder"/>
-    <cfg value="125" id="LeftBotSplitterHeight" type="uint" category="WorkSpace"/>
-    <cfg value="179" id="LeftSplitterWidth" type="uint" category="WorkSpace"/>
-    <cfg value="521" id="LeftTopSplitterHeight" type="uint" category="WorkSpace"/>
-    <cfg value="165" id="RightBotSplitterHeight" type="uint" category="WorkSpace"/>
-    <cfg value="954" id="RightSplitterWidth" type="uint" category="WorkSpace"/>
-    <cfg value="350" id="RightTopSplitterHeight" type="uint" category="WorkSpace"/>
-    <string value="default.xml" id="SmaliHighlight" type="string" category="FileEdit"/>
+    <cfg value="778" type="uint" id="height" category="MainWindow"/>
+    <cfg value="1155" type="uint" id="width" category="MainWindow"/>
+    <cfg value="454" type="uint" id="x" category="MainWindow"/>
+    <cfg value="76" type="uint" id="y" category="MainWindow"/>
+    <cfg value="36" type="uint" id="BotSplitterHeight" category="SmaliEditor"/>
+    <cfg value="279" type="uint" id="TopSplitterHeight" category="SmaliEditor"/>
+    <cfg value="0" type="uint" id="EditorTab" category="TabOrder"/>
+    <cfg value="1" type="uint" id="ProjectTab" category="TabOrder"/>
+    <cfg value="125" type="uint" id="LeftBotSplitterHeight" category="WorkSpace"/>
+    <cfg value="179" type="uint" id="LeftSplitterWidth" category="WorkSpace"/>
+    <cfg value="521" type="uint" id="LeftTopSplitterHeight" category="WorkSpace"/>
+    <cfg value="165" type="uint" id="RightBotSplitterHeight" category="WorkSpace"/>
+    <cfg value="954" type="uint" id="RightSplitterWidth" category="WorkSpace"/>
+    <cfg value="350" type="uint" id="RightTopSplitterHeight" category="WorkSpace"/>
+    <string value="default.xml" type="string" id="SmaliHighlight" category="FileEdit"/>
 </configs>

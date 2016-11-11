@@ -84,4 +84,29 @@ private:
     QTextDocument::FindFlags mOptions;
     bool mUseRegexp;
 };
+
+class ReplaceThread : public QThread
+{
+Q_OBJECT
+public:
+    ReplaceThread(QObject *parent = Q_NULLPTR);
+    void setReplace(const QString &subString,const QString &replaceWith,
+                 QTextDocument::FindFlags options, bool useRegexp);
+
+    void setFiles(const QStringList& f) {
+        mFiles = f;
+    }
+protected:
+    void run();
+
+private:
+    bool replaceFile(const QString &filePath);
+private:
+    QString mSubString;
+    QString mReplaceWith;
+    QTextDocument::FindFlags mOptions;
+    bool mUseRegexp;
+
+    QStringList mFiles;
+};
 #endif // FINDRESULT_H

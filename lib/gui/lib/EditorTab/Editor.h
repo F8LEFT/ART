@@ -73,7 +73,6 @@ protected:
     QString fp;
     QString fn;
 
-    bool isUpdated = false;
     QTimer* mFileChangedTimer;
     TextEditorWidget* mFileEdit;
     QSyntaxHighlighter* mHighlighter;

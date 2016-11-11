@@ -70,6 +70,19 @@ void FindResult::onReplaceClick ()
                     QMessageBox::Ok | QMessageBox::Cancel);
     if(msg.exec() == QMessageBox::Cancel)
         return;
+    QString replace = ui->mReplaceEdit->text ();
+
+    QStringList allfiles;
+    for(QTreeWidgetItemIterator it(ui->mResultTree); *it; it++) {
+        if((*it)->type () != treeFileItemType)
+            continue;
+        QString filePath = (*it)->data (0, Qt::UserRole).toString ();
+        allfiles << filePath;
+    }
+    auto thread = new ReplaceThread(this);
+    thread->setReplace (mSubString, replace, mOptions, mUseRegexp);
+    thread->setFiles(allfiles);
+    thread->start ();
 }
 
 
@@ -94,7 +107,7 @@ void FindResult::onNewResult (QString filePath,QStringList text,QList<int> line)
     auto itLine = line.begin (), itLineEnd = line.end ();
     auto itText = text.begin (), itTextEnd = text.end ();
     for(;itLine != itLineEnd && itText != itTextEnd;
-            itLine++, itText++) {
+         itLine++, itText++) {
         QStringList itemData;
         itemData << *itText + "  --- line " + QString::number (*itLine);
         auto item = new QTreeWidgetItem(itemData, treeLineItemType);
@@ -202,4 +215,65 @@ int FindThread::currentline (const QTextCursor &cursor)
     int nCurpos = cursor.position() - cursor.block().position();
     return pLayout->lineForTextPosition(nCurpos).lineNumber()
            + cursor.block().firstLineNumber() + 1;
+}
+
+ReplaceThread::ReplaceThread (QObject *parent)
+        : QThread (parent)
+{
+
+}
+
+void ReplaceThread::setReplace (const QString &subString,const QString &replaceWith,
+                                QTextDocument::FindFlags options, bool useRegexp)
+{
+    mSubString = subString;
+    mReplaceWith = replaceWith;
+    mOptions = options;
+    mUseRegexp = useRegexp;
+}
+
+void ReplaceThread::run ()
+{
+            foreach(QString file, mFiles) {
+            replaceFile (file);
+        }
+    qDebug() << "global Replace thread quit";
+
+}
+
+bool ReplaceThread::replaceFile (const QString &filePath)
+{
+    QFile file(filePath);
+    if(!file.open (QFile::ReadOnly | QFile::Text)) {
+        return false;
+    }
+
+    QTextDocument document(file.readAll ());
+
+    if(mUseRegexp) {
+        QRegExp regExp(mSubString);
+        auto cursor = document.find(regExp, 0, mOptions);
+        while(!cursor.isNull ()) {
+            cursor.insertText (mReplaceWith);
+            cursor = document.find(regExp, cursor, mOptions);
+        }
+    } else {
+        auto cursor = document.find(mSubString, 0, mOptions);
+        while(!cursor.isNull ()) {
+            cursor.insertText (mReplaceWith);
+            cursor = document.find(mSubString, cursor, mOptions);
+        }
+    }
+    file.close ();
+
+    if(!file.open (QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
+        return false;
+    }
+
+    QTextStream out(&file);
+    out<<document.toPlainText ();
+    out.flush();
+    file.close();
+
+    return true;
 }

@@ -98,11 +98,11 @@ bool Editor::openFile(QString filePath, int iLine)
 bool Editor::saveFile()
 {
     mFileChangedTimer->stop();
-    if (isUpdated) {
+    if (mFileEdit->document ()->isModified ()) {
         QtConcurrent::run(saveFileThread, mFileEdit->toPlainText(), fp);
+        mFileEdit->document ()->setModified (false);
     }
 
-    isUpdated = false;
     return true;
 }
 
@@ -152,7 +152,6 @@ void Editor::readFileEnd()
 
 void Editor::textChanged()
 {
-    isUpdated = true;
     mFileChangedTimer->start(60*1000);
 }
 
