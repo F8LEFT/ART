@@ -16,6 +16,8 @@ FindWidget::FindWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->mCloseButton->setShortcut (Qt::Key_Escape);
+    ui->mFindNextButton->setShortcut (Qt::Key_Down);
+    ui->mFindPreviousButton->setShortcut (Qt::Key_Up);
 
     connect(ui->mFindEdit, SIGNAL(returnPressed()),
             this, SLOT(onFindNextBtnClick ()));

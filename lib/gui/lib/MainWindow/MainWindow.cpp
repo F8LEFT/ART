@@ -246,6 +246,12 @@ void MainWindow::onProjectClosed()
 
 void MainWindow::openFile(QString fileName)
 {
+    if (fileName.isEmpty()) {
+        return;
+    }
+    if (!fileName.endsWith(".apk") && !fileName.endsWith(".dex")) {
+        return;
+    }
     if(ProjectInfo::instance ()->isProjectOpened ()) {
         QMessageBox msg(QMessageBox::Warning,
                         tr("an opened project has been found"),
@@ -257,13 +263,6 @@ void MainWindow::openFile(QString fileName)
             return;
         else
             cmdexec("CloseProject");
-    }
-
-    if (fileName.isEmpty()) {
-        return;
-    }
-    if (!fileName.endsWith(".apk") && !fileName.endsWith(".dex")) {
-        return;
     }
 
     OpenApk* openWidget = new OpenApk(fileName, this);
