@@ -59,7 +59,7 @@ void FindConfig::onReplaceStart ()
 
 void FindConfig::onSearch (bool needReplace)
 {
-    QString directory = ui->mFilterList->currentData (0).toString ();
+    QString directory = ui->mFilterList->currentData ().toString ();
     if(directory.isEmpty ()) {
         return;
     }
@@ -79,8 +79,8 @@ void FindConfig::onSearch (bool needReplace)
     }
     bool useRegexp = ui->mRegexpCheckBox->isChecked ();
 
-    reset (ui->mFilterList->itemData (0,0).toString (),
-           ui->mFilterList->itemData (0,0).toString ());
+    reset (ui->mFilterList->itemData (0).toString (),
+           ui->mFilterList->itemData (0).toString ());
 
     emit startNewFind (findtext, directory, options, useRegexp, needReplace);
 }

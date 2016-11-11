@@ -79,6 +79,11 @@ void FindDialog::onNewFind (const QString &subString,const QString &directory,
                             QTextDocument::FindFlags options,
                             bool useRegexp,bool needReplace)
 {
+    auto findresult = new FindResult(this);
+    findresult->startNewFind (subString,directory,options,useRegexp,needReplace);
 
+    ui->mHistoryCombobox->insertItem (1, subString);
+    ui->mSearchStackedWidget->insertWidget (1, findresult);
+    ui->mHistoryCombobox->setCurrentIndex (1);
 }
 
