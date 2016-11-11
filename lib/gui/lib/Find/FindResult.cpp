@@ -10,12 +10,16 @@
 #include "FindResult.h"
 #include "ui_FindResult.h"
 
+#include <utils/StringUtil.h>
+#include <utils/ProjectInfo.h>
+
 #include <QMessageBox>
 #include <QDir>
 #include <QTextCursor>
 #include <QTextLayout>
 #include <QTextBlock>
 #include <QDebug>
+#include <utils/CmdMsgUtil.h>
 
 
 FindResult::FindResult(QWidget *parent) :
@@ -25,8 +29,13 @@ FindResult::FindResult(QWidget *parent) :
     ui->setupUi(this);
     ui->mReplaceWidget->hide ();
 
+    ui->mResultTree->setUniformRowHeights (true);
+
     connect(ui->mReplaceEdit, SIGNAL(returnPressed()), this, SLOT(onReplaceClick()));
     connect(ui->mReplaceBtn, SIGNAL(clicked(bool)), this, SLOT(onReplaceClick()));
+
+    connect(ui->mResultTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+            this, SLOT(onTreeFileOpen(QTreeWidgetItem*,int)));
 }
 
 FindResult::~FindResult()
@@ -48,8 +57,8 @@ void FindResult::startNewFind (const QString &subString,const QString &directory
         ui->mReplaceWidget->show ();
     mThread = new FindThread(this);
     mThread->setFind (subString, directory, options, useRegexp);
-    connect(mThread, SIGNAL(newResult(QString,QString,int)),
-            this, SLOT(onNewResult(QString,QString,int)), Qt::QueuedConnection);
+    connect(mThread, SIGNAL(newResult(QString,QStringList,QList<int>)),
+            this, SLOT(onNewResult(QString,QStringList,QList<int>)));
     mThread->start ();
 }
 
@@ -61,14 +70,55 @@ void FindResult::onReplaceClick ()
                     QMessageBox::Ok | QMessageBox::Cancel);
     if(msg.exec() == QMessageBox::Cancel)
         return;
-
-
 }
 
-void FindResult::onNewResult (QString filePath,QString text,int line)
+
+
+void FindResult::onNewResult (QString filePath,QStringList text,QList<int> line)
 {
-    qDebug() << "SearchResult:" << filePath << " line " << line << " :" << text;
+    QString projectRoot = GetProjectsProjectPath (projinfo ("ProjectName"));
+    QFileInfo rootInfo(projectRoot);
+    QFileInfo fileInfo(filePath);
+
+    QString canPath = fileInfo.absoluteFilePath ().remove (
+            rootInfo.absoluteFilePath () + "/");
+
+    auto fileroot = new QTreeWidgetItem(
+            QStringList() << canPath + "(" + QString::number (text.size ()) + ")",
+            treeFileItemType);
+    fileroot->setData (0, Qt::UserRole, filePath);
+
+    ui->mResultTree->addTopLevelItem (fileroot);
+
+    QList<QTreeWidgetItem*> items;
+    auto itLine = line.begin (), itLineEnd = line.end ();
+    auto itText = text.begin (), itTextEnd = text.end ();
+    for(;itLine != itLineEnd && itText != itTextEnd;
+            itLine++, itText++) {
+        QStringList itemData;
+        itemData << *itText + "  --- line " + QString::number (*itLine);
+        auto item = new QTreeWidgetItem(itemData, treeLineItemType);
+        item->setData (0, Qt::UserRole, *itLine);
+        items.append (item);
+    }
+
+    fileroot->addChildren (items);
 }
+
+void FindResult::onTreeFileOpen (QTreeWidgetItem *item,int column)
+{
+    if(item == nullptr || item->type () != treeLineItemType) {
+        return;
+    }
+    QString filePath = item->parent ()->data (0, Qt::UserRole).toString ();
+    int line = item->data (0, Qt::UserRole).toInt ();
+
+    QStringList args;
+    args<< filePath
+        << QString::number (line);
+    cmdexec("OpenFile", args);
+}
+
 
 // FindThread
 FindThread::FindThread(QObject *parent)
@@ -118,17 +168,29 @@ void FindThread::searchFile (QString filePath)
         if(mUseRegexp) {
             QRegExp regExp(mSubString);
             auto cursor = document.find(regExp, 0, mOptions);
+
+            QStringList text;
+            QList<int> lines;
             while(!cursor.isNull ()) {
-                auto line = currentline (cursor);
-                emit newResult (filePath, cursor.block ().text (), line);
+                text.push_back (cursor.block ().text ());
+                lines.push_back (currentline (cursor));
                 cursor = document.find(regExp, cursor, mOptions);
+            }
+            if(!text.isEmpty ()) {
+                emit newResult (filePath, text, lines);
             }
         } else {
             auto cursor = document.find(mSubString, 0, mOptions);
+
+            QStringList text;
+            QList<int> lines;
             while(!cursor.isNull ()) {
-                auto line = currentline (cursor);
-                emit newResult (filePath, cursor.block ().text (), line);
+                text.push_back (cursor.block ().text ());
+                lines.push_back (currentline (cursor));
                 cursor = document.find(mSubString, cursor, mOptions);
+            }
+            if(!text.isEmpty ()) {
+                emit newResult (filePath, text, lines);
             }
         }
     }

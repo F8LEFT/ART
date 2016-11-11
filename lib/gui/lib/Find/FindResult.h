@@ -18,6 +18,7 @@
 #include <QtGui/QTextDocument>
 #include <QThread>
 #include <QDir>
+#include <QtWidgets/QTreeWidgetItem>
 
 namespace Ui {
     class FindResult;
@@ -40,7 +41,9 @@ private slots:
     void onReplaceClick();
 
 public slots:
-    void onNewResult(QString filePath, QString text, int line);
+    void onNewResult(QString filePath, QStringList text, QList<int> line);
+    void onTreeFileOpen(QTreeWidgetItem *item, int column);
+
 private:
     Ui::FindResult *ui;
     FindThread* mThread;
@@ -50,6 +53,10 @@ private:
     QTextDocument::FindFlags mOptions;
     bool mUseRegexp;
     bool mNeedReplace;
+
+    const static int treeFileItemType = QTreeWidgetItem::UserType + 1;
+    const static int treeLineItemType = QTreeWidgetItem::UserType + 2;
+
 };
 
 
@@ -62,7 +69,7 @@ public:
                  QTextDocument::FindFlags options,
                  bool useRegexp);
 signals:
-    void newResult(QString filePath, QString text, int line);
+    void newResult(QString filePath, QStringList text, QList<int> line);
 protected:
     void run();
 

@@ -64,9 +64,12 @@
    </item>
    <item row="1" column="0">
     <widget class="QTreeWidget" name="mResultTree">
+     <attribute name="headerCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
      <column>
       <property name="text">
-       <string notr="true">Search Result</string>
+       <string>Search Result</string>
       </property>
      </column>
     </widget>
