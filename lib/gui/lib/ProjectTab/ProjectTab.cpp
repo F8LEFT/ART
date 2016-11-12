@@ -16,6 +16,7 @@
 #include "yaml-cpp/yaml.h"
 #include "SmaliAnalysis/SmaliAnalysis.h"
 
+
 #include <QtCore/QDir>
 #include <utils/Configuration.h>
 

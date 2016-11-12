@@ -25,16 +25,22 @@ Editor::Editor(QWidget *parent) :
         QWidget(parent)
 {
     mFileChangedTimer = new QTimer(this);
+    mFileReloadTimer = new QTimer(this);
+    mFileReloadTimer->setSingleShot (true);
     mFileEdit = new TextEditorWidget(this);
     mFindWidget = new FindWidget(this);
 
+    mFileChangedTimer->start(60*1000);
 
+    connect(this, SIGNAL(readText(QString)), this, SLOT(setText(QString)));
     connect(this, SIGNAL(readLine(QString)), this, SLOT(appendLine(QString)));
     connect(this, SIGNAL(readEnd()), this, SLOT(readFileEnd()));
 
     connect(mFileChangedTimer, SIGNAL(timeout()), this, SLOT(textChangedTimeOut()));
+    connect(mFileReloadTimer, SIGNAL(timeout()), this, SLOT(fileReloadTimeOut ()));
 
     connect(mFileEdit, SIGNAL(onCTRL_F_Click()), this, SLOT(onFindAction ()));
+    connect(mFileEdit, SIGNAL(textChanged()), this, SLOT(textChanged ()));
 
     // FindWidget signal
     connect(mFindWidget, SIGNAL(find(QString,QTextDocument::FindFlags)),
@@ -45,6 +51,10 @@ Editor::Editor(QWidget *parent) :
             this, SLOT(onReplaceAll(QString,QString)));
     connect(mFindWidget, SIGNAL(closeWidget()),
             this, SLOT(onFindClose ()));
+
+    mFileWatcher = new QFileSystemWatcher(this);
+    connect(mFileWatcher, SIGNAL(fileChanged(QString)),
+            this, SLOT(onFileChange (QString)));
 
 
     QFont font;
@@ -79,6 +89,7 @@ bool Editor::openFile(QString filePath, int iLine)
     fp = filePath;
     QFile file(fp);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
+        mFileWatcher->addPath (fp);
         fn = QFileInfo(file).fileName ();
 
         mFileEdit->setReadOnly(true);
@@ -97,8 +108,9 @@ bool Editor::openFile(QString filePath, int iLine)
 
 bool Editor::saveFile()
 {
-    mFileChangedTimer->stop();
     if (mFileEdit->document ()->isModified ()) {
+        notReload = true;
+        qDebug() << "save file " << fp;
         QtConcurrent::run(saveFileThread, mFileEdit->toPlainText(), fp);
         mFileEdit->document ()->setModified (false);
     }
@@ -108,7 +120,8 @@ bool Editor::saveFile()
 
 bool Editor::reload()
 {
-    mFileEdit->clear();
+    qDebug() << "reload file " << fp;
+    mLine = currentLine ();
     QtConcurrent::run(readFileThread, this, fp);
     return true;
 }
@@ -137,7 +150,12 @@ int Editor::currentLine ()
     return mFileEdit->currentLine ();
 }
 
-void Editor::appendLine(QString line)
+void Editor::setText (const QString &text)
+{
+    mFileEdit->setPlainText (text);
+}
+
+void Editor::appendLine(const QString& line)
 {
     mFileEdit->appendPlainText(line);
 }
@@ -146,18 +164,26 @@ void Editor::readFileEnd()
 {
     mFileEdit->setReadOnly(false);
     mFileEdit->setFocus();
-    connect(mFileEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
     mFileEdit->gotoLine(mLine);
+    mFileEdit->document ()->setModified (false);
 }
 
 void Editor::textChanged()
 {
-    mFileChangedTimer->start(60*1000);
 }
 
 void Editor::textChangedTimeOut()
 {
     saveFile();
+}
+
+void Editor::fileReloadTimeOut ()
+{
+    if(notReload) {
+        notReload = false;
+        return;
+    }
+    reload ();
 }
 
 void Editor::onFindAction ()
@@ -224,6 +250,15 @@ void Editor::onReplaceAll(const QString &subString, const QString &replaceWith)
     }
 }
 
+
+void Editor::onFileChange (const QString &filePath)
+{
+    qDebug() << "File watcher file changed " << filePath;
+    if(filePath != fp)
+        return;
+    mFileReloadTimer->start (1500);
+}
+
 void Editor::highlightWord (const QString &subString,QTextDocument::FindFlags options)
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
@@ -244,11 +279,12 @@ void Editor::highlightWord (const QString &subString,QTextDocument::FindFlags op
 }
 
 
+
 void readFileThread(Editor* e, QString filePath) {
     QFile file(filePath);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         while(!file.atEnd()) {
-            emit e->readLine(file.readAll());
+            emit e->readText (file.readAll ());
         }
         file.close();
     }

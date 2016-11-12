@@ -55,7 +55,7 @@ void FindResult::startNewFind (const QString &subString,const QString &directory
 
     if(needReplace)
         ui->mReplaceWidget->show ();
-    mThread = new FindThread(this);
+    mThread = new FindThread();
     mThread->setFind (subString, directory, options, useRegexp);
     connect(mThread, SIGNAL(newResult(QString,QStringList,QList<int>)),
             this, SLOT(onNewResult(QString,QStringList,QList<int>)));
@@ -79,7 +79,7 @@ void FindResult::onReplaceClick ()
         QString filePath = (*it)->data (0, Qt::UserRole).toString ();
         allfiles << filePath;
     }
-    auto thread = new ReplaceThread(this);
+    auto thread = new ReplaceThread();
     thread->setReplace (mSubString, replace, mOptions, mUseRegexp);
     thread->setFiles(allfiles);
     thread->start ();
@@ -137,7 +137,7 @@ void FindResult::onTreeFileOpen (QTreeWidgetItem *item,int column)
 FindThread::FindThread(QObject *parent)
         :QThread(parent)
 {
-
+    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 }
 
 void FindThread::setFind (const QString &subString,const QString &directory,
@@ -151,8 +151,12 @@ void FindThread::setFind (const QString &subString,const QString &directory,
 
 void FindThread::run()
 {
-    QDir dir(mSearchPath);
-    searchDirectory (dir);
+    if(QFileInfo(mSearchPath).isFile ()) {
+        searchFile (mSearchPath);
+    } else {
+        QDir dir(mSearchPath);
+        searchDirectory (dir);
+    }
     qDebug() << "global Search thread quit";
 }
 
@@ -220,7 +224,7 @@ int FindThread::currentline (const QTextCursor &cursor)
 ReplaceThread::ReplaceThread (QObject *parent)
         : QThread (parent)
 {
-
+    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 }
 
 void ReplaceThread::setReplace (const QString &subString,const QString &replaceWith,
@@ -238,7 +242,6 @@ void ReplaceThread::run ()
             replaceFile (file);
         }
     qDebug() << "global Replace thread quit";
-
 }
 
 bool ReplaceThread::replaceFile (const QString &filePath)

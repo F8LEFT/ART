@@ -35,8 +35,10 @@ FindDialog::FindDialog(QWidget *parent) :
 
 
     ScriptEngine* script = ScriptEngine::instance();
-    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
+    connect(script, SIGNAL(projectOpened(QStringList)),
+            this, SLOT(onProjectOpened(QStringList)));
+    connect(script, SIGNAL(projectClosed(QStringList)),
+            this, SLOT(onProjectClosed ()));
 
 
 }

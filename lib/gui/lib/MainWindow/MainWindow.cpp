@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(script, SIGNAL(projectClosed(QStringList)),
                 this, SLOT(onProjectClosed()));
 
+
     cmdmsg()->addCmdMsg("Android Reverse Toolkit v"
                         + GetCompileVersion () + " by f8left");
     cmdmsg()->setStatusMsg("ready");

@@ -25,6 +25,7 @@
 #include <QTimer>
 #include <QSyntaxHighlighter>
 #include <QAction>
+#include <QFileSystemWatcher>
 
 class Editor : public QWidget
 {
@@ -49,15 +50,18 @@ public:
     int currentLine();
 
 signals:
-    void readLine(QString line);
+    void readText(const QString &text);
+    void readLine(const QString &line);
     void readEnd();
 
 public slots:
-    void appendLine(QString line);
+    void setText(const QString &text);
+    void appendLine(const QString &line);
     void readFileEnd();
 
     void textChanged();
     void textChangedTimeOut();
+    void fileReloadTimeOut();
 
     void onFindAction();
     void onFindClose();
@@ -67,6 +71,8 @@ public slots:
     void onReplace(const QString &subString, const QString &replaceWith);
     void onReplaceAll(const QString &subString, const QString &replaceWith);
 
+    // filewatcher
+    void onFileChange(const QString &filePath);
 private:
     void highlightWord(const QString &subString, QTextDocument::FindFlags  options);
 protected:
@@ -74,12 +80,17 @@ protected:
     QString fn;
 
     QTimer* mFileChangedTimer;
+    QTimer* mFileReloadTimer;
     TextEditorWidget* mFileEdit;
     QSyntaxHighlighter* mHighlighter;
 
     FindWidget* mFindWidget;
 
+    QFileSystemWatcher* mFileWatcher;
+
     int mLine;
+
+    bool notReload = false;
 };
 
 
