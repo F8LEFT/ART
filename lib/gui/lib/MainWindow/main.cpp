@@ -24,7 +24,9 @@ int main(int argc, char *argv[])
 
     // init global class
     auto conf = Configuration::instance ();
-    ProcessUtil *process = new ProcessUtil(&a);
+    ScriptEngine::instance();
+
+    ProcessUtil *process = new ProcessUtil();
     process->start ();
 
     MainWindow* w = new MainWindow;

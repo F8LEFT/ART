@@ -28,6 +28,10 @@ ProcessUtil::ProcessUtil(QObject *parent)
     auto cmdutil = cmdmsg ();
     connect(cmdutil, SIGNAL(onExecuteCommand(CmdMsg::ProcInfo)),
             this, SLOT(addProc(CmdMsg::ProcInfo)));
+
+    auto script = ScriptEngine::instance();
+    connect(script, SIGNAL(projectClosed(QStringList)),
+            this, SLOT(onProjectClosed()));
 }
 
 void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
@@ -59,11 +63,20 @@ void ProcessUtil::onProcFinish()
     mProcessMutex->unlock ();
 }
 
+void ProcessUtil::onProjectClosed ()
+{
+    // TODO Clear mProcList
+//    int n = mProcList.size ();
+//    mInfoSemaphore->acquire (n);
+//    mProcList.clear ();
+}
+
 void ProcessUtil::run ()
 {
     while(true) {
-        mInfoSemaphore->acquire ();
         mProcessMutex->lock ();
+
+        mInfoSemaphore->acquire ();
 
         mCurInfo = mProcList.front();
         mProcList.pop_front();
@@ -71,6 +84,8 @@ void ProcessUtil::run ()
         emit execProcess(mCurInfo);
     }
 }
+
+
 
 ProcessOneTime::ProcessOneTime (QObject *parent)
     : QProcess(parent)

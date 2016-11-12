@@ -98,9 +98,6 @@
    <addaction name="actionOpen"/>
    <addaction name="actionSave_All"/>
    <addaction name="separator"/>
-   <addaction name="actionBuild"/>
-   <addaction name="actionInstall"/>
-   <addaction name="separator"/>
    <addaction name="actionRun"/>
    <addaction name="actionDebug"/>
    <addaction name="actionStop"/>

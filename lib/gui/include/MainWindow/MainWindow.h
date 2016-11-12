@@ -84,6 +84,9 @@ protected slots:
 
 private:
     void openFile(QString fileName);
+
+private:
+    bool needToRebuild ();
 private:
     Ui::MainWindow *ui;
 

@@ -40,6 +40,7 @@ protected slots:
     void addProc(const CmdMsg::ProcInfo &info);
     void onProcFinish();
 
+    void onProjectClosed();
 protected:
     void run();
 

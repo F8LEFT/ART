@@ -68,7 +68,6 @@ void ScriptEngine::exec(QString proc, QStringList args)
         emit (this->*(s.value()))(args);
     } else {
         cmdmsg ()->addCmdMsg("script proc not found: " + proc);
-        Q_ASSERT (false && "should not be here");
     }
 }
 

@@ -170,7 +170,7 @@ void MainWindow::closeEvent (QCloseEvent *event)
                                       0, 1 ))
     {
         case 1:
-            cmdexec("CloseProject");
+            cmdexec("CloseProject", CmdMsg::script, true, false);
             event->accept();
             break;
         default:
@@ -199,7 +199,7 @@ void MainWindow::actionCloseProject()
 
 void MainWindow::actionSaveAll()
 {
-    cmdexec("SaveAll");
+    cmdexec("SaveAll", CmdMsg::script, true, false);
 }
 
 void MainWindow::actionOption()
@@ -267,32 +267,76 @@ void MainWindow::actionAboutArt()
 
 void MainWindow::actionBuild()
 {
-    cmdexec("Build");
+    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+        return;
+    }
+    cmdexec("Build", CmdMsg::script, true, false);
 }
 
 void MainWindow::actionInstall()
 {
-    cmdexec("Install");
+    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+        return;
+    }
+    cmdexec("Install", CmdMsg::script, true, false);
 }
 
 void MainWindow::actionRun()
 {
-    cmdexec("Run");
+    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+        return;
+    }
+    if(needToRebuild ()) {
+        qDebug() << "Current project need to rebuild.";
+        cmdexec("Build");
+        cmdexec("Install");
+        cmdexec("Run");
+    } else {
+        cmdexec("Run", CmdMsg::script, true, false);
+    }
 }
 
 void MainWindow::actionDebug()
 {
-    cmdexec("Debug");
+    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+        return;
+    }
+    if(needToRebuild ()) {
+        cmdexec("Build");
+        cmdexec("Install");
+        cmdexec("Debug");
+    } else {
+        cmdexec("Debug", CmdMsg::script, true, false);
+    }
+}
+
+bool MainWindow::needToRebuild ()
+{
+    auto project = ProjectInfo::instance ();
+    QFileInfo buildFile(project->getProjectPath() + "/Bin/signed.apk");
+    if(!buildFile.exists()) {
+        return true;
+    }
+    auto buildModified = buildFile.lastModified ();
+    QDirIterator it(project->getProjectPath() + "/Project", QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        auto filePath = it.next();
+        auto info = QFileInfo(filePath);
+        if(info.lastModified () > buildModified) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void MainWindow::actionStop()
 {
-    cmdexec("Stop");
+    cmdexec("Stop", CmdMsg::script, true, false);
 }
 
 void MainWindow::actionDevices()
 {
-    cmdexec("Devices");
+    cmdexec("Devices", CmdMsg::script, true, false);
 }
 
 void MainWindow::onProjectOpened(QStringList projName)
@@ -340,4 +384,6 @@ void MainWindow::openFile(QString fileName)
     }
     delete openWidget;
 }
+
+
 
