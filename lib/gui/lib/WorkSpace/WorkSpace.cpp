@@ -311,11 +311,14 @@ void WorkSpace::initProjectDocumentTreeView()
     pHeader->setStretchLastSection(false);
     pHeader->setSortIndicator(0, Qt::AscendingOrder);
 
-    mFileModel = new QFileSystemModel;
 }
 
 void WorkSpace::setProjectDocumentTree(QString path)
 {
+    Q_ASSERT (mFileModel == nullptr && "has been initialize?");
+
+    mFileModel = new QFileSystemModel;
+
     mFileModel->setRootPath(path);
     ui->mFileTreeView->setModel(mFileModel);
     ui->mFileTreeView->setRootIndex(mFileModel->index(path));
@@ -328,6 +331,9 @@ void WorkSpace::setProjectDocumentTree(QString path)
 void WorkSpace::clearProjectDocumentTree()
 {
     ui->mFileTreeView->setModel(nullptr);
+    Q_ASSERT (mFileModel != nullptr && "not initialize?");
+    mFileModel->deleteLater ();
+    mFileModel = nullptr;
 }
 
 
