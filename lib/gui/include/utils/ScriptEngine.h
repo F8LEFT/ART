@@ -34,9 +34,6 @@ public:
     void exec(QString proc, QStringList args);
 
 signals:
-    void finished();
-    void errorOccurred(QProcess::ProcessError error);
-signals:
     // script(args) handleby
     // adb(args) ScriptEngine.cpp
     void adb(QStringList);
@@ -52,16 +49,36 @@ signals:
     void projectClosed(QStringList);    // reserved by ART
 
     // Editor Manager
-    // OpenFile(filePath1, ...)
+    // OpenFile(filePath1, [filePath2, ...])
     void openFile(QStringList);
-    // CloseFile(filePath1, ...)
+    // CloseFile(filePath1, [filePath2, ...])
     void closeFile(QStringList);
-    // SaveFile(filePath1, ...)
+    // SaveFile(filePath1, [filePath2, ...])
     void saveFile(QStringList);
-    // SaveAllFile()
+    // SaveAll()
     void saveAllFile(QStringList);
-    // CloseAllFile()
+    // CloseAll()
     void closeAllFile(QStringList);
+    // Undo();
+    void undo(QStringList);
+    // Redo();
+    void redo(QStringList);
+    // Cut();
+    void cut(QStringList);
+    // Copy();
+    void copy(QStringList);
+    // Parse();
+    void parse(QStringList);
+    // Delete();
+    void deleteR(QStringList);
+    // SelectAll();
+    void selectAll(QStringList);
+    // Find([subString, replacewith]); -- find or replace
+    void find(QStringList);
+    // GotoLine([line]);
+    void gotoLine(QStringList);
+    // FindAdvance()
+    void findAdvance(QStringList);
 
     // project build, install, run, debug, stop
     // Build()      build and signed apk

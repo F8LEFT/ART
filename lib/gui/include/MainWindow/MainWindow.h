@@ -55,6 +55,18 @@ protected slots:
 
     void actionOption();
 
+    // Edit Menu
+    void actionUndo();
+    void actionRedo();
+    void actionCut();
+    void actionCopy();
+    void actionParse();
+    void actionDelete();
+    void actionSelectAll();
+    void actionFind();
+    void actionGotoLine();
+    void actionFindAdvance();
+
     // Help Menu
     void actionAboutArt();
 

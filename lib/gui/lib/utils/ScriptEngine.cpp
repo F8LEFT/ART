@@ -16,17 +16,28 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
     connect(this, SIGNAL(adb(QStringList)), this, SLOT(adbShell(QStringList)));
 
     // command list
-    scripts.insert ("adb", &ScriptEngine::adb);
-    scripts.insert ("OpenProject", &ScriptEngine::openProject);
-    scripts.insert ("CloseProject", &ScriptEngine::closeProject);
-    scripts.insert ("ProjectOpened", &ScriptEngine::projectOpened);
-    scripts.insert ("ProjectClosed", &ScriptEngine::projectClosed);
+    scripts.insert("adb", &ScriptEngine::adb);
+    scripts.insert("OpenProject", &ScriptEngine::openProject);
+    scripts.insert("CloseProject", &ScriptEngine::closeProject);
+    scripts.insert("ProjectOpened", &ScriptEngine::projectOpened);
+    scripts.insert("ProjectClosed", &ScriptEngine::projectClosed);
 
     scripts.insert("OpenFile", &ScriptEngine::openFile);
     scripts.insert("CloseFile", &ScriptEngine::closeFile);
     scripts.insert("SaveFile", &ScriptEngine::saveFile);
     scripts.insert("SaveAll", &ScriptEngine::saveAllFile);
     scripts.insert("CloseAll", &ScriptEngine::closeAllFile);
+    scripts.insert("Undo", &ScriptEngine::undo);
+    scripts.insert("Redo", &ScriptEngine::redo);
+    scripts.insert("Cut", &ScriptEngine::cut);
+    scripts.insert("Copy", &ScriptEngine::copy);
+    scripts.insert("Parse", &ScriptEngine::parse);
+    scripts.insert("Delete", &ScriptEngine::deleteR);
+    scripts.insert("SelectAll", &ScriptEngine::selectAll);
+    scripts.insert("Find", &ScriptEngine::find);
+    scripts.insert("GotoLine", &ScriptEngine::gotoLine);
+    scripts.insert("FindAdvance", &ScriptEngine::findAdvance);
+
 
     scripts.insert("Build", &ScriptEngine::build);
     scripts.insert("Install", &ScriptEngine::install);
@@ -55,10 +66,9 @@ void ScriptEngine::exec(QString proc, QStringList args)
     auto s = scripts.find(proc);
     if (s != scripts.end()) {
         emit (this->*(s.value()))(args);
-        emit finished();
     } else {
         cmdmsg ()->addCmdMsg("script proc not found: " + proc);
-        emit errorOccurred(QProcess::FailedToStart);
+        Q_ASSERT (false && "should not be here");
     }
 }
 

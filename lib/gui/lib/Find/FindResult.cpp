@@ -85,8 +85,6 @@ void FindResult::onReplaceClick ()
     thread->start ();
 }
 
-
-
 void FindResult::onNewResult (QString filePath,QStringList text,QList<int> line)
 {
     QString projectRoot = GetProjectsProjectPath (projinfo ("ProjectName"));

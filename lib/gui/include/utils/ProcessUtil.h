@@ -13,13 +13,19 @@
 #ifndef PROCESSUTIL_H
 #define PROCESSUTIL_H
 
-#include <QProcess>
-#include <QString>
-#include <QList>
 #include "CmdMsgUtil.h"
 #include "ScriptEngine.h"
 
-class ProcessUtil : public QProcess
+#include <QProcess>
+#include <QString>
+#include <QList>
+#include <QTimer>
+#include <QThread>
+#include <QSemaphore>
+#include <QMutex>
+
+class ProcessOneTime;
+class ProcessUtil : public QThread
 {
     Q_OBJECT
 
@@ -27,37 +33,42 @@ public:
     ProcessUtil(QObject *parent = Q_NULLPTR);
 
 signals:
-    void ProcFinish(CmdMsg::ProcInfo info);
-    void onExecNext();
+    void ProcFinish(const CmdMsg::ProcInfo &info);
+    void execProcess(const CmdMsg::ProcInfo &info);
 
 protected slots:
-    void addProc(CmdMsg::ProcInfo info);
+    void addProc(const CmdMsg::ProcInfo &info);
     void onProcFinish();
-    void onProcError(QProcess::ProcessError error);
 
-private slots:
-    void execNext();
-    void onProcessStdRead();
-    void onProcessErrRead();
+protected:
+    void run();
+
 private:
 
-    void exec(const CmdMsg::ProcInfo& info);
-
     QList<CmdMsg::ProcInfo> mProcList;
-    bool isBusy = false;
-    ScriptEngine* script;
+
+    CmdMsg::ProcInfo mCurInfo;
+    ProcessOneTime *mProcess;
+    QSemaphore *mInfoSemaphore;
+    QMutex *mProcessMutex;
 };
+
 
 class ProcessOneTime: public QProcess {
     Q_OBJECT
 
 public:
-    ProcessOneTime(CmdMsg::ProcInfo info, QObject *parent = Q_NULLPTR);
+    ProcessOneTime(QObject *parent = Q_NULLPTR);
+
 protected slots:
-    void onProcFinish();
     void onProcError(QProcess::ProcessError error);
     void onProcessStdRead();
     void onProcessErrRead();
+public slots:
+    void exec(const CmdMsg::ProcInfo &info);
+
+private:
+    ScriptEngine* mScript;
 };
 
 #endif // PROCESSUTIL_H

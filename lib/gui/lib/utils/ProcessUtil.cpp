@@ -10,121 +10,84 @@
 #include <utils/StringUtil.h>
 #include <QApplication>
 
-ProcessUtil::ProcessUtil(QObject *parent):
-    QProcess(parent)
+ProcessUtil::ProcessUtil(QObject *parent)
+        : QThread(parent)
 {
-    script = ScriptEngine::instance();
+    mInfoSemaphore = new QSemaphore(0);
+    mProcessMutex = new QMutex();
+    mProcess = new ProcessOneTime();
 
-    connect(this, SIGNAL(finished(int)), this, SLOT(onProcFinish()));
-    connect(this, SIGNAL(errorOccurred(QProcess::ProcessError)),
-            this, SLOT(onProcError(QProcess::ProcessError)));
-    connect(script, SIGNAL(finished()), this, SLOT(onProcFinish()));
-    connect(script, SIGNAL(errorOccurred(QProcess::ProcessError)),
-            this, SLOT(onProcError(QProcess::ProcessError)));
+    connect(mProcess, SIGNAL(finished(int)), this, SLOT(onProcFinish()));
+    connect(mProcess, SIGNAL(errorOccurred(QProcess::ProcessError)),
+            this, SLOT(onProcFinish()));
+    connect(this, SIGNAL(execProcess (CmdMsg::ProcInfo)),
+            mProcess, SLOT (exec(CmdMsg::ProcInfo)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(readyReadStandardOutput()), this, SLOT(onProcessStdRead()));
-    connect(this, SIGNAL(readyReadStandardError()), this, SLOT(onProcessErrRead()));
-
-    connect(this, SIGNAL (onExecNext ()), this, SLOT (execNext ()));
+    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
     auto cmdutil = cmdmsg ();
     connect(cmdutil, SIGNAL(onExecuteCommand(CmdMsg::ProcInfo)),
             this, SLOT(addProc(CmdMsg::ProcInfo)));
-    setWorkingDirectory(GetSoftPath());
 }
 
-void ProcessUtil::addProc(CmdMsg::ProcInfo info)
+void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
 {
     if (info.toqueue) {
         mProcList.push_back(info);
-        if (!isBusy) {
-            isBusy = true;
-            exec (info);
-        }
-    } else {
-        new ProcessOneTime(info);
+        mInfoSemaphore->release ();
+        return;
+    }
+
+    // invokd directly
+    if(info.t == CmdMsg::cmd) {
+        auto process = new ProcessOneTime(this);
+        connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
+        connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)),
+                process, SLOT(deleteLater()));
+        process->exec (info);
+        return;
+    }
+    if(info.t == CmdMsg::script) {
+        ScriptEngine::instance()->exec(info.proc, info.args);
+        return;
     }
 }
 
 void ProcessUtil::onProcFinish()
 {
-    CmdMsg::ProcInfo info = mProcList.front();
-    emit ProcFinish(info);
-    emit onExecNext();
+    emit ProcFinish(mCurInfo);
+    mProcessMutex->unlock ();
 }
 
-void ProcessUtil::onProcError(QProcess::ProcessError error)
+void ProcessUtil::run ()
 {
-    if (error == QProcess::FailedToStart) {
-        cmdmsg()->addCmdMsg("Unable to start process");
-        emit onExecNext();
+    while(true) {
+        mInfoSemaphore->acquire ();
+        mProcessMutex->lock ();
+
+        mCurInfo = mProcList.front();
+        mProcList.pop_front();
+
+        emit execProcess(mCurInfo);
     }
 }
 
-void ProcessUtil::execNext()
-{
-    CmdMsg::ProcInfo info = mProcList.front();
-    mProcList.pop_front();
-
-    if (!mProcList.isEmpty()) {
-        CmdMsg::ProcInfo next = mProcList.front();
-        exec(next);
-    } else {
-        isBusy = false;
-    }
-}
-
-void ProcessUtil::onProcessStdRead()
-{
-    cmdmsg()->addCmdMsg(QString::fromLocal8Bit(readAllStandardOutput()));
-}
-
-void ProcessUtil::onProcessErrRead()
-{
-    cmdmsg()->addCmdMsg(QString::fromLocal8Bit(readAllStandardError()));
-}
-
-void ProcessUtil::exec(const CmdMsg::ProcInfo &info)
-{
-    if (!info.silence) {
-        QString cmdHint = CmdMsg::procTypeDescription(info.t) + ": " + info.proc;
-        foreach (QString s, info.args) {
-            cmdHint += " " + s;
-        }
-        cmdmsg()->addCmdMsg(cmdHint);
-    }
-
-    switch(info.t) {
-    case CmdMsg::cmd:
-        start(info.proc, info.args);
-        break;
-    case CmdMsg::python:
-        break;
-    case CmdMsg::script:
-        script->exec(info.proc, info.args);
-        break;
-    default:
-        onExecNext ();
-        break;
-    }
-
-}
-
-ProcessOneTime::ProcessOneTime (CmdMsg::ProcInfo info,QObject *parent)
+ProcessOneTime::ProcessOneTime (QObject *parent)
     : QProcess(parent)
 {
-    auto script = ScriptEngine::instance();
+    mScript = ScriptEngine::instance();
 
-    connect(this, SIGNAL(finished(int)), this, SLOT(onProcFinish()));
     connect(this, SIGNAL(errorOccurred(QProcess::ProcessError)),
-            this, SLOT(onProcError(QProcess::ProcessError)));
-    connect(script, SIGNAL(finished()), this, SLOT(onProcFinish()));
-    connect(script, SIGNAL(errorOccurred(QProcess::ProcessError)),
             this, SLOT(onProcError(QProcess::ProcessError)));
 
     connect(this, SIGNAL(readyReadStandardOutput()), this, SLOT(onProcessStdRead()));
     connect(this, SIGNAL(readyReadStandardError()), this, SLOT(onProcessErrRead()));
 
+    setWorkingDirectory(GetSoftPath());
+}
+
+void ProcessOneTime::exec(const CmdMsg::ProcInfo &info)
+{
     if (!info.silence) {
         QString cmdHint = CmdMsg::procTypeDescription(info.t) + ": " + info.proc;
                 foreach (QString s, info.args) {
@@ -135,29 +98,27 @@ ProcessOneTime::ProcessOneTime (CmdMsg::ProcInfo info,QObject *parent)
 
     switch(info.t) {
         case CmdMsg::cmd:
-            start(info.proc, info.args);
+            start(info.proc, info.args);    //  wait for finish signal
             break;
         case CmdMsg::python:
+            emit finished (0);
             break;
         case CmdMsg::script:
-            script->exec(info.proc, info.args);
+            mScript->exec(info.proc, info.args);
+            emit finished (0);
             break;
         default:
+            emit finished (0);
             break;
     }
 }
 
-void ProcessOneTime::onProcFinish ()
-{
-    this->deleteLater ();
-}
 
 void ProcessOneTime::onProcError (QProcess::ProcessError error)
 {
     if (error == QProcess::FailedToStart) {
         cmdmsg()->addCmdMsg("Unable to start process");
     }
-    this->deleteLater ();
 }
 
 void ProcessOneTime::onProcessStdRead ()

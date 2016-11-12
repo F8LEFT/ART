@@ -52,6 +52,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSave_All, SIGNAL(triggered(bool)), this, SLOT(actionSaveAll()));
     connect(ui->actionOption, SIGNAL(triggered(bool)), this, SLOT(actionOption()));
 
+    // Edit
+    connect(ui->actionUndo, SIGNAL(triggered(bool)), this, SLOT(actionUndo()));
+    connect(ui->actionRedo, SIGNAL(triggered(bool)), this, SLOT(actionRedo()));
+    connect(ui->actionCut, SIGNAL(triggered(bool)), this, SLOT(actionCut()));
+    connect(ui->actionCopy, SIGNAL(triggered(bool)), this, SLOT(actionCopy()));
+    connect(ui->actionPaste, SIGNAL(triggered(bool)), this, SLOT(actionParse()));
+    connect(ui->actionDelete, SIGNAL(triggered(bool)), this, SLOT(actionDelete()));
+    connect(ui->actionSelect_All, SIGNAL(triggered(bool)), this, SLOT(actionSelectAll()));
+    connect(ui->actionFind_Replace, SIGNAL(triggered(bool)), this, SLOT(actionFind()));
+    connect(ui->actionGoto_Line, SIGNAL(triggered(bool)), this, SLOT(actionGotoLine()));
+    connect(ui->actionSearch_Global, SIGNAL(triggered(bool)), this, SLOT(actionFindAdvance()));
+
     // run
     connect(ui->actionBuild, SIGNAL(triggered(bool)), this, SLOT(actionBuild()));
     connect(ui->actionInstall, SIGNAL(triggered(bool)), this, SLOT(actionInstall()));
@@ -61,8 +73,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionDevices, SIGNAL(triggered(bool)), this, SLOT(actionDevices()));
 
     // About Menu
-    connect(ui->actionAbout_ART, SIGNAL(triggered(bool))
-            , this, SLOT(actionAboutArt()));
+    connect(ui->actionAbout_ART, SIGNAL(triggered(bool)),
+            this, SLOT(actionAboutArt()));
 
     // script
     auto* script = ScriptEngine::instance();
@@ -194,6 +206,56 @@ void MainWindow::actionOption()
 {
     Config config;
     config.exec();
+}
+
+void MainWindow::actionUndo()
+{
+    cmdexec("Undo", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionRedo()
+{
+    cmdexec("Redo", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionCut()
+{
+    cmdexec("Cut", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionCopy()
+{
+    cmdexec("Copy", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionParse()
+{
+    cmdexec("Parse", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionDelete()
+{
+    cmdexec("Delete", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionSelectAll()
+{
+    cmdexec("SelectAll", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionFind()
+{
+    cmdexec("Find", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionGotoLine()
+{
+    cmdexec("GotoLine", CmdMsg::script, true, false);
+}
+
+void MainWindow::actionFindAdvance()
+{
+    cmdexec("FindAdvance", CmdMsg::script, true, false);
 }
 
 void MainWindow::actionAboutArt()

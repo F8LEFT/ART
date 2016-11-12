@@ -20,9 +20,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     QDir::setCurrent (GetSoftPath());
+    qRegisterMetaType<CmdMsg::ProcInfo>("CmdMsg::ProcInfo");
+
     // init global class
     auto conf = Configuration::instance ();
-    ProcessUtil process;
+    ProcessUtil *process = new ProcessUtil(&a);
+    process->start ();
 
     MainWindow* w = new MainWindow;
     w->show();

@@ -203,7 +203,6 @@ void Editor::onFindClose ()
     QList<QTextEdit::ExtraSelection> extraSelections;
     extraSelections.push_front (mFileEdit->extraSelections ().front ());
     mFileEdit->setExtraSelections(extraSelections);
-
 }
 
 void Editor::onFind(const QString &subString, QTextDocument::FindFlags options)

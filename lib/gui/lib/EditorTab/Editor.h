@@ -27,6 +27,8 @@
 #include <QAction>
 #include <QFileSystemWatcher>
 
+class EditorTab;
+
 class Editor : public QWidget
 {
     Q_OBJECT
@@ -91,6 +93,8 @@ protected:
     int mLine;
 
     bool notReload = false;
+
+    friend class EditorTab;
 };
 
 
