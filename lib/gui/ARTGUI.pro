@@ -84,3 +84,6 @@ FORMS    += \
 RESOURCES += \
     ART.qrc \
     lib/Res/ART.qrc
+
+DISTFILES += \
+    images/ProjectTab.png

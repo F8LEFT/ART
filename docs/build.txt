@@ -42,3 +42,9 @@ Add Boolean : [WIN32|APPLE|UNIX]:ON
 build RELEASE version.
 
 generated files can be found in lib/gui/bin.
+
+Ps: If you are building ART in Windows Platform, you need to generate dependency
+file after building. Just open Qt Mingw, then change root directory to ./lib/gui/bin.
+Use windeployqt to generate it.
+
+windeployqt --release MainWindow.exe

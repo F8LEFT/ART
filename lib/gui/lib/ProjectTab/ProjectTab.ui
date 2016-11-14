@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>StackedWidget</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../ART.qrc">
+    <normaloff>:/images/ProjectTab.png</normaloff>:/images/ProjectTab.png</iconset>
+  </property>
   <widget class="QWidget" name="mAllProjectWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -158,6 +162,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../ART.qrc"/>
+ </resources>
  <connections/>
 </ui>

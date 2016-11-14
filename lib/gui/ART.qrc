@@ -22,5 +22,7 @@
         <file>images/undo.png</file>
         <file>images/findPlain.png</file>
         <file>images/settings.png</file>
+        <file>images/mainicon.png</file>
+        <file>images/ProjectTab.png</file>
     </qresource>
 </RCC>
