@@ -28,6 +28,9 @@ public:
     explicit AboutArt(QWidget *parent = 0);
     ~AboutArt();
 
+private slots:
+    void onLinkOpen(const QString& link);
+
 private:
     Ui::AboutArt *ui;
 };

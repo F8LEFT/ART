@@ -6,9 +6,12 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-#include <utils/StringUtil.h>
 #include "AboutArt/AboutArt.h"
 #include "ui_AboutArt.h"
+
+#include <utils/StringUtil.h>
+#include <QDesktopServices>
+#include <QUrl>
 
 AboutArt::AboutArt(QWidget *parent) :
     QDialog(parent),
@@ -33,9 +36,17 @@ AboutArt::AboutArt(QWidget *parent) :
             "License as published by the Free Software Foundation, either "
             "version 3 of the License, or (at your option) any later version."
             "<br>");
+
+    connect(ui->lAboutText, SIGNAL(linkActivated(QString)),
+            this, SLOT(onLinkOpen(QString)));
 }
 
 AboutArt::~AboutArt()
 {
     delete ui;
+}
+
+void AboutArt::onLinkOpen(const QString &link)
+{
+    QDesktopServices::openUrl(QUrl(link));
 }

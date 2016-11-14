@@ -62,6 +62,7 @@ public slots:
     // script Message
     void onProjectOpened(QStringList args);
     void onProjectClosed ();
+    void onFindAdvance(QStringList args);
 
     // BookMark message
     void addBookMark(BookMark* pBook, QListWidgetItem *pItem);
@@ -71,12 +72,14 @@ public slots:
     // Command Btn message
     void onCmdBtnClick();
     void onSearchBtnClick();
+
 private:
     void initProjectDocumentTreeView();
     void setProjectDocumentTree(QString path);
     void clearProjectDocumentTree();
 
     void changeCommandWidget(QWidget* wiget);
+    void showCommandWidget(QWidget* widget);
 private:
     Ui::WorkSpace *ui;
     MHTabWidget* mTabWidget;

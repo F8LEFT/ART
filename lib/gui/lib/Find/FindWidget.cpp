@@ -6,9 +6,10 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===---------------------------------------------------------------------===//
-
 #include "Find/FindWidget.h"
 #include "ui_FindWidget.h"
+
+#include <utils/CmdMsgUtil.h>
 
 FindWidget::FindWidget(QWidget *parent) :
     QWidget(parent),
@@ -39,6 +40,9 @@ FindWidget::FindWidget(QWidget *parent) :
 
     connect(ui->mCloseButton, SIGNAL(clicked(bool)),
             this, SLOT(onCloseBtnClicked()));
+
+    connect(ui->mAdvancedButton, SIGNAL(clicked(bool)),
+            this, SLOT(onFindAdvance ()));
 }
 
 FindWidget::~FindWidget()
@@ -52,10 +56,15 @@ void FindWidget::setFindEditFocus ()
     ui->mFindEdit->selectAll ();
 }
 
-void FindWidget::setFindText (const QString s)
+void FindWidget::setFindText (const QString& s)
 {
     ui->mFindEdit->setText (s);
     ui->mReplaceEdit->setText ("");
+}
+
+void FindWidget::setFilePath (const QString &fp)
+{
+    mFilePath = fp;
 }
 
 void FindWidget::onFindPrevBtnClick()
@@ -97,6 +106,13 @@ void FindWidget::onCloseBtnClicked ()
 {
     emit closeWidget ();
 }
+
+void FindWidget::onFindAdvance ()
+{
+    cmdexec("FindAdvance", mFilePath,  CmdMsg::script, true, false);
+}
+
+
 
 
 

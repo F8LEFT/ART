@@ -39,8 +39,6 @@ FindDialog::FindDialog(QWidget *parent) :
             this, SLOT(onProjectOpened(QStringList)));
     connect(script, SIGNAL(projectClosed(QStringList)),
             this, SLOT(onProjectClosed ()));
-
-
 }
 
 FindDialog::~FindDialog()
@@ -71,10 +69,15 @@ void FindDialog::onProjectClosed ()
     mFindConfig->reset (QString(), QString());
 }
 
-void FindDialog::onSearchDirectory (const QString& dir)
+void FindDialog::onFindAdvance (const QString& dir)
 {
     QString projectPath = GetProjectsProjectPath (projinfo ("ProjectName"));
-    mFindConfig->reset (projectPath, dir);
+    if(dir.isEmpty ()) {
+        mFindConfig->reset (projectPath, projectPath);
+    } else {
+        mFindConfig->reset (projectPath, dir);
+    }
+
 }
 
 void FindDialog::onNewFind (const QString &subString,const QString &directory,
@@ -88,4 +91,5 @@ void FindDialog::onNewFind (const QString &subString,const QString &directory,
     ui->mSearchStackedWidget->insertWidget (1, findresult);
     ui->mHistoryCombobox->setCurrentIndex (1);
 }
+
 

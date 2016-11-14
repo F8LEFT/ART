@@ -45,6 +45,17 @@ public slots:
     void closeFile(QStringList files);
     void openFile(QStringList args);
 
+    // for edit
+    void undo();
+    void redo();
+    void cut();
+    void copy();
+    void paste();
+    void deleteR();
+    void selectAll();
+    void find(QStringList args);
+    void gotoLine(QStringList args);
+
     void onProjectOpened(QStringList args);
     void onProjectClosed ();
 

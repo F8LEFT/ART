@@ -86,6 +86,7 @@ WorkSpace::WorkSpace(QWidget *parent) :
     ScriptEngine* script = ScriptEngine::instance();
     connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
     connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
+    connect(script, SIGNAL(findAdvance(QStringList)), this, SLOT(onFindAdvance (QStringList)));
 
     loadFromConfig();
     showQWidgetTab(mProjectTab);
@@ -248,13 +249,31 @@ void WorkSpace::onProjectOpened(QStringList args)
 
     QString projName = args.front();
     setProjectDocumentTree(GetProjectsProjectPath(projName));
+    showQWidgetTab(mEditorTab);
 }
 
 void WorkSpace::onProjectClosed ()
 {
     clearProjectDocumentTree();
+    showQWidgetTab(mProjectTab);
 }
 
+void WorkSpace::onFindAdvance(QStringList args)
+{
+    if(!args.isEmpty ()) {
+        mFindDialog->onFindAdvance (args.front ());
+    } else
+    if(ui->mFileTreeView->hasFocus()) {
+        auto index = ui->mFileTreeView->currentIndex ();
+        if(index.isValid ()) {
+            auto fInfo = mFileModel->fileInfo (index);
+            mFindDialog->onFindAdvance (fInfo.absoluteFilePath ());
+        }
+    } else {
+        mFindDialog->onFindAdvance (QString());
+    }
+    showCommandWidget (mFindDialog);
+}
 
 void WorkSpace::addBookMark(BookMark *pBook, QListWidgetItem *pItem)
 {
@@ -303,6 +322,14 @@ void WorkSpace::changeCommandWidget (QWidget *wiget)
     mCmdWidget->show ();
 }
 
+void WorkSpace::showCommandWidget (QWidget *widget)
+{
+    if(mCmdWidget != widget) {
+        changeCommandWidget (widget);
+    }
+}
+
+
 void WorkSpace::initProjectDocumentTreeView()
 {
     ui->mFileTreeView->setModel(nullptr);
@@ -335,6 +362,8 @@ void WorkSpace::clearProjectDocumentTree()
     mFileModel->deleteLater ();
     mFileModel = nullptr;
 }
+
+
 
 
 

@@ -67,8 +67,8 @@ signals:
     void cut(QStringList);
     // Copy();
     void copy(QStringList);
-    // Parse();
-    void parse(QStringList);
+    // Paste();
+    void paste(QStringList);
     // Delete();
     void deleteR(QStringList);
     // SelectAll();

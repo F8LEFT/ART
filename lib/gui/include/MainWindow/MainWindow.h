@@ -60,7 +60,7 @@ protected slots:
     void actionRedo();
     void actionCut();
     void actionCopy();
-    void actionParse();
+    void actionPaste();
     void actionDelete();
     void actionSelectAll();
     void actionFind();

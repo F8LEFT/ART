@@ -20,6 +20,7 @@
 #include <QStackedWidget>
 #include <QFile>
 #include <QFileInfo>
+#include <QInputDialog>
 
 EditorTab::EditorTab(QWidget *parent) :
         QWidget(parent),
@@ -35,6 +36,16 @@ EditorTab::EditorTab(QWidget *parent) :
     connect(script, SIGNAL(saveFile(QStringList)), this, SLOT(saveFile(QStringList)));
     connect(script, SIGNAL(closeFile(QStringList)), this, SLOT(closeFile(QStringList)));
     connect(script, SIGNAL(openFile(QStringList)), this, SLOT(openFile(QStringList)));
+
+    connect(script, SIGNAL(undo(QStringList)), this, SLOT(undo()));
+    connect(script, SIGNAL(redo(QStringList)), this, SLOT(redo()));
+    connect(script, SIGNAL(cut(QStringList)), this, SLOT(cut()));
+    connect(script, SIGNAL(copy(QStringList)), this, SLOT(copy()));
+    connect(script, SIGNAL(paste(QStringList)), this, SLOT(paste()));
+    connect(script, SIGNAL(deleteR(QStringList)), this, SLOT(deleteR()));
+    connect(script, SIGNAL(selectAll(QStringList)), this, SLOT(selectAll()));
+    connect(script, SIGNAL(find(QStringList)), this, SLOT(find(QStringList)));
+    connect(script, SIGNAL(gotoLine(QStringList)), this, SLOT(gotoLine(QStringList)));
 
     connect(script, SIGNAL(projectOpened(QStringList)),
             this, SLOT(onProjectOpened(QStringList)));
@@ -135,6 +146,84 @@ void EditorTab::openFile(QStringList args)
             iLine = args.at (1).toInt ();
         }
         openFile(path, iLine);
+    }
+}
+
+void EditorTab::undo()
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->mFileEdit->undo ();
+}
+
+void EditorTab::redo()
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->mFileEdit->redo ();
+}
+
+void EditorTab::cut()
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->mFileEdit->cut ();
+}
+
+void EditorTab::copy()
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->mFileEdit->copy ();
+}
+
+void EditorTab::paste()
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->mFileEdit->paste ();
+}
+
+void EditorTab::deleteR()
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->mFileEdit->insertPlainText (QString());
+}
+
+void EditorTab::selectAll()
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->mFileEdit->selectAll ();
+}
+
+void EditorTab::find(QStringList args)
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->onFindAction ();
+}
+
+void EditorTab::gotoLine(QStringList args)
+{
+    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    bool doGo;
+    auto line = QInputDialog::getText(nullptr, tr("Goto Line"),
+                                          tr("Please input target line"), QLineEdit::Normal,
+                                          QString::number (e->currentLine ()) ,&doGo);
+    if(doGo) {
+        e->gotoLine (line.toInt ());
     }
 }
 

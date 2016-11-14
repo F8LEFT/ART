@@ -90,6 +90,8 @@ bool Editor::openFile(QString filePath, int iLine)
     QFile file(fp);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         mFileWatcher->addPath (fp);
+        mFindWidget->setFilePath (fp);
+
         fn = QFileInfo(file).fileName ();
 
         mFileEdit->setReadOnly(true);

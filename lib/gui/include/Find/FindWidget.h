@@ -23,12 +23,12 @@ class FindWidget;
 class FindWidget : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit FindWidget(QWidget *parent = 0);
     ~FindWidget();
     void setFindEditFocus();
-    void setFindText(const QString s);
+    void setFindText(const QString &s);
+    void setFilePath(const QString &fp);
 
 signals:
     void closeWidget();
@@ -37,6 +37,7 @@ signals:
 
     void replace(const QString &subString, const QString &replaceWith);
     void replaceAll(const QString &subString, const QString &replaceWith);
+
 public slots:
     void onFindPrevBtnClick();
     void onFindNextBtnClick();
@@ -46,9 +47,10 @@ public slots:
 
     void onCloseBtnClicked();
 
-
+    void onFindAdvance();
 private:
     Ui::FindWidget *ui;
+    QString mFilePath;
 };
 
 #endif // FINDWIDGET_H

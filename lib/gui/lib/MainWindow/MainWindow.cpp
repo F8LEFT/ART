@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionRedo, SIGNAL(triggered(bool)), this, SLOT(actionRedo()));
     connect(ui->actionCut, SIGNAL(triggered(bool)), this, SLOT(actionCut()));
     connect(ui->actionCopy, SIGNAL(triggered(bool)), this, SLOT(actionCopy()));
-    connect(ui->actionPaste, SIGNAL(triggered(bool)), this, SLOT(actionParse()));
+    connect(ui->actionPaste, SIGNAL(triggered(bool)), this, SLOT(actionPaste()));
     connect(ui->actionDelete, SIGNAL(triggered(bool)), this, SLOT(actionDelete()));
     connect(ui->actionSelect_All, SIGNAL(triggered(bool)), this, SLOT(actionSelectAll()));
     connect(ui->actionFind_Replace, SIGNAL(triggered(bool)), this, SLOT(actionFind()));
@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
                 this, SLOT(onProjectOpened(QStringList)));
     connect(script, SIGNAL(projectClosed(QStringList)),
                 this, SLOT(onProjectClosed()));
+
 
 
     cmdmsg()->addCmdMsg("Android Reverse Toolkit v"
@@ -228,9 +229,9 @@ void MainWindow::actionCopy()
     cmdexec("Copy", CmdMsg::script, true, false);
 }
 
-void MainWindow::actionParse()
+void MainWindow::actionPaste()
 {
-    cmdexec("Parse", CmdMsg::script, true, false);
+    cmdexec("Paste", CmdMsg::script, true, false);
 }
 
 void MainWindow::actionDelete()

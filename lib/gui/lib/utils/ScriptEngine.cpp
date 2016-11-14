@@ -31,7 +31,7 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
     scripts.insert("Redo", &ScriptEngine::redo);
     scripts.insert("Cut", &ScriptEngine::cut);
     scripts.insert("Copy", &ScriptEngine::copy);
-    scripts.insert("Parse", &ScriptEngine::parse);
+    scripts.insert("Paste", &ScriptEngine::paste);
     scripts.insert("Delete", &ScriptEngine::deleteR);
     scripts.insert("SelectAll", &ScriptEngine::selectAll);
     scripts.insert("Find", &ScriptEngine::find);

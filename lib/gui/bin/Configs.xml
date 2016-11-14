@@ -1,17 +1,17 @@
 <configs>
-    <cfg id="height" type="uint" category="MainWindow" value="741"/>
-    <cfg id="width" type="uint" category="MainWindow" value="1155"/>
-    <cfg id="x" type="uint" category="MainWindow" value="354"/>
-    <cfg id="y" type="uint" category="MainWindow" value="102"/>
-    <cfg id="BotSplitterHeight" type="uint" category="SmaliEditor" value="3"/>
-    <cfg id="TopSplitterHeight" type="uint" category="SmaliEditor" value="23"/>
-    <cfg id="EditorTab" type="uint" category="TabOrder" value="0"/>
-    <cfg id="ProjectTab" type="uint" category="TabOrder" value="1"/>
-    <cfg id="LeftBotSplitterHeight" type="uint" category="WorkSpace" value="118"/>
-    <cfg id="LeftSplitterWidth" type="uint" category="WorkSpace" value="170"/>
-    <cfg id="LeftTopSplitterHeight" type="uint" category="WorkSpace" value="491"/>
-    <cfg id="RightBotSplitterHeight" type="uint" category="WorkSpace" value="165"/>
-    <cfg id="RightSplitterWidth" type="uint" category="WorkSpace" value="963"/>
-    <cfg id="RightTopSplitterHeight" type="uint" category="WorkSpace" value="350"/>
-    <string id="SmaliHighlight" type="string" category="FileEdit" value="default.xml"/>
+    <cfg category="MainWindow" id="height" type="uint" value="741"/>
+    <cfg category="MainWindow" id="width" type="uint" value="1155"/>
+    <cfg category="MainWindow" id="x" type="uint" value="354"/>
+    <cfg category="MainWindow" id="y" type="uint" value="102"/>
+    <cfg category="SmaliEditor" id="BotSplitterHeight" type="uint" value="3"/>
+    <cfg category="SmaliEditor" id="TopSplitterHeight" type="uint" value="23"/>
+    <cfg category="TabOrder" id="EditorTab" type="uint" value="0"/>
+    <cfg category="TabOrder" id="ProjectTab" type="uint" value="1"/>
+    <cfg category="WorkSpace" id="LeftBotSplitterHeight" type="uint" value="118"/>
+    <cfg category="WorkSpace" id="LeftSplitterWidth" type="uint" value="170"/>
+    <cfg category="WorkSpace" id="LeftTopSplitterHeight" type="uint" value="491"/>
+    <cfg category="WorkSpace" id="RightBotSplitterHeight" type="uint" value="165"/>
+    <cfg category="WorkSpace" id="RightSplitterWidth" type="uint" value="963"/>
+    <cfg category="WorkSpace" id="RightTopSplitterHeight" type="uint" value="350"/>
+    <string category="FileEdit" id="SmaliHighlight" type="string" value="default.xml"/>
 </configs>

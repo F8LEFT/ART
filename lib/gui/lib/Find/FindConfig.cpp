@@ -10,6 +10,9 @@
 #include "FindConfig.h"
 #include "ui_FindConfig.h"
 
+#include <QtCore/QFileInfo>
+
+
 FindConfig::FindConfig(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FindConfig)
@@ -17,7 +20,7 @@ FindConfig::FindConfig(QWidget *parent) :
     ui->setupUi(this);
 
     ui->mFilterList->addItem (tr("Project"));
-    ui->mFilterList->addItem (tr("Selected Directory"));
+    ui->mFilterList->addItem (tr("Selected Directory") + " \"null\"");
     ui->mFilterList->setCurrentIndex (0);
 
     // signal slots
@@ -39,6 +42,14 @@ void FindConfig::reset (const QString &root, const QString &selectdir)
         ui->mFilterList->setCurrentIndex (1);
     } else {
         ui->mFilterList->setCurrentIndex (0);
+    }
+    QFileInfo selectFInfo(selectdir);
+    if(selectFInfo.isFile ()) {
+        ui->mFilterList->setItemText (1, tr("Selected File") +
+                " \"" + selectFInfo.fileName () + "\"");
+    } else {
+        ui->mFilterList->setItemText (1, tr("Selected Directory") +
+                                         " \"" + selectFInfo.fileName () + "\"");
     }
 
     ui->mSearchTerm->clear ();
