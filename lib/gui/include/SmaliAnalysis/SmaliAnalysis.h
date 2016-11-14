@@ -24,6 +24,9 @@
 class SmaliAnalysis : public QObject
 {
     Q_OBJECT
+signals:
+    void analysisFinished();
+    void analysisUpdated();
 public:
     SmaliAnalysis(QObject* parent = 0);
     ~SmaliAnalysis ();
@@ -31,13 +34,13 @@ public:
     static SmaliAnalysis* mPtr;
     static SmaliAnalysis* instance();
 
-    bool addDirectory(QDir dir);
+    bool addSmaliFolder(QStringList dirs);
+    bool addDirectory(QString dir);
     QString parseFile(QString filePath);
 
 public:
     StringPool mStringPool;
     QMap<int, Analysis::SmaliClass*> mAllClass;
 };
-
 
 #endif //PROJECT_SMALIANALYSIS_H

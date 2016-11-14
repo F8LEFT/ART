@@ -44,6 +44,7 @@ protected slots:
     void onBuildAction();
     void onInstallAction();
     void onRunAction();
+    void onDebugAction();
     void onStopAction();
 
     void onNewDevice(QString dev);

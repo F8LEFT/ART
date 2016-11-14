@@ -34,8 +34,10 @@ RunDevice::RunDevice(QWidget *parent) :
     connect(script, SIGNAL(build(QStringList)), this, SLOT(onBuildAction ()));
     connect(script, SIGNAL(install(QStringList)), this, SLOT(onInstallAction()));
     connect(script, SIGNAL(run(QStringList)), this, SLOT(onRunAction()));
+    connect(script, SIGNAL(debug(QStringList)), this, SLOT(onDebugAction()));
     connect(script, SIGNAL(stop(QStringList)), this, SLOT(onStopAction()));
     connect(script, SIGNAL(devices(QStringList)), this, SLOT(exec()));
+
 
     connect(this, SIGNAL(addDeviceList(QString)), this, SLOT(onNewDevice(QString)));
     connect(ui->mRefreshBtn, SIGNAL(clicked(bool)), this, SLOT(onRefreshDeviceList()));
@@ -137,6 +139,34 @@ void RunDevice::onRunAction()
          << "shell"
          << "am"
          << "start"
+         << project->getInfo ("PackageName") +
+                 "/" + project->getInfo ("ActivityEntryName");
+    cmdexec("adb", args);
+}
+
+void RunDevice::onDebugAction()
+{
+    // TODO debug
+    auto* project = ProjectInfo::instance ();
+    if(!project->isProjectOpened ()) {
+        return;
+    }
+    QString devId = getValidDeviceId();
+    if (devId.isEmpty())
+        return;
+
+    cmdmsg()->addCmdMsg ("Running apk file " + project->getInfo ("PackageName"));
+
+
+    QString projectRoot = project->getProjectPath();
+    QStringList args;
+    args << "-s"
+         << mDeviceId
+         << "shell"
+         << "am"
+         << "start"
+         << "-D"
+         << "-n"
          << project->getInfo ("PackageName") +
                  "/" + project->getInfo ("ActivityEntryName");
     cmdexec("adb", args);

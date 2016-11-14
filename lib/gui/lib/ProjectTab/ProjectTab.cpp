@@ -125,6 +125,9 @@ void ProjectTab::openProject (QString projectName)
     projinfoset ("PackageName", mPackageName);
     projinfoset ("ActivityEntryName", mActivityEntryName);
 
+    auto analysis = new SmaliAnalysis(this);
+    analysis->addSmaliFolder (mSmaliDirectory);
+
     cmdexec("ProjectOpened", projectName);
 }
 
@@ -151,6 +154,9 @@ void ProjectTab::closeProject()
     cfg.setString ("ProjectInfo", "CompileCmd", projinfo ("CompileCmd"));
     cfg.setString ("ProjectInfo", "DecompileCmd", projinfo ("DecompileCmd"));
 
+    auto analysis = SmaliAnalysis::instance ();
+    delete analysis;
+
     cmdexec("ProjectClosed");
 }
 
@@ -158,18 +164,13 @@ void ProjectTab::onProjectOpened (QStringList projName)
 {
     cmdmsg ()->addCmdMsg ("project " + mProjectName + " opened.");
     setCurrentIndex(1);
-    auto analysis = new SmaliAnalysis(this);
-            foreach(QString dir, mSmaliDirectory) {
-            analysis->addDirectory (dir);
-        }
+
 }
 
 void ProjectTab::onProjectClosed()
 {
     cmdmsg ()->addCmdMsg ("project " + mProjectName + " closed");
     setCurrentIndex(0);
-    auto analysis = SmaliAnalysis::instance ();
-    delete analysis;
 }
 
 void ProjectTab::onSaveBtnClick ()

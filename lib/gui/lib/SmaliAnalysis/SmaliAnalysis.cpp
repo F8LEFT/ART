@@ -19,6 +19,7 @@
 #include <fstream>
 #include <QtCore/QObject>
 #include <QDebug>
+#include <QDirIterator>
 
 using namespace std;
 using namespace Analysis;
@@ -48,27 +49,25 @@ SmaliAnalysis *SmaliAnalysis::instance ()
     return mPtr;
 }
 
-bool SmaliAnalysis::addDirectory (QDir dir)
+bool SmaliAnalysis::addSmaliFolder (QStringList dirs)
 {
     return true;
-    qDebug() << "[SmaliAnalysis] addDirectory Entry Dir"
-             << dir.absolutePath ();
-    if(!dir.exists ())
-        return false;
-    dir.setFilter (QDir::Dirs | QDir::NoSymLinks);
-            foreach(QFileInfo mfi ,dir.entryInfoList())
-        {
-            if(mfi.fileName()=="." || mfi.fileName() == "..")continue;
-            addDirectory(mfi.absoluteFilePath());
+    foreach(QString dir, dirs) {
+            addDirectory (dir);
         }
-    dir.setFilter (QDir::Files| QDir::NoSymLinks);
-            foreach(QFileInfo mfi ,dir.entryInfoList())
-        {
-            qDebug()<< "[SmaliAnalysis] addDirectory parse File :"
-                    << mfi.absoluteFilePath ();
-            if(mfi.fileName ().endsWith (".smali"))
-                ;//parseFile (mfi.absoluteFilePath ());
+    return true;
+}
+
+bool SmaliAnalysis::addDirectory (QString dir)
+{
+    QDirIterator it(dir, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        auto filePath = it.next();
+        auto info = QFileInfo(filePath);
+        if(info.isFile () && info.fileName ().endsWith (".smali")) {
+            parseFile (info.absoluteFilePath ());
         }
+    }
     return true;
 }
 
@@ -91,6 +90,3 @@ QString SmaliAnalysis::parseFile (QString filePath)
     ifile.close ();
     return QString::fromStdString (classname);
 }
-
-
-
