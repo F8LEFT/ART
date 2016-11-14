@@ -9,7 +9,6 @@
 
 #include "Jdwp/JdwpReader.h"
 
-#include <netinet/in.h>
 using namespace JDWP;
 JdwpReader::JdwpReader (const uint8_t *bytes,uint32_t available)
         : p_(bytes)

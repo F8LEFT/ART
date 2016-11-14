@@ -28,3 +28,17 @@ QTGCCDIR is the compile toolkit path from qt.
 In Linux, it means ${QTINSTALL}/5.7/gcc_64
 In Mac, it means ${QTINSTALL}/5.7/clang_64
 In Windows, it means ${QTINSTALL}/5.7/mingw53_32
+
+or use QtCreator to build file.
+
+Open QtCreator.
+
+File -> Open File or Project -> choose CmakeList.txt in ART project root.
+
+Projects -> Setting ->
+set Boolean : YAML_CPP_BUILD_CONTRIB:OFF YAML_CPP_BUILD_TOOLS:OFF
+Add Boolean : [WIN32|APPLE|UNIX]:ON
+
+build RELEASE version.
+
+generated files can be found in lib/gui/bin.

@@ -9,7 +9,7 @@
 
 #include "Jdwp/JdwpHandler.h"
 #include "JdwpHeader.h"
-#include <netinet/in.h>
+
 #include <Jdwp/jdwp.h>
 
 using namespace JDWP;

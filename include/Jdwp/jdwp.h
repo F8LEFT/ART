@@ -18,6 +18,13 @@
 #include <cstring>
 #include "utils/Defs.h"
 
+#ifdef WIN32
+#include "Winsock2.h"
+#pragma comment(lib,"ws2_32.lib")
+#else
+#include <netinet/in.h>
+#endif
+
 namespace JDWP {
 
 /*
