@@ -16,14 +16,24 @@
 #include <utils/ProcessUtil.h>
 #include <utils/StringUtil.h>
 
+#include <QTranslator>
+#include <QLibraryInfo>
+#include <QLocale>
+#include <QDebug>
+
+bool loadTranslation(QApplication * app);
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     QDir::setCurrent (GetSoftPath());
+
+    auto conf = Configuration::instance ();
+    loadTranslation (&a);
+
     qRegisterMetaType<CmdMsg::ProcInfo>("CmdMsg::ProcInfo");
 
     // init global class
-    auto conf = Configuration::instance ();
     ScriptEngine::instance();
 
     ProcessUtil *process = new ProcessUtil();
@@ -38,4 +48,30 @@ int main(int argc, char *argv[])
     delete conf;
 
     return ret;
+}
+
+
+bool loadTranslation(QApplication * app)
+{
+    QTranslator *translator = new QTranslator(app);
+
+    auto loadlan = ConfigString("System", "language");
+    if(loadlan == "system") {
+        QLocale locale;
+        auto uiLanguages = locale.system ().uiLanguages ();
+        foreach(QString language, uiLanguages ) {
+                qDebug() << "loading translate file " << language;
+                if(translator->load (QString("qt_%1").arg(language),
+                       QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
+                    app->installTranslator(translator);
+                    break;
+                }
+            }
+    } else {
+        if(translator->load (QString("qt_%1").arg(loadlan),
+                             QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
+            app->installTranslator(translator);
+        }
+    }
+    return true;
 }

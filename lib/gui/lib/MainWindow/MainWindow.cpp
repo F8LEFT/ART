@@ -165,19 +165,19 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    switch( QMessageBox::information( this, tr("Close ART"),
-                                      tr("Do you really want to close ART?"),
-                                      tr("No"), tr("Yes"),
-                                      0, 1 ))
-    {
-        case 1:
+//    switch( QMessageBox::information( this, tr("Confirm Exit"),
+//                                      tr("Are you sure you want to exit ART?"),
+//                                      tr("No"), tr("Yes"),
+//                                      0, 1 ))
+//    {
+//        case 1:
             cmdexec("CloseProject", CmdMsg::script, true, false);
             event->accept();
-            break;
-        default:
-            event->ignore();
-            break;
-    }
+//            break;
+//        default:
+//            event->ignore();
+//            break;
+//    }
 }
 
 
