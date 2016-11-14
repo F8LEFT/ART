@@ -16,6 +16,7 @@
 
 #include <QStackedWidget>
 #include <QtWidgets/QFileSystemModel>
+#include <QtWidgets/QListWidget>
 
 namespace Ui {
 class ProjectTab;
@@ -30,6 +31,7 @@ public:
     ~ProjectTab();
 
 protected slots:
+    // script
     void onProjectOpenClick(const QModelIndex &index);
     void openProject(QStringList args);
     void openProject(QString projectName);
@@ -37,6 +39,14 @@ protected slots:
 
     void onProjectOpened(QStringList projName);
     void onProjectClosed();
+
+    // button
+    void onSaveBtnClick();
+    void onResetBtnClick();
+
+    // ActivityInfo
+    void onActivityClick(QListWidgetItem* item);
+    void openActivityInEditor(QString activityName);
 
 private:
     void readProjectInfo();

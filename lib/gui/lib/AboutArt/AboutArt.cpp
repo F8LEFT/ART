@@ -36,9 +36,8 @@ AboutArt::AboutArt(QWidget *parent) :
             "License as published by the Free Software Foundation, either "
             "version 3 of the License, or (at your option) any later version."
             "<br>");
+    ui->lAboutText->setOpenExternalLinks (true);
 
-    connect(ui->lAboutText, SIGNAL(linkActivated(QString)),
-            this, SLOT(onLinkOpen(QString)));
 }
 
 AboutArt::~AboutArt()
@@ -46,7 +45,3 @@ AboutArt::~AboutArt()
     delete ui;
 }
 
-void AboutArt::onLinkOpen(const QString &link)
-{
-    QDesktopServices::openUrl(QUrl(link));
-}

@@ -38,6 +38,10 @@ signals:
     // adb(args) ScriptEngine.cpp
     void adb(QStringList);
 
+    // ui
+    // OpenWindow(windowName)
+    void openWindow(QStringList);
+
     // ProjectManager
     // OpenProject(projectName)   ProjectTab.cpp
     void openProject(QStringList);

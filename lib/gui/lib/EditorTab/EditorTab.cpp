@@ -21,6 +21,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QInputDialog>
+#include <utils/CmdMsgUtil.h>
 
 EditorTab::EditorTab(QWidget *parent) :
         QWidget(parent),
@@ -75,6 +76,7 @@ bool EditorTab::openFile(QString filePath, int iLine)
             Editor* p = (Editor*)ui->mEditStackedWidget->widget(iComIdx);
             p->gotoLine (iLine);
         }
+        cmdexec("OpenWindow", "EditorTab", CmdMsg::script, true, false);
         return true;
     }
     if (!filePath.isEmpty()) {
@@ -92,6 +94,7 @@ bool EditorTab::openFile(QString filePath, int iLine)
             ui->mEditStackedWidget->insertWidget(0, p);
             ui->mDocumentCombo->insertItem(0, fileName, filePath);
             ui->mDocumentCombo->setCurrentIndex(0);
+            cmdexec("OpenWindow", "EditorTab", CmdMsg::script, true, false);
             return true;
         } else {
             delete p;
@@ -141,7 +144,7 @@ void EditorTab::openFile(QStringList args)
     if (args.size() > 0) {     // filepath
         QString path = args.at(0);
         QFile file(path);
-        int iLine = 1;
+        int iLine = -1;
         if (args.size () > 1) {
             iLine = args.at (1).toInt ();
         }

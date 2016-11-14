@@ -88,6 +88,8 @@ WorkSpace::WorkSpace(QWidget *parent) :
     connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
     connect(script, SIGNAL(findAdvance(QStringList)), this, SLOT(onFindAdvance (QStringList)));
 
+    connect(script, SIGNAL(openWindow(QStringList)), this, SLOT(onOpenWindow (QStringList)));
+
     loadFromConfig();
     showQWidgetTab(mProjectTab);
     ui->mCmdBtn->click ();
@@ -216,8 +218,8 @@ void WorkSpace::onCmdClear()
 void WorkSpace::treeFileOpen(const QModelIndex &index)
 {
     if (mFileModel->fileInfo(index).isFile()) {
-        if(!mEditorTab->openFile(mFileModel->filePath(index), -1)) {
-            // TODO Error happened in open file
+        if(mEditorTab->openFile(mFileModel->filePath(index), -1)) {
+            showQWidgetTab(mEditorTab);
         }
     }
 }
@@ -249,7 +251,7 @@ void WorkSpace::onProjectOpened(QStringList args)
 
     QString projName = args.front();
     setProjectDocumentTree(GetProjectsProjectPath(projName));
-    showQWidgetTab(mEditorTab);
+
 }
 
 void WorkSpace::onProjectClosed ()
@@ -273,6 +275,20 @@ void WorkSpace::onFindAdvance(QStringList args)
         mFindDialog->onFindAdvance (QString());
     }
     showCommandWidget (mFindDialog);
+}
+
+void WorkSpace::onOpenWindow (QStringList args)
+{
+    if(args.isEmpty ())
+        return;
+    QString tabName = args.front ();
+    for(int i = 0; i < mWidgetList.size(); i++)
+    {
+        if(tabName == mWidgetNativeNameList[i]) {
+            showQWidgetTab (mWidgetList[i]);
+            break;
+        }
+    }
 }
 
 void WorkSpace::addBookMark(BookMark *pBook, QListWidgetItem *pItem)
@@ -362,6 +378,7 @@ void WorkSpace::clearProjectDocumentTree()
     mFileModel->deleteLater ();
     mFileModel = nullptr;
 }
+
 
 
 

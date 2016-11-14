@@ -28,11 +28,9 @@ public:
     explicit BookMark(QString file, QWidget *parent = 0);
     ~BookMark();
 
-    void setFileName(QString fp);
     void setHint(QString hint);
     void setLine(int line);
 
-    QString fileName();
     QString filePath();
     QString hint();
     int line();
@@ -42,7 +40,6 @@ signals:
 
 private:
     Ui::BookMark *ui;
-    QString mFileName;
     QString mFilePath;
     QString mHint;
     int mLine;

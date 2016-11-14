@@ -17,6 +17,8 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
 
     // command list
     scripts.insert("adb", &ScriptEngine::adb);
+    scripts.insert ("OpenWindow", &ScriptEngine::openWindow);
+
     scripts.insert("OpenProject", &ScriptEngine::openProject);
     scripts.insert("CloseProject", &ScriptEngine::closeProject);
     scripts.insert("ProjectOpened", &ScriptEngine::projectOpened);

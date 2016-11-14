@@ -200,7 +200,6 @@ void TextEditorWidget::updateCurrentLineBookMark()
     // alloc new bookmark
     BookMark* nBook = pBookMarkManager->addBookMark(documentPath ());
     nBook->setHint(cursor.block().text());
-    nBook->setFileName(documentTitle());
     nBook->setLine(nTextLine);
 }
 

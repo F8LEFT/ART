@@ -64,6 +64,8 @@ public slots:
     void onProjectClosed ();
     void onFindAdvance(QStringList args);
 
+    void onOpenWindow(QStringList args);
+
     // BookMark message
     void addBookMark(BookMark* pBook, QListWidgetItem *pItem);
     void delBookMark(QListWidgetItem *pItem);

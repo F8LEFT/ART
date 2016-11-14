@@ -49,6 +49,17 @@ ProjectTab::ProjectTab(QWidget *parent) :
         ui->mProjectList->verticalHeader()->hide();
     }
 
+    // signals / slots
+    // button
+    connect((QObject*)ui->mButtonBox->button (QDialogButtonBox::Save), SIGNAL(clicked(bool)),
+            this, SLOT(onSaveBtnClick ()));
+    connect((QObject*)ui->mButtonBox->button (QDialogButtonBox::Reset), SIGNAL(clicked(bool)),
+            this, SLOT(onResetBtnClick ()));
+
+    connect(ui->mEntryLabel, SIGNAL(linkActivated(QString)),
+            this, SLOT(openActivityInEditor(QString)));
+
+    // script
     auto* script = ScriptEngine::instance();
     connect(ui->mProjectList, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(onProjectOpenClick(QModelIndex)));
@@ -61,6 +72,10 @@ ProjectTab::ProjectTab(QWidget *parent) :
             this, SLOT(onProjectOpened(QStringList)));
     connect(script, SIGNAL(projectClosed(QStringList)),
             this, SLOT(onProjectClosed()));
+
+
+    connect(ui->mActivityInfoList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+            this, SLOT(onActivityClick(QListWidgetItem*)));
 }
 
 ProjectTab::~ProjectTab()
@@ -155,6 +170,23 @@ void ProjectTab::onProjectClosed()
     setCurrentIndex(0);
     auto analysis = SmaliAnalysis::instance ();
     delete analysis;
+}
+
+void ProjectTab::onSaveBtnClick ()
+{
+    projinfoset ("CompileCmd", ui->mCompileEdit->text ());
+}
+
+void ProjectTab::onResetBtnClick ()
+{
+    ui->mCompileEdit->setText (projinfo ("CompileCmd"));
+    readProjectInfo();
+}
+
+void ProjectTab::onActivityClick (QListWidgetItem *item)
+{
+    auto activityName = item->text ();
+    openActivityInEditor (activityName);
 }
 
 void ProjectTab::readProjectInfo ()
@@ -252,8 +284,36 @@ void ProjectTab::readProjectManifestInfo ()
     }
     ui->mPackageNameLabel->setText(mPackageName);
     ui->mApplicationNameLabel->setText(mApplicationName);
-    ui->mEntryLabel->setText(mActivityEntryName);
+    ui->mEntryLabel->setText(
+            "<a href=\"" + mActivityEntryName + "\">" +
+            mActivityEntryName + "</a>");
 
     file.close();
 }
+
+void ProjectTab::openActivityInEditor (QString activityName)
+{
+    if(activityName.at (0) == '.') {
+        activityName = mPackageName + activityName;
+    }
+    activityName.replace (".", "/");
+    activityName.push_front ("/");
+    activityName.push_back (".smali");
+
+    QString filePath;
+            foreach(QString smali, mSmaliDirectory) {
+            auto tmp = smali + activityName;
+            if(QFileInfo::exists (tmp)) {
+                filePath = tmp;
+                break;
+            }
+        }
+
+    if(!filePath.isEmpty ()) {
+        cmdexec("OpenFile", filePath, CmdMsg::script, true, false);
+    }
+}
+
+
+
 
