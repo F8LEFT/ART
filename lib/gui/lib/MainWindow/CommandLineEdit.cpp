@@ -8,6 +8,8 @@
 //===----------------------------------------------------------------------===//
 #include "CommandLineEdit.h"
 
+#include <utils/ScriptEngine.h>
+
 
 CommandLineEdit::CommandLineEdit(QWidget* parent)
     : HistoryLineEdit(parent)
@@ -17,9 +19,11 @@ CommandLineEdit::CommandLineEdit(QWidget* parent)
     mCmdScriptType->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     mCmdScriptType->setStyleSheet("QComboBox::drop-down{border-style: none;}");
 
-    mCmdScriptType->addItem(CmdMsg::procTypeDescription(CmdMsg::ProcType::cmd));
+    mCmdScriptType->addItem(CmdMsg::procTypeDescription(CmdMsg::ProcType::cmd),
+                            CmdMsg::ProcType::cmd);
     //mCmdScriptType->addItem(cmdMsg::procTypeDescription(cmdMsg::ProcType::python));
-    mCmdScriptType->addItem(CmdMsg::procTypeDescription(CmdMsg::ProcType::script));
+    mCmdScriptType->addItem(CmdMsg::procTypeDescription(CmdMsg::ProcType::script),
+                            CmdMsg::ProcType::script);
     mCmdScriptType->setCurrentIndex(0);
     scriptTypeChanged(0);
 
@@ -38,6 +42,8 @@ CommandLineEdit::CommandLineEdit(QWidget* parent)
     connect(mCmdScriptType, SIGNAL(currentIndexChanged(int)),
             this, SLOT(scriptTypeChanged(int)));
     connect(this, SIGNAL(returnPressed()), this, SLOT(execute()));
+
+    autoCompleteAddCmd(ScriptEngine::instance ()->getAllCommand ());
 }
 
 
@@ -132,6 +138,8 @@ QWidget* CommandLineEdit::selectorWidget()
 
 void CommandLineEdit::autoCompleteUpdate(const QString text)
 {
+    if(mCmdScriptType->currentIndex () == -1)
+        return;
     // No command, no completer
     if(text.length() <= 0)
     {
@@ -142,9 +150,19 @@ void CommandLineEdit::autoCompleteUpdate(const QString text)
         // Save current index
         QModelIndex modelIndex = mCompleter->popup()->currentIndex();
 
+        // Native auto-completion
+        if(mCmdScriptType->currentData () ==  CmdMsg::ProcType::script)
+            mCompleterModel->setStringList(mDefaultCompletions);
+
         // Restore index
         mCompleter->popup()->setCurrentIndex(modelIndex);
     }
+}
+
+void CommandLineEdit::autoCompleteAddCmd (const QStringList &cmds)
+{
+    mDefaultCompletions.append (cmds);
+    mDefaultCompletions.removeDuplicates ();
 }
 
 void CommandLineEdit::autoCompleteAddCmd(const QString cmd)
@@ -174,3 +192,5 @@ void CommandLineEdit::scriptTypeChanged(int index)
     // Force reset autocompletion (blank string)
     emit textEdited("");
 }
+
+

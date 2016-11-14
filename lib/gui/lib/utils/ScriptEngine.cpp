@@ -73,8 +73,15 @@ void ScriptEngine::exec(QString proc, QStringList args)
     }
 }
 
+QStringList ScriptEngine::getAllCommand ()
+{
+    return scripts.keys ();
+}
+
+
 void ScriptEngine::adbShell(QStringList args)
 {
     QString adbPath = GetThirdPartyPath ("adb") + "/" + GetSystemType() + "/adb";
     cmdexec(adbPath, args, CmdMsg::ProcType::cmd);
 }
+

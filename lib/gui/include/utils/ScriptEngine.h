@@ -32,6 +32,7 @@ public:
     static ScriptEngine* instance();
 
     void exec(QString proc, QStringList args);
+    QStringList getAllCommand();
 
 signals:
     // script(args) handleby

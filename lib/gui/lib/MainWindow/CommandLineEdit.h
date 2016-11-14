@@ -32,7 +32,9 @@ public:
     QWidget* selectorWidget();
 
 public slots:
+
     void autoCompleteUpdate(const QString text);
+    void autoCompleteAddCmd(const QStringList& cmds);
     void autoCompleteAddCmd(const QString cmd);
     void autoCompleteDelCmd(const QString cmd);
     void autoCompleteClearAll();
