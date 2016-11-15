@@ -24,7 +24,8 @@ class SmaliHighlight: public QSyntaxHighlighter
     Q_OBJECT
 
 public:
-    SmaliHighlight(QTextDocument *parent, QString fileName);
+    SmaliHighlight(QTextDocument *parent, QString fileName,
+                   HighLightConfig* config);
 
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;

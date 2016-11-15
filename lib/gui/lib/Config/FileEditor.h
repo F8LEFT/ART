@@ -26,7 +26,6 @@ namespace Ui {
 class FileEditor;
 }
 
-class QuickSmaliHighilght;
 class FileEditor : public QWidget
 {
     Q_OBJECT
@@ -62,27 +61,13 @@ private:
     void initSchemeCombobox();
 private:
     Ui::FileEditor *ui;
-    QuickSmaliHighilght* mHighlight;
 
     QColor mForegroundColor;
     QColor mBackgroundColor;
     QColor mUnderlineColor;
 
+    QSyntaxHighlighter *mHighlight;
     HighLightConfig* mCurrentConfig;
-};
-class QuickSmaliHighilght : public QSyntaxHighlighter
-{
-Q_OBJECT
-public:
-    QuickSmaliHighilght(QTextDocument *parent);
-
-
-protected:
-    void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
-
-public:
-    QMap<HighLightConfig::FORMAT , QTextCharFormat> mFormatMap;
-
 };
 
 

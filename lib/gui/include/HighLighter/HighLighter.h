@@ -16,6 +16,8 @@
 
 #include <QSyntaxHighlighter>
 #include <QTextDocument>
+#include "HighLightConfig.h"
 
-QSyntaxHighlighter *setHighLighter (QTextDocument *parent,QString fileName);
+QSyntaxHighlighter *setHighLighter (QTextDocument *parent,QString fileName,
+                                    HighLightConfig* config = nullptr);
 #endif // HIGHLIGHTER_H

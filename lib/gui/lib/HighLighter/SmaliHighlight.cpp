@@ -20,13 +20,11 @@
 
 using namespace Analysis;
 
-SmaliHighlight::SmaliHighlight (QTextDocument *parent,QString fileName)
-        : QSyntaxHighlighter(parent),
-          mFormatMap(HighLightConfig::instance (GetCfgsPath ("smaliTheme/" +
-                      ConfigString("FileEdit", "SmaliHighlight")))->mFormatMap)
+SmaliHighlight::SmaliHighlight (QTextDocument *parent,QString fileName,
+                                HighLightConfig* config)
+        : QSyntaxHighlighter(parent), mFormatMap(config->mFormatMap)
 {
-    auto hightlightCfg = HighLightConfig::instance ();
-    connect(hightlightCfg, SIGNAL(onConfigUpdate()), this, SLOT(rehighlight()));
+    connect(config, SIGNAL(onConfigUpdate()), this, SLOT(rehighlight()));
 }
 
 void SmaliHighlight::highlightBlock (const QString &text)

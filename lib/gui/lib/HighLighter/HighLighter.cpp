@@ -7,13 +7,21 @@
 //
 //===---------------------------------------------------------------------===//
 
+
 #include "HighLighter/HighLighter.h"
 #include "SmaliHighlight.h"
 #include "GeneralHighlight.h"
-QSyntaxHighlighter *setHighLighter (QTextDocument *parent,QString fileName)
+#include <utils/StringUtil.h>
+#include <utils/Configuration.h>
+QSyntaxHighlighter *setHighLighter (QTextDocument *parent,QString fileName,
+                                    HighLightConfig* config)
 {
     if(fileName.endsWith (".smali")) {
-        return new SmaliHighlight(parent, fileName);
+        if(config == nullptr) {
+            config = HighLightConfig::instance (GetCfgsPath ("smaliTheme/" +
+                                  ConfigString("FileEdit", "SmaliHighlight")));
+        }
+        return new SmaliHighlight(parent, fileName, config);
     } else {
         return new GeneralHighlight(parent, fileName);
     }
