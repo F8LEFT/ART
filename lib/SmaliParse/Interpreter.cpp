@@ -86,7 +86,8 @@ void Interpreter::addField (std::string &name,int flag,std::string &type)
 void Interpreter::addMethod (std::string &name,int flag,std::string &type,std::vector<std::string> &args)
 {
     if(mCurMethod != nullptr) {
-        std::cout << "warning : current method not end!!" << std::endl;
+        std::cout << "[SmaliParse error] : parsing file method not ended" << std::endl
+                << mClass->fileName () << " -> " << mCurMethod->name () << std::endl;
     }
     mCurMethod = mClass->addMethod (name,args);
     mCurMethod->setFlag (flag);
@@ -96,7 +97,8 @@ void Interpreter::addMethod (std::string &name,int flag,std::string &type,std::v
 void Interpreter::setCurMethodRegSize (int size)
 {
     if(mCurMethod == nullptr) {
-        std::cout << "warning : method not exit!!" << std::endl;
+        std::cout << "[SmaliParse error] : parsing method not exist while parsing "
+                  << mClass->fileName () << std::endl;
         return;
     }
     mCurMethod->setRegSize (size);
@@ -113,7 +115,8 @@ void Interpreter::addOpcode (OpCode *code)
     }
 #endif
     if(mCurMethod == nullptr) {
-        std::cout << "warning : method not exit!!" << std::endl;
+        std::cout << "[SmaliParse error] : parsing method not exist while parsing "
+                  << mClass->fileName () << std::endl;
         return;
     }
 

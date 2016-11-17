@@ -37,10 +37,7 @@ SmaliAnalysis::~SmaliAnalysis ()
 {
     Q_ASSERT (mPtr != nullptr && "SmaliAnalysis must be alloc first");
     mPtr = nullptr;
-            foreach(Analysis::SmaliClass* sClass, mAllClass.values ()) {
-            delete sClass;
-        }
-
+    mAllClass.clear ();
 }
 
 SmaliAnalysis *SmaliAnalysis::instance ()
@@ -51,42 +48,97 @@ SmaliAnalysis *SmaliAnalysis::instance ()
 
 bool SmaliAnalysis::addSmaliFolder (QStringList dirs)
 {
-    return true;
-    foreach(QString dir, dirs) {
-            addDirectory (dir);
-        }
+    SmaliAnalysisThread* analysisThread = new SmaliAnalysisThread;
+
+    analysisThread->setSearchDir (dirs);
+    analysisThread->setStringPool(&mStringPool);
+
+    connect(analysisThread, SIGNAL(fileAnalysisFinished(QString,Analysis::SmaliClass*)),
+            this, SLOT(onFileAnalysisFinished(QString,Analysis::SmaliClass*)));
+    connect(analysisThread, SIGNAL(finished()), this, SLOT(onAllAnalysisFinished()));
+
+    analysisThread->start ();
     return true;
 }
 
-bool SmaliAnalysis::addDirectory (QString dir)
+void SmaliAnalysis::onFileAnalysisFinished (QString filePath,Analysis::SmaliClass *cla)
 {
-    QDirIterator it(dir, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        auto filePath = it.next();
-        auto info = QFileInfo(filePath);
-        if(info.isFile () && info.fileName ().endsWith (".smali")) {
-            parseFile (info.absoluteFilePath ());
-        }
+    bool exist = false;
+    auto it = mAllClass.find (filePath);
+    if(it != mAllClass.end ()) {
+        exist = true;
     }
-    return true;
+    auto p = QSharedPointer<Analysis::SmaliClass>(cla);
+    mAllClass[filePath] = p;
+    if(exist && mInit) {
+        emit analysisUpdated (filePath, p);
+    }
 }
 
+void SmaliAnalysis::onAllAnalysisFinished ()
+{
+    mInit = true;
+    qDebug() << "SmaliAnalysis Finished";
+    emit analysisFinished();
+}
 
-QString SmaliAnalysis::parseFile (QString filePath)
+QString parseFile (QString filePath,StringPool *sp,
+                   Analysis::SmaliClass *sc)
 {
     ifstream ifile;
     ifile.open (filePath.toStdString ());
     string classname;
     if(ifile.is_open ()) {
         Interpreter interpreter;
-        SmaliClass sClass;
-        StringPool strpool;
-        sClass.setStringPool (&strpool);
-        interpreter.switchInputStream (&ifile,&sClass);
+        sc->setStringPool (sp);
+        sc->setFileName (filePath.toStdString ());
+        interpreter.switchInputStream (&ifile,sc);
         interpreter.parse ();
         interpreter.analysis ();
-        classname = sClass.classType ();
+        classname = sc->classType ();
     }
     ifile.close ();
     return QString::fromStdString (classname);
 }
+
+SmaliAnalysisThread::SmaliAnalysisThread (QObject *parent)
+        : QThread (parent)
+{
+    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+}
+
+void SmaliAnalysisThread::setSearchDir (QStringList d)
+{
+    mDirs = d;
+}
+
+void SmaliAnalysisThread::addSearchDir (QString d)
+{
+    mDirs << d;
+}
+
+void SmaliAnalysisThread::setStringPool (StringPool *sp)
+{
+    mStringPool = sp;
+}
+
+
+void SmaliAnalysisThread::run ()
+{
+    Q_FOREACH (QString dir, mDirs) {
+            QDirIterator it(dir, QDirIterator::Subdirectories);
+            while (it.hasNext()) {
+                auto filePath = it.next();
+                auto info = QFileInfo(filePath);
+                if(info.isFile () && info.fileName ().endsWith (".smali")) {
+                    SmaliClass* sc = new SmaliClass;
+                    auto fp = parseFile (info.absoluteFilePath (),mStringPool,sc);
+                    if(!fp.isEmpty ()) {
+                        emit fileAnalysisFinished (fp, sc);
+                    }
+                }
+            }
+        }
+    emit allAnalysisFinished ();
+}
+

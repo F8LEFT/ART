@@ -68,9 +68,9 @@ namespace Analysis {
         std::shared_ptr<SmaliLexer> mLexer;
         std::shared_ptr<SmaliParser> mParser;
 
-        SmaliClass* mClass;
-        SmaliMethod* mCurMethod;
-        StringPool* mStringPool;
+        SmaliClass* mClass = nullptr;
+        SmaliMethod* mCurMethod = nullptr;
+        StringPool* mStringPool = nullptr;
 
     private:
         long long int parseLongInt(std::string s);

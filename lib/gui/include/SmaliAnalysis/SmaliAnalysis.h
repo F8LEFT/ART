@@ -18,15 +18,21 @@
 
 #include "utils/StringPool.hpp"
 #include "SmaliAst/SmaliClass.h"
+
 #include <QMap>
 #include <QObject>
 #include <QDir>
+#include <QSharedPointer>
+#include <QThread>
+
 class SmaliAnalysis : public QObject
 {
     Q_OBJECT
 signals:
     void analysisFinished();
-    void analysisUpdated();
+    void analysisUpdated(const QString &filePath,
+                         const QSharedPointer<Analysis::SmaliClass>&);
+
 public:
     SmaliAnalysis(QObject* parent = 0);
     ~SmaliAnalysis ();
@@ -35,12 +41,39 @@ public:
     static SmaliAnalysis* instance();
 
     bool addSmaliFolder(QStringList dirs);
-    bool addDirectory(QString dir);
-    QString parseFile(QString filePath);
+
+private slots:
+    void onFileAnalysisFinished(QString filePath, Analysis::SmaliClass* cla);
+    void onAllAnalysisFinished();
 
 public:
     StringPool mStringPool;
-    QMap<int, Analysis::SmaliClass*> mAllClass;
+    QMap<QString, QSharedPointer<Analysis::SmaliClass>> mAllClass;
+
+    bool mInit = false;
 };
+
+class SmaliAnalysisThread: public QThread
+{
+Q_OBJECT
+public:
+    SmaliAnalysisThread(QObject *parent = Q_NULLPTR);
+
+    void setSearchDir(QStringList d);
+    void addSearchDir(QString d);
+    void setStringPool(StringPool* sp);
+signals:
+    void fileAnalysisFinished(QString filePath, Analysis::SmaliClass* cla);
+    void allAnalysisFinished();
+protected:
+    void run();
+
+private:
+    QStringList mDirs;
+    StringPool* mStringPool;
+};
+
+// return ClassName
+QString parseFile(QString filePath, StringPool* sp, Analysis::SmaliClass* sc);
 
 #endif //PROJECT_SMALIANALYSIS_H

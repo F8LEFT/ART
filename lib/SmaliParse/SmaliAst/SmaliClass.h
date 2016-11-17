@@ -34,6 +34,9 @@ namespace Analysis {
         void setStringPool (StringPool *sp);
         StringPool* stringPool();
 
+        void setFileName(std::string n);
+        std::string fileName();
+
         void setClassType (std::string &classType);
         std::string classType();
         void setFlag(int flag);
@@ -65,7 +68,7 @@ namespace Analysis {
         int mSuper;
         int mFlag = 0;
 
-
+        std::string mFileName;
     };
 }
 

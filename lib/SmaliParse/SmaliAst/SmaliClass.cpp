@@ -148,6 +148,16 @@ StringPool *SmaliClass::stringPool ()
     return mStringPool;
 }
 
+void SmaliClass::setFileName (std::string n)
+{
+    mFileName = n;
+}
+
+std::string SmaliClass::fileName ()
+{
+    return mFileName;
+}
+
 void SmaliClass::printAst (std::vector<std::string> &v)
 {
     v.push_back (".class " + formater::getAccessFlagClass (mFlag) + " " + (*mStringPool)[mClassType]);
@@ -162,3 +172,7 @@ void SmaliClass::printAst (std::vector<std::string> &v)
         m->printAst (v);
     }
 }
+
+
+
+
