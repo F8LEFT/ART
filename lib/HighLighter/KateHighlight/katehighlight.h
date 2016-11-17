@@ -211,6 +211,10 @@ public:
     {
         return identifier;
     }
+    QString getExtension() const
+    {
+        return m_extension;
+    }
     void use();
     void reload();
 
@@ -392,6 +396,7 @@ private:
     QString iAuthor;
     QString iLicense;
     QString m_indentation;
+    QString m_extension;
     int refCount;
     int startctx, base_startctx;
 

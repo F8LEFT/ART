@@ -30,6 +30,8 @@
 #include "katehighlight.h"
 
 #include "kateextendedattribute.h"
+#include <utils/StringUtil.h>
+
 
 #include <QSet>
 #include <QAction>
@@ -79,78 +81,18 @@ void KateHlManager::setupModeList()
     QHash<QString, KateSyntaxModeListItem *> hlNames;
 
     /**
-     * first: use the index file in the resource
-     */
-    QFile indexJson (QLatin1String(":/ktexteditor/syntax/index.json"));
-    if (indexJson.open(QFile::ReadOnly)) {
-        /**
-         * parse the whole file
-         */
-        const QJsonDocument indexDoc (QJsonDocument::fromBinaryData(indexJson.readAll()));
-
-        /**
-         * iterate over all hls in the index
-         */
-        const QJsonObject index = indexDoc.object();
-        for (auto it = index.begin(); it != index.end(); ++it) {
-            if (!it.value().isObject()) {
-                continue;
-            }
-            // get map
-            const QJsonObject map = it.value().toObject();
-
-            // get name, only allow hls once!
-            const QString name = map[QStringLiteral("name")].toString();
-
-            // let's make the mode list item.
-            KateSyntaxModeListItem *mli = new KateSyntaxModeListItem;
-
-            mli->name      = name;
-            mli->section   = map[QStringLiteral("section")].toString();
-            mli->mimetype  = map[QStringLiteral("mimetype")].toString();
-            mli->extension = map[QStringLiteral("extensions")].toString();
-            mli->version   = map[QStringLiteral("version")].toString();
-            mli->priority  = map[QStringLiteral("priority")].toString();
-            mli->style     = map[QStringLiteral("style")].toString();
-            mli->author    = map[QStringLiteral("author")].toString();
-            mli->license   = map[QStringLiteral("license")].toString();
-            mli->indenter  = map[QStringLiteral("indenter")].toString();
-            mli->hidden    = map[QStringLiteral("hidden")].toBool();
-
-            mli->identifier = QLatin1String(":/ktexteditor/syntax/") + it.key();
-
-            // translate section + name
-            mli->section    = tr("Language Section") + mli->section.toUtf8().data();
-            mli->nameTranslated = tr("Language")+ mli->name.toUtf8().data();
-
-            // check for existance
-            if (hlNames.contains(name)) {
-                // replace old with new version
-                if (hlNames[name]->version.toDouble() < mli->version.toDouble()) {
-                    *hlNames[name] = *mli;
-                }
-                delete mli;
-                continue;
-            }
-
-            // Append the new item to the list.
-            myModeList.append(mli);
-            hlNames[name] = mli;
-        }
-    }
-
-    /**
      * now: process all xml files on the filesystem!
      * e.g. stuff downloaded in the $HOME or additional hl files from 3rdparty apps/plugins
      */
     QSet<QString> xmlFiles;
-    const QStringList dirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("katepart5/syntax"), QStandardPaths::LocateDirectory);
-    foreach (const QString &dir, dirs) {
+    {
+        QString dir = GetCfgsPath ("highlight");
         const QStringList fileNames = QDir(dir).entryList(QStringList() << QStringLiteral("*.xml"));
-        foreach (const QString &file, fileNames) {
-            xmlFiles.insert(dir + QLatin1Char('/') + file);
-        }
+                foreach (const QString &file, fileNames) {
+                xmlFiles.insert(dir + QLatin1Char('/') + file);
+            }
     }
+
     Q_FOREACH (const QString xmlFile, xmlFiles) {
         // We're forced to read the xml files or the mode doesn't exist in the katesyntax...rc
         QFile f(xmlFile);
@@ -234,6 +176,22 @@ KateHighlighting *KateHlManager::getHl(int n)
     }
 
     return hlList.at(n);
+}
+
+KateHighlighting *KateHlManager::getHlWithFileName (const QString &fn)
+{
+    foreach(KateHighlighting *hl, hlList) {
+            auto extension = hl->getExtension ();
+            extension.replace ('*', ".*");
+            auto exts = extension.split (';', QString::SkipEmptyParts);
+            foreach(const QString& ext, exts) {
+                    QRegExp regExp(ext, Qt::CaseInsensitive);
+                    if(regExp.exactMatch (fn)) {
+                        return hl;
+                    }
+                }
+        }
+    return nullptr;
 }
 
 int KateHlManager::nameFind(const QString &name)
@@ -785,5 +743,7 @@ void KateHlManager::reload()
 //        doc->makeAttribs();
 //    }
 }
+
+
 //END
 

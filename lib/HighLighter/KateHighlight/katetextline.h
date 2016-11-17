@@ -126,6 +126,10 @@ public:
         return m_text;
     }
 
+    void setText(QString text) {
+        m_text = text;
+        markAsModified(true);
+    }
     /**
      * Returns the position of the first non-whitespace character
      * @return position of first non-whitespace char or -1 if there is none

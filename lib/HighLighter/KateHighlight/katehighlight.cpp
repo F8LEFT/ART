@@ -78,6 +78,7 @@ KateHighlighting::KateHighlighting(const KateSyntaxModeListItem *def) : refCount
         iStyle = def->style;
         iAuthor = def->author;
         iLicense = def->license;
+        m_extension = def->extension;
     }
 
     deliminator = stdDeliminator();
@@ -250,7 +251,8 @@ void KateHighlighting::doHighlight(const Kate::TextLineData *_prevLine,
 
     const bool firstLine = (_prevLine == 0);
     const Kate::TextLine dummy = Kate::TextLine(new Kate::TextLineData());
-    const Kate::TextLineData *prevLine = firstLine ? dummy.data() : _prevLine;
+    const Kate::TextLineData *prevLine = firstLine ?
+                                (const Kate::TextLineData *)dummy.data() : _prevLine;
 
     int previousLine = -1;
     KateHlContext *context;

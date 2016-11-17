@@ -48,6 +48,7 @@ SmaliAnalysis *SmaliAnalysis::instance ()
 
 bool SmaliAnalysis::addSmaliFolder (QStringList dirs)
 {
+    return true;
     SmaliAnalysisThread* analysisThread = new SmaliAnalysisThread;
 
     analysisThread->setSearchDir (dirs);

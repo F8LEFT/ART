@@ -86,6 +86,8 @@ public:
 
 
     KateHighlighting *getHl(int n);
+    KateHighlighting *getHlWithFileName(const QString &fn);
+
     int nameFind(const QString &name);
 
     QString identifierForName(const QString &);

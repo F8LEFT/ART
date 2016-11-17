@@ -7,58 +7,105 @@
 //
 //===---------------------------------------------------------------------===//
 #include "GeneralHighlight.h"
-#include "HighLighterGenerator.h"
+#include "KateHighlight/katesyntaxmanager.h"
+#include <QDebug>
 
-// TODO rewrite GerneralHighlight.
-// see KateEditor
+
 GeneralHighlight::GeneralHighlight(QTextDocument *parent, QString fileName)
         : QSyntaxHighlighter(parent){
-    return ;
-    HighLighterGenerator *generator = HighLighterGenerator::getInstance();
-    definition = generator->getHighLightReader(fileName);
-
+    mHl = KateHlManager::self ()->getHlWithFileName (fileName);
+    if(mHl != nullptr) {
+        qDebug() << "GeneralHighlight: use " << mHl->getIdentifier ()
+                 << " for file " << fileName;
+    }
+    mHl->getKateExtendedAttributeListCopy ("", mAttrlist);
 }
 
 void GeneralHighlight::highlightBlock(const QString &text) {
-    return;
-    auto ctx = definition->context();
-    for(auto &m_context : ctx) {
-        switch (m_context->type()) {
-            case Context::Keyword: {
-                QString str = m_context->name();
-                QRegExp patten = m_context->getRegExpr(definition.data());
-                int index = patten.indexIn(text);
-                if (m_context->region() == "BeginRegion") {
-                    if (index >= 0) {
-                        int length = patten.matchedLength();
-                        const QTextCharFormat &format = definition->itemData(m_context->attribute())->getFormat();
-                        setFormat(index, length, format);
-                    }
-                } else {
-                    while(index >= 0) {
-                        int length = patten.matchedLength();
-                        const QTextCharFormat &format = definition->itemData(m_context->attribute())->getFormat();
-                        setFormat(index, length, format);
-                        index = patten.indexIn(text, index + length);
-                    }
-                }
-            }
-                break;
-            case Context::RegExpr: {
-                QString str = m_context->name();
+    if(mHl == nullptr)
+        return;
+    auto bcurrent = currentBlock ();
+    auto bprevious = bcurrent.previous ();
+    auto bnext = bcurrent.next ();
 
-                QRegExp patten = m_context->getRegExpr(definition.data());
-                int index = patten.indexIn(text);
-                while(index >= 0) {
-                    int length = patten.matchedLength();
-                    const QTextCharFormat &format = definition->itemData(m_context->attribute())->getFormat();
-                    setFormat(index, length, format);
-                    index = patten.indexIn(text, index + length);
-                }
-            }
-                break;
+    GeneralHlTextData* prevLine = nullptr;
+    if(bprevious.isValid ()) {
+        GeneralHlTextData* prevLine = (GeneralHlTextData*)bprevious.userData ();
+        if(prevLine == nullptr) {
+            prevLine = new GeneralHlTextData(bprevious);
         }
     }
+
+    GeneralHlTextData* textLine = nullptr;
+    if(bcurrent.isValid ()) {
+        textLine = (GeneralHlTextData*)bcurrent.userData ();
+        if(textLine == nullptr) {
+            textLine = new GeneralHlTextData(bcurrent);
+        } else {
+            textLine->mTextData->setText (text);
+        };
+    }
+
+    GeneralHlTextData* nextLine = nullptr;
+    if(bnext.isValid ()) {
+        nextLine = (GeneralHlTextData*)bnext.userData ();
+        if(nextLine == nullptr) {
+            nextLine = new GeneralHlTextData(bnext);
+        }
+    }
+
+    bool ctxChange = false;
+    mHl->doHighlight (prevLine != nullptr? prevLine->mTextData: nullptr,
+                      textLine->mTextData,
+                      nextLine != nullptr? nextLine->mTextData: nullptr,
+                      ctxChange);
+    if(textLine != nullptr) {
+        foreach(const Kate::TextLineData::Attribute& attr,
+                textLine->mTextData->attributesList ()) {
+                setFormat (attr.offset, attr.length,
+                           mAttrlist.at (attr.attributeValue)->toCharFormat ());
+            }
+    }
+    return;
+
+    //    auto ctx = definition->context();
+//    for(auto &m_context : ctx) {
+//        switch (m_context->type()) {
+//            case Context::Keyword: {
+//                QString str = m_context->name();
+//                QRegExp patten = m_context->getRegExpr(definition.data());
+//                int index = patten.indexIn(text);
+//                if (m_context->region() == "BeginRegion") {
+//                    if (index >= 0) {
+//                        int length = patten.matchedLength();
+//                        const QTextCharFormat &format = definition->itemData(m_context->attribute())->getFormat();
+//                        setFormat(index, length, format);
+//                    }
+//                } else {
+//                    while(index >= 0) {
+//                        int length = patten.matchedLength();
+//                        const QTextCharFormat &format = definition->itemData(m_context->attribute())->getFormat();
+//                        setFormat(index, length, format);
+//                        index = patten.indexIn(text, index + length);
+//                    }
+//                }
+//            }
+//                break;
+//            case Context::RegExpr: {
+//                QString str = m_context->name();
+//
+//                QRegExp patten = m_context->getRegExpr(definition.data());
+//                int index = patten.indexIn(text);
+//                while(index >= 0) {
+//                    int length = patten.matchedLength();
+//                    const QTextCharFormat &format = definition->itemData(m_context->attribute())->getFormat();
+//                    setFormat(index, length, format);
+//                    index = patten.indexIn(text, index + length);
+//                }
+//            }
+//                break;
+//        }
+//    }
 
     // check comment
 //    setCurrentBlockState(0);
@@ -79,4 +126,15 @@ void GeneralHighlight::highlightBlock(const QString &text) {
 //        startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
 //    }
 
+}
+
+GeneralHlTextData::GeneralHlTextData (QTextBlock& b)
+{
+    mTextData = new Kate::TextLineData(b.text ());
+    b.setUserData (this);
+}
+
+GeneralHlTextData::~GeneralHlTextData ()
+{
+    delete mTextData;
 }

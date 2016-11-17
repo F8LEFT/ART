@@ -205,4 +205,6 @@ void TextLineData::addAttribute(const Attribute &attribute)
     m_attributesList.append(attribute);
 }
 
+
+
 }

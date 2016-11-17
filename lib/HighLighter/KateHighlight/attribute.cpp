@@ -24,17 +24,20 @@
 
 using namespace KTextEditor;
 
-class KTextEditor::AttributePrivate
-{
-public:
-    AttributePrivate()
+namespace KTextEditor {
+    class AttributePrivate
     {
-        dynamicAttributes.append(Attribute::Ptr());
-        dynamicAttributes.append(Attribute::Ptr());
-    }
+    public:
+        AttributePrivate()
+        {
+            dynamicAttributes.append(Attribute::Ptr());
+            dynamicAttributes.append(Attribute::Ptr());
+        }
 
-    QList<Attribute::Ptr> dynamicAttributes;
-};
+        QList<Attribute::Ptr> dynamicAttributes;
+    };
+}
+
 
 Attribute::Attribute()
     : d(new AttributePrivate())

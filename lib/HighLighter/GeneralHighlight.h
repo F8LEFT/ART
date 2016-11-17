@@ -15,10 +15,13 @@
 #ifndef PROJECT_GENERALHIGHLIGHT_H
 #define PROJECT_GENERALHIGHLIGHT_H
 
+#include <KateHighlight/katehighlight.h>
+#include <KateHighlight/katesyntaxmanager.h>
+
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 #include <QHash>
-#include "HighLighterXmlReader.h"
+#include <QList>
 
 class GeneralHighlight : public QSyntaxHighlighter
 {
@@ -31,8 +34,17 @@ protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
-    // Xml Reader
-    QSharedPointer<HighlightDefinition> definition;
+    KateHighlighting* mHl;
+    KateAttributeList mAttrlist;
+};
+
+class GeneralHlTextData: public QTextBlockUserData
+{
+public:
+    GeneralHlTextData(QTextBlock& b);
+    ~GeneralHlTextData();
+
+    Kate::TextLineData* mTextData;
 };
 
 #endif //PROJECT_GENERALHIGHLIGHT_H
