@@ -1,5 +1,7 @@
 .idea/
 CMakeLists.txt.user
+ARTGUI.pro.user
 TODOLIST
 res/
 build/
+bin/
