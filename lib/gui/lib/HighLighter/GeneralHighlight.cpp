@@ -9,14 +9,18 @@
 #include "GeneralHighlight.h"
 #include "HighLighterGenerator.h"
 
+// TODO rewrite GerneralHighlight.
+// see KateEditor
 GeneralHighlight::GeneralHighlight(QTextDocument *parent, QString fileName)
         : QSyntaxHighlighter(parent){
+    return ;
     HighLighterGenerator *generator = HighLighterGenerator::getInstance();
     definition = generator->getHighLightReader(fileName);
 
 }
 
 void GeneralHighlight::highlightBlock(const QString &text) {
+    return;
     auto ctx = definition->context();
     for(auto &m_context : ctx) {
         switch (m_context->type()) {

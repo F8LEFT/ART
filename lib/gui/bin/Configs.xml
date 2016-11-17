@@ -4,7 +4,7 @@
     <cfg value="324" type="uint" id="x" category="MainWindow"/>
     <cfg value="24" type="uint" id="y" category="MainWindow"/>
     <cfg value="40" type="uint" id="BotSplitterHeight" category="SmaliEditor"/>
-    <cfg value="301" type="uint" id="TopSplitterHeight" category="SmaliEditor"/>
+    <cfg value="302" type="uint" id="TopSplitterHeight" category="SmaliEditor"/>
     <cfg value="0" type="uint" id="EditorTab" category="TabOrder"/>
     <cfg value="1" type="uint" id="ProjectTab" category="TabOrder"/>
     <cfg value="0" type="uint" id="LeftBotSplitterHeight" category="WorkSpace"/>
