@@ -1,0 +1,33 @@
+<configs>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Normal" id="0" backgroundcolor="#XXXXXX" foregroundcolor="#1766F9"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,75,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Keyword" id="1" backgroundcolor="#XXXXXX" foregroundcolor="#000BAF"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Function" id="2" backgroundcolor="#XXXXXX" foregroundcolor="#000000"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Variable" id="3" backgroundcolor="#XXXXXX" foregroundcolor="#D3C715"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Control Flow" id="4" backgroundcolor="#XXXXXX" foregroundcolor="#42CF06"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Operator" id="5" backgroundcolor="#XXXXXX" foregroundcolor="#CC2A2A"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Built-in" id="6" backgroundcolor="#XXXXXX" foregroundcolor="#D62B2E"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Extension" id="7" backgroundcolor="#XXXXXX" foregroundcolor="#A8C737"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Preprocessor" id="8" backgroundcolor="#XXXXXX" foregroundcolor="#976BD4"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Attribute" id="9" backgroundcolor="#XXXXXX" foregroundcolor="#49B5E3"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Character" id="10" backgroundcolor="#XXXXXX" foregroundcolor="#E8B416"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Special Character" id="11" backgroundcolor="#XXXXXX" foregroundcolor="#FF7CF2"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="String" id="12" backgroundcolor="#XXXXXX" foregroundcolor="#0E8321"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Verbatim String" id="13" backgroundcolor="#XXXXXX" foregroundcolor="#40D029"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Special String" id="14" backgroundcolor="#XXXXXX" foregroundcolor="#29BC22"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Import" id="15" backgroundcolor="#XXXXXX" foregroundcolor="#D6371B"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Data Type" id="16" backgroundcolor="#XXXXXX" foregroundcolor="#2DC693"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Decimal/Value" id="17" backgroundcolor="#XXXXXX" foregroundcolor="#2B5E93"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Base-N Integer" id="18" backgroundcolor="#XXXXXX" foregroundcolor="#B444A1"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Floating Point" id="19" backgroundcolor="#XXXXXX" foregroundcolor="#C748C7"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Constant" id="20" backgroundcolor="#XXXXXX" foregroundcolor="#3BCB94"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Comment" id="21" backgroundcolor="#XXXXXX" foregroundcolor="#B6B6B6"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Documentation" id="22" backgroundcolor="#XXXXXX" foregroundcolor="#4F58D8"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Annotation" id="23" backgroundcolor="#XXXXXX" foregroundcolor="#38B59A"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Comment Variable" id="24" backgroundcolor="#XXXXXX" foregroundcolor="#9A9898"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Region Marker" id="25" backgroundcolor="#XXXXXX" foregroundcolor="#AB862E"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Information" id="26" backgroundcolor="#XXXXXX" foregroundcolor="#B1567D"/>
+    <QTextCharFormat underlinetype="3" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Warning" id="27" backgroundcolor="#XXXXXX" foregroundcolor="#BC3225"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Alert" id="28" backgroundcolor="#XXXXXX" foregroundcolor="#5B33BE"/>
+    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Others" id="29" backgroundcolor="#XXXXXX" foregroundcolor="#186DA2"/>
+    <QTextCharFormat underlinetype="6" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Error" id="30" backgroundcolor="#XXXXXX" foregroundcolor="#CC2046"/>
+</configs>

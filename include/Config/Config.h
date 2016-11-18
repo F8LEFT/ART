@@ -15,6 +15,7 @@
 
 #include <QDialog>
 #include <QListWidget>
+#include <QList>
 
 namespace Ui {
 class Config;
@@ -33,6 +34,7 @@ public:
 protected slots:
     void onConfigTabChange(QListWidgetItem *current, QListWidgetItem *previous);
 
+    void save();
 
 private:
     Ui::Config *ui;

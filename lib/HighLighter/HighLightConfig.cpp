@@ -11,12 +11,14 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include <KateHighlight/katesyntaxmanager.h>
 #include "HighLighter/HighLightConfig.h"
 
-HighLightConfig::HighLightConfig (QString cfgPath,QObject *mParent)
+HighLightConfig::HighLightConfig (QString cfgPath, CfgType type,QObject *mParent)
     : QObject(mParent)
 {
     mSetFile = cfgPath;
+    mCfgType = type;
     load ();
 }
 
@@ -31,7 +33,7 @@ HighLightConfig *HighLightConfig::instance (CfgType cfgType, QString cfgPath,QOb
     HighLightConfig* mPtr = nullptr;
     auto it = mMap.find (cfgType);
     if(it == mMap.end ()) {
-        mPtr = new HighLightConfig(cfgPath, mParent);
+        mPtr = new HighLightConfig(cfgPath, cfgType, mParent);
         mMap[cfgType] = mPtr;
     } else {
         mPtr = it.value ();
@@ -184,34 +186,134 @@ QString HighLightConfig::fontToString(const QFont &font)
     return font.toString ();
 }
 
-QString HighLightConfig::getFormatName (HighLightConfig::FORMAT f)
+QString HighLightConfig::getFormatName (int n, CfgType cfgType, bool translateNames)
 {
-    switch (f) {
-        case FKeyword:
-            return "Keyword";
-        case FOp:
-            return "OpCode";
-        case FSymbol:
-            return "Symbol";
-        case FCString:
-            return "String";
-        case FNameString:
-            return "Name";
-        case FComment:
-            return "Comment";
-        case FClassType:
-            return "ClassType";
-        case FFlag:
-            return "Flag";
-        case FRegd:
-            return "Register";
-        case FNumber:
-            return "Number";
-        case FDefault:
-            return "Default";
-        default:
-            return "Unknown";
+    if(cfgType == SMALI) {
+        static QStringList names;
+        static QStringList translatedNames;
+
+        if (names.isEmpty()) {
+            names << QStringLiteral("Keyword");
+            names << QStringLiteral("OpCode");
+            names << QStringLiteral("Symbol");
+            names << QStringLiteral("String");
+            names << QStringLiteral("Name");
+            names << QStringLiteral("Comment");
+            names << QStringLiteral("ClassType");
+            names << QStringLiteral("Flag");
+            names << QStringLiteral("Register");
+            names << QStringLiteral("Number");
+            names << QStringLiteral("Default");
+            names << QStringLiteral("Error");
+
+            translatedNames << tr("Keyword");
+            translatedNames << tr("OpCode");
+            translatedNames << tr("Symbol");
+            translatedNames << tr("String");
+            translatedNames << tr("Name");
+            translatedNames << tr("Comment");
+            translatedNames << tr("ClassType");
+            translatedNames << tr("Flag");
+            translatedNames << tr("Register");
+            translatedNames << tr("Number");
+            translatedNames << tr("Default");
+            translatedNames << tr("Error");
+        }
+
+        // sanity checks
+        Q_ASSERT(n >= 0);
+        Q_ASSERT(n < names.size());
+
+        return translateNames ? translatedNames[n] : names[n];
+    } else {
+        static QStringList names;
+        static QStringList translatedNames;
+
+        if (names.isEmpty()) {
+            names << QStringLiteral("Normal");
+            names << QStringLiteral("Keyword");
+            names << QStringLiteral("Function");
+            names << QStringLiteral("Variable");
+            names << QStringLiteral("Control Flow");
+            names << QStringLiteral("Operator");
+            names << QStringLiteral("Built-in");
+            names << QStringLiteral("Extension");
+            names << QStringLiteral("Preprocessor");
+            names << QStringLiteral("Attribute");
+
+            names << QStringLiteral("Character");
+            names << QStringLiteral("Special Character");
+            names << QStringLiteral("String");
+            names << QStringLiteral("Verbatim String");
+            names << QStringLiteral("Special String");
+            names << QStringLiteral("Import");
+
+            names << QStringLiteral("Data Type");
+            names << QStringLiteral("Decimal/Value");
+            names << QStringLiteral("Base-N Integer");
+            names << QStringLiteral("Floating Point");
+            names << QStringLiteral("Constant");
+
+            names << QStringLiteral("Comment");
+            names << QStringLiteral("Documentation");
+            names << QStringLiteral("Annotation");
+            names << QStringLiteral("Comment Variable");
+            // this next one is for denoting the beginning/end of a user defined folding region
+            names << QStringLiteral("Region Marker");
+            names << QStringLiteral("Information");
+            names << QStringLiteral("Warning");
+            names << QStringLiteral("Alert");
+
+            names << QStringLiteral("Others");
+            // this one is for marking invalid input
+            names << QStringLiteral("Error");
+
+            translatedNames << tr("Normal");
+            translatedNames << tr("Keyword");
+            translatedNames << tr("Function");
+            translatedNames << tr("Variable");
+            translatedNames << tr("Control Flow");
+            translatedNames << tr("Operator");
+            translatedNames << tr("Built-in");
+            translatedNames << tr("Extension");
+            translatedNames << tr("Preprocessor");
+            translatedNames << tr("Attribute");
+
+            translatedNames << tr("Character");
+            translatedNames << tr("Special Character");
+            translatedNames << tr("String");
+            translatedNames << tr("Verbatim String");
+            translatedNames << tr("Special String");
+            translatedNames << tr("Imports, Modules, Includes");
+
+            translatedNames << tr("Data Type");
+            translatedNames << tr("Decimal/Value");
+            translatedNames << tr("Base-N Integer");
+            translatedNames << tr("Floating Point");
+            translatedNames << tr("Constant");
+
+            translatedNames << tr("Comment");
+            translatedNames << tr("Documentation");
+            translatedNames << tr("Annotation");
+            translatedNames << tr("Comment Variable");
+            // this next one is for denoting the beginning/end of a user defined folding region
+            translatedNames << tr("Region Marker");
+            translatedNames << tr("Information");
+            translatedNames << tr("Warning");
+            translatedNames << tr("Alert");
+
+            translatedNames << tr("Others");
+            // this one is for marking invalid input
+            translatedNames << tr("Error");
+        }
+
+        // sanity checks
+        Q_ASSERT(n >= 0);
+        Q_ASSERT(n < names.size());
+
+        return translateNames ? translatedNames[n] : names[n];
     }
+
 }
 
 QTextCharFormat &HighLightConfig::getFormat (int i)
@@ -219,3 +321,21 @@ QTextCharFormat &HighLightConfig::getFormat (int i)
     return mFormatMap[(FORMAT)i];
 }
 
+QString HighLightConfig::getFormatName (int n,bool t)
+{
+    return getFormatName (n, mCfgType, t);
+}
+
+int HighLightConfig::getFormatSize ()
+{
+    return getFormatSize (mCfgType);
+}
+
+int HighLightConfig::getFormatSize (HighLightConfig::CfgType cfgType)
+{
+    if(cfgType == SMALI) {
+        return (int)FError + 1;
+    } else {
+        return KateHlManager::defaultStyleCount () + 1;
+    }
+}

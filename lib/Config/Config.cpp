@@ -20,13 +20,15 @@ Config::Config(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    mFileEditor = new FileEditor((QWidget*)this);
+
+    mFileEditor = new FileEditor(this);
 
     mWidgetList.push_back (mFileEditor);
     mWidgetNativeNameList.push_back (tr("Text Editot"));
     mIconList.push_back (QIcon(QPixmap(":/images/editorsettings.png")));
 
     ui->mConfigWidget->layout ()->addWidget (mFileEditor);
+
 
     for(int i = 0, count = mWidgetList.size (); i < count; i++) {
         ui->mConfigList->addItem (
@@ -39,9 +41,10 @@ Config::Config(QWidget *parent) :
     connect(ui->mConfigList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             this, SLOT(onConfigTabChange (QListWidgetItem*, QListWidgetItem*)));
 
-    connect(ui->buttonBox, SIGNAL(accepted ()), mFileEditor, SLOT(save()));
+    connect(ui->buttonBox, SIGNAL(accepted ()), this, SLOT(save()));
     connect((const QObject*)ui->buttonBox->button (QDialogButtonBox::Apply), SIGNAL(clicked()),
-            mFileEditor, SLOT(save()));
+            this, SLOT(save()));
+
 
     ui->mConfigList->setCurrentRow (0);
 }
@@ -66,4 +69,9 @@ void Config::onConfigTabChange (QListWidgetItem *current,QListWidgetItem *previo
             mWidgetList[idx]->show ();
         ui->mWidgetTitle->setText (name);
     }
+}
+
+void Config::save ()
+{
+    mFileEditor->save ();
 }

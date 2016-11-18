@@ -31,7 +31,7 @@ protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
-    QMap<HighLightConfig::FORMAT , QTextCharFormat> &mFormatMap;
+    QMap<int, QTextCharFormat> &mFormatMap;
 
 };
 

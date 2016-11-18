@@ -23,7 +23,7 @@ class HighLightConfig: public QObject
 
 public:
     enum FORMAT{
-        FKeyword,
+        FKeyword = 0,
         FOp,
         FSymbol,
         FCString,
@@ -33,7 +33,8 @@ public:
         FFlag,
         FRegd,
         FNumber,
-        FDefault
+        FDefault,
+        FError
     };
 
     enum CfgType {
@@ -41,7 +42,7 @@ public:
         GENERAL
     };
 public:
-    explicit HighLightConfig(QString cfgPath, QObject* mParent = nullptr);
+    explicit HighLightConfig(QString cfgPath, CfgType type, QObject* mParent = nullptr);
     ~HighLightConfig ();
 
     static HighLightConfig* instance(CfgType cfgType, QString cfgPath = "",
@@ -52,10 +53,16 @@ signals:
     void onConfigUpdate();
 
 public:
-    QMap<FORMAT, QTextCharFormat> mFormatMap;
+    QMap<int, QTextCharFormat> mFormatMap;
     QString mSetFile;
+    CfgType mCfgType;
 
-    static QString getFormatName(FORMAT f);
+
+    static QString getFormatName(int n, CfgType cfgType,
+                                 bool translateNames = false);
+    QString getFormatName(int n, bool translateNames = false);
+    static int getFormatSize(CfgType cfgType);
+    int getFormatSize();
     QTextCharFormat& getFormat(int n);
 private:
     QColor colorFromString(const QString &value);

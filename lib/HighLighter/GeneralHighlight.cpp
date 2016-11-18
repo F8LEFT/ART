@@ -20,6 +20,10 @@ GeneralHighlight::GeneralHighlight(QTextDocument *parent, QString fileName,
                  << " for file " << fileName;
     }
     mAttrlist = mHl->attributes ("Theme", config);
+
+    mConfig = config;
+    connect(mConfig, SIGNAL(onConfigUpdate()), this, SLOT(hlAttrUpdate()));
+
 }
 
 void GeneralHighlight::highlightBlock(const QString &text) {
@@ -68,6 +72,13 @@ void GeneralHighlight::highlightBlock(const QString &text) {
             }
     }
     return;
+}
+
+void GeneralHighlight::hlAttrUpdate ()
+{
+    mHl->reload ();
+    mAttrlist = mHl->attributes ("Theme", mConfig);
+    rehighlight ();
 }
 
 GeneralHlTextData::GeneralHlTextData (QTextBlock& b)

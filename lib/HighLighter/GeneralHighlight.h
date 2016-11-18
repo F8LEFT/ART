@@ -35,9 +35,13 @@ public:
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
+private slots:
+    void hlAttrUpdate();
 private:
     KateHighlighting* mHl;
     KateAttributeList mAttrlist;
+
+    HighLightConfig* mConfig;
 };
 
 class GeneralHlTextData: public QTextBlockUserData
