@@ -36,6 +36,7 @@
 #include <QPointer>
 #include <QDate>
 #include <QLinkedList>
+#include <HighLighter/HighLightConfig.h>
 
 class KateHighlighting;
 
@@ -97,7 +98,8 @@ public:
      */
     QString nameForIdentifier(const QString &);
 
-    void getDefaults(const QString &schema, KateAttributeList &);
+    void getDefaults(const QString &schema, KateAttributeList &,
+                     HighLightConfig* config);
     void setDefaults(const QString &schema, KateAttributeList &);
 
     int highlights();

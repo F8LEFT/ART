@@ -59,6 +59,14 @@ Attribute::Attribute(const Attribute &a)
     d->dynamicAttributes = a.d->dynamicAttributes;
 }
 
+
+Attribute::Attribute (const QTextCharFormat &format)
+    :  d(new AttributePrivate()),
+       QTextCharFormat(format)
+{
+
+}
+
 Attribute::~Attribute()
 {
     delete d;
@@ -217,4 +225,5 @@ Attribute &KTextEditor::Attribute::operator =(const Attribute &a)
 
     return *this;
 }
+
 

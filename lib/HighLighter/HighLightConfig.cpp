@@ -25,11 +25,16 @@ HighLightConfig::~HighLightConfig ()
 
 }
 
-HighLightConfig *HighLightConfig::instance (QString cfgPath,QObject *mParent)
+HighLightConfig *HighLightConfig::instance (CfgType cfgType, QString cfgPath,QObject *mParent)
 {
-    static  HighLightConfig* mPtr = nullptr;
-    if(mPtr == nullptr) {
+    static QMap<CfgType, HighLightConfig *> mMap;
+    HighLightConfig* mPtr = nullptr;
+    auto it = mMap.find (cfgType);
+    if(it == mMap.end ()) {
         mPtr = new HighLightConfig(cfgPath, mParent);
+        mMap[cfgType] = mPtr;
+    } else {
+        mPtr = it.value ();
     }
     return mPtr;
 }
@@ -207,5 +212,10 @@ QString HighLightConfig::getFormatName (HighLightConfig::FORMAT f)
         default:
             return "Unknown";
     }
+}
+
+QTextCharFormat &HighLightConfig::getFormat (int i)
+{
+    return mFormatMap[(FORMAT)i];
 }
 

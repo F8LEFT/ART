@@ -38,6 +38,7 @@
 #include <QPointer>
 #include <QDate>
 #include <QLinkedList>
+#include <HighLighter/HighLightConfig.h>
 
 
 class KateHlContext;
@@ -173,7 +174,7 @@ public:
      * @param list QList<KateExtendedAttribute::Ptr> containing the data to be used
      */
     void setKateExtendedAttributeList(const QString &schema, QList<KTextEditor::Attribute::Ptr> &list,
-                                      bool writeDefaultsToo = false);
+                                      HighLightConfig* config, bool writeDefaultsToo = false);
 
     const QString &name() const
     {
@@ -297,7 +298,7 @@ public:
 
     void clearAttributeArrays();
 
-    QList<KTextEditor::Attribute::Ptr> attributes(const QString &schema);
+    QList<KTextEditor::Attribute::Ptr> attributes(const QString &schema, HighLightConfig* config);
 
     inline bool noHighlighting() const
     {

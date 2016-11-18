@@ -176,6 +176,7 @@ public:
      */
     Attribute(const Attribute &a);
 
+    Attribute(const QTextCharFormat& format);
     /**
      * Virtual destructor.
      */

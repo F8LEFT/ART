@@ -18,11 +18,19 @@ QSyntaxHighlighter *setHighLighter (QTextDocument *parent,QString fileName,
 {
     if(fileName.endsWith (".smali")) {
         if(config == nullptr) {
-            config = HighLightConfig::instance (GetCfgsPath ("smaliTheme/" +
-                                  ConfigString("FileEdit", "SmaliHighlight")));
+            config = HighLightConfig::instance (
+                    HighLightConfig::SMALI,
+                    GetCfgsPath ("smaliTheme/" +
+                                  ConfigString("Highlight", "SmaliHighlight")));
         }
         return new SmaliHighlight(parent, fileName, config);
     } else {
-        return new GeneralHighlight(parent, fileName);
+        if(config == nullptr) {
+            config = HighLightConfig::instance (
+                    HighLightConfig::GENERAL,
+                    GetCfgsPath ("genHlTheme/" +
+                                 ConfigString("Highlight", "GenHighlight")));
+        }
+        return new GeneralHighlight(parent, fileName, config);
     }
 }

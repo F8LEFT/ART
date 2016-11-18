@@ -22,13 +22,15 @@
 #include <QTextCharFormat>
 #include <QHash>
 #include <QList>
+#include <HighLighter/HighLightConfig.h>
 
 class GeneralHighlight : public QSyntaxHighlighter
 {
     Q_OBJECT
 
 public:
-    GeneralHighlight(QTextDocument *parent, QString fileName);
+    GeneralHighlight(QTextDocument *parent, QString fileName,
+                    HighLightConfig* config);
 
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;

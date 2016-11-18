@@ -43,6 +43,8 @@
 #include <QJsonObject>
 #include <QXmlStreamReader>
 #include <QStandardPaths>
+#include <utils/Configuration.h>
+#include <HighLighter/HighLightConfig.h>
 //END
 
 using namespace KTextEditor;
@@ -254,43 +256,43 @@ QString KateHlManager::defaultStyleName(int n, bool translateNames)
         // this one is for marking invalid input
         names << QStringLiteral("Error");
 
-        translatedNames << tr("@item:intable Text context", "Normal");
-        translatedNames << tr("@item:intable Text context", "Keyword");
-        translatedNames << tr("@item:intable Text context", "Function");
-        translatedNames << tr("@item:intable Text context", "Variable");
-        translatedNames << tr("@item:intable Text context", "Control Flow");
-        translatedNames << tr("@item:intable Text context", "Operator");
-        translatedNames << tr("@item:intable Text context", "Built-in");
-        translatedNames << tr("@item:intable Text context", "Extension");
-        translatedNames << tr("@item:intable Text context", "Preprocessor");
-        translatedNames << tr("@item:intable Text context", "Attribute");
+        translatedNames << tr("Normal");
+        translatedNames << tr("Keyword");
+        translatedNames << tr("Function");
+        translatedNames << tr("Variable");
+        translatedNames << tr("Control Flow");
+        translatedNames << tr("Operator");
+        translatedNames << tr("Built-in");
+        translatedNames << tr("Extension");
+        translatedNames << tr("Preprocessor");
+        translatedNames << tr("Attribute");
 
-        translatedNames << tr("@item:intable Text context", "Character");
-        translatedNames << tr("@item:intable Text context", "Special Character");
-        translatedNames << tr("@item:intable Text context", "String");
-        translatedNames << tr("@item:intable Text context", "Verbatim String");
-        translatedNames << tr("@item:intable Text context", "Special String");
-        translatedNames << tr("@item:intable Text context", "Imports, Modules, Includes");
+        translatedNames << tr("Character");
+        translatedNames << tr("Special Character");
+        translatedNames << tr("String");
+        translatedNames << tr("Verbatim String");
+        translatedNames << tr("Special String");
+        translatedNames << tr("Imports, Modules, Includes");
 
-        translatedNames << tr("@item:intable Text context", "Data Type");
-        translatedNames << tr("@item:intable Text context", "Decimal/Value");
-        translatedNames << tr("@item:intable Text context", "Base-N Integer");
-        translatedNames << tr("@item:intable Text context", "Floating Point");
-        translatedNames << tr("@item:intable Text context", "Constant");
+        translatedNames << tr("Data Type");
+        translatedNames << tr("Decimal/Value");
+        translatedNames << tr("Base-N Integer");
+        translatedNames << tr("Floating Point");
+        translatedNames << tr("Constant");
 
-        translatedNames << tr("@item:intable Text context", "Comment");
-        translatedNames << tr("@item:intable Text context", "Documentation");
-        translatedNames << tr("@item:intable Text context", "Annotation");
-        translatedNames << tr("@item:intable Text context", "Comment Variable");
+        translatedNames << tr("Comment");
+        translatedNames << tr("Documentation");
+        translatedNames << tr("Annotation");
+        translatedNames << tr("Comment Variable");
         // this next one is for denoting the beginning/end of a user defined folding region
-        translatedNames << tr("@item:intable Text context", "Region Marker");
-        translatedNames << tr("@item:intable Text context", "Information");
-        translatedNames << tr("@item:intable Text context", "Warning");
-        translatedNames << tr("@item:intable Text context", "Alert");
+        translatedNames << tr("Region Marker");
+        translatedNames << tr("Information");
+        translatedNames << tr("Warning");
+        translatedNames << tr("Alert");
 
-        translatedNames << tr("@item:intable Text context", "Others");
+        translatedNames << tr("Others");
         // this one is for marking invalid input
-        translatedNames << tr("@item:intable Text context", "Error");
+        translatedNames << tr("Error");
     }
 
     // sanity checks
@@ -392,242 +394,16 @@ int KateHlManager::defaultStyleNameToIndex(const QString &name)
     return KTextEditor::dsNormal;
 }
 
-void KateHlManager::getDefaults(const QString &schema, KateAttributeList &list)
+void KateHlManager::getDefaults(const QString &schema, KateAttributeList &list,
+                                HighLightConfig* config)
 {
-    // TODO Import default color from config
-    QColor scheme(Qt::blue);
-    QColor schemeSelected(Qt::darkGreen);
+
 
     ///NOTE: it's important to append in the order of the KTextEditor::DefaultStyle
     ///      enum, to make KTextEditor::DocumentPrivate::defaultStyle() work properly.
-
-    {
-        // dsNormal
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsKeyword
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        attrib->setFontBold(true);
-        list.append(attrib);
-    }
-    {
-        // dsFunction
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsVariable
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsControlFlow
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        attrib->setFontBold(true);
-        list.append(attrib);
-    }
-    {
-        // dsOperator
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsBuiltIn
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsExtension
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(QColor(0, 149, 255));
-        attrib->setSelectedForeground(schemeSelected);
-        attrib->setFontBold(true);
-        list.append(attrib);
-    }
-    {
-        // dsPreprocessor
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsAttribute
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-
-    {
-        // dsChar
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsSpecialChar
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsString
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsVerbatimString
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsSpecialString
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsImport
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-
-    {
-        // dsDataType
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsDecVal
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsBaseN
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsFloat
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsConstant
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        attrib->setFontBold(true);
-        list.append(attrib);
-    }
-
-    {
-        // dsComment
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsDocumentation
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsAnnotation
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsCommentVar
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsRegionMarker
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        attrib->setBackground(scheme);
-        list.append(attrib);
-    }
-    {
-        // dsInformation
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsWarning
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsAlert
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        attrib->setFontBold(true);
-        attrib->setBackground(scheme);
-        list.append(attrib);
-    }
-
-    {
-        // dsOthers
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        list.append(attrib);
-    }
-    {
-        // dsError
-        Attribute::Ptr attrib(new KTextEditor::Attribute());
-        attrib->setForeground(scheme);
-        attrib->setSelectedForeground(schemeSelected);
-        attrib->setFontUnderline(true);
+    for(auto i = 0; i <= KTextEditor::dsError; i++ ) {
+        auto &format = config->getFormat (i);
+        Attribute::Ptr attrib(new KTextEditor::Attribute(format));
         list.append(attrib);
     }
 }

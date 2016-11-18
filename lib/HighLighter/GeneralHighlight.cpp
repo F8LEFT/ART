@@ -11,14 +11,15 @@
 #include <QDebug>
 
 
-GeneralHighlight::GeneralHighlight(QTextDocument *parent, QString fileName)
+GeneralHighlight::GeneralHighlight(QTextDocument *parent, QString fileName,
+                                   HighLightConfig* config)
         : QSyntaxHighlighter(parent){
     mHl = KateHlManager::self ()->getHlWithFileName (fileName);
     if(mHl != nullptr) {
         qDebug() << "GeneralHighlight: use " << mHl->getIdentifier ()
                  << " for file " << fileName;
     }
-    mAttrlist = mHl->attributes ("Theme");
+    mAttrlist = mHl->attributes ("Theme", config);
 }
 
 void GeneralHighlight::highlightBlock(const QString &text) {

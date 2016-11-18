@@ -29,7 +29,8 @@
 #include "katetextline.h"
 #include "katesyntaxdocument.h"
 #include "kateextendedattribute.h"
-
+#include <utils/Configuration.h>
+#include <utils/StringUtil.h>
 
 #include <QSet>
 #include <QStringList>
@@ -38,6 +39,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QDebug>
+
 //END
 
 //BEGIN defines
@@ -684,13 +686,14 @@ void KateHighlighting::getKateExtendedAttributeListCopy(const QString &schema, Q
     }
 }
 
-void KateHighlighting::setKateExtendedAttributeList(const QString &schema, QList<KTextEditor::Attribute::Ptr> &list, bool writeDefaultsToo)
+void KateHighlighting::setKateExtendedAttributeList(const QString &schema, QList<KTextEditor::Attribute::Ptr> &list,
+                                                    HighLightConfig* config, bool writeDefaultsToo)
 {
 
     QStringList settings;
 
     KateAttributeList defList;
-    KateHlManager::self()->getDefaults(schema, defList);
+    KateHlManager::self()->getDefaults(schema, defList, config);
 
     foreach (const KTextEditor::Attribute::Ptr &p, list) {
         Q_ASSERT(p);
@@ -2148,7 +2151,11 @@ void KateHighlighting::clearAttributeArrays()
         // k, schema correct, let create the data
         KateAttributeList defaultStyleList;
 
-        KateHlManager::self()->getDefaults(it.key(), defaultStyleList);
+        auto config = HighLightConfig::instance (
+                HighLightConfig::GENERAL,
+                GetCfgsPath ("genHlTheme/" +
+                             ConfigString("Highlight", "GenHighlight")));
+        KateHlManager::self()->getDefaults(it.key(), defaultStyleList, config);
 
         QList<KTextEditor::Attribute::Ptr> itemDataList;
         getKateExtendedAttributeList(it.key(), itemDataList);
@@ -2170,7 +2177,7 @@ void KateHighlighting::clearAttributeArrays()
     }
 }
 
-QList<KTextEditor::Attribute::Ptr> KateHighlighting::attributes(const QString &schema)
+QList<KTextEditor::Attribute::Ptr> KateHighlighting::attributes(const QString &schema, HighLightConfig* config)
 {
     // found it, already floating around
     if (m_attributeArrays.contains(schema)) {
@@ -2181,7 +2188,7 @@ QList<KTextEditor::Attribute::Ptr> KateHighlighting::attributes(const QString &s
     QList<KTextEditor::Attribute::Ptr> array;
     KateAttributeList defaultStyleList;
 
-    KateHlManager::self()->getDefaults(schema, defaultStyleList);
+    KateHlManager::self()->getDefaults(schema, defaultStyleList, config);
 
     QList<KTextEditor::Attribute::Ptr> itemDataList;
     getKateExtendedAttributeList(schema, itemDataList);

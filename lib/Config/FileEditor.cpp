@@ -410,7 +410,7 @@ void FileEditor::initSchemeCombobox ()
     if(combobox->findText ("default.xml") == -1) {
         combobox->addItem (0, "default.xml");
     }
-    auto curTheme = ConfigString("FileEdit", "SmaliHighlight");
+    auto curTheme = ConfigString("Highlight", "SmaliHighlight");
     if(curTheme.isEmpty ())
         curTheme = "default.xml";
     auto index = combobox->findText (curTheme);
@@ -428,8 +428,9 @@ void FileEditor::save ()
     auto cfg = Config ();
     mCurrentConfig->save ();
     auto configFileName = QFileInfo(mCurrentConfig->mSetFile).fileName ();
-    cfg->setString ("FileEdit", "SmaliHighlight", configFileName);
+    cfg->setString ("Highlight", "SmaliHighlight", configFileName);
     auto pHighLightConfig = HighLightConfig::instance (
+            HighLightConfig::SMALI,
             GetCfgsPath ("smaliTheme/" + configFileName));
     pHighLightConfig->mFormatMap = mCurrentConfig->mFormatMap;
     pHighLightConfig->onConfigUpdate ();

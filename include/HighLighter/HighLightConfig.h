@@ -20,15 +20,6 @@
 class HighLightConfig: public QObject
 {
     Q_OBJECT
-public:
-    explicit HighLightConfig(QString cfgPath, QObject* mParent = nullptr);
-    ~HighLightConfig ();
-
-    static HighLightConfig* instance(QString cfgPath = "", QObject* mParent = nullptr);
-    void load();
-    void save();
-signals:
-    void onConfigUpdate();
 
 public:
     enum FORMAT{
@@ -44,17 +35,33 @@ public:
         FNumber,
         FDefault
     };
+
+    enum CfgType {
+        SMALI,
+        GENERAL
+    };
+public:
+    explicit HighLightConfig(QString cfgPath, QObject* mParent = nullptr);
+    ~HighLightConfig ();
+
+    static HighLightConfig* instance(CfgType cfgType, QString cfgPath = "",
+                                     QObject* mParent = nullptr);
+    void load();
+    void save();
+signals:
+    void onConfigUpdate();
+
 public:
     QMap<FORMAT, QTextCharFormat> mFormatMap;
     QString mSetFile;
 
     static QString getFormatName(FORMAT f);
+    QTextCharFormat& getFormat(int n);
 private:
     QColor colorFromString(const QString &value);
     QString colorToString(const QColor &color);
     QFont fontFromString(const QString &value);
     QString fontToString(const QFont &font);
-
 };
 
 
