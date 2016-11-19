@@ -48,6 +48,11 @@ protected slots:
     void onActivityClick(QListWidgetItem* item);
     void openActivityInEditor(QString activityName);
 
+    // ProjectListRightClick
+    void projectListShowMenu();
+    // ProjectListMenuSlot
+    void projectFileShowInFile();
+    void projectFileRemove();
 private:
     void readProjectInfo();
     void readProjectYmlInfo();          // for apktool.yml

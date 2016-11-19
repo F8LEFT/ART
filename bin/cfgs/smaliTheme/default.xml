@@ -1,14 +1,14 @@
 <configs>
-    <QTextCharFormat underlinetype="2" font="Sans Serif,10,-1,5,75,1,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Keyword" id="0" backgroundcolor="#XXXXXX" foregroundcolor="#EE2106"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,1,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="OpCode" id="1" backgroundcolor="#FFFFFF" foregroundcolor="#0245FF"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Symbol" id="2" backgroundcolor="#FFFFFF" foregroundcolor="#000000"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="String" id="3" backgroundcolor="#FFFFFF" foregroundcolor="#1A6B26"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,75,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Name" id="4" backgroundcolor="#FFFFFF" foregroundcolor="#FFAA7F"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Comment" id="5" backgroundcolor="#FFFFFF" foregroundcolor="#1F5D2D"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,75,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="ClassType" id="6" backgroundcolor="#FFFFFF" foregroundcolor="#55007F"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Flag" id="7" backgroundcolor="#FFFFFF" foregroundcolor="#55AAFF"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Register" id="8" backgroundcolor="#FFFFFF" foregroundcolor="#550000"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Number" id="9" backgroundcolor="#FFFFFF" foregroundcolor="#135D95"/>
-    <QTextCharFormat underlinetype="6" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="128" name="Default" id="10" backgroundcolor="#FFFFFF" foregroundcolor="#FF1C0C"/>
-    <QTextCharFormat underlinetype="0" font="Sans Serif,9,-1,5,50,0,0,0,0,0" underlinecolor="" underlineColor="#XXXXXX" antialias="256" name="Error" id="11" backgroundcolor="#XXXXXX" foregroundcolor="#000000"/>
+    <QTextCharFormat font="Sans Serif,10,-1,5,75,1,0,0,0,0" antialias="128" id="0" name="Keyword" underlineColor="#XXXXXX" foregroundcolor="#EE2106" backgroundcolor="#XXXXXX" underlinecolor="" underlinetype="3"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,1,0,0,0,0" antialias="128" id="1" name="OpCode" underlineColor="#XXXXXX" foregroundcolor="#0245FF" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="128" id="2" name="Symbol" underlineColor="#XXXXXX" foregroundcolor="#000000" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="128" id="3" name="String" underlineColor="#XXXXXX" foregroundcolor="#1A6B26" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,75,0,0,0,0,0" antialias="128" id="4" name="Name" underlineColor="#XXXXXX" foregroundcolor="#FFAA7F" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="128" id="5" name="Comment" underlineColor="#XXXXXX" foregroundcolor="#1F5D2D" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,75,0,0,0,0,0" antialias="128" id="6" name="ClassType" underlineColor="#XXXXXX" foregroundcolor="#55007F" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="128" id="7" name="Flag" underlineColor="#XXXXXX" foregroundcolor="#55AAFF" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="128" id="8" name="Register" underlineColor="#XXXXXX" foregroundcolor="#550000" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="128" id="9" name="Number" underlineColor="#XXXXXX" foregroundcolor="#135D95" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="0"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="128" id="10" name="Default" underlineColor="#XXXXXX" foregroundcolor="#FF1C0C" backgroundcolor="#FFFFFF" underlinecolor="" underlinetype="6"/>
+    <QTextCharFormat font="Sans Serif,9,-1,5,50,0,0,0,0,0" antialias="256" id="11" name="Error" underlineColor="#XXXXXX" foregroundcolor="#000000" backgroundcolor="#XXXXXX" underlinecolor="" underlinetype="0"/>
 </configs>

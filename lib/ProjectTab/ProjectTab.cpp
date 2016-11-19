@@ -19,6 +19,9 @@
 
 #include <QtCore/QDir>
 #include <utils/Configuration.h>
+#include <QMenu>
+#include <QtGui/QDesktopServices>
+#include <QtCore/QUrl>
 
 ProjectTab::ProjectTab(QWidget *parent) :
         QStackedWidget(parent),
@@ -29,6 +32,7 @@ ProjectTab::ProjectTab(QWidget *parent) :
 
     setCurrentIndex(0);
 
+    ui->mProjectList->setContextMenuPolicy(Qt::CustomContextMenu);
     mFileSystemModel = new QFileSystemModel(this);
     QDir dir(GetProjectsPath ());
     if (dir.exists()) {
@@ -50,6 +54,11 @@ ProjectTab::ProjectTab(QWidget *parent) :
     }
 
     // signals / slots
+    // ProejctList
+    connect(ui->mProjectList, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(projectListShowMenu()));
+
+
     // button
     connect((QObject*)ui->mButtonBox->button (QDialogButtonBox::Save), SIGNAL(clicked(bool)),
             this, SLOT(onSaveBtnClick ()));
@@ -313,6 +322,36 @@ void ProjectTab::openActivityInEditor (QString activityName)
     if(!filePath.isEmpty ()) {
         cmdexec("OpenFile", filePath, CmdMsg::script, true, false);
     }
+}
+
+void ProjectTab::projectListShowMenu()
+{
+    QModelIndex index= ui->mProjectList->currentIndex();
+    if(!index.isValid ())
+        return;
+
+    QMenu* menu=new QMenu(this);
+    menu->addAction(tr("Show in Files"), this, SLOT(projectFileShowInFile()));
+    menu->addAction(tr("Remove Project"), this, SLOT(projectFileRemove()));
+    menu->exec(QCursor::pos());
+    menu->deleteLater ();
+}
+
+void ProjectTab::projectFileShowInFile()
+{
+    QModelIndex index= ui->mProjectList->currentIndex();
+    auto fileinfo = mFileSystemModel->fileInfo (index);
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(fileinfo.absolutePath ()));
+}
+
+void ProjectTab::projectFileRemove()
+{
+    QModelIndex index= ui->mProjectList->currentIndex();
+    auto fileinfo = mFileSystemModel->fileInfo (index);
+
+    QDir dir(fileinfo.absoluteFilePath ());
+    dir.removeRecursively();
 }
 
 

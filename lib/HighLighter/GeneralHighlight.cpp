@@ -29,16 +29,24 @@ GeneralHighlight::GeneralHighlight(QTextDocument *parent, QString fileName,
 void GeneralHighlight::highlightBlock(const QString &text) {
     if(mHl == nullptr)
         return;
+    if(text.isEmpty ())
+        return;
+
     auto bcurrent = currentBlock ();
     auto bprevious = bcurrent.previous ();
     auto bnext = bcurrent.next ();
 
     GeneralHlTextData* prevLine = nullptr;
-    if(bprevious.isValid ()) {
+    while(bprevious.isValid ()) {
+        if(bprevious.text ().isEmpty ()) {
+            bprevious = bprevious.previous ();
+            continue;
+        }
         GeneralHlTextData* prevLine = (GeneralHlTextData*)bprevious.userData ();
         if(prevLine == nullptr) {
             prevLine = new GeneralHlTextData(bprevious);
         }
+        break;
     }
 
     GeneralHlTextData* textLine = nullptr;
@@ -52,11 +60,16 @@ void GeneralHighlight::highlightBlock(const QString &text) {
     }
 
     GeneralHlTextData* nextLine = nullptr;
-    if(bnext.isValid ()) {
+    while(bnext.isValid ()) {
+        if(bnext.text ().isEmpty ()) {
+            bnext = bnext.next ();
+            continue;
+        }
         nextLine = (GeneralHlTextData*)bnext.userData ();
         if(nextLine == nullptr) {
             nextLine = new GeneralHlTextData(bnext);
         }
+        break;
     }
 
     bool ctxChange = false;

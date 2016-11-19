@@ -1,18 +1,14 @@
 <configs>
-    <cfg value="741" type="uint" category="MainWindow" id="height"/>
-    <cfg value="1155" type="uint" category="MainWindow" id="width"/>
-    <cfg value="375" type="uint" category="MainWindow" id="x"/>
-    <cfg value="80" type="uint" category="MainWindow" id="y"/>
-    <cfg value="40" type="uint" category="SmaliEditor" id="BotSplitterHeight"/>
-    <cfg value="302" type="uint" category="SmaliEditor" id="TopSplitterHeight"/>
-    <cfg value="0" type="uint" category="TabOrder" id="EditorTab"/>
-    <cfg value="1" type="uint" category="TabOrder" id="ProjectTab"/>
-    <cfg value="0" type="uint" category="WorkSpace" id="LeftBotSplitterHeight"/>
-    <cfg value="170" type="uint" category="WorkSpace" id="LeftSplitterWidth"/>
-    <cfg value="609" type="uint" category="WorkSpace" id="LeftTopSplitterHeight"/>
-    <cfg value="165" type="uint" category="WorkSpace" id="RightBotSplitterHeight"/>
-    <cfg value="963" type="uint" category="WorkSpace" id="RightSplitterWidth"/>
-    <cfg value="350" type="uint" category="WorkSpace" id="RightTopSplitterHeight"/>
-    <string value="default.xml" type="string" category="Highlight" id="GenHighlight"/>
-    <string value="default.xml" type="string" category="Highlight" id="SmaliHighlight"/>
+    <cfg value="609" id="height" type="uint" category="MainWindow"/>
+    <cfg value="971" id="width" type="uint" category="MainWindow"/>
+    <cfg value="370" id="x" type="uint" category="MainWindow"/>
+    <cfg value="108" id="y" type="uint" category="MainWindow"/>
+    <cfg value="27" id="BotSplitterHeight" type="uint" category="SmaliEditor"/>
+    <cfg value="249" id="TopSplitterHeight" type="uint" category="SmaliEditor"/>
+    <cfg value="0" id="LeftBotSplitterHeight" type="uint" category="WorkSpace"/>
+    <cfg value="145" id="LeftSplitterWidth" type="uint" category="WorkSpace"/>
+    <cfg value="477" id="LeftTopSplitterHeight" type="uint" category="WorkSpace"/>
+    <cfg value="804" id="RightSplitterWidth" type="uint" category="WorkSpace"/>
+    <string value="default.xml" id="GenHighlight" type="string" category="Highlight"/>
+    <string value="default.xml" id="SmaliHighlight" type="string" category="Highlight"/>
 </configs>
