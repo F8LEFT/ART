@@ -25,12 +25,15 @@ QSyntaxHighlighter *setHighLighter (QTextDocument *parent,QString fileName,
         }
         return new SmaliHighlight(parent, fileName, config);
     } else {
+        auto hl = GeneralHighlight::getAvaliableHl (fileName);
+        if(hl == nullptr)
+            return nullptr;
         if(config == nullptr) {
             config = HighLightConfig::instance (
                     HighLightConfig::GENERAL,
                     GetCfgsPath ("genHlTheme/" +
                                  ConfigString("Highlight", "GenHighlight")));
         }
-        return new GeneralHighlight(parent, fileName, config);
+        return new GeneralHighlight(parent, hl, config);
     }
 }

@@ -15,15 +15,27 @@ GeneralHighlight::GeneralHighlight(QTextDocument *parent, QString fileName,
                                    HighLightConfig* config)
         : QSyntaxHighlighter(parent){
     mHl = KateHlManager::self ()->getHlWithFileName (fileName);
-    if(mHl != nullptr) {
-        qDebug() << "GeneralHighlight: use " << mHl->getIdentifier ()
-                 << " for file " << fileName;
-    }
+    if(mHl == nullptr)
+        return ;
+    qDebug() << "GeneralHighlight: use " << mHl->getIdentifier ()
+             << " for file " << fileName;
     mAttrlist = mHl->attributes ("Theme", config);
 
     mConfig = config;
     connect(mConfig, SIGNAL(onConfigUpdate()), this, SLOT(hlAttrUpdate()));
 
+}
+
+GeneralHighlight::GeneralHighlight (QTextDocument *parent,KateHighlighting *hl,
+                                    HighLightConfig *config)
+    :QSyntaxHighlighter(parent)
+{
+    Q_ASSERT (hl != nullptr && "invalid Highlight?");
+    mHl = hl;
+    mAttrlist = mHl->attributes ("Theme", config);
+
+    mConfig = config;
+    connect(mConfig, SIGNAL(onConfigUpdate()), this, SLOT(hlAttrUpdate()));
 }
 
 void GeneralHighlight::highlightBlock(const QString &text) {
@@ -93,6 +105,13 @@ void GeneralHighlight::hlAttrUpdate ()
     mAttrlist = mHl->attributes ("Theme", mConfig);
     rehighlight ();
 }
+
+KateHighlighting *GeneralHighlight::getAvaliableHl (const QString &text)
+{
+    return KateHlManager::self ()->getHlWithFileName (text);;
+}
+
+
 
 GeneralHlTextData::GeneralHlTextData (QTextBlock& b)
 {

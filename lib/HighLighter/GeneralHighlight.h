@@ -31,10 +31,12 @@ class GeneralHighlight : public QSyntaxHighlighter
 public:
     GeneralHighlight(QTextDocument *parent, QString fileName,
                     HighLightConfig* config);
+    GeneralHighlight(QTextDocument *parent, KateHighlighting* hl,
+                     HighLightConfig* config);
+    static KateHighlighting* getAvaliableHl(const QString &text);
 
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
-
 private slots:
     void hlAttrUpdate();
 private:
