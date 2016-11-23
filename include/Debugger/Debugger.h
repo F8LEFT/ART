@@ -14,7 +14,6 @@
 #ifndef PROJECT_DEBUGGER_H
 #define PROJECT_DEBUGGER_H
 
-
 class Debugger
 {
 

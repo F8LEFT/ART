@@ -259,36 +259,23 @@ QString RunDevice::getValidDeviceId()
 void getDeviceMsgThread(RunDevice* runDevice) {
     AdbUtil adbUtil;
     QStringList devIds = runDevice->getCurDeviceIdList();
-    foreach(QString deviceId, devIds) {
-//        QString decMsg = device[1] + ": ";
-        QString decMsg;
-        QStringList manufacturerList = adbUtil.execute(
-                    "-s " + deviceId + " shell getprop ro.product.manufacturer");
-        if (manufacturerList.size() > 0) {
-            decMsg += " " + manufacturerList.last();
-        }
-
-        QStringList modelList = adbUtil.execute(
-                    "-s " + deviceId + " shell getprop ro.product.model");
-        if (modelList.size() > 0) {
-            decMsg += " " + modelList.last();
-        }
-        decMsg += " (";
-
-        QStringList releaseList = adbUtil.execute(
-                    "-s " + deviceId + " shell getprop ro.build.version.release");
-        if (releaseList.size() > 0) {
-            decMsg += "Android " + releaseList.last();
-        }
-
-        QStringList sdkList = adbUtil.execute(
-                    "-s " + deviceId + " shell getprop ro.build.version.sdk");
-        if (sdkList.size() > 0) {
-            decMsg += ", API " + sdkList.last();
-        }
-        decMsg += ")";
-        decMsg += "$" + deviceId;
-        emit runDevice->addDeviceList(decMsg);
+    foreach(const QString& deviceId, devIds) {
+            QStringList propList = adbUtil.execute("-s " + deviceId + " shell getprop");
+            QMap<QString, QString> propMap;
+            foreach(QString prop, propList) {
+                    prop.remove(QRegExp("[ \\[\\]]"));
+                    auto keyvalue = prop.split(':', QString::SkipEmptyParts);
+                    if(keyvalue.size() == 2) {
+                        propMap[keyvalue[0]] = keyvalue[1];
+                    }
+                }
+            QString deviceMsg =
+                propMap["ro.product.manufacturer"] + " " +
+                propMap["ro.product.model"] + " (" +
+                "Android " + propMap["ro.build.version.release"] +
+                ", API " + propMap["ro.build.version.sdk"]   + ")" +
+                "$" + deviceId;
+        emit runDevice->addDeviceList(deviceMsg);
     }
 }
 

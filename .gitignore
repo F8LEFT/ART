@@ -5,3 +5,4 @@ TODOLIST
 res/
 build/
 bin/
+cmake-build-*/
