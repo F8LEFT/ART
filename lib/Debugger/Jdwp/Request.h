@@ -17,6 +17,7 @@
 
 
 #include "Jdwp/JdwpReader.h"
+#include <QByteArray>
 
 namespace JDWP {
     class Request: public JdwpReader
@@ -30,14 +31,24 @@ namespace JDWP {
         uint8_t GetCommandSet() { return command_set_; }
         uint8_t GetCommand() { return command_; }
 
+        const uint8_t* GetExtra() const;
+        const size_t GetExtraLen() const;
+
+        bool isValid() { return valid_; }
+        bool isReply() { return isReply (); }
+
+        static bool isValid(const uint8_t* bytes, uint32_t available);
     private:
         uint32_t byte_count_;
 
         uint32_t id_;
         uint8_t command_set_;
         uint8_t command_;
+
         bool reply;
 
+        bool valid_;
+        QByteArray extra;
     };
 }
 

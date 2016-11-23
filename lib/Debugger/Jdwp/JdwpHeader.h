@@ -28,6 +28,7 @@ namespace JDWP {
 #define kJDWPDdmCmd     1
 
 #define kInputBufferSize    (256*1024)
+#define kMagicHandshake     "JDWP-Handshake"
 #define kMagicHandshakeLen  14      /* "JDWP-Handshake" */
 
 //#pragma pack (1)

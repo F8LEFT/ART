@@ -7,10 +7,9 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// debug smali file
+// Debugger handle socket packet between host and client.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef PROJECT_DEBUGGER_H
 #define PROJECT_DEBUGGER_H

@@ -10,17 +10,19 @@
 
 #include "JdwpHeader.h"
 
+#include <QDebug>
+#include <QtEndian>
 #include <cassert>
 
 using namespace JDWP;
 
 JDWP::Request::Request (const uint8_t *bytes,uint32_t available)
-    : JdwpReader(bytes, available)
+    : JdwpReader(bytes, available), valid_(true), reply(false)
 {
 
     byte_count_ = Read4 ();
     if(byte_count_ > available) {
-        // TODO Error
+        valid_ = false;
         return ;
     }
 
@@ -33,8 +35,29 @@ JDWP::Request::Request (const uint8_t *bytes,uint32_t available)
     command_set_ = Read1();
     command_ = Read1();
 
-    // for jdwp response only
-    assert(reply);
+    extra.append ((const char*)p_, byte_count_ - kJDWPHeaderLen);
+    reset (GetExtra (), GetExtraLen ());
 
 }
+
+const uint8_t *Request::GetExtra () const
+{
+    return (const uint8_t*)extra.data ();
+}
+
+const size_t Request::GetExtraLen () const
+{
+    return extra.length ();
+}
+
+bool Request::isValid (const uint8_t *bytes,uint32_t available)
+{
+    if(available < kJDWPHeaderLen)
+        return false;
+    uint32_t d = *((uint32_t *) bytes);
+    auto pkgSize = qFromBigEndian (d);
+    return pkgSize <= available;
+}
+
+
 

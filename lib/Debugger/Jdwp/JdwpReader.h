@@ -24,6 +24,7 @@ namespace JDWP {
     class JdwpReader {
     public:
         JdwpReader(const uint8_t* bytes, uint32_t available);
+        void reset(const uint8_t* bytes, uint32_t available);
 
         uint8_t Read1();
 
@@ -46,6 +47,8 @@ namespace JDWP {
 
 
         std::string ReadString();
+        bool hasError() { return error; }
+        bool isEmpty() { return p_ == end_; }
 
         // Returns the number of bytes remaining.
         size_t size() { return end_ - p_; }

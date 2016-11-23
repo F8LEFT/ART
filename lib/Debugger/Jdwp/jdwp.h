@@ -18,13 +18,6 @@
 #include <cstring>
 #include "utils/Defs.h"
 
-#ifdef WIN32
-#include "Winsock2.h"
-#pragma comment(lib,"ws2_32.lib")
-#else
-#include <netinet/in.h>
-#endif
-
 namespace JDWP {
 
 /*
@@ -147,7 +140,7 @@ namespace JDWP {
         JValue(int16_t C_, JDWP::JdwpTag tag_ = JT_CHAR):tag(tag_), C(C_) { }
         JValue(float F_):tag(JT_FLOAT), F(F_) { }
         JValue(int32_t I_):tag(JT_INT), I(I_) { }
-        JValue(ObjectId L_, JDWP::JdwpTag tag_ = JT_OBJECT):tag(tag), L(L_) { }
+        JValue(ObjectId L_, JDWP::JdwpTag tag_ = JT_OBJECT):tag(tag_), L(L_) { }
         JValue(double D_):tag(JT_DOUBLE), D(D_) { }
         JValue(int64_t J_):tag(JT_LONG), J(J_) { }
 

@@ -11,6 +11,7 @@
 #include "JdwpHeader.h"
 
 #include <Jdwp/jdwp.h>
+#include <QtEndian>
 
 using namespace JDWP;
 
@@ -60,14 +61,14 @@ bool JDWP::Write1(std::string &s, uint8_t v)
 
 bool JDWP::Write2(std::string &s, uint16_t v)
 {
-    uint16_t vn = htons (v);
+    uint16_t vn = qToBigEndian (v);
     s.append (vn,sizeof (vn));
     return true;
 }
 
 bool JDWP::Write4(std::string &s, uint32_t v)
 {
-    uint32_t vn = htonl (v);
+    uint32_t vn = qToBigEndian (v);
     s.append (vn, sizeof(vn));
     return true;
 }

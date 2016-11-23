@@ -8,12 +8,19 @@
 //===----------------------------------------------------------------------===//
 
 #include "Jdwp/JdwpReader.h"
+#include <QtEndian>
 
 using namespace JDWP;
 JdwpReader::JdwpReader (const uint8_t *bytes,uint32_t available)
         : p_(bytes)
 {
     end_ =  bytes + available;
+}
+
+void JdwpReader::reset (const uint8_t *bytes,uint32_t available)
+{
+    p_ = bytes;
+    end_ = bytes + available;
 }
 
 
@@ -33,7 +40,7 @@ uint16_t JdwpReader::Read2 ()
         return -1;
     if(size() >= 2) {
         uint16_t d = *((uint16_t *) p_);
-        uint16_t result = ntohs(d);;
+        uint16_t result = qFromBigEndian (d);;
         p_ += 2;
         return result;
     }
@@ -48,7 +55,7 @@ uint32_t JdwpReader::Read4 ()
         return -1;
     if(size() >= 4) {
         uint32_t d = *((uint32_t *) p_);
-        uint32_t result = ntohl (d);;
+        uint32_t result = qFromBigEndian (d);
         p_ += 4;
         return result;
     }
@@ -104,4 +111,6 @@ JdwpLocation JdwpReader::ReadJdwpLocation ()
     location.class_id = ReadObjectId ();
     location.method_id = ReadMethodId ();
     location.dex_pc = Read8 ();
+    return location;
 }
+
