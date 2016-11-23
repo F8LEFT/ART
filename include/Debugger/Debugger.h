@@ -14,9 +14,21 @@
 #ifndef PROJECT_DEBUGGER_H
 #define PROJECT_DEBUGGER_H
 
-class Debugger
-{
+#include <QObject>
+#include <QString>
 
+
+class DebugSocket;
+
+class Debugger: public QObject
+{
+    Q_OBJECT
+    Debugger(QObject* parent = nullptr);
+
+protected slots:
+
+private:
+    DebugSocket* mSocket;
 };
 
 

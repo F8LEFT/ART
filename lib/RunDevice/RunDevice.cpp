@@ -146,7 +146,6 @@ void RunDevice::onRunAction()
 
 void RunDevice::onDebugAction()
 {
-    // TODO debug
     auto* project = ProjectInfo::instance ();
     if(!project->isProjectOpened ()) {
         return;
@@ -170,6 +169,8 @@ void RunDevice::onDebugAction()
          << project->getInfo ("PackageName") +
                  "/" + project->getInfo ("ActivityEntryName");
     cmdexec("adb", args);
+
+    cmdexec("DebugStart", project->getInfo ("PackageName"));
 }
 
 void RunDevice::onStopAction()

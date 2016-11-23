@@ -54,6 +54,7 @@ private:
 
     QString mDeviceId;
     bool useDefault = false;
+
 };
 
 #endif // RUNDEVICE_H

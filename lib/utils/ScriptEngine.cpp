@@ -47,6 +47,8 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
     scripts.insert("Debug", &ScriptEngine::debug);
     scripts.insert("Stop", &ScriptEngine::stop);
     scripts.insert("Devices", &ScriptEngine::devices);
+
+    scripts.insert("DebugStart", &ScriptEngine::debugStart);
 }
 
 ScriptEngine::~ScriptEngine()

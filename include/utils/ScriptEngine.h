@@ -98,6 +98,12 @@ signals:
     void stop(QStringList);
     // Devices()    open device window
     void devices(QStringList);
+
+    // Debug option
+    // DebugStart(packageName)
+    void debugStart(QStringList);
+    // DebugStop
+    void debugStop(QStringList);
 public slots:
     void adbShell(QStringList);
 

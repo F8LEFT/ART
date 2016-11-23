@@ -8,3 +8,11 @@
 //===----------------------------------------------------------------------===//
 
 #include "Debugger/Debugger.h"
+
+#include "DebugSocket.h"
+Debugger::Debugger(QObject *parent)
+    : QObject(parent)
+{
+    // adb shell pidof f8left.cm2
+}
+
