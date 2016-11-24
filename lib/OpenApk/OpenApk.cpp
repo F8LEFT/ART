@@ -139,7 +139,6 @@ void OpenApk::accept()
     cmd += " -o " + genApk;
     mComCmd = cmd;
 
-
     // set information
     QString projectsRoot = GetProjectsPath ();
     QDir dir(projectsRoot);

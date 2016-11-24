@@ -47,9 +47,6 @@ public:
     void loadFromConfig();
     void saveToConfig();
 
-    void setupCommandBar();
-    void setupStatusBar();
-
     void setTab(QWidget* widget);
     void loadTabOrder();
 protected:
@@ -128,6 +125,8 @@ private:
 private:
     void setupCenterWindows();
     void setupDockWindows();
+    void setupCommandBar();
+    void setupStatusBar();
 private:
     Ui::MainWindow *ui;
 

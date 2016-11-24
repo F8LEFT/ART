@@ -106,20 +106,22 @@ MainWindow::MainWindow(QWidget *parent) :
     // script
     auto* script = ScriptEngine::instance();
     connect(script, SIGNAL(projectOpened(QStringList)),
-                this, SLOT(onProjectOpened(QStringList)));
+            this, SLOT(onProjectOpened(QStringList)));
     connect(script, SIGNAL(projectClosed(QStringList)),
-                this, SLOT(onProjectClosed()));
+            this, SLOT(onProjectClosed()));
     connect(script, SIGNAL(findAdvance(QStringList)), this, SLOT(onFindAdvance (QStringList)));
-
     connect(script, SIGNAL(openWindow(QStringList)), this, SLOT(onOpenWindow (QStringList)));
 
     cmdmsg()->addCmdMsg("Android Reverse Toolkit v"
-                        + GetCompileVersion () + " by f8left");
+                            + GetCompileVersion () + " by f8left");
     cmdmsg()->setStatusMsg("ready");
     cmdmsg()->setLastLogMsg("init complete");
 
     showQWidgetTab(mProjectTab);
     loadFromConfig();
+
+    mFileTreeView->raise();
+    mDockCommand->raise();
 }
 
 MainWindow::~MainWindow()
@@ -191,8 +193,8 @@ void MainWindow::closeEvent (QCloseEvent *event)
 //                                      0, 1 ))
 //    {
 //        case 1:
-            cmdexec("CloseProject", CmdMsg::script, true, false);
-            event->accept();
+    cmdexec("CloseProject", CmdMsg::script, true, false);
+    event->accept();
 //            break;
 //        default:
 //            event->ignore();
@@ -209,7 +211,7 @@ void MainWindow::actionExit()
 void MainWindow::actionOpen()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-                                tr("Open File"), "", "apk File (*.apk *.dex)");
+                                                    tr("Open File"), "", "apk File (*.apk *.dex)");
     openFile(fileName);
 }
 
@@ -220,7 +222,7 @@ void MainWindow::actionCloseProject()
 
 void MainWindow::actionSaveAll()
 {
-    cmdexec("SaveAll", CmdMsg::script, true, false);
+    mEditorTab->saveAll();
 }
 
 void MainWindow::actionOption()
@@ -497,28 +499,18 @@ void MainWindow::setupDockWindows()
     mDockCommand->setAllowedAreas(Qt::AllDockWidgetAreas);
     mDockCommand->setWidget(mCmdTextBrowser);
     mDockCommand->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
-    //dockCommand->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     addDockWidget(Qt::BottomDockWidgetArea, mDockCommand, Qt::Horizontal);
 
     mDockFind = new QDockWidget(tr("Search && Replace"), this);
     mDockFind->setAllowedAreas(Qt::AllDockWidgetAreas);
     mDockFind->setWidget(mFindDialog);
     mDockFind->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
-    //dockSearch->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    // addDockWidget(Qt::BottomDockWidgetArea, dockSearch);
-
-    //mFindDialog->hide(); mCmdTextBrowser->hide();
     tabifyDockWidget(mDockCommand, mDockFind);
-
-    mFileTreeView->raise();
-    mDockCommand->raise();
 }
-
-
 
 void MainWindow::onCmdMessage(QString msg)
 {
-    QStringList lineList = msg.split(QRegExp("\\n+"), QString::SkipEmptyParts);
+    QStringList lineList = msg.split(QRegExp("[\\n\\r]"), QString::SkipEmptyParts);
         foreach(QString m, lineList) {
             mCmdTextBrowser->append(m);
         }
