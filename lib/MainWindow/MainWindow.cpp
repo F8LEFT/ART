@@ -41,24 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Android Reverse Toolkit");
 
-    mTabWidget = new MHTabWidget(this);
-    setCentralWidget(mTabWidget);
-    // init Tabs
-    mProjectTab = new ProjectTab(this);
-    mProjectTab->setWindowTitle(tr("Project"));
-    mEditorTab = new EditorTab(this);
-    mEditorTab->setWindowTitle (tr ("Editor"));
-
-    // init Tab widget
-    mWidgetList.push_back(mProjectTab);
-    mWidgetNativeNameList.push_back("ProjectTab");
-    mWidgetList.push_back (mEditorTab);
-    mWidgetNativeNameList.push_back ("EditorTab");
-    loadTabOrder();
-
-    // QDockWidget
+    // setup dialogs
+    setupCenterWindows();
     setupDockWindows();
-
     setupCommandBar();
     setupStatusBar();
     mRunDevice = RunDevice::instance (this);
@@ -125,22 +110,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(script, SIGNAL(projectClosed(QStringList)),
                 this, SLOT(onProjectClosed()));
     connect(script, SIGNAL(findAdvance(QStringList)), this, SLOT(onFindAdvance (QStringList)));
-    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
 
     connect(script, SIGNAL(openWindow(QStringList)), this, SLOT(onOpenWindow (QStringList)));
-
-
 
     cmdmsg()->addCmdMsg("Android Reverse Toolkit v"
                         + GetCompileVersion () + " by f8left");
     cmdmsg()->setStatusMsg("ready");
     cmdmsg()->setLastLogMsg("init complete");
 
-
-    //showQWidgetTab(mProjectTab);
+    showQWidgetTab(mProjectTab);
     loadFromConfig();
-
 }
 
 MainWindow::~MainWindow()
@@ -152,19 +131,15 @@ MainWindow::~MainWindow()
 void MainWindow::loadFromConfig()
 {
     Configuration *config = Config();
-    QByteArray geo = config->getByte("MainWindow", "Geometry");
-    restoreGeometry(geo);
-    QByteArray state = config->getByte("MainWindow", "State");
-    restoreState(state);
+    restoreGeometry(config->getByte("MainWindow", "Geometry"));
+    restoreState(config->getByte("MainWindow", "State"));
 }
 
 void MainWindow::saveToConfig()
 {
     Configuration *config = Config();
-    QByteArray geo = saveGeometry();
-    config->setByte("MainWindow", "Geometry", geo);
-    QByteArray state = saveState();
-    config->setByte("MainWindow", "State", state);
+    config->setByte("MainWindow", "Geometry", saveGeometry());
+    config->setByte("MainWindow", "State", saveState());
 }
 
 void MainWindow::setupCommandBar()
@@ -256,52 +231,52 @@ void MainWindow::actionOption()
 
 void MainWindow::actionUndo()
 {
-    cmdexec("Undo", CmdMsg::script, true, false);
+    mEditorTab->undo();
 }
 
 void MainWindow::actionRedo()
 {
-    cmdexec("Redo", CmdMsg::script, true, false);
+    mEditorTab->redo();
 }
 
 void MainWindow::actionCut()
 {
-    cmdexec("Cut", CmdMsg::script, true, false);
+    mEditorTab->cut();
 }
 
 void MainWindow::actionCopy()
 {
-    cmdexec("Copy", CmdMsg::script, true, false);
+    mEditorTab->copy();
 }
 
 void MainWindow::actionPaste()
 {
-    cmdexec("Paste", CmdMsg::script, true, false);
+    mEditorTab->paste();
 }
 
 void MainWindow::actionDelete()
 {
-    cmdexec("Delete", CmdMsg::script, true, false);
+    mEditorTab->deleteR();
 }
 
 void MainWindow::actionSelectAll()
 {
-    cmdexec("SelectAll", CmdMsg::script, true, false);
+    mEditorTab->selectAll();
 }
 
 void MainWindow::actionFind()
 {
-    cmdexec("Find", CmdMsg::script, true, false);
+    mEditorTab->find(QStringList());
 }
 
 void MainWindow::actionGotoLine()
 {
-    cmdexec("GotoLine", CmdMsg::script, true, false);
+    mEditorTab->gotoLine(QStringList());
 }
 
 void MainWindow::actionFindAdvance()
 {
-    cmdexec("FindAdvance", CmdMsg::script, true, false);
+    mDockFind->raise();
 }
 
 void MainWindow::actionAboutArt()
@@ -440,7 +415,7 @@ void MainWindow::openFile(QString fileName)
 void MainWindow::setProjectDocumentTree(QString path)
 {
     Q_ASSERT (mFileModel == nullptr && "has been initialize?");
-
+    // TODO use QSortFilterProxyModel to hide build directory
     mFileModel = new QFileSystemModel;
 
     mFileModel->setRootPath(path);
@@ -459,6 +434,25 @@ void MainWindow::clearProjectDocumentTree()
     mFileModel->deleteLater ();
     mFileModel = nullptr;
 }
+
+void MainWindow::setupCenterWindows()
+{
+    // init Tabs
+    mTabWidget = new MHTabWidget(this);
+    setCentralWidget(mTabWidget);
+    mProjectTab = new ProjectTab(this);
+    mProjectTab->setWindowTitle(tr("Project"));
+    mEditorTab = new EditorTab(this);
+    mEditorTab->setWindowTitle (tr ("Editor"));
+
+    // init Tab widget
+    mWidgetList.push_back(mProjectTab);
+    mWidgetNativeNameList.push_back("ProjectTab");
+    mWidgetList.push_back (mEditorTab);
+    mWidgetNativeNameList.push_back ("EditorTab");
+    loadTabOrder();
+}
+
 
 void MainWindow::setupDockWindows()
 {
@@ -486,41 +480,38 @@ void MainWindow::setupDockWindows()
     mCmdTextBrowser = new QTextBrowser(this);
     mCmdTextBrowser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    QDockWidget* dockFileTree = new QDockWidget(tr("FileTree"), this);
-    dockFileTree->setAllowedAreas(Qt::AllDockWidgetAreas);
-    dockFileTree->setWidget(mFileTreeView);
-    dockFileTree->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
-    //dockFileTree->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    addDockWidget(Qt::LeftDockWidgetArea, dockFileTree);
+    mDockFileTree = new QDockWidget(tr("FileTree"), this);
+    mDockFileTree->setAllowedAreas(Qt::AllDockWidgetAreas);
+    mDockFileTree->setWidget(mFileTreeView);
+    mDockFileTree->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    addDockWidget(Qt::LeftDockWidgetArea, mDockFileTree);
 
-    QDockWidget* dockBookMark = new QDockWidget(tr("BookMark"), this);
-    dockBookMark->setAllowedAreas(Qt::AllDockWidgetAreas);
-    dockBookMark->setWidget(mBookMarkListWidget);
-    dockBookMark->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
-    //dockBookMark->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    //addDockWidget(Qt::LeftDockWidgetArea, dockBookMark);
+    mDockBookMark = new QDockWidget(tr("BookMark"), this);
+    mDockBookMark->setAllowedAreas(Qt::AllDockWidgetAreas);
+    mDockBookMark->setWidget(mBookMarkListWidget);
+    mDockBookMark->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
 
-    tabifyDockWidget(dockFileTree, dockBookMark);
+    tabifyDockWidget(mDockFileTree, mDockBookMark);
 
-    QDockWidget* dockCommand = new QDockWidget(tr("Messages"), this);
-    dockCommand->setAllowedAreas(Qt::AllDockWidgetAreas);
-    dockCommand->setWidget(mCmdTextBrowser);
-    dockCommand->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    mDockCommand = new QDockWidget(tr("Messages"), this);
+    mDockCommand->setAllowedAreas(Qt::AllDockWidgetAreas);
+    mDockCommand->setWidget(mCmdTextBrowser);
+    mDockCommand->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     //dockCommand->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    addDockWidget(Qt::BottomDockWidgetArea, dockCommand, Qt::Horizontal);
+    addDockWidget(Qt::BottomDockWidgetArea, mDockCommand, Qt::Horizontal);
 
-    QDockWidget* dockSearch = new QDockWidget(tr("Search && Replace"), this);
-    dockSearch->setAllowedAreas(Qt::AllDockWidgetAreas);
-    dockSearch->setWidget(mFindDialog);
-    dockSearch->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    mDockFind = new QDockWidget(tr("Search && Replace"), this);
+    mDockFind->setAllowedAreas(Qt::AllDockWidgetAreas);
+    mDockFind->setWidget(mFindDialog);
+    mDockFind->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     //dockSearch->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     // addDockWidget(Qt::BottomDockWidgetArea, dockSearch);
 
     //mFindDialog->hide(); mCmdTextBrowser->hide();
-    tabifyDockWidget(dockCommand, dockSearch);
+    tabifyDockWidget(mDockCommand, mDockFind);
 
-    dockFileTree->raise();
-    dockCommand->raise();
+    mFileTreeView->raise();
+    mDockCommand->raise();
 }
 
 

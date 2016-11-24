@@ -121,12 +121,12 @@ protected slots:
     void tabMovedSlot(int from, int to);
 private:
     void openFile(QString fileName);
-    void initProjectDocumentTreeView();
     void setProjectDocumentTree(QString path);
     void clearProjectDocumentTree();
 private:
     bool needToRebuild ();
 private:
+    void setupCenterWindows();
     void setupDockWindows();
 private:
     Ui::MainWindow *ui;
@@ -141,14 +141,18 @@ private:
     // FileTreeView
     QFileSystemModel *mFileModel = nullptr;
     QTreeView* mFileTreeView = nullptr;
+    QDockWidget* mDockFileTree = nullptr;
 
     // BookMark
     QListWidget* mBookMarkListWidget = nullptr;
     BookMarkManager* mBookMarkManager = nullptr;
+    QDockWidget* mDockBookMark = nullptr;
 
     // Command Area
     QTextBrowser *mCmdTextBrowser = nullptr;
+    QDockWidget* mDockCommand = nullptr;
     FindDialog* mFindDialog = nullptr;
+    QDockWidget* mDockFind = nullptr;
 
     // Central Widget
     // Tab Widget
