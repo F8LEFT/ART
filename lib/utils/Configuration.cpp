@@ -85,6 +85,8 @@ void Configuration::load ()
             Fonts[category][id] = fontFromString (value);
         } else if (type == "shortcut") {
             Shortcuts[category][id] = shortcutFromString (value);
+        } else if (type == "byte") {
+            Bytes[category][id] = byteFromString(value);
         }
         catatype = catatype.nextSiblingElement();
     }
@@ -161,6 +163,17 @@ void Configuration::save()
             QDomElement element =  domDocument.createElement("string");
             writeCfgElement (domDocument,element, "string",category,
                              itSub.key (), itSub.value ());
+            root.appendChild (element);
+        }
+    }
+
+    for(auto it = Bytes.begin (), itEnd = Bytes.end (); it != itEnd; it++) {
+        for(auto itSub = it->begin (), itSubEnd = it->end ();
+            itSub != itSubEnd; itSub++) {
+            QString category = it.key ();
+            QDomElement element =  domDocument.createElement("byte");
+            writeCfgElement (domDocument,element, "byte",category,
+                             itSub.key (), byteToString(itSub.value ()));
             root.appendChild (element);
         }
     }
@@ -277,6 +290,19 @@ void Configuration::setString(const QString &category,const QString &id,
     return;
 }
 
+const QByteArray Configuration::getByte(const QString &category, const QString &id)
+{
+    if(Bytes.contains(category)) {
+        if(Bytes[category].contains(id))
+            return Bytes[category][id];
+    }
+    return QByteArray();
+}
+void Configuration::setByte(const QString &category, const QString &id, const QByteArray &s)
+{
+    Bytes[category][id] = s;
+}
+
 QColor Configuration::colorFromString (const QString &value)
 {
     QColor color (value);
@@ -348,4 +374,12 @@ bool Configuration::writeCfgElement (QDomDocument &doc,QDomElement &element,
     element.setAttributeNode(valueAttr);
     element.setAttribute("value",value);
     return true;
+}
+QByteArray Configuration::byteFromString(const QString &value)
+{
+    return QByteArray::fromHex(value.toLatin1());
+}
+QString Configuration::byteToString(const QByteArray &byte)
+{
+    return byte.toHex();
 }

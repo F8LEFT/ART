@@ -29,6 +29,7 @@ class Configuration;
 #define ConfigFont(x,y) (Config()->getFont(x,y))
 #define ConfigShortcut(x,y) (Config()->getShortcut(x,y))
 #define ConfigString(x,y) (Config()->getString(x,y))
+#define ConfigByte(x,y) (Config()->getByte(x,y))
 #define ConfigHScrollBarStyle() "QScrollBar:horizontal{border:1px solid grey;background:#f1f1f1;height:10px}QScrollBar::handle:horizontal{background:#aaa;min-width:20px;margin:1px}QScrollBar::add-line:horizontal,QScrollBar::sub-line:horizontal{width:0;height:0}"
 #define ConfigVScrollBarStyle() "QScrollBar:vertical{border:1px solid grey;background:#f1f1f1;width:10px}QScrollBar::handle:vertical{background:#aaa;min-height:20px;margin:1px}QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical{width:0;height:0}"
 
@@ -57,6 +58,8 @@ public:
     const QString getString (const QString &category,const QString &id);
     void setString (const QString &category,const QString &id,const QString &s);
 
+    const QByteArray getByte (const QString &category,const QString &id);
+    void setByte (const QString &category,const QString &id,const QByteArray &s);
 
 public:
     QMap<QString, QMap<QString, QColor>> Colors;        //[Colors]
@@ -65,7 +68,7 @@ public:
     QMap<QString, QMap<QString, QFont>> Fonts;          //[Fonts]
     QMap<QString, QMap<QString, QKeySequence>> Shortcuts;   //[Shortcuts]
     QMap<QString, QMap<QString, QString>> Strings;      //[Strings]
-
+    QMap<QString, QMap<QString, QByteArray>> Bytes;     //[Bytes]
 
 signals:
     void colorsUpdated();
@@ -83,6 +86,8 @@ private:
     QString fontToString(const QFont& font);
     QKeySequence shortcutFromString (const QString &value);
     QString shortcutToString (const QKeySequence &sequence);
+    QByteArray byteFromString(const QString &value);
+    QString byteToString(const QByteArray& byte);
 
     bool writeCfgElement (QDomDocument &doc,QDomElement &element,
                           const QString &type,const QString &category,

@@ -12,11 +12,20 @@
 //===----------------------------------------------------------------------===//
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "WorkSpace/WorkSpace.h"
 
+#include <BookMark/BookMarkManager.h>
+#include <Find/FindDialog.h>
+#include <EditorTab/EditorTab.h>
+#include <ProjectTab/ProjectTab.h>
 
 #include <QMainWindow>
 #include <QCloseEvent>
+#include <QTreeView>
+#include <QFileSystemModel>
+#include <QListWidgetItem>
+#include <QTextBrowser>
+#include <QVector>
+
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +33,7 @@ class MainWindow;
 class StatusLabel;
 class CommandLineEdit;
 class RunDevice;
+class MHTabWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -39,6 +49,9 @@ public:
 
     void setupCommandBar();
     void setupStatusBar();
+
+    void setTab(QWidget* widget);
+    void loadTabOrder();
 protected:
     void dragEnterEvent(QDragEnterEvent* event) Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent* event) Q_DECL_OVERRIDE;
@@ -78,26 +91,73 @@ protected slots:
     void actionStop();
     void actionDevices();
 
-    // script
-    void onProjectOpened(QStringList projName);
-    void onProjectClosed();
+    // cmdLine Message
+    void onCmdMessage(QString msg);
+    void onCmdClear();
 
+    // fileTree
+    void treeFileOpen(const QModelIndex &index);
+    void treeFileMenuRequested(const QPoint & point);
+    // fileTreeMenuSlot
+    void treeFileShowInFile();
+
+    // script Message
+    void onProjectOpened(QStringList args);
+    void onProjectClosed ();
+    void onFindAdvance(QStringList args);
+
+    void onOpenWindow(QStringList args);
+
+    // BookMark message
+    void addBookMark(BookMark* pBook, QListWidgetItem *pItem);
+    void delBookMark(QListWidgetItem *pItem);
+    void bookmarkClick(QListWidgetItem* item);
+
+    // WidgetTab
+    void addQWidgetTab(QWidget* qWidget, QString nativeName);
+    void addQWidgetTab(QWidget* qWidget);
+    void showQWidgetTab(QWidget* qWidget);
+    void closeQWidgetTab(QWidget* qWidget);
+    void tabMovedSlot(int from, int to);
 private:
     void openFile(QString fileName);
-
+    void initProjectDocumentTreeView();
+    void setProjectDocumentTree(QString path);
+    void clearProjectDocumentTree();
 private:
     bool needToRebuild ();
 private:
+    void setupDockWindows();
+private:
     Ui::MainWindow *ui;
-
-    WorkSpace* mCenterWidget;
 
     StatusLabel* mStatusLabel;
     StatusLabel* mLastLogLabel;
     CommandLineEdit* mCmdLineEdit;
 
-
     RunDevice* mRunDevice;
+
+    // DockWindow
+    // FileTreeView
+    QFileSystemModel *mFileModel = nullptr;
+    QTreeView* mFileTreeView = nullptr;
+
+    // BookMark
+    QListWidget* mBookMarkListWidget = nullptr;
+    BookMarkManager* mBookMarkManager = nullptr;
+
+    // Command Area
+    QTextBrowser *mCmdTextBrowser = nullptr;
+    FindDialog* mFindDialog = nullptr;
+
+    // Central Widget
+    // Tab Widget
+    ProjectTab* mProjectTab;
+    EditorTab* mEditorTab;
+
+    MHTabWidget* mTabWidget;
+    QVector<QWidget*> mWidgetList;
+    QVector<QString> mWidgetNativeNameList;
 };
 
 #endif // MAINWINDOW_H

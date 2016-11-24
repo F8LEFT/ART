@@ -15,18 +15,24 @@
 #include "OpenApk/OpenApk.h"
 #include "RunDevice/RunDevice.h"
 #include "Config/Config.h"
+#include "TabWidget.h"
+
 
 #include "utils/CmdMsgUtil.h"
-#include <utils/Configuration.h>
-#include <utils/StringUtil.h>
-#include <utils/ProjectInfo.h>
-#include <utils/ScriptEngine.h>
+#include "utils/Configuration.h"
+#include "utils/StringUtil.h"
+#include "utils/ProjectInfo.h"
+#include "utils/ScriptEngine.h"
+
 
 #include <QMimeData>
 #include <QMessageBox>
 #include <QDragEnterEvent>
 #include <QFileDialog>
 #include <QDebug>
+#include <QDockWidget>
+#include <QDesktopServices>
+#include <QStringList>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -34,15 +40,29 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Android Reverse Toolkit");
-    loadFromConfig();
 
-    mCenterWidget = new WorkSpace(this);
-    setCentralWidget(mCenterWidget);
+    mTabWidget = new MHTabWidget(this);
+    setCentralWidget(mTabWidget);
+    // init Tabs
+    mProjectTab = new ProjectTab(this);
+    mProjectTab->setWindowTitle(tr("Project"));
+    mEditorTab = new EditorTab(this);
+    mEditorTab->setWindowTitle (tr ("Editor"));
+
+    // init Tab widget
+    mWidgetList.push_back(mProjectTab);
+    mWidgetNativeNameList.push_back("ProjectTab");
+    mWidgetList.push_back (mEditorTab);
+    mWidgetNativeNameList.push_back ("EditorTab");
+    loadTabOrder();
+
+    // QDockWidget
+    setupDockWindows();
 
     setupCommandBar();
     setupStatusBar();
     mRunDevice = RunDevice::instance (this);
-    
+
     // connect Menu signal/slots
     // File Menu
     connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(actionExit()));
@@ -76,12 +96,39 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAbout_ART, SIGNAL(triggered(bool)),
             this, SLOT(actionAboutArt()));
 
+    // file tree view signal
+    connect(mFileTreeView, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(treeFileOpen(QModelIndex)));
+    connect(mFileTreeView, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(treeFileMenuRequested(QPoint)));
+
+    // BookMark signal
+    connect(mBookMarkManager, SIGNAL(addBookMark(BookMark*,QListWidgetItem*)),
+            this, SLOT(addBookMark(BookMark*,QListWidgetItem*)));
+    connect(mBookMarkManager, SIGNAL(delBookMark(QListWidgetItem*)),
+            this, SLOT(delBookMark(QListWidgetItem*)));
+    connect(mBookMarkListWidget, SIGNAL(itemClicked(QListWidgetItem*)),
+            this, SLOT(bookmarkClick(QListWidgetItem*)));
+
+    // command line signal
+    auto *cmdMsgUtil = CmdMsg::instance ();
+    connect(cmdMsgUtil, SIGNAL(addCmdMsg(QString)), this, SLOT(onCmdMessage(QString)));
+
+    // tab signal
+    connect(mTabWidget, SIGNAL(tabMovedTabWidget(int, int)),
+            this, SLOT(tabMovedSlot(int, int)));
+
     // script
     auto* script = ScriptEngine::instance();
     connect(script, SIGNAL(projectOpened(QStringList)),
                 this, SLOT(onProjectOpened(QStringList)));
     connect(script, SIGNAL(projectClosed(QStringList)),
                 this, SLOT(onProjectClosed()));
+    connect(script, SIGNAL(findAdvance(QStringList)), this, SLOT(onFindAdvance (QStringList)));
+    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
+    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed ()));
+
+    connect(script, SIGNAL(openWindow(QStringList)), this, SLOT(onOpenWindow (QStringList)));
 
 
 
@@ -89,6 +136,11 @@ MainWindow::MainWindow(QWidget *parent) :
                         + GetCompileVersion () + " by f8left");
     cmdmsg()->setStatusMsg("ready");
     cmdmsg()->setLastLogMsg("init complete");
+
+
+    //showQWidgetTab(mProjectTab);
+    loadFromConfig();
+
 }
 
 MainWindow::~MainWindow()
@@ -100,26 +152,19 @@ MainWindow::~MainWindow()
 void MainWindow::loadFromConfig()
 {
     Configuration *config = Config();
-    QPoint p;
-    p.setX (config->getUint ("MainWindow","x"));
-    p.setY (config->getUint ("MainWindow","y"));
-    move(p);
-    QSize s;
-    s.setWidth (config->getUint ("MainWindow","width"));
-    s.setHeight (config->getUint ("MainWindow","height"));
-    resize (s);
+    QByteArray geo = config->getByte("MainWindow", "Geometry");
+    restoreGeometry(geo);
+    QByteArray state = config->getByte("MainWindow", "State");
+    restoreState(state);
 }
 
 void MainWindow::saveToConfig()
 {
     Configuration *config = Config();
-
-    QPoint p = pos();
-    config->setUint ("MainWindow","x",p.x ());
-    config->setUint ("MainWindow","y",p.y ());
-    QSize s = size ();
-    config->setUint ("MainWindow","width",s.width ());
-    config->setUint ("MainWindow","height",s.height ());
+    QByteArray geo = saveGeometry();
+    config->setByte("MainWindow", "Geometry", geo);
+    QByteArray state = saveState();
+    config->setByte("MainWindow", "State", state);
 }
 
 void MainWindow::setupCommandBar()
@@ -344,12 +389,17 @@ void MainWindow::onProjectOpened(QStringList projName)
 {
     if(projName.empty())
         return;
-    setWindowTitle("Android Reverse Toolkit - " + projName.front());
+    QString &name = projName.front();
+    setWindowTitle("Android Reverse Toolkit - " + name);
+
+    setProjectDocumentTree(GetProjectsProjectPath(name));
 }
 
 void MainWindow::onProjectClosed()
 {
     setWindowTitle("Android Reverse Toolkit");
+    clearProjectDocumentTree();
+    showQWidgetTab(mProjectTab);
 }
 
 void MainWindow::openFile(QString fileName)
@@ -384,6 +434,261 @@ void MainWindow::openFile(QString fileName)
         cmdexec("OpenProject", args);
     }
     delete openWidget;
+}
+
+
+void MainWindow::setProjectDocumentTree(QString path)
+{
+    Q_ASSERT (mFileModel == nullptr && "has been initialize?");
+
+    mFileModel = new QFileSystemModel;
+
+    mFileModel->setRootPath(path);
+    mFileTreeView->setModel(mFileModel);
+    mFileTreeView->setRootIndex(mFileModel->index(path));
+
+    for (int i = 1; i < mFileModel->columnCount(); i++) {   // hide size date
+        mFileTreeView->hideColumn(i);
+    }
+}
+
+void MainWindow::clearProjectDocumentTree()
+{
+    mFileTreeView->setModel(nullptr);
+    Q_ASSERT (mFileModel != nullptr && "not initialize?");
+    mFileModel->deleteLater ();
+    mFileModel = nullptr;
+}
+
+void MainWindow::setupDockWindows()
+{
+    setDockNestingEnabled(true);
+    setTabPosition(Qt::LeftDockWidgetArea, QTabWidget::West);
+    setTabPosition(Qt::RightDockWidgetArea, QTabWidget::East);
+    setTabPosition(Qt::TopDockWidgetArea, QTabWidget::North);
+    setTabPosition(Qt::BottomDockWidgetArea, QTabWidget::South);
+
+    mFileTreeView = new QTreeView(this);
+    mFileTreeView->setModel(nullptr);
+    auto *pHeader= mFileTreeView->header();
+    pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+    pHeader->setStretchLastSection(false);
+    pHeader->setSortIndicator(0, Qt::AscendingOrder);
+    mFileTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    mFileTreeView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    mBookMarkManager = BookMarkManager::instance(this);
+    mBookMarkListWidget = new QListWidget(this);
+    mBookMarkListWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    mFindDialog = new FindDialog (this);
+    mFindDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    mCmdTextBrowser = new QTextBrowser(this);
+    mCmdTextBrowser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    QDockWidget* dockFileTree = new QDockWidget(tr("FileTree"), this);
+    dockFileTree->setAllowedAreas(Qt::AllDockWidgetAreas);
+    dockFileTree->setWidget(mFileTreeView);
+    dockFileTree->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    //dockFileTree->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    addDockWidget(Qt::LeftDockWidgetArea, dockFileTree);
+
+    QDockWidget* dockBookMark = new QDockWidget(tr("BookMark"), this);
+    dockBookMark->setAllowedAreas(Qt::AllDockWidgetAreas);
+    dockBookMark->setWidget(mBookMarkListWidget);
+    dockBookMark->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    //dockBookMark->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    //addDockWidget(Qt::LeftDockWidgetArea, dockBookMark);
+
+    tabifyDockWidget(dockFileTree, dockBookMark);
+
+    QDockWidget* dockCommand = new QDockWidget(tr("Messages"), this);
+    dockCommand->setAllowedAreas(Qt::AllDockWidgetAreas);
+    dockCommand->setWidget(mCmdTextBrowser);
+    dockCommand->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    //dockCommand->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    addDockWidget(Qt::BottomDockWidgetArea, dockCommand, Qt::Horizontal);
+
+    QDockWidget* dockSearch = new QDockWidget(tr("Search && Replace"), this);
+    dockSearch->setAllowedAreas(Qt::AllDockWidgetAreas);
+    dockSearch->setWidget(mFindDialog);
+    dockSearch->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    //dockSearch->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    // addDockWidget(Qt::BottomDockWidgetArea, dockSearch);
+
+    //mFindDialog->hide(); mCmdTextBrowser->hide();
+    tabifyDockWidget(dockCommand, dockSearch);
+
+    dockFileTree->raise();
+    dockCommand->raise();
+}
+
+
+
+void MainWindow::onCmdMessage(QString msg)
+{
+    QStringList lineList = msg.split(QRegExp("\\n+"), QString::SkipEmptyParts);
+        foreach(QString m, lineList) {
+            mCmdTextBrowser->append(m);
+        }
+}
+
+void MainWindow::onCmdClear()
+{
+    mCmdTextBrowser->clear();
+}
+
+void MainWindow::treeFileOpen(const QModelIndex &index)
+{
+    if (mFileModel->fileInfo(index).isFile()) {
+        if(mEditorTab->openFile(mFileModel->filePath(index), -1)) {
+            showQWidgetTab(mEditorTab);
+        }
+    }
+}
+
+void MainWindow::treeFileMenuRequested (const QPoint &point)
+{
+    QModelIndex index=mFileTreeView->currentIndex();
+    if(!index.isValid ())
+        return;
+
+    QMenu* menu=new QMenu(this);
+    menu->addAction(tr("Show in Files"), this, SLOT(treeFileShowInFile()));
+    menu->exec(QCursor::pos());
+    menu->deleteLater ();
+}
+
+void MainWindow::treeFileShowInFile ()
+{
+    QModelIndex index=mFileTreeView->currentIndex();
+    auto fileinfo = mFileModel->fileInfo(index);
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(fileinfo.absolutePath ()));
+}
+
+void MainWindow::onFindAdvance(QStringList args)
+{
+    if(!args.isEmpty ()) {
+        mFindDialog->onFindAdvance (args.front ());
+    } else
+    if(mFileTreeView->hasFocus()) {
+        auto index = mFileTreeView->currentIndex ();
+        if(index.isValid ()) {
+            auto fInfo = mFileModel->fileInfo (index);
+            mFindDialog->onFindAdvance (fInfo.absoluteFilePath ());
+        }
+    } else {
+        mFindDialog->onFindAdvance (QString());
+    }
+    mFindDialog->setFocus();
+}
+
+void MainWindow::onOpenWindow (QStringList args)
+{
+    if(args.isEmpty ())
+        return;
+    QString &tabName = args.front ();
+    for(int i = 0; i < mWidgetList.size(); i++)
+    {
+        if(tabName == mWidgetNativeNameList[i]) {
+            showQWidgetTab (mWidgetList[i]);
+            break;
+        }
+    }
+}
+
+void MainWindow::addBookMark(BookMark *pBook, QListWidgetItem *pItem)
+{
+    pItem->setSizeHint(QSize(0, pBook->height()));
+
+    mBookMarkListWidget->addItem(pItem);
+    mBookMarkListWidget->setItemWidget(pItem, pBook);
+}
+
+void MainWindow::delBookMark(QListWidgetItem *pItem)
+{
+    Q_ASSERT(pItem != nullptr);
+    BookMark* pBook = (BookMark*)mBookMarkListWidget->itemWidget(pItem);
+    Q_ASSERT(pBook != nullptr);
+    delete pBook;
+    delete pItem;
+}
+
+void MainWindow::bookmarkClick(QListWidgetItem *item)
+{
+    BookMark* pBook = (BookMark*)mBookMarkListWidget->itemWidget(item);
+    Q_ASSERT(pBook != nullptr);
+    emit pBook->onClicked(pBook);
+}
+
+void MainWindow::setTab(QWidget *widget)
+{
+    for(int i = 0; i < mTabWidget->count(); i++)
+    {
+        if(mTabWidget->widget(i) == widget)
+        {
+            mTabWidget->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+void MainWindow::loadTabOrder()
+{
+    QList<QPair<QWidget*, QString>> tabIndexToWidget;
+
+    Configuration *config = Config();
+    // Get tabIndex for each widget and add them to tabIndexToWidget
+    for(int i = 0; i < mWidgetList.size(); i++)
+    {
+        QString tabName = mWidgetNativeNameList[i];
+        unsigned tabIndex = config->getUint("TabOrder", tabName);
+        tabIndexToWidget.insert(tabIndex, qMakePair(mWidgetList[i], tabName));
+    }
+
+    // Setup tabs
+    for(auto & widget : tabIndexToWidget)
+        addQWidgetTab(widget.first, widget.second);
+}
+
+void MainWindow::addQWidgetTab(QWidget *qWidget, QString nativeName)
+{
+    mTabWidget->addTabEx(qWidget, qWidget->windowIcon(),
+                         qWidget->windowTitle(), nativeName);
+}
+
+void MainWindow::addQWidgetTab(QWidget *qWidget)
+{
+    addQWidgetTab(qWidget, qWidget->windowTitle());
+}
+
+void MainWindow::showQWidgetTab(QWidget *qWidget)
+{
+    qWidget->show();
+    qWidget->setFocus();
+    setTab(qWidget);
+}
+
+void MainWindow::closeQWidgetTab(QWidget *qWidget)
+{
+    for(int i = 0; i < mTabWidget->count(); i++)
+    {
+        if(mTabWidget->widget(i) == qWidget)
+        {
+            mTabWidget->DeleteTab(i);
+            break;
+        }
+    }
+}
+
+void MainWindow::tabMovedSlot(int from, int to)
+{
+    for(int i = 0; i < mTabWidget->count(); i++)
+    {
+        QString tabName = mTabWidget->getNativeName(i);
+        Config()->setUint("TabOrder", tabName, i);
+    }
 }
 
 
