@@ -8,5 +8,5 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 source_group_by_dir(GUI_SRCS)
 
 add_library(${TARGET_NAME} STATIC ${GUI_SRCS} ${JDWPSRC})
-target_link_libraries(${TARGET_NAME} Jdwp )
+target_link_libraries(${TARGET_NAME} utils)
 qt5_use_modules(${TARGET_NAME} Widgets WebSockets)

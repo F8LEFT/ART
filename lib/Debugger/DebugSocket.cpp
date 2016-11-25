@@ -11,8 +11,13 @@
 #include <Jdwp/JdwpHeader.h>
 #include "Jdwp/Request.h"
 
-#include <QMutexLocker>
 
+#include <utils/ProjectInfo.h>
+#include <utils/CmdMsgUtil.h>
+#include <utils/AdbUtil.h>
+
+#include <QHostAddress>
+#include <QMutexLocker>
 
 DebugSocket::DebugSocket (QObject *parent)
         : QThread (parent), mQuit(false), mConnected(false)
@@ -29,13 +34,15 @@ DebugSocket::~DebugSocket ()
 
 }
 
-void DebugSocket::startConnection (const QString &hostName,quint16 port)
+void DebugSocket::startConnection (const QString &hostName, int port,
+                                   const QString &targetName)
 {
     QMutexLocker locker(&mMutex);
     if(isRunning ())
         return;
     mHostName = hostName;
     mPort = port;
+    mTargetName = targetName;
     start ();
 }
 
@@ -46,12 +53,18 @@ void DebugSocket::stopConnection ()
 
 void DebugSocket::run ()
 {
+    if(!tryBindJdwp()) {
+        emit error(-1, tr("Unable to open debug port."));
+        return;
+    }
     mSocket.connectToHost (mHostName, mPort);
+
     auto timeout = 10 * 1000;
     if(!mSocket.waitForConnected (timeout)) {
         emit error (mSocket.error (), mSocket.errorString ());
         return;
     }
+    mSocket.waitForReadyRead();
     if(!tryHandshake ()) {
         emit error(-1, tr("Unable to send handshake packet"));
         return;
@@ -103,5 +116,40 @@ void DebugSocket::onDisconnected ()
 void DebugSocket::onConnected ()
 {
     mConnected = true;
+}
+bool DebugSocket::tryBindJdwp()
+{
+    return true;
+    // get Process pid
+    int pid = 0;
+    AdbUtil adbUtil;
+    auto deviceId = projinfo("DeviceId");
+    if(deviceId.isEmpty()) {
+        return false;
+    }
+    QStringList pidList = adbUtil.execute("-s " + deviceId + " shell pidof " + mTargetName);
+    foreach(const QString& s, pidList) {
+            pid = s.toInt();
+            if(pid != 0) {
+                break;
+            }
+        }
+    if(pid == 0)
+        return false;
+
+    // open Debug port
+    QString bindConfig = "tcp:" +  QString::number(mPort) +
+                    " jdwp:" +  QString::number(pid);
+    adbUtil.execute("-s " + deviceId + " forward " + bindConfig);
+
+    QStringList bindResult = adbUtil.execute("-s " + deviceId + " forward --list");
+
+    QString bindCheck = deviceId + " " + bindConfig;
+    foreach(const QString& s, bindResult) {
+            if(bindCheck == s) {
+                return true;
+            }
+        }
+    return false;
 }
 

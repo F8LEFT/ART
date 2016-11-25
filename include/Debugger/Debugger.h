@@ -11,25 +11,42 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef PROJECT_DEBUGGER_H
-#define PROJECT_DEBUGGER_H
+#ifndef DEBUGGER_H
+#define DEBUGGER_H
 
-#include <QObject>
-#include <QString>
+#include <QWidget>
 
+namespace Ui {
+class Debugger;
+}
 
-class DebugSocket;
-
-class Debugger: public QObject
+class Debugger : public QWidget
 {
     Q_OBJECT
-    Debugger(QObject* parent = nullptr);
 
-protected slots:
+public:
+    explicit Debugger(QWidget *parent = 0);
+    ~Debugger();
+
+    // configuration
+    void loadFromConfig();
+    void saveToConfig();
+
+    bool isDebugging() { return mIsDebugging; }
+    void stopCurrentTarget();
+
+public slots:
+    void startNewTarget(QStringList args);
+
+private slots:
+    void onSocketError(int error, const QString &message);
 
 private:
-    DebugSocket* mSocket;
+    Ui::Debugger *ui;
+
+    bool mIsDebugging;
+
+
 };
 
-
-#endif //PROJECT_DEBUGGER_H
+#endif // DEBUGGER_H

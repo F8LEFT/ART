@@ -17,6 +17,7 @@
 #include <Find/FindDialog.h>
 #include <EditorTab/EditorTab.h>
 #include <ProjectTab/ProjectTab.h>
+#include <Debugger/Debugger.h>
 
 #include <QMainWindow>
 #include <QCloseEvent>
@@ -152,6 +153,8 @@ private:
     QDockWidget* mDockCommand = nullptr;
     FindDialog* mFindDialog = nullptr;
     QDockWidget* mDockFind = nullptr;
+    Debugger* mDebugger = nullptr;
+    QDockWidget* mDockDebugger = nullptr;
 
     // Central Widget
     // Tab Widget

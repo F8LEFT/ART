@@ -324,6 +324,9 @@ void MainWindow::actionDebug()
     if(!ProjectInfo::instance ()->isProjectOpened ()) {
         return;
     }
+    if(mDebugger->isDebugging()) {
+        mDebugger->stopCurrentTarget();
+    }
     if(needToRebuild ()) {
         cmdexec("Build");
         cmdexec("Install");
@@ -481,14 +484,18 @@ void MainWindow::setupDockWindows()
     mFindDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     mCmdTextBrowser = new QTextBrowser(this);
     mCmdTextBrowser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    mDebugger = new Debugger(this);
+    mDebugger->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     mDockFileTree = new QDockWidget(tr("FileTree"), this);
+    mDockFileTree->setObjectName("FileTree");
     mDockFileTree->setAllowedAreas(Qt::AllDockWidgetAreas);
     mDockFileTree->setWidget(mFileTreeView);
     mDockFileTree->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::LeftDockWidgetArea, mDockFileTree);
 
     mDockBookMark = new QDockWidget(tr("BookMark"), this);
+    mDockBookMark->setObjectName("BookMark");
     mDockBookMark->setAllowedAreas(Qt::AllDockWidgetAreas);
     mDockBookMark->setWidget(mBookMarkListWidget);
     mDockBookMark->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
@@ -496,16 +503,25 @@ void MainWindow::setupDockWindows()
     tabifyDockWidget(mDockFileTree, mDockBookMark);
 
     mDockCommand = new QDockWidget(tr("Messages"), this);
+    mDockCommand->setObjectName("Message");
     mDockCommand->setAllowedAreas(Qt::AllDockWidgetAreas);
     mDockCommand->setWidget(mCmdTextBrowser);
     mDockCommand->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::BottomDockWidgetArea, mDockCommand, Qt::Horizontal);
 
     mDockFind = new QDockWidget(tr("Search && Replace"), this);
+    mDockFind->setObjectName("SeachAReplace");
     mDockFind->setAllowedAreas(Qt::AllDockWidgetAreas);
     mDockFind->setWidget(mFindDialog);
     mDockFind->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     tabifyDockWidget(mDockCommand, mDockFind);
+
+    mDockDebugger = new QDockWidget(tr("Debug"), this);
+    mDockDebugger->setObjectName("Debug");
+    mDockDebugger->setAllowedAreas(Qt::AllDockWidgetAreas);
+    mDockDebugger->setWidget(mDebugger);
+    mDockDebugger->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+    tabifyDockWidget(mDockFind, mDockDebugger);
 }
 
 void MainWindow::onCmdMessage(QString msg)

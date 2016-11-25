@@ -67,6 +67,7 @@ void RunDevice::accept()
     if (devMsg.size() > 1) {
         mDeviceId = devMsg.last();
         useDefault = ui->mSameCheckBox->isChecked();
+        projinfoset("DeviceId", mDeviceId);
     }
     QDialog::accept();
 }

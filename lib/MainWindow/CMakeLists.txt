@@ -8,5 +8,5 @@ source_group_by_dir(GUI_SRCS)
 
 add_executable(${TARGET_NAME} ${GUI_SRCS} ../../ART.qrc)
 target_link_libraries(${TARGET_NAME} AboutArt OpenApk RunDevice
-        ProjectTab EditorTab Find Config)
+        ProjectTab EditorTab Find Config Debugger)
 qt5_use_modules(${TARGET_NAME} Widgets)
