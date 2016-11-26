@@ -14,9 +14,11 @@
 
 #include "utils/Configuration.h"
 #include "utils/ScriptEngine.h"
+#include <utils/CmdMsgUtil.h>
 
 #include <QHostAddress>
 #include <QDebug>
+#include <Jdwp/JdwpHandler.h>
 
 Debugger::Debugger(QWidget *parent) :
     QWidget(parent),
@@ -28,6 +30,16 @@ Debugger::Debugger(QWidget *parent) :
     auto* script = ScriptEngine::instance();
     connect(script, &ScriptEngine::debugStart, this, &Debugger::startNewTarget);
 
+    mSocket = new DebugSocket(this);
+    connect(mSocket, &DebugSocket::error, this, &Debugger::onSocketError, Qt::QueuedConnection);
+    connect(mSocket, &DebugSocket::connected, this, &Debugger::onSocketConnected, Qt::QueuedConnection);
+    connect(mSocket, &DebugSocket::disconnected, this, &Debugger::onSocketDisconnected, Qt::QueuedConnection);
+    connect(this, SIGNAL(sendBuffer(const char*,quint64)),
+            mSocket, SLOT(sendBuffer(const char*,quint64)), Qt::QueuedConnection);
+    connect(this, SIGNAL(sendBuffer(QByteArray)), mSocket, SLOT(sendBuffer(QByteArray)),
+            Qt::QueuedConnection);
+
+    connect(mSocket, &DebugSocket::newJDWPRequest, this, &Debugger::onJDWPRequest);
 
     loadFromConfig();
 }
@@ -51,24 +63,53 @@ void Debugger::saveToConfig()
     config->setByte("Debugger", "SplitGeometry", ui->mSplitter->saveGeometry());
     config->setByte("Debugger", "SplitState", ui->mSplitter->saveState());
 }
+
+bool Debugger::isDebugging ()
+{
+    return mSocket->isConnected ();
+}
+
 void Debugger::stopCurrentTarget()
 {
-    mIsDebugging = false;
+    mSocket->stopConnection ();
 }
+
 void Debugger::startNewTarget(QStringList args)
 {
-    if(args.empty() || mIsDebugging) {
+    if(args.empty() || mSocket->isConnected ()) {
         return;
     }
 
-    mIsDebugging = true;
     auto& target = args.front();
-    DebugSocket* sock = new DebugSocket(this);
-    connect(sock, &DebugSocket::error, this, &Debugger::onSocketError);
-    sock->startConnection("localhost", 8100, target);
+
+    mSocket->startConnection("localhost", 8100, target);
 }
 
 void Debugger::onSocketError(int error, const QString &message)
 {
     qDebug() << "Socket error code : " << error << " msg: " << message;
 }
+
+void Debugger::onSocketConnected()
+{
+    cmdmsg()->addCmdMsg("Debugger connect to " + mSocket->hostName () + ":" +
+                                QString::number(mSocket->port ()));
+    // just run
+    auto req = JDWP::VirtualMachine::Resume::buildReq (0);
+    sendBuffer (req);
+}
+
+void Debugger::onSocketDisconnected()
+{
+    cmdmsg()->addCmdMsg("Debugger disconnected");
+}
+
+void Debugger::onJDWPRequest (JDWP::Request *request)
+{
+
+    qDebug() << "receive new request Id:" << request->GetId ()
+             << " Reply:" << request->isReply ()
+             << " CommandSet:" << request->GetCommandSet ()
+             << " Command:" << request->GetCommand ();
+}
+

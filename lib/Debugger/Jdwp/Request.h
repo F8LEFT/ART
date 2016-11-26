@@ -35,7 +35,7 @@ namespace JDWP {
         const size_t GetExtraLen() const;
 
         bool isValid() { return valid_; }
-        bool isReply() { return isReply (); }
+        bool isReply() { return reply; }
 
         static bool isValid(const uint8_t* bytes, uint32_t available);
     private:

@@ -46,7 +46,7 @@ namespace JDWP {
         JdwpLocation ReadJdwpLocation();
 
 
-        std::string ReadString();
+        QByteArray ReadString();
         bool hasError() { return error; }
         bool isEmpty() { return p_ == end_; }
 

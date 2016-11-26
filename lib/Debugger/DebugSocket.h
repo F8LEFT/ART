@@ -37,15 +37,27 @@ public:
 
     void run() Q_DECL_OVERRIDE;
 
+    const QString &hostName() const;
+    const QString &targetName() const;
+    const quint16 port() const;
+    const bool isConnected() const;
 signals:
     void error(int socketError, const QString &message);
 
-    // delete request after call.
+    // need to delete request in slot after call.
     void newJDWPRequest(JDWP::Request* request);
-
+    // this will be emited when handshake finished
+    void connected();
+    // this will be emited when connect close, and DebugSocket object will be deleted.
+    void disconnected();
 private slots:
     void onDisconnected();
     void onConnected();
+    void onThreadfinish();
+
+public slots:
+    void sendBuffer(const QByteArray& array);
+    void sendBuffer(const char*data, quint64 len);
 private:
     ~DebugSocket ();
 
@@ -59,8 +71,8 @@ private:
     QMutex mMutex;
     QAtomicInteger<bool> mQuit;
 
-    QTcpSocket mSocket;
-    QByteArray mBufPool;
+    QTcpSocket *mSocket;
+
     bool mConnected;
 };
 

@@ -19,6 +19,10 @@
 namespace Ui {
 class Debugger;
 }
+class DebugSocket;
+namespace JDWP {
+    class Request;
+}
 
 class Debugger : public QWidget
 {
@@ -32,20 +36,25 @@ public:
     void loadFromConfig();
     void saveToConfig();
 
-    bool isDebugging() { return mIsDebugging; }
+    bool isDebugging();
     void stopCurrentTarget();
+signals:
+    void sendBuffer(const QByteArray& array);
+    void sendBuffer(const char*data, quint64 len);
 
 public slots:
     void startNewTarget(QStringList args);
 
 private slots:
     void onSocketError(int error, const QString &message);
+    void onSocketConnected();
+    void onSocketDisconnected();
+    void onJDWPRequest(JDWP::Request* request);
 
 private:
     Ui::Debugger *ui;
 
-    bool mIsDebugging;
-
+    DebugSocket* mSocket = nullptr;
 
 };
 

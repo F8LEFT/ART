@@ -324,6 +324,7 @@ void MainWindow::actionDebug()
     if(!ProjectInfo::instance ()->isProjectOpened ()) {
         return;
     }
+    cmdexec("Stop", CmdMsg::script, true, false);
     if(mDebugger->isDebugging()) {
         mDebugger->stopCurrentTarget();
     }

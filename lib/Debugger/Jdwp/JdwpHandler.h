@@ -153,18 +153,18 @@
 
 namespace JDWP {
     namespace VirtualMachine {
-        uint8_t set_ = 1;
+        const static uint8_t set_ = 1;
 
         struct Version : public JdwpReader {
             Version(const uint8_t* bytes, uint32_t available);
 
-            std::string version;
+            QByteArray version;
             uint32_t major;
             uint32_t minor;
-            std::string javaVersion;
-            std::string javaVmName;
+            QByteArray javaVersion;
+            QByteArray javaVmName;
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 1;
         };
 
@@ -174,7 +174,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<ClassInfo> mInfos;
 
-            static std::string buildReq(const std::string &classDescriptor,
+            static QByteArray buildReq(const QByteArray &classDescriptor,
                                         int id = 0);
             const static uint8_t cmd = 2;
         };
@@ -185,7 +185,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<ClassInfo> mInfos;
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 3;
         };
 
@@ -194,7 +194,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<ObjectId> mThreadIds;
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 4;
         };
 
@@ -204,7 +204,7 @@ namespace JDWP {
             uint32_t mGroups;
             ObjectId mThreadGroupId;
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 5;
         };
 
@@ -212,7 +212,7 @@ namespace JDWP {
             Dispose(const uint8_t* bytes, uint32_t available);
 
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 6;
         };
 
@@ -225,28 +225,28 @@ namespace JDWP {
             uint32_t mRefTypeIdSize;
             uint32_t mFrameIdSize;
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 7;
         };
 
         struct Suspend : public JdwpReader {
             Suspend(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 8;
         };
 
         struct Resume : public JdwpReader {
             Resume(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 9;
         };
 
         struct Exit : public JdwpReader {
             Exit(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 10;
         };
 
@@ -254,7 +254,7 @@ namespace JDWP {
             CreateString(const uint8_t* bytes, uint32_t available);
             ObjectId mStringId;
 
-            static std::string buildReq(const std::string str, int id = 0);
+            static QByteArray buildReq(const QByteArray str, int id = 0);
             const static uint8_t cmd = 11;
         };
 
@@ -269,20 +269,20 @@ namespace JDWP {
             uint8_t mCanGetCurrentContendedMonitor;
             uint8_t mCanGetMonitorInfo;
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 12;
         };
 
         struct ClassPaths : public JdwpReader {
             ClassPaths(const uint8_t* bytes, uint32_t available);
 
-            std::string mSlash; // string "/"?
+            QByteArray mSlash; // string "/"?
             uint32_t mClassPathSize;
-            std::vector<std::string> mClassPath;
+            std::vector<QByteArray> mClassPath;
             uint32_t mBootClassPathSize;
-            std::vector<std::string> mBootClassPath;
+            std::vector<QByteArray> mBootClassPath;
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 13;
         };
 
@@ -293,7 +293,7 @@ namespace JDWP {
                 ObjectId id;
                 uint32_t refCount;
             };
-            static std::string buildReq (
+            static QByteArray buildReq (
                     const std::vector<DispObj> &objs,int id = 0);
             const static uint8_t cmd = 14;
         };
@@ -301,14 +301,14 @@ namespace JDWP {
         struct HoldEvents : public JdwpReader {
             HoldEvents(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 15;
         };
 
         struct ReleaseEvents : public JdwpReader {
             ReleaseEvents(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 16;
         };
 
@@ -329,21 +329,21 @@ namespace JDWP {
             uint8_t mCanUseSourceNameFilters;
             uint8_t mCanGetConstantPool;
             uint8_t mCanForceEarlyReturn;
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 17;
         };
 
         struct RedefineClasses : public JdwpReader {
             RedefineClasses(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 18;
         };
 
         struct SetDefaultStratum : public JdwpReader {
             SetDefaultStratum(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 19;
         };
 
@@ -352,7 +352,7 @@ namespace JDWP {
 
             uint32_t mSize;
             std::vector<ClassInfo> mInfos;
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 20;
         };
 
@@ -362,20 +362,20 @@ namespace JDWP {
             uint32_t mCountSize;
             std::vector<uint64_t > mCounts;
 
-            static std::string buildReq(
+            static QByteArray buildReq(
                     const std::vector<RefTypeId > &class_ids, int id = 0);
             const static uint8_t cmd = 21;
         };
     }
     namespace ReferenceType
     {
-        uint8_t set_ = 2;
+        const static uint8_t set_ = 2;
 
         struct Signature : public JdwpReader {
             Signature(const uint8_t* bytes, uint32_t available);
 
-            std::string mSignature;
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            QByteArray mSignature;
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 1;
         };
 
@@ -383,7 +383,7 @@ namespace JDWP {
             ClassLoader(const uint8_t* bytes, uint32_t available);
             ObjectId mClassId;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 2;
         };
 
@@ -391,7 +391,7 @@ namespace JDWP {
             Modifiers(const uint8_t* bytes, uint32_t available);
             uint32_t mFlags;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 3;
         };
 
@@ -400,7 +400,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<FieldInfo> mFields;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 4;
         };
 
@@ -409,7 +409,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<MethodInfo> mMethods;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 5;
         };
 
@@ -418,7 +418,7 @@ namespace JDWP {
             bool isPrimateTag;
 
             JValue mValue;
-            static std::string buildReq(RefTypeId refTypeId, int32_t field_count,
+            static QByteArray buildReq(RefTypeId refTypeId, int32_t field_count,
                                 const std::vector<FieldId > &fieldids, int id = 0);
             const static uint8_t cmd = 6;
         };
@@ -426,16 +426,16 @@ namespace JDWP {
         struct SourceFile : public JdwpReader {
             SourceFile(const uint8_t* bytes, uint32_t available);
 
-            std::string mSourceFile;
+            QByteArray mSourceFile;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 7;
         };
 
         struct NestedTypes : public JdwpReader {
             NestedTypes(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 8;
         };
 
@@ -443,7 +443,7 @@ namespace JDWP {
             Status(const uint8_t* bytes, uint32_t available);
             uint32_t mClassStatus;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 9;
         };
 
@@ -452,7 +452,7 @@ namespace JDWP {
             uint32_t mCounts;
             std::vector<RefTypeId> mDirectInterfaces;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 10;
         };
 
@@ -460,22 +460,22 @@ namespace JDWP {
             ClassObject(const uint8_t* bytes, uint32_t available);
             ObjectId mClassId;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 11;
         };
 
         struct SourceDebugExtension : public JdwpReader {
             SourceDebugExtension(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 12;
         };
 
         struct SignatureWithGeneric : public Signature {
             SignatureWithGeneric(const uint8_t* bytes, uint32_t available);
-            std::string mSignatureGeneric;
+            QByteArray mSignatureGeneric;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 13;
         };
 
@@ -484,7 +484,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<FieldInfo> mFields;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 14;
         };
 
@@ -493,7 +493,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<MethodInfo> mMethods;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 15;
         };
 
@@ -506,7 +506,7 @@ namespace JDWP {
             uint32_t mSize;
             std::vector<tagObj> mObjTags;
 
-            static std::string buildReq(RefTypeId refTypeId, int32_t maxcount,
+            static QByteArray buildReq(RefTypeId refTypeId, int32_t maxcount,
                                         int id = 0);
             const static uint8_t cmd = 16;
         };
@@ -515,7 +515,7 @@ namespace JDWP {
             ClassFileVersion(const uint8_t* bytes, uint32_t available);
 
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 17;
         };
 
@@ -523,26 +523,26 @@ namespace JDWP {
             ConstantPool(const uint8_t* bytes, uint32_t available);
 
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 18;
         };
     }
     namespace ClassType
     {
-        uint8_t set_ = 3;
+        const static uint8_t set_ = 3;
 
         struct Superclass : public JdwpReader {
             Superclass(const uint8_t* bytes, uint32_t available);
             RefTypeId mSuperClassId;
 
-            static std::string buildReq(RefTypeId refTypeId, int id = 0);
+            static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 1;
         };
 
         struct SetValues : public JdwpReader {
             SetValues(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(RefTypeId refTypeId,
+            static QByteArray buildReq(RefTypeId refTypeId,
                                         const std::vector<FieldInfo> &infos, int id = 0);
             const static uint8_t cmd = 2;
         };
@@ -553,7 +553,7 @@ namespace JDWP {
             JValue mResult;
             JValue mObject;
 
-            static std::string buildReq(RefTypeId class_id, ObjectId thread_id,
+            static QByteArray buildReq(RefTypeId class_id, ObjectId thread_id,
                           MethodId method_id,const std::vector<JValue> &argValues,
                           uint32_t options, int id = 0);
             const static uint8_t cmd = 3;
@@ -565,7 +565,7 @@ namespace JDWP {
             JValue mResult;
             JValue mObject;
 
-            static std::string buildReq(RefTypeId class_id, ObjectId thread_id,
+            static QByteArray buildReq(RefTypeId class_id, ObjectId thread_id,
                          MethodId method_id,const std::vector<JValue> &argValues,
                          uint32_t options, int id = 0);
             const static uint8_t cmd = 4;
@@ -574,14 +574,14 @@ namespace JDWP {
 
     namespace ArrayType
     {
-        uint8_t set_ = 4;
+        const static uint8_t set_ = 4;
 
         struct NewInstance : public JdwpReader {
             NewInstance(const uint8_t* bytes, uint32_t available);
 
             JValue mObject;
 
-            static std::string buildReq(RefTypeId arrayTypeId, uint32_t length,
+            static QByteArray buildReq(RefTypeId arrayTypeId, uint32_t length,
                                         int id = 0);
             const static uint8_t cmd = 1;
         };
@@ -589,12 +589,12 @@ namespace JDWP {
 
     namespace InterfaceType
     {
-        uint8_t set_ = 5;
+        const static uint8_t set_ = 5;
     }
 
     namespace Method
     {
-        uint8_t set_ = 6;
+        const static uint8_t set_ = 6;
 
         struct LineTable : public JdwpReader {
             struct LineLabel {
@@ -610,7 +610,7 @@ namespace JDWP {
             size_t mNumLines;
             std::vector<LineLabel> mItems;
 
-            static std::string buildReq(RefTypeId refTypeId, MethodId method_id,
+            static QByteArray buildReq(RefTypeId refTypeId, MethodId method_id,
                                         int id = 0);
             const static uint8_t cmd = 1;
         };
@@ -618,9 +618,9 @@ namespace JDWP {
         struct VariableTable : public JdwpReader {
             struct VarLabel {
                 uint64_t startAddress;
-                std::string name;
-                std::string descriptor;
-                std::string signature;
+                QByteArray name;
+                QByteArray descriptor;
+                QByteArray signature;
                 uint32_t size;
                 uint32_t slot;
             };
@@ -631,7 +631,7 @@ namespace JDWP {
             size_t mVariableCount;
             std::vector<VarLabel> mItems;
 
-            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+            static QByteArray buildReq(RefTypeId class_id, MethodId method_id,
                                         int id = 0);
             const static uint8_t cmd = 2;
         };
@@ -641,7 +641,7 @@ namespace JDWP {
 
             uint32_t mByteCodesSize;
             std::vector<uint8_t > mByteCodes;
-            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+            static QByteArray buildReq(RefTypeId class_id, MethodId method_id,
                                         int id = 0);
             const static uint8_t cmd = 3;
         };
@@ -649,7 +649,7 @@ namespace JDWP {
         struct IsObsolete : public JdwpReader {
             IsObsolete(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+            static QByteArray buildReq(RefTypeId class_id, MethodId method_id,
                                         int id = 0);
             const static uint8_t cmd = 4;
         };
@@ -657,9 +657,9 @@ namespace JDWP {
         struct VariableTableWithGeneric : public JdwpReader {
             struct VarLabel {
                 uint64_t startAddress;
-                std::string name;
-                std::string descriptor;
-                std::string signature;
+                QByteArray name;
+                QByteArray descriptor;
+                QByteArray signature;
                 uint32_t size;
                 uint32_t slot;
             };
@@ -670,7 +670,7 @@ namespace JDWP {
             size_t mVariableCount;
             std::vector<VarLabel> mItems;
 
-            static std::string buildReq(RefTypeId class_id, MethodId method_id,
+            static QByteArray buildReq(RefTypeId class_id, MethodId method_id,
                                         int id = 0);
             const static uint8_t cmd = 5;
         };
@@ -678,12 +678,12 @@ namespace JDWP {
 
     namespace Field
     {
-        uint8_t set_ = 8;
+        const static uint8_t set_ = 8;
     }
 
     namespace ObjectReference
     {
-        uint8_t set_ = 9;
+        const static uint8_t set_ = 9;
 
         struct ReferenceType : public JdwpReader {
             ReferenceType(const uint8_t* bytes, uint32_t available);
@@ -691,7 +691,7 @@ namespace JDWP {
             JdwpTypeTag tag;
             RefTypeId mTypeId;
 
-            static std::string buildReq(ObjectId object_id, int id = 0);
+            static QByteArray buildReq(ObjectId object_id, int id = 0);
             const static uint8_t cmd = 1;
         };
 
@@ -699,7 +699,7 @@ namespace JDWP {
             GetValues(const uint8_t* bytes, uint32_t available);
             JValue mValue;
 
-            static std::string buildReq(ObjectId object_id, const std::vector<FieldId > &fields,
+            static QByteArray buildReq(ObjectId object_id, const std::vector<FieldId > &fields,
                                         int id = 0);
             const static uint8_t cmd = 2;
         };
@@ -707,7 +707,7 @@ namespace JDWP {
         struct SetValues : public JdwpReader {
             SetValues(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(ObjectId object_id, const std::vector<FieldInfo> &fields,
+            static QByteArray buildReq(ObjectId object_id, const std::vector<FieldInfo> &fields,
                                         int id = 0);
             const static uint8_t cmd = 3;
         };
@@ -715,7 +715,7 @@ namespace JDWP {
         struct UNUSED : public JdwpReader {
             UNUSED(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 4;
         };
 
@@ -727,7 +727,7 @@ namespace JDWP {
             uint32_t mWaiterSize;
             std::vector<ObjectId> mWaiters;
 
-            static std::string buildReq(ObjectId object_id, int id = 0);
+            static QByteArray buildReq(ObjectId object_id, int id = 0);
             const static uint8_t cmd = 5;
         };
 
@@ -737,7 +737,7 @@ namespace JDWP {
             JValue mResult;
             JValue mObject;
 
-            static std::string buildReq(ObjectId object_id, ObjectId thread_id,
+            static QByteArray buildReq(ObjectId object_id, ObjectId thread_id,
                                         RefTypeId class_id, MethodId method_id,
                                         const std::vector<JValue> &argValues,uint32_t options,
                                         int id = 0);
@@ -749,7 +749,7 @@ namespace JDWP {
         struct DisableCollection : public JdwpReader {
             DisableCollection(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(ObjectId object_id,int id = 0);
+            static QByteArray buildReq(ObjectId object_id,int id = 0);
 
             const static uint8_t cmd = 7;
         };
@@ -757,7 +757,7 @@ namespace JDWP {
         struct EnableCollection : public JdwpReader {
             EnableCollection(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(ObjectId object_id,int id = 0);
+            static QByteArray buildReq(ObjectId object_id,int id = 0);
 
             const static uint8_t cmd = 8;
         };
@@ -766,7 +766,7 @@ namespace JDWP {
             IsCollected(const uint8_t* bytes, uint32_t available);
 
             bool mIsCollected;
-            static std::string buildReq(ObjectId object_id,int id = 0);
+            static QByteArray buildReq(ObjectId object_id,int id = 0);
 
             const static uint8_t cmd = 9;
         };
@@ -776,7 +776,7 @@ namespace JDWP {
 
             int mSize;
             std::vector<JValue> mObjs;
-            static std::string buildReq(ObjectId object_id, int32_t max_count, int id = 0);
+            static QByteArray buildReq(ObjectId object_id, int32_t max_count, int id = 0);
 
             const static uint8_t cmd = 10;
         };
@@ -784,13 +784,13 @@ namespace JDWP {
 
     namespace StringReference
     {
-        uint8_t set_ = 10;
+        const static uint8_t set_ = 10;
 
         struct Value : public JdwpReader {
             Value(const uint8_t* bytes, uint32_t available);
 
-            std::string mStr;
-            static std::string buildReq(ObjectId stringObject, int id = 0);
+            QByteArray mStr;
+            static QByteArray buildReq(ObjectId stringObject, int id = 0);
 
             const static uint8_t cmd = 1;
         };
@@ -798,13 +798,13 @@ namespace JDWP {
 
     namespace ThreadReference
     {
-        uint8_t set_ = 11;
+        const static uint8_t set_ = 11;
 
         struct Name : public JdwpReader {
             Name(const uint8_t* bytes, uint32_t available);
 
-            std::string mName;
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            QByteArray mName;
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 1;
         };
@@ -812,7 +812,7 @@ namespace JDWP {
         struct Suspend : public JdwpReader {
             Suspend(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 2;
         };
@@ -820,7 +820,7 @@ namespace JDWP {
         struct Resume : public JdwpReader {
             Resume(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 3;
         };
@@ -829,7 +829,7 @@ namespace JDWP {
             Status(const uint8_t* bytes, uint32_t available);
             uint32_t mThreadStatus;
             uint32_t mSuspendStatus;
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 4;
         };
@@ -837,7 +837,7 @@ namespace JDWP {
         struct ThreadGroup : public JdwpReader {
             ThreadGroup(const uint8_t* bytes, uint32_t available);
             ObjectId mThreadGroupId;
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 5;
         };
@@ -852,7 +852,7 @@ namespace JDWP {
             int mFrameCount;
             std::vector<Frame> mFrames;
 
-            static std::string buildReq(ObjectId thread_id, uint32_t start_frame,
+            static QByteArray buildReq(ObjectId thread_id, uint32_t start_frame,
                                         uint32_t length, int id = 0);
 
             const static uint8_t cmd = 6;
@@ -862,7 +862,7 @@ namespace JDWP {
             FrameCount(const uint8_t* bytes, uint32_t available);
             int mFrameCount;
 
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 7;
         };
@@ -871,7 +871,7 @@ namespace JDWP {
             OwnedMonitors(const uint8_t* bytes, uint32_t available);
             int mMonitorSize;
             std::vector<JValue> mMonitors;
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 8;
         };
@@ -879,21 +879,21 @@ namespace JDWP {
         struct CurrentContendedMonitor : public JdwpReader {
             CurrentContendedMonitor(const uint8_t* bytes, uint32_t available);
             JValue mContendedMonitor;
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 9;
         };
 
         struct Stop : public JdwpReader {
             Stop(const uint8_t* bytes, uint32_t available);
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 10;
         };
 
         struct Interrupt : public JdwpReader {
             Interrupt(const uint8_t* bytes, uint32_t available);
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 11;
         };
@@ -902,7 +902,7 @@ namespace JDWP {
             SuspendCount(const uint8_t* bytes, uint32_t available);
             uint32_t mSuspendCount;
 
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 12;
         };
@@ -916,14 +916,14 @@ namespace JDWP {
             OwnedMonitorsStackDepthInfo(const uint8_t* bytes, uint32_t available);
             int mMonitorSize;
             std::vector<Monitor> mMonitors;
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 13;
         };
 
         struct ForceEarlyReturn : public JdwpReader {
             ForceEarlyReturn(const uint8_t* bytes, uint32_t available);
-            static std::string buildReq(ObjectId thread_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_id, int id = 0);
 
             const static uint8_t cmd = 14;
         };
@@ -931,13 +931,13 @@ namespace JDWP {
 
     namespace ThreadGroupReference
     {
-        uint8_t set_ = 12;
+        const static uint8_t set_ = 12;
         struct ForceEarlyReturn : public JdwpReader {
             ForceEarlyReturn(const uint8_t* bytes, uint32_t available);
 
-            std::string mThreadGroupName;
+            QByteArray mThreadGroupName;
 
-            static std::string buildReq(ObjectId thread_group_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_group_id, int id = 0);
 
             const static uint8_t cmd = 1;
         };
@@ -947,7 +947,7 @@ namespace JDWP {
 
             ObjectId mThreadParentgroup;
 
-            static std::string buildReq(ObjectId thread_group_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_group_id, int id = 0);
 
             const static uint8_t cmd = 2;
         };
@@ -960,7 +960,7 @@ namespace JDWP {
             int mChildThreadGroupIdSize;
             std::vector<ObjectId> mChildThreadGroupsIds;
 
-            static std::string buildReq(ObjectId thread_group_id, int id = 0);
+            static QByteArray buildReq(ObjectId thread_group_id, int id = 0);
 
             const static uint8_t cmd = 3;
         };
@@ -968,14 +968,14 @@ namespace JDWP {
 
     namespace ArrayReference
     {
-        uint8_t set_ = 13;
+        const static uint8_t set_ = 13;
 
         struct Length : public JdwpReader {
             Length(const uint8_t* bytes, uint32_t available);
 
             int mLength;
 
-            static std::string buildReq(ObjectId array_id, int id = 0);
+            static QByteArray buildReq(ObjectId array_id, int id = 0);
 
             const static uint8_t cmd = 1;
         };
@@ -988,7 +988,7 @@ namespace JDWP {
             std::vector<JValue> mElements;
 
 
-            static std::string buildReq(ObjectId array_id, uint32_t offset,
+            static QByteArray buildReq(ObjectId array_id, uint32_t offset,
                                         uint32_t length, int id = 0);
 
             const static uint8_t cmd = 2;
@@ -996,7 +996,7 @@ namespace JDWP {
 
         struct SetValues : public JdwpReader {
             SetValues(const uint8_t* bytes, uint32_t available);
-            static std::string buildReq (ObjectId array_id,uint32_t offset,JdwpTag tag,
+            static QByteArray buildReq (ObjectId array_id,uint32_t offset,JdwpTag tag,
                                          const std::vector<JValue> &elements,int id = 0);
 
             const static uint8_t cmd = 3;
@@ -1005,7 +1005,7 @@ namespace JDWP {
 
     namespace ClassLoaderReference
     {
-        uint8_t set_ = 14;
+        const static uint8_t set_ = 14;
 
         struct VisibleClasses : public JdwpReader {
             VisibleClasses(const uint8_t* bytes, uint32_t available);
@@ -1013,7 +1013,7 @@ namespace JDWP {
             int mClassSize;
             std::vector<JValue> mClasses;
 
-            static std::string buildReq(ObjectId classLoaderObject, int id = 0);
+            static QByteArray buildReq(ObjectId classLoaderObject, int id = 0);
 
             const static uint8_t cmd = 1;
         };
@@ -1021,14 +1021,14 @@ namespace JDWP {
 
     namespace EventRequest
     {
-        uint8_t set_ = 15;
+        const static uint8_t set_ = 15;
 
         struct Set : public JdwpReader {
             Set(const uint8_t* bytes, uint32_t available);
 
             uint32_t mRequestId;
 
-            static std::string buildReq(JdwpEventKind eventkind,
+            static QByteArray buildReq(JdwpEventKind eventkind,
                     JdwpSuspendPolicy policy, const std::vector<JdwpEventMod>& mod,
                     int id = 0);
 
@@ -1039,7 +1039,7 @@ namespace JDWP {
             Clear(const uint8_t* bytes, uint32_t available);
 
 
-            static std::string buildReq(JdwpEventKind kind, uint32_t requestId,
+            static QByteArray buildReq(JdwpEventKind kind, uint32_t requestId,
                                         int id = 0);
 
             const static uint8_t cmd = 2;
@@ -1048,7 +1048,7 @@ namespace JDWP {
         struct ClearAllBreakpoints : public JdwpReader {
             ClearAllBreakpoints(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
 
             const static uint8_t cmd = 3;
         };
@@ -1056,7 +1056,7 @@ namespace JDWP {
 
     namespace StackFrame
     {
-        uint8_t set_ = 16;
+        const static uint8_t set_ = 16;
 
         struct GetValues : public JdwpReader {
             GetValues(const uint8_t* bytes, uint32_t available);
@@ -1064,7 +1064,7 @@ namespace JDWP {
             uint32_t mSlotCount;
             std::vector<JValue> mSlots;
 
-            static std::string buildReq (ObjectId thread_id,FrameId frame_id,
+            static QByteArray buildReq (ObjectId thread_id,FrameId frame_id,
                                          const std::vector<uint32_t> &slots,
                                          const std::vector<JdwpTag> &reqSig,int id = 0);
 
@@ -1074,7 +1074,7 @@ namespace JDWP {
         struct SetValues : public JdwpReader {
             SetValues(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(ObjectId thread_id, FrameId frame_id,
+            static QByteArray buildReq(ObjectId thread_id, FrameId frame_id,
                             const std::vector<uint32_t > &slots,
                              const std::vector<JValue> &reqSig, int id = 0);
 
@@ -1086,7 +1086,7 @@ namespace JDWP {
 
             JValue mObject;
 
-            static std::string buildReq(ObjectId thread_id, FrameId frame_id,
+            static QByteArray buildReq(ObjectId thread_id, FrameId frame_id,
                                         int id = 0);
 
             const static uint8_t cmd = 3;
@@ -1096,7 +1096,7 @@ namespace JDWP {
             PopFrames(const uint8_t* bytes, uint32_t available);
 
 
-            static std::string buildReq(ObjectId thread_id, FrameId frame_id,
+            static QByteArray buildReq(ObjectId thread_id, FrameId frame_id,
                                         int id = 0);
 
             const static uint8_t cmd = 4;
@@ -1105,14 +1105,14 @@ namespace JDWP {
 
     namespace ClassObjectReference
     {
-        uint8_t set_ = 17;
+        const static uint8_t set_ = 17;
 
         struct ReflectedType : public JdwpReader {
             ReflectedType(const uint8_t* bytes, uint32_t available);
 
             JValue mClass;
 
-            static std::string buildReq(RefTypeId class_object_id,
+            static QByteArray buildReq(RefTypeId class_object_id,
                                         int id = 0);
 
             const static uint8_t cmd = 1;
@@ -1121,12 +1121,12 @@ namespace JDWP {
 
     namespace Composite
     {
-        uint8_t set_ = 64;
+        const static uint8_t set_ = 64;
 
         struct ReflectedType : public JdwpReader {
             ReflectedType(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
 
             const static uint8_t cmd = 100;
         };
@@ -1134,30 +1134,30 @@ namespace JDWP {
 
     namespace DDM
     {
-        uint8_t set_ = 199;
+        const static uint8_t set_ = 199;
 
         struct Chunk : public JdwpReader {
             Chunk(const uint8_t* bytes, uint32_t available);
 
-            static std::string buildReq(int id = 0);
+            static QByteArray buildReq(int id = 0);
 
             const static uint8_t cmd = 1;
         };
     }
-    bool Write1(std::string &s, uint8_t v);
-    bool Write2(std::string &s, uint16_t v);
-    bool Write4(std::string &s, uint32_t v);
-    bool Write8(std::string &s, uint64_t v);
-    bool WriteValue(std::string &s, uint64_t v, size_t width);
-    bool WriteString(std::string &s, const std::string &l);
-    bool WriteFieldId(std::string &s, uint32_t v);
-    bool WriteMethodId(std::string &s, uint32_t v);
-    bool WriteObjectId(std::string &s, uint64_t v);
-    bool WriteRefTypeId(std::string &s, uint64_t v);
-    bool WriteFrameId(std::string &s, uint64_t v);
-    bool WriteThreadId(std::string &s, uint64_t v);
-    bool WriteJdwpLocation(std::string &s, const JdwpLocation &location);
-    std::string BuildReq(int id, int cmdset, int cmd, const std::string &extra);
+    bool Write1(QByteArray &s, uint8_t v);
+    bool Write2(QByteArray &s, uint16_t v);
+    bool Write4(QByteArray &s, uint32_t v);
+    bool Write8(QByteArray &s, uint64_t v);
+    bool WriteValue(QByteArray &s, uint64_t v, size_t width);
+    bool WriteString(QByteArray &s, const QByteArray &l);
+    bool WriteFieldId(QByteArray &s, uint32_t v);
+    bool WriteMethodId(QByteArray &s, uint32_t v);
+    bool WriteObjectId(QByteArray &s, uint64_t v);
+    bool WriteRefTypeId(QByteArray &s, uint64_t v);
+    bool WriteFrameId(QByteArray &s, uint64_t v);
+    bool WriteThreadId(QByteArray &s, uint64_t v);
+    bool WriteJdwpLocation(QByteArray &s, const JdwpLocation &location);
+    QByteArray BuildReq(int id, int cmdset, int cmd, const QByteArray &extra);
 }
 
 

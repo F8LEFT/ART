@@ -20,18 +20,15 @@
 #include <QMutexLocker>
 
 DebugSocket::DebugSocket (QObject *parent)
-        : QThread (parent), mQuit(false), mConnected(false)
+        : QThread (parent), mQuit(false), mConnected(false), mSocket(nullptr)
 {
-    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
-
-    mSocket.moveToThread (this);
-    connect(&mSocket, SIGNAL(connected()), this, SLOT(onConnected()));
-    connect(&mSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+    connect(this, &DebugSocket::finished, this, &DebugSocket::onThreadfinish);
 }
 
 DebugSocket::~DebugSocket ()
 {
-
+    mQuit = true;
+    wait ();
 }
 
 void DebugSocket::startConnection (const QString &hostName, int port,
@@ -49,32 +46,48 @@ void DebugSocket::startConnection (const QString &hostName, int port,
 void DebugSocket::stopConnection ()
 {
     mQuit = true;
+    if(mSocket != nullptr) {
+        mSocket->close ();
+        mSocket->deleteLater();
+    }
 }
 
 void DebugSocket::run ()
 {
-    if(!tryBindJdwp()) {
+    bool bindSuccess = false;
+    for(auto trytime = 0; trytime < 3; trytime++) {
+        bindSuccess = tryBindJdwp();
+        if(bindSuccess) {
+            break;
+        }
+        sleep(3);
+    }
+    if(!bindSuccess) {
         emit error(-1, tr("Unable to open debug port."));
         return;
     }
-    mSocket.connectToHost (mHostName, mPort);
+    mSocket = new QTcpSocket();
+    connect(mSocket, &QTcpSocket::disconnected, this, &DebugSocket::onDisconnected);
 
-    auto timeout = 10 * 1000;
-    if(!mSocket.waitForConnected (timeout)) {
-        emit error (mSocket.error (), mSocket.errorString ());
+    mSocket->connectToHost (mHostName, mPort);
+
+    if(!mSocket->waitForConnected ()) {
+        emit error (mSocket->error (), mSocket->errorString ());
         return;
     }
-    mSocket.waitForReadyRead();
     if(!tryHandshake ()) {
         emit error(-1, tr("Unable to send handshake packet"));
         return;
     }
 
+    emit onConnected();
+
+    QByteArray mBufPool;
     while(!mQuit && mConnected) {
-        if(!mSocket.waitForReadyRead (timeout)) {
+        if(!mSocket->waitForReadyRead ()) {
             continue;
         }
-        auto buffer = mSocket.readAll ();
+        auto buffer = mSocket->readAll ();
         mBufPool += buffer;
         if(!JDWP::Request::isValid (
                 (const uint8_t*)mBufPool.data (), mBufPool.length ())) {
@@ -89,15 +102,35 @@ void DebugSocket::run ()
     }
 }
 
+const QString &DebugSocket::hostName() const
+{
+    return mHostName;
+}
+
+const QString &DebugSocket::targetName() const
+{
+    return mTargetName;
+}
+
+const quint16 DebugSocket::port() const
+{
+    return mPort;
+}
+
+const bool DebugSocket::isConnected() const
+{
+    return mConnected;
+}
+
 bool DebugSocket::tryHandshake ()
 {
-    auto timeout = 10 * 1000;
-
-    mSocket.write (kMagicHandshake, kMagicHandshakeLen);
-    if(!mSocket.waitForReadyRead (timeout)) {
+    if(mSocket->write (kMagicHandshake, kMagicHandshakeLen) != kMagicHandshakeLen) {
         return false;
     }
-    auto buffer = mSocket.readAll ();
+    if(!mSocket->waitForReadyRead ()) {
+        return false;
+    }
+    auto buffer = mSocket->readAll ();
     if(buffer.length () < kMagicHandshakeLen) {
         return false;
     }
@@ -111,15 +144,41 @@ void DebugSocket::onDisconnected ()
 {
     mConnected = false;
     emit error(0, tr("Debugger Socket closed"));
+    emit disconnected ();
 }
 
 void DebugSocket::onConnected ()
 {
+    mQuit = false;
     mConnected = true;
+    emit connected();
 }
+
+void DebugSocket::onThreadfinish ()
+{
+    if(mSocket != nullptr) {
+        mSocket->close ();
+        mSocket = nullptr;
+    }
+}
+
+void DebugSocket::sendBuffer (const QByteArray& array)
+{
+    qDebug() << "SendBuffer: " << array.toHex();
+    sendBuffer (array.data (), array.length ());
+}
+
+void DebugSocket::sendBuffer (const char *data,quint64 len)
+{
+    if(mSocket && mSocket->isWritable ()) {
+        if(mSocket->write (data, len) != len) {
+            qWarning() << "Send data failed";
+        }
+    }
+}
+
 bool DebugSocket::tryBindJdwp()
 {
-    return true;
     // get Process pid
     int pid = 0;
     AdbUtil adbUtil;
@@ -152,4 +211,9 @@ bool DebugSocket::tryBindJdwp()
         }
     return false;
 }
+
+
+
+
+
 

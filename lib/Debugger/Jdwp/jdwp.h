@@ -14,8 +14,7 @@
 #ifndef PROJECT_JDWP_H
 #define PROJECT_JDWP_H
 
-#include <string>
-#include <cstring>
+#include <QByteArray>
 #include "utils/Defs.h"
 
 namespace JDWP {
@@ -154,24 +153,24 @@ namespace JDWP {
     struct ClassInfo {
         uint8_t    mRefTypeTag;	    // Kind of following reference type.
         RefTypeId  mTypeId;         // Loaded reference type
-        std::string mDescriptor;    // The JNI signature of the loaded reference type.
-        std::string mGenericSignature;  // The generic signature of the loaded reference type.
+        QByteArray mDescriptor;    // The JNI signature of the loaded reference type.
+        QByteArray mGenericSignature;  // The generic signature of the loaded reference type.
         uint32_t   mStatus;	        // The current class status.
     };
 
     struct MethodInfo {
         MethodId	 mMethodId;
-        std::string	 mName;
-        std::string	 mSignature;
-        std::string	 mGenericSignature;
+        QByteArray	 mName;
+        QByteArray	 mSignature;
+        QByteArray	 mGenericSignature;
         uint32_t	 mFlags;
     };
 
     struct FieldInfo {
         FieldId	     mFieldId;
-        std::string	 mName;
-        std::string	 mDescriptor;
-        std::string	 mGenericSignature;
+        QByteArray	 mName;
+        QByteArray	 mDescriptor;
+        QByteArray	 mGenericSignature;
         uint32_t	 mFlags;
         JValue       mValue;
     };

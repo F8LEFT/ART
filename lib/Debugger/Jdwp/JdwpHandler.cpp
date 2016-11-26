@@ -25,10 +25,10 @@ VirtualMachine::Version::Version (const uint8_t *bytes,uint32_t available)
     javaVmName = ReadString ();
 }
 
-std::string VirtualMachine::Version::buildReq (int id)
+QByteArray VirtualMachine::Version::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::ClassesBySignature::ClassesBySignature (
@@ -45,36 +45,36 @@ VirtualMachine::ClassesBySignature::ClassesBySignature (
     }
 }
 
-std::string VirtualMachine::ClassesBySignature::buildReq (
-        const std::string &classDescriptor, int id)
+QByteArray VirtualMachine::ClassesBySignature::buildReq (
+        const QByteArray &classDescriptor, int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteString (rel, classDescriptor);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
-bool JDWP::Write1(std::string &s, uint8_t v)
+bool JDWP::Write1(QByteArray &s, uint8_t v)
 {
     s.push_back ((char)v);
     return true;
 }
 
-bool JDWP::Write2(std::string &s, uint16_t v)
+bool JDWP::Write2(QByteArray &s, uint16_t v)
 {
     uint16_t vn = qToBigEndian (v);
-    s.append (vn,sizeof (vn));
+    s.append ((char*)&vn,sizeof (vn));
     return true;
 }
 
-bool JDWP::Write4(std::string &s, uint32_t v)
+bool JDWP::Write4(QByteArray &s, uint32_t v)
 {
     uint32_t vn = qToBigEndian (v);
-    s.append (vn, sizeof(vn));
+    s.append ((char*)&vn, sizeof(vn));
     return true;
 }
 
 
-bool JDWP::Write8 (std::string &s,uint64_t v)
+bool JDWP::Write8 (QByteArray &s,uint64_t v)
 {
     uint32_t high = v >> 32;
     uint32_t low = v & 0xffffffff;
@@ -82,7 +82,7 @@ bool JDWP::Write8 (std::string &s,uint64_t v)
     Write4 (s, low);
     return true;
 }
-bool JDWP::WriteString(std::string &s, const std::string &v)
+bool JDWP::WriteString(QByteArray &s, const QByteArray &v)
 {
     auto vLen = v.length ();
     Write4 (s, vLen);
@@ -91,35 +91,35 @@ bool JDWP::WriteString(std::string &s, const std::string &v)
 }
 
 
-bool ::JDWP::WriteFieldId (std::string &s,uint32_t v)
+bool ::JDWP::WriteFieldId (QByteArray &s,uint32_t v)
 {
     return Write4 (s, v);
 }
 
-bool ::JDWP::WriteMethodId (std::string &s,uint32_t v)
+bool ::JDWP::WriteMethodId (QByteArray &s,uint32_t v)
 {
     return Write4 (s, v);
 }
 
-bool ::JDWP::WriteObjectId (std::string &s,uint64_t v)
+bool ::JDWP::WriteObjectId (QByteArray &s,uint64_t v)
 {
     return Write8 (s, v);
 }
 
-bool ::JDWP::WriteRefTypeId (std::string &s,uint64_t v)
+bool ::JDWP::WriteRefTypeId (QByteArray &s,uint64_t v)
 {
     return Write8 (s, v);
 }
 
-bool ::JDWP::WriteFrameId (std::string &s,uint64_t v)
+bool ::JDWP::WriteFrameId (QByteArray &s,uint64_t v)
 {
     return Write8 (s, v);
 }
 
-std::string JDWP::BuildReq (int id,int cmdset,int cmd,
-                            const std::string &extra)
+QByteArray JDWP::BuildReq (int id,int cmdset,int cmd,
+                            const QByteArray &extra)
 {
-    std::string rel;
+    QByteArray rel;
     auto len = extra.length () + kJDWPHeaderLen;
     Write4 (rel, len);
     Write4 (rel, id);
@@ -127,10 +127,10 @@ std::string JDWP::BuildReq (int id,int cmdset,int cmd,
     Write1 (rel, cmdset);
     Write1 (rel, cmd);
     rel.append (extra);
-    return move(rel);
+    return rel;
 }
 
-bool ::JDWP::WriteValue (std::string &s,uint64_t v,size_t width)
+bool ::JDWP::WriteValue (QByteArray &s,uint64_t v,size_t width)
 {
     switch (width) {
         case 1:
@@ -146,17 +146,18 @@ bool ::JDWP::WriteValue (std::string &s,uint64_t v,size_t width)
     return false;
 }
 
-bool ::JDWP::WriteThreadId (std::string &s,uint64_t v)
+bool ::JDWP::WriteThreadId (QByteArray &s,uint64_t v)
 {
     return Write8 (s, v);
 }
 
-bool ::JDWP::WriteJdwpLocation (std::string &s,const JdwpLocation &location)
+bool ::JDWP::WriteJdwpLocation (QByteArray &s,const JdwpLocation &location)
 {
     Write1 (s,location.type_tag);
     WriteObjectId (s,location.class_id);
     WriteMethodId (s,location.method_id);
     Write8 (s,location.dex_pc);
+    return true;
 }
 
 VirtualMachine::AllClasses::AllClasses (
@@ -175,10 +176,10 @@ VirtualMachine::AllClasses::AllClasses (
     }
 }
 
-std::string VirtualMachine::AllClasses::buildReq (int id)
+QByteArray VirtualMachine::AllClasses::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::AllThreads::AllThreads (
@@ -192,10 +193,10 @@ VirtualMachine::AllThreads::AllThreads (
     }
 }
 
-std::string VirtualMachine::AllThreads::buildReq (int id)
+QByteArray VirtualMachine::AllThreads::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -207,10 +208,10 @@ VirtualMachine::TopLevelThreadGroups::TopLevelThreadGroups (
     mThreadGroupId = ReadObjectId ();
 }
 
-std::string VirtualMachine::TopLevelThreadGroups::buildReq (int id)
+QByteArray VirtualMachine::TopLevelThreadGroups::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::Dispose::Dispose (
@@ -219,10 +220,10 @@ VirtualMachine::Dispose::Dispose (
 {
 }
 
-std::string VirtualMachine::Dispose::buildReq (int id)
+QByteArray VirtualMachine::Dispose::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::IDSizes::IDSizes (
@@ -236,10 +237,10 @@ VirtualMachine::IDSizes::IDSizes (
     mFrameIdSize = Read4 ();
 }
 
-std::string VirtualMachine::IDSizes::buildReq (int id)
+QByteArray VirtualMachine::IDSizes::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::Suspend::Suspend (
@@ -249,10 +250,10 @@ VirtualMachine::Suspend::Suspend (
 
 }
 
-std::string VirtualMachine::Suspend::buildReq (int id)
+QByteArray VirtualMachine::Suspend::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -263,10 +264,10 @@ VirtualMachine::Resume::Resume (
 
 }
 
-std::string VirtualMachine::Resume::buildReq (int id)
+QByteArray VirtualMachine::Resume::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::Exit::Exit (
@@ -276,10 +277,10 @@ VirtualMachine::Exit::Exit (
 
 }
 
-std::string VirtualMachine::Exit::buildReq (int id)
+QByteArray VirtualMachine::Exit::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::CreateString::CreateString (
@@ -289,12 +290,12 @@ VirtualMachine::CreateString::CreateString (
     mStringId = ReadObjectId ();
 }
 
-std::string VirtualMachine::CreateString::buildReq (
-        const std::string str,int id)
+QByteArray VirtualMachine::CreateString::buildReq (
+        const QByteArray str,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteString (rel, str);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -311,10 +312,10 @@ VirtualMachine::Capabilities::Capabilities (
     mCanGetMonitorInfo = Read1 ();
 }
 
-std::string VirtualMachine::Capabilities::buildReq (int id)
+QByteArray VirtualMachine::Capabilities::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -337,10 +338,10 @@ VirtualMachine::ClassPaths::ClassPaths (
     }
 }
 
-std::string VirtualMachine::ClassPaths::buildReq (int id)
+QByteArray VirtualMachine::ClassPaths::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -350,17 +351,17 @@ VirtualMachine::DisposeObjects::DisposeObjects (
 {
 }
 
-std::string VirtualMachine::DisposeObjects::buildReq (
+QByteArray VirtualMachine::DisposeObjects::buildReq (
         const std::vector<DispObj> &objs,int id)
 {
-    std::string rel;
+    QByteArray rel;
     Write4 (rel, objs.size ());
     for(auto it = objs.begin (), itEnd = objs.end ();
         it != itEnd; it++) {
         WriteObjectId (rel, it->id);
         Write4 (rel, it->refCount);
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -371,10 +372,10 @@ VirtualMachine::HoldEvents::HoldEvents (
 
 }
 
-std::string VirtualMachine::HoldEvents::buildReq (int id)
+QByteArray VirtualMachine::HoldEvents::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -385,10 +386,10 @@ VirtualMachine::ReleaseEvents::ReleaseEvents (
 
 }
 
-std::string VirtualMachine::ReleaseEvents::buildReq (int id)
+QByteArray VirtualMachine::ReleaseEvents::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -417,10 +418,10 @@ VirtualMachine::CapabilitiesNew::CapabilitiesNew (
     }
 }
 
-std::string VirtualMachine::CapabilitiesNew::buildReq (int id)
+QByteArray VirtualMachine::CapabilitiesNew::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::RedefineClasses::RedefineClasses (
@@ -430,10 +431,10 @@ VirtualMachine::RedefineClasses::RedefineClasses (
 
 }
 
-std::string VirtualMachine::RedefineClasses::buildReq (int id)
+QByteArray VirtualMachine::RedefineClasses::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 VirtualMachine::SetDefaultStratum::SetDefaultStratum (
@@ -443,10 +444,10 @@ VirtualMachine::SetDefaultStratum::SetDefaultStratum (
 
 }
 
-std::string VirtualMachine::SetDefaultStratum::buildReq (int id)
+QByteArray VirtualMachine::SetDefaultStratum::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -467,10 +468,10 @@ VirtualMachine::AllClassesWithGeneric::AllClassesWithGeneric (
     }
 }
 
-std::string VirtualMachine::AllClassesWithGeneric::buildReq (int id)
+QByteArray VirtualMachine::AllClassesWithGeneric::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -485,17 +486,17 @@ VirtualMachine::InstanceCounts::InstanceCounts (
     }
 }
 
-std::string VirtualMachine::InstanceCounts::buildReq (
+QByteArray VirtualMachine::InstanceCounts::buildReq (
         const std::vector<RefTypeId> &class_ids,int id)
 {
-    std::string rel;
+    QByteArray rel;
     Write4(rel, class_ids.size ());
     for(auto it = class_ids.begin (), itEnd = class_ids.end ();
         it != itEnd; it++) {
         WriteRefTypeId (rel, *it);
     }
 
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::Signature::Signature (
@@ -505,11 +506,11 @@ ReferenceType::Signature::Signature (
     mSignature = ReadString ();
 }
 
-std::string ReferenceType::Signature::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::Signature::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -520,11 +521,11 @@ ReferenceType::ClassLoader::ClassLoader (
     mClassId = ReadObjectId ();
 }
 
-std::string ReferenceType::ClassLoader::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::ClassLoader::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::Modifiers::Modifiers (
@@ -534,11 +535,11 @@ ReferenceType::Modifiers::Modifiers (
     mFlags = Read4 ();
 }
 
-std::string ReferenceType::Modifiers::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::Modifiers::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::Fields::Fields (
@@ -556,11 +557,11 @@ ReferenceType::Fields::Fields (
     }
 }
 
-std::string ReferenceType::Fields::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::Fields::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::Methods::Methods (
@@ -578,11 +579,11 @@ ReferenceType::Methods::Methods (
     }
 }
 
-std::string ReferenceType::Methods::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::Methods::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::GetValues::GetValues (
@@ -596,18 +597,18 @@ ReferenceType::GetValues::GetValues (
     mValue.L = ReadValue (len);
 }
 
-std::string ReferenceType::GetValues::buildReq (
+QByteArray ReferenceType::GetValues::buildReq (
         RefTypeId refTypeId,int32_t field_count,
         const std::vector<FieldId> &fieldids,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
     Write4 (rel, field_count);
     for(auto it = fieldids.begin (), itEnd = fieldids.end ();
         it != itEnd; it++) {
         WriteFieldId (rel, *it);
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::SourceFile::SourceFile (
@@ -617,11 +618,11 @@ ReferenceType::SourceFile::SourceFile (
     mSourceFile = ReadString ();
 }
 
-std::string ReferenceType::SourceFile::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::SourceFile::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::NestedTypes::NestedTypes (
@@ -631,11 +632,11 @@ ReferenceType::NestedTypes::NestedTypes (
 
 }
 
-std::string ReferenceType::NestedTypes::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::NestedTypes::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::Status::Status (
@@ -645,11 +646,11 @@ ReferenceType::Status::Status (
     mClassStatus = Read4 ();
 }
 
-std::string ReferenceType::Status::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::Status::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -664,11 +665,11 @@ ReferenceType::Interfaces::Interfaces (
     }
 }
 
-std::string ReferenceType::Interfaces::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::Interfaces::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::ClassObject::ClassObject (
@@ -678,11 +679,11 @@ ReferenceType::ClassObject::ClassObject (
     mClassId = ReadObjectId ();
 }
 
-std::string ReferenceType::ClassObject::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::ClassObject::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -693,12 +694,12 @@ ReferenceType::SourceDebugExtension::SourceDebugExtension (
 
 }
 
-std::string ReferenceType::SourceDebugExtension::buildReq (
+QByteArray ReferenceType::SourceDebugExtension::buildReq (
         RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::SignatureWithGeneric::SignatureWithGeneric (
@@ -708,12 +709,12 @@ ReferenceType::SignatureWithGeneric::SignatureWithGeneric (
     mSignatureGeneric = ReadString ();
 }
 
-std::string ReferenceType::SignatureWithGeneric::buildReq (
+QByteArray ReferenceType::SignatureWithGeneric::buildReq (
         RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel,refTypeId);
-    return move (BuildReq (id,set_,cmd,rel));
+    return BuildReq (id,set_,cmd,rel);
 }
 
 ReferenceType::FieldsWithGeneric::FieldsWithGeneric (
@@ -732,12 +733,12 @@ ReferenceType::FieldsWithGeneric::FieldsWithGeneric (
     }
 }
 
-std::string ReferenceType::FieldsWithGeneric::buildReq (
+QByteArray ReferenceType::FieldsWithGeneric::buildReq (
         RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::MethodsWithGeneric::MethodsWithGeneric (
@@ -756,12 +757,12 @@ ReferenceType::MethodsWithGeneric::MethodsWithGeneric (
     }
 }
 
-std::string ReferenceType::MethodsWithGeneric::buildReq (
+QByteArray ReferenceType::MethodsWithGeneric::buildReq (
         RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::Instances::Instances (
@@ -776,13 +777,13 @@ ReferenceType::Instances::Instances (
     }
 }
 
-std::string ReferenceType::Instances::buildReq (
+QByteArray ReferenceType::Instances::buildReq (
         RefTypeId refTypeId, int32_t maxcount, int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
     Write4(rel, maxcount);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::ClassFileVersion::ClassFileVersion (
@@ -792,12 +793,12 @@ ReferenceType::ClassFileVersion::ClassFileVersion (
 
 }
 
-std::string ReferenceType::ClassFileVersion::buildReq (
+QByteArray ReferenceType::ClassFileVersion::buildReq (
         RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ReferenceType::ConstantPool::ConstantPool (
@@ -807,11 +808,11 @@ ReferenceType::ConstantPool::ConstantPool (
 
 }
 
-std::string ReferenceType::ConstantPool::buildReq (RefTypeId refTypeId,int id)
+QByteArray ReferenceType::ConstantPool::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ClassType::Superclass::Superclass (const uint8_t *bytes,uint32_t available)
@@ -820,11 +821,11 @@ ClassType::Superclass::Superclass (const uint8_t *bytes,uint32_t available)
     mSuperClassId = ReadRefTypeId ();
 }
 
-std::string ClassType::Superclass::buildReq (RefTypeId refTypeId,int id)
+QByteArray ClassType::Superclass::buildReq (RefTypeId refTypeId,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ClassType::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
@@ -833,10 +834,10 @@ ClassType::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string ClassType::SetValues::buildReq (
+QByteArray ClassType::SetValues::buildReq (
         RefTypeId refTypeId,const std::vector<FieldInfo> &infos,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
     Write4 (rel, infos.size ());
     for(auto it = infos.begin (), itEnd = infos.end ();
@@ -845,7 +846,7 @@ std::string ClassType::SetValues::buildReq (
         auto &value = it->mValue;
         WriteValue (rel, value.L, GetTagWidth (value.tag));
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ClassType::InvokeMethod::InvokeMethod (
@@ -858,11 +859,11 @@ ClassType::InvokeMethod::InvokeMethod (
     mObject.L = ReadObjectId ();
 }
 
-std::string ClassType::InvokeMethod::buildReq (
+QByteArray ClassType::InvokeMethod::buildReq (
         RefTypeId class_id,ObjectId thread_id,MethodId method_id,
         const std::vector<JValue> &argValues,uint32_t options,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, class_id);
     WriteThreadId (rel, thread_id);
     WriteMethodId (rel, method_id);
@@ -873,7 +874,7 @@ std::string ClassType::InvokeMethod::buildReq (
         WriteValue (rel, it->L, GetTagWidth (it->tag));
     }
     Write4 (rel, options);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ClassType::NewInstance::NewInstance (const uint8_t *bytes,uint32_t available)
@@ -885,11 +886,11 @@ ClassType::NewInstance::NewInstance (const uint8_t *bytes,uint32_t available)
     mObject.L = ReadObjectId ();
 }
 
-std::string ClassType::NewInstance::buildReq (
+QByteArray ClassType::NewInstance::buildReq (
         RefTypeId class_id,ObjectId thread_id,MethodId method_id,
         const std::vector<JValue> &argValues,uint32_t options,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, class_id);
     WriteThreadId (rel, thread_id);
     WriteMethodId (rel, method_id);
@@ -900,7 +901,7 @@ std::string ClassType::NewInstance::buildReq (
         WriteValue (rel, it->L, GetTagWidth (it->tag));
     }
     Write4 (rel, options);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ArrayType::NewInstance::NewInstance (const uint8_t *bytes,uint32_t available)
@@ -910,13 +911,13 @@ ArrayType::NewInstance::NewInstance (const uint8_t *bytes,uint32_t available)
     mObject.L = ReadObjectId ();
 }
 
-std::string ArrayType::NewInstance::buildReq (
+QByteArray ArrayType::NewInstance::buildReq (
         RefTypeId arrayTypeId,uint32_t length,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, arrayTypeId);
     Write4 (rel, length);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 Method::LineTable::LineTable (const uint8_t *bytes,uint32_t available)
@@ -932,13 +933,13 @@ Method::LineTable::LineTable (const uint8_t *bytes,uint32_t available)
     }
 }
 
-std::string Method::LineTable::buildReq (
+QByteArray Method::LineTable::buildReq (
         RefTypeId refTypeId,MethodId method_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
     WriteMethodId (rel, method_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -957,13 +958,13 @@ Method::VariableTable::VariableTable (const uint8_t *bytes,uint32_t available)
     }
 }
 
-std::string Method::VariableTable::buildReq (
+QByteArray Method::VariableTable::buildReq (
         RefTypeId class_id,MethodId method_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, class_id);
     WriteMethodId (rel, method_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -977,13 +978,13 @@ Method::Bytecodes::Bytecodes (const uint8_t *bytes,uint32_t available)
     }
 }
 
-std::string Method::Bytecodes::buildReq (
+QByteArray Method::Bytecodes::buildReq (
         RefTypeId class_id,MethodId method_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, class_id);
     WriteMethodId (rel, method_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -993,13 +994,13 @@ Method::IsObsolete::IsObsolete (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string Method::IsObsolete::buildReq (
+QByteArray Method::IsObsolete::buildReq (
         RefTypeId class_id,MethodId method_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, class_id);
     WriteMethodId (rel, method_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 Method::VariableTableWithGeneric::VariableTableWithGeneric (
@@ -1019,13 +1020,13 @@ Method::VariableTableWithGeneric::VariableTableWithGeneric (
     }
 }
 
-std::string Method::VariableTableWithGeneric::buildReq (
+QByteArray Method::VariableTableWithGeneric::buildReq (
         RefTypeId class_id,MethodId method_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, class_id);
     WriteMethodId (rel, method_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::ReferenceType::ReferenceType (
@@ -1036,12 +1037,12 @@ ObjectReference::ReferenceType::ReferenceType (
     mTypeId = ReadRefTypeId ();
 }
 
-std::string ObjectReference::ReferenceType::buildReq (
+QByteArray ObjectReference::ReferenceType::buildReq (
         ObjectId object_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1053,17 +1054,17 @@ ObjectReference::GetValues::GetValues (
     mValue.L = ReadValue (GetTagWidth (mValue.tag));
 }
 
-std::string ObjectReference::GetValues::buildReq (
+QByteArray ObjectReference::GetValues::buildReq (
         ObjectId object_id,const std::vector<FieldId > &fields,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
     Write4 (rel, fields.size ());
     for(auto it = fields.begin (), itEnd = fields.end ();
         it != itEnd; it++) {
         WriteFieldId (rel, *it);
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::SetValues::SetValues (
@@ -1072,10 +1073,10 @@ ObjectReference::SetValues::SetValues (
 {
 }
 
-std::string ObjectReference::SetValues::buildReq (
+QByteArray ObjectReference::SetValues::buildReq (
         ObjectId object_id,const std::vector<FieldInfo> &fields,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
     Write4 (rel, fields.size ());
     for(auto it = fields.begin (), itEnd = fields.end ();
@@ -1085,7 +1086,7 @@ std::string ObjectReference::SetValues::buildReq (
         Write1 (rel, value.tag);
         WriteValue (rel, value.L, GetTagWidth (value.tag));
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::UNUSED::UNUSED (const uint8_t *bytes,uint32_t available)
@@ -1094,10 +1095,10 @@ ObjectReference::UNUSED::UNUSED (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string ObjectReference::UNUSED::buildReq (int id)
+QByteArray ObjectReference::UNUSED::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::MonitorInfo::MonitorInfo (
@@ -1113,11 +1114,11 @@ ObjectReference::MonitorInfo::MonitorInfo (
     }
 }
 
-std::string ObjectReference::MonitorInfo::buildReq (ObjectId object_id,int id)
+QByteArray ObjectReference::MonitorInfo::buildReq (ObjectId object_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1131,13 +1132,13 @@ ObjectReference::InvokeMethod::InvokeMethod (
     mObject.L = ReadObjectId ();
 }
 
-std::string
+QByteArray
 ObjectReference::InvokeMethod::buildReq (
         ObjectId object_id,ObjectId thread_id,RefTypeId class_id,
         MethodId method_id, const std::vector<JValue> &argValues,
         uint32_t options,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
     WriteThreadId (rel, thread_id);
 
@@ -1151,7 +1152,7 @@ ObjectReference::InvokeMethod::buildReq (
         WriteValue (rel, it->L, GetTagWidth (it->tag));
     }
     Write4 (rel, options);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::DisableCollection::DisableCollection (
@@ -1161,12 +1162,12 @@ ObjectReference::DisableCollection::DisableCollection (
 
 }
 
-std::string ObjectReference::DisableCollection::buildReq (
+QByteArray ObjectReference::DisableCollection::buildReq (
         ObjectId object_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::EnableCollection::EnableCollection (
@@ -1176,12 +1177,12 @@ ObjectReference::EnableCollection::EnableCollection (
 
 }
 
-std::string ObjectReference::EnableCollection::buildReq (
+QByteArray ObjectReference::EnableCollection::buildReq (
         ObjectId object_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::IsCollected::IsCollected (
@@ -1191,11 +1192,11 @@ ObjectReference::IsCollected::IsCollected (
     mIsCollected = Read1 ();
 }
 
-std::string ObjectReference::IsCollected::buildReq (ObjectId object_id,int id)
+QByteArray ObjectReference::IsCollected::buildReq (ObjectId object_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ObjectReference::ReferringObjects::ReferringObjects (
@@ -1210,13 +1211,13 @@ ObjectReference::ReferringObjects::ReferringObjects (
     }
 }
 
-std::string ObjectReference::ReferringObjects::buildReq (
+QByteArray ObjectReference::ReferringObjects::buildReq (
         ObjectId object_id,int32_t max_count,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, object_id);
     Write4(rel, max_count);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 StringReference::Value::Value (const uint8_t *bytes,uint32_t available)
@@ -1225,11 +1226,11 @@ StringReference::Value::Value (const uint8_t *bytes,uint32_t available)
     mStr = ReadString ();
 }
 
-std::string StringReference::Value::buildReq (ObjectId stringObject,int id)
+QByteArray StringReference::Value::buildReq (ObjectId stringObject,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, stringObject);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::Name::Name (const uint8_t *bytes,uint32_t available)
@@ -1238,11 +1239,11 @@ ThreadReference::Name::Name (const uint8_t *bytes,uint32_t available)
     mName = ReadString ();
 }
 
-std::string ThreadReference::Name::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::Name::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1252,11 +1253,11 @@ ThreadReference::Suspend::Suspend (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string ThreadReference::Suspend::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::Suspend::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::Resume::Resume (const uint8_t *bytes,uint32_t available)
@@ -1265,11 +1266,11 @@ ThreadReference::Resume::Resume (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string ThreadReference::Resume::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::Resume::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::Status::Status (const uint8_t *bytes,uint32_t available)
@@ -1279,11 +1280,11 @@ ThreadReference::Status::Status (const uint8_t *bytes,uint32_t available)
     mSuspendStatus = Read4();
 }
 
-std::string ThreadReference::Status::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::Status::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::ThreadGroup::ThreadGroup (
@@ -1293,11 +1294,11 @@ ThreadReference::ThreadGroup::ThreadGroup (
     mThreadGroupId = ReadObjectId ();
 }
 
-std::string ThreadReference::ThreadGroup::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::ThreadGroup::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::Frames::Frames (const uint8_t *bytes,uint32_t available)
@@ -1311,14 +1312,14 @@ ThreadReference::Frames::Frames (const uint8_t *bytes,uint32_t available)
     }
 }
 
-std::string ThreadReference::Frames::buildReq (
+QByteArray ThreadReference::Frames::buildReq (
         ObjectId thread_id,uint32_t start_frame,uint32_t length,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
     Write4 (rel, start_frame);
     Write4 (rel, length);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::FrameCount::FrameCount (
@@ -1328,11 +1329,11 @@ ThreadReference::FrameCount::FrameCount (
     mFrameCount = Read4 ();
 }
 
-std::string ThreadReference::FrameCount::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::FrameCount::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::OwnedMonitors::OwnedMonitors (
@@ -1349,12 +1350,12 @@ ThreadReference::OwnedMonitors::OwnedMonitors (
 }
 
 
-std::string ThreadReference::OwnedMonitors::buildReq (
+QByteArray ThreadReference::OwnedMonitors::buildReq (
         ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::CurrentContendedMonitor::CurrentContendedMonitor (
@@ -1365,12 +1366,12 @@ ThreadReference::CurrentContendedMonitor::CurrentContendedMonitor (
     mContendedMonitor.L = ReadObjectId ();
 }
 
-std::string ThreadReference::CurrentContendedMonitor::buildReq (
+QByteArray ThreadReference::CurrentContendedMonitor::buildReq (
         ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1380,11 +1381,11 @@ ThreadReference::Stop::Stop (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string ThreadReference::Stop::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::Stop::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::Interrupt::Interrupt (const uint8_t *bytes,uint32_t available)
@@ -1393,11 +1394,11 @@ ThreadReference::Interrupt::Interrupt (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string ThreadReference::Interrupt::buildReq (ObjectId thread_id,int id)
+QByteArray ThreadReference::Interrupt::buildReq (ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadReference::SuspendCount::SuspendCount (
@@ -1407,12 +1408,12 @@ ThreadReference::SuspendCount::SuspendCount (
     mSuspendCount = Read4 ();
 }
 
-std::string ThreadReference::SuspendCount::buildReq (
+QByteArray ThreadReference::SuspendCount::buildReq (
         ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1429,12 +1430,12 @@ ThreadReference::OwnedMonitorsStackDepthInfo::OwnedMonitorsStackDepthInfo (
     }
 }
 
-std::string ThreadReference::OwnedMonitorsStackDepthInfo::buildReq (
+QByteArray ThreadReference::OwnedMonitorsStackDepthInfo::buildReq (
         ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1444,12 +1445,12 @@ ThreadReference::ForceEarlyReturn::ForceEarlyReturn (
 
 }
 
-std::string ThreadReference::ForceEarlyReturn::buildReq (
+QByteArray ThreadReference::ForceEarlyReturn::buildReq (
         ObjectId thread_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadGroupReference::ForceEarlyReturn::ForceEarlyReturn (
@@ -1459,12 +1460,12 @@ ThreadGroupReference::ForceEarlyReturn::ForceEarlyReturn (
     mThreadGroupName = ReadString ();
 }
 
-std::string ThreadGroupReference::ForceEarlyReturn::buildReq (
+QByteArray ThreadGroupReference::ForceEarlyReturn::buildReq (
         ObjectId thread_group_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_group_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ThreadGroupReference::Parent::Parent (const uint8_t *bytes,uint32_t available)
@@ -1473,12 +1474,12 @@ ThreadGroupReference::Parent::Parent (const uint8_t *bytes,uint32_t available)
     mThreadParentgroup = ReadObjectId ();
 }
 
-std::string ThreadGroupReference::Parent::buildReq (
+QByteArray ThreadGroupReference::Parent::buildReq (
         ObjectId thread_group_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_group_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1498,12 +1499,12 @@ ThreadGroupReference::Children::Children (
     }
 }
 
-std::string ThreadGroupReference::Children::buildReq (
+QByteArray ThreadGroupReference::Children::buildReq (
         ObjectId thread_group_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, thread_group_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1513,11 +1514,11 @@ ArrayReference::Length::Length (const uint8_t *bytes,uint32_t available)
     mLength = Read4 ();
 }
 
-std::string ArrayReference::Length::buildReq (ObjectId array_id,int id)
+QByteArray ArrayReference::Length::buildReq (ObjectId array_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, array_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1542,14 +1543,14 @@ ArrayReference::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
     }
 }
 
-std::string ArrayReference::GetValues::buildReq (
+QByteArray ArrayReference::GetValues::buildReq (
         ObjectId array_id,uint32_t offset,uint32_t length,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, array_id);
     Write4 (rel, offset);
     Write4 (rel, length);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1559,11 +1560,11 @@ ArrayReference::SetValues::SetValues (
 {
 }
 
-std::string ArrayReference::SetValues::buildReq (
+QByteArray ArrayReference::SetValues::buildReq (
         ObjectId array_id,uint32_t offset,JdwpTag tag,
         const std::vector<JValue> &elements,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, array_id);
     Write4 (rel, offset);
     Write4 (rel, elements.size ());
@@ -1573,7 +1574,7 @@ std::string ArrayReference::SetValues::buildReq (
     {
         WriteValue (rel,it->L,width);
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1589,12 +1590,12 @@ ClassLoaderReference::VisibleClasses::VisibleClasses (
     }
 }
 
-std::string ClassLoaderReference::VisibleClasses::buildReq (
+QByteArray ClassLoaderReference::VisibleClasses::buildReq (
         ObjectId classLoaderObject,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteObjectId (rel, classLoaderObject);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 EventRequest::Set::Set (const uint8_t *bytes,uint32_t available)
@@ -1603,11 +1604,11 @@ EventRequest::Set::Set (const uint8_t *bytes,uint32_t available)
     mRequestId = Read4 ();
 }
 
-std::string EventRequest::Set::buildReq (
+QByteArray EventRequest::Set::buildReq (
         JdwpEventKind eventkind,JdwpSuspendPolicy policy,
         const std::vector<JdwpEventMod>& mod, int id)
 {
-    std::string rel;
+    QByteArray rel;
     Write1 (rel,eventkind);
     Write1 (rel, policy);
     Write4 (rel, mod.size ());
@@ -1692,7 +1693,7 @@ std::string EventRequest::Set::buildReq (
                 break;
         }
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 EventRequest::Clear::Clear (const uint8_t *bytes,uint32_t available)
@@ -1700,13 +1701,13 @@ EventRequest::Clear::Clear (const uint8_t *bytes,uint32_t available)
 {
 }
 
-std::string EventRequest::Clear::buildReq (
+QByteArray EventRequest::Clear::buildReq (
         JdwpEventKind kind,uint32_t requestId, int id)
 {
-    std::string rel;
+    QByteArray rel;
     Write1 (rel, kind);
     Write4 (rel, requestId);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 EventRequest::ClearAllBreakpoints::ClearAllBreakpoints (
@@ -1716,10 +1717,10 @@ EventRequest::ClearAllBreakpoints::ClearAllBreakpoints (
 
 }
 
-std::string EventRequest::ClearAllBreakpoints::buildReq (int id)
+QByteArray EventRequest::ClearAllBreakpoints::buildReq (int id)
 {
-    std::string rel;
-    return move(BuildReq (id, set_, cmd, rel));
+    QByteArray rel;
+    return BuildReq (id, set_, cmd, rel);
 }
 
 StackFrame::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
@@ -1733,13 +1734,13 @@ StackFrame::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
     }
 }
 
-std::string StackFrame::GetValues::buildReq (
+QByteArray StackFrame::GetValues::buildReq (
         ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &slots,
         const std::vector<JdwpTag> &reqSig,int id)
 {
     if(slots.size () != reqSig.size ())
         return "";
-    std::string rel;
+    QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
     int count = slots.size ();
@@ -1748,7 +1749,7 @@ std::string StackFrame::GetValues::buildReq (
         Write4 (rel, slots[i]);
         Write1 (rel, reqSig[i]);
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 StackFrame::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
@@ -1756,13 +1757,13 @@ StackFrame::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
 {
 }
 
-std::string StackFrame::SetValues::buildReq (
+QByteArray StackFrame::SetValues::buildReq (
         ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &slots,
         const std::vector<JValue> &reqSig,int id)
 {
     if(slots.size () != reqSig.size ())
         return "";
-    std::string rel;
+    QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
     int count = slots.size ();
@@ -1772,7 +1773,7 @@ std::string StackFrame::SetValues::buildReq (
         Write1 (rel, reqSig[i].tag);
         WriteValue (rel, reqSig[i].L, GetTagWidth (reqSig[i].tag));
     }
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1783,13 +1784,13 @@ StackFrame::ThisObject::ThisObject (const uint8_t *bytes,uint32_t available)
     mObject.L = ReadValue (GetTagWidth (mObject.tag));
 }
 
-std::string StackFrame::ThisObject::buildReq (
+QByteArray StackFrame::ThisObject::buildReq (
         ObjectId thread_id,FrameId frame_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 
@@ -1799,13 +1800,13 @@ StackFrame::PopFrames::PopFrames (const uint8_t *bytes,uint32_t available)
 
 }
 
-std::string StackFrame::PopFrames::buildReq (
+QByteArray StackFrame::PopFrames::buildReq (
         ObjectId thread_id,FrameId frame_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 ClassObjectReference::ReflectedType::ReflectedType (
@@ -1816,12 +1817,12 @@ ClassObjectReference::ReflectedType::ReflectedType (
     mClass.L = ReadValue (GetTagWidth (mClass.tag));
 }
 
-std::string ClassObjectReference::ReflectedType::buildReq (
+QByteArray ClassObjectReference::ReflectedType::buildReq (
         RefTypeId class_object_id,int id)
 {
-    std::string rel;
+    QByteArray rel;
     WriteRefTypeId (rel, class_object_id);
-    return move(BuildReq (id, set_, cmd, rel));
+    return BuildReq (id, set_, cmd, rel);
 }
 
 Composite::ReflectedType::ReflectedType (
@@ -1831,9 +1832,9 @@ Composite::ReflectedType::ReflectedType (
 
 }
 
-std::string Composite::ReflectedType::buildReq (int id)
+QByteArray Composite::ReflectedType::buildReq (int id)
 {
-    return std::__cxx11::string ();
+    return QByteArray();
 }
 
 DDM::Chunk::Chunk (const uint8_t *bytes,uint32_t available)
@@ -1917,7 +1918,7 @@ DDM::Chunk::Chunk (const uint8_t *bytes,uint32_t available)
 //    return true;
 }
 
-std::string DDM::Chunk::buildReq (int id)
+QByteArray DDM::Chunk::buildReq (int id)
 {
     // TODO Chunk
     return "";

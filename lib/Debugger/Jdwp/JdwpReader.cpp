@@ -90,15 +90,15 @@ uint64_t JdwpReader::ReadValue (size_t width)
     return value;
 }
 
-std::string JdwpReader::ReadString ()
+QByteArray JdwpReader::ReadString ()
 {
     if(error)
         return "";
     auto len = Read4 ();
     if(size() >= len) {
-        std::string rel((char*)p_, len);
+        QByteArray rel((char*)p_, len);
         p_+= len;
-        return move(rel);
+        return rel;
     }
     error = true;
     return "";
