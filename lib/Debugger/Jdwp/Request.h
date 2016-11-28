@@ -28,6 +28,7 @@ namespace JDWP {
         // Return values from this JDWP packet's header.
         size_t GetLength() { return byte_count_; }
         uint32_t GetId() { return id_; }
+        void SetId(uint32_t id) { id_ = id; }
         uint8_t GetCommandSet() { return command_set_; }
         uint8_t GetCommand() { return command_; }
 
@@ -51,7 +52,5 @@ namespace JDWP {
         QByteArray extra;
     };
 }
-
-
 
 #endif //PROJECT_REQUEST_H

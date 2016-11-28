@@ -1134,6 +1134,7 @@ namespace JDWP {
 
     namespace DDM
     {
+    // These command is used by DDMS.
         const static uint8_t set_ = 199;
 
         struct Chunk : public JdwpReader {
