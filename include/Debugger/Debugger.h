@@ -15,6 +15,8 @@
 #define DEBUGGER_H
 
 #include <QWidget>
+#include <QMap>
+#include <QSharedPointer>
 
 namespace Ui {
 class Debugger;
@@ -49,13 +51,21 @@ private slots:
     void onSocketError(int error, const QString &message);
     void onSocketConnected();
     void onSocketDisconnected();
-    void onJDWPRequest(JDWP::Request* request);
+    void onJDWPRequest(JDWP::Request *request);
 
+private:
+    void handleReply(QSharedPointer<JDWP::Request> & reply);
+    void handleCommand(QSharedPointer<JDWP::Request> & reply);
+
+    bool sendNewRequest(const QByteArray& req);
+
+    bool ProcessRequest(JDWP::Request* request, JDWP::Request* reply);
 private:
     Ui::Debugger *ui;
 
     DebugSocket* mSocket = nullptr;
-
+    QMap<int, QSharedPointer<JDWP::Request>> mRequestMap;
+    int mSockId = 0;
 };
 
 #endif // DEBUGGER_H

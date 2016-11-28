@@ -18,13 +18,16 @@
 #ifndef PROJECT_DEBUGSOCKET_H
 #define PROJECT_DEBUGSOCKET_H
 
+#include <Jdwp/Request.h>
+
+
 #include <QThread>
 #include <QTcpSocket>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QAtomicInteger>
 #include <QByteArray>
-#include <Jdwp/Request.h>
+#include <QSharedPointer>
 
 class DebugSocket: public QThread
 {
@@ -44,7 +47,7 @@ public:
 signals:
     void error(int socketError, const QString &message);
 
-    // need to delete request in slot after call.
+    // request need to be deleted in slot
     void newJDWPRequest(JDWP::Request* request);
     // this will be emited when handshake finished
     void connected();

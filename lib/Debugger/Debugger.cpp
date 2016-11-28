@@ -20,6 +20,8 @@
 #include <QDebug>
 #include <Jdwp/JdwpHandler.h>
 
+
+
 Debugger::Debugger(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Debugger)
@@ -49,6 +51,7 @@ Debugger::~Debugger()
     saveToConfig();
     delete ui;
 }
+
 void Debugger::loadFromConfig()
 {
     Configuration *config = Config();
@@ -81,7 +84,6 @@ void Debugger::startNewTarget(QStringList args)
     }
 
     auto& target = args.front();
-
     mSocket->startConnection("localhost", 8100, target);
 }
 
@@ -94,22 +96,74 @@ void Debugger::onSocketConnected()
 {
     cmdmsg()->addCmdMsg("Debugger connect to " + mSocket->hostName () + ":" +
                                 QString::number(mSocket->port ()));
+    mSockId = 0;
+    mRequestMap.clear ();
+
     // just run
-    auto req = JDWP::VirtualMachine::Resume::buildReq (0);
-    sendBuffer (req);
+    auto request = JDWP::VirtualMachine::Resume::buildReq (mSockId++);
+    sendNewRequest (request);
 }
 
 void Debugger::onSocketDisconnected()
 {
     cmdmsg()->addCmdMsg("Debugger disconnected");
+    mSockId = 0;
+    mRequestMap.clear ();
 }
 
-void Debugger::onJDWPRequest (JDWP::Request *request)
+void Debugger::onJDWPRequest (JDWP::Request* request)
+{
+    QSharedPointer<JDWP::Request> req(request);
+    if(request->isReply ()) {
+        handleReply (req);
+    } else {
+        handleCommand(req);
+    }
+
+}
+
+void Debugger::handleReply (QSharedPointer<JDWP::Request> &reply)
+{
+    auto id = reply->GetId ();
+
+    auto it = mRequestMap.find (id);
+    if(it == mRequestMap.end ()) {
+        return;
+    }
+    auto request = it->data ();
+    qDebug() << "Handle reply for id " << id
+            << " CommandSet:" << request->GetCommandSet ()
+            << " Command:" << request->GetCommand ();
+    if(!ProcessRequest (request, reply.data ())) {
+        qWarning() << "Unable to handle this reply";
+    }
+
+    mRequestMap.erase (it);
+}
+
+void Debugger::handleCommand (QSharedPointer<JDWP::Request> &reply)
+{
+    qDebug() << "Receive command!!!!!";
+}
+
+bool Debugger::sendNewRequest (const QByteArray &req)
+{
+    QSharedPointer<JDWP::Request> request(new JDWP::Request(
+            (uint8_t*)req.data (), req.length ()));
+    if(!request->isValid ()) {
+        return false;
+    }
+    if(mRequestMap.find (request->GetId ()) != mRequestMap.end ()) {
+        return false;
+    }
+    mRequestMap[request->GetId ()] = request;
+    sendBuffer (req);
+    return true;
+}
+
+bool Debugger::ProcessRequest (JDWP::Request *request,JDWP::Request *reply)
 {
 
-    qDebug() << "receive new request Id:" << request->GetId ()
-             << " Reply:" << request->isReply ()
-             << " CommandSet:" << request->GetCommandSet ()
-             << " Command:" << request->GetCommand ();
+    return false;
 }
 

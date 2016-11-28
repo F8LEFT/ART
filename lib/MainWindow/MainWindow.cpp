@@ -379,6 +379,7 @@ void MainWindow::onProjectOpened(QStringList projName)
 void MainWindow::onProjectClosed()
 {
     setWindowTitle("Android Reverse Toolkit");
+    mDebugger->stopCurrentTarget ();
     clearProjectDocumentTree();
     showQWidgetTab(mProjectTab);
 }

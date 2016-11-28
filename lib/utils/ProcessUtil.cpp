@@ -14,14 +14,6 @@ ProcessUtil::ProcessUtil(QObject *parent)
         : QThread(parent)
 {
     mInfoSemaphore = new QSemaphore(0);
-    mProcessMutex = new QMutex();
-    mProcess = new ProcessOneTime();
-
-    connect(mProcess, SIGNAL(finished(int)), this, SLOT(onProcFinish()));
-    connect(mProcess, SIGNAL(errorOccurred(QProcess::ProcessError)),
-            this, SLOT(onProcFinish()));
-    connect(this, SIGNAL(execProcess (CmdMsg::ProcInfo)),
-            mProcess, SLOT (exec(CmdMsg::ProcInfo)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
@@ -33,6 +25,15 @@ ProcessUtil::ProcessUtil(QObject *parent)
     connect(script, SIGNAL(projectClosed(QStringList)),
             this, SLOT(onProjectClosed()));
 }
+
+ProcessUtil::~ProcessUtil ()
+{
+    mContinue = false;
+    wait ();
+    mProcess->deleteLater ();
+    delete mInfoSemaphore;
+}
+
 
 void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
 {
@@ -48,7 +49,9 @@ void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
         connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
         connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)),
                 process, SLOT(deleteLater()));
-        process->exec (info);
+        if(process->exec (info)) {
+            process->deleteLater ();
+        }
         return;
     }
     if(info.t == CmdMsg::script) {
@@ -57,31 +60,27 @@ void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
     }
 }
 
-void ProcessUtil::onProcFinish()
-{
-    emit ProcFinish(mCurInfo);
-    mProcessMutex->unlock ();
-}
-
 void ProcessUtil::onProjectClosed ()
 {
     // TODO Clear mProcList
-//    int n = mProcList.size ();
-//    mInfoSemaphore->acquire (n);
-//    mProcList.clear ();
+    int n = mProcList.size ();
+    mInfoSemaphore->acquire (n);
+    mProcList.clear ();
 }
 
 void ProcessUtil::run ()
 {
-    while(true) {
-        mProcessMutex->lock ();
-
+    mProcess = new ProcessOneTime();
+    while(mContinue) {
         mInfoSemaphore->acquire ();
 
         mCurInfo = mProcList.front();
         mProcList.pop_front();
 
-        emit execProcess(mCurInfo);
+        if(!mProcess->exec (mCurInfo)) {
+            mProcess->waitForFinished (-1);
+        }
+        emit ProcFinish(mCurInfo);
     }
 }
 
@@ -101,7 +100,7 @@ ProcessOneTime::ProcessOneTime (QObject *parent)
     setWorkingDirectory(GetSoftPath());
 }
 
-void ProcessOneTime::exec(const CmdMsg::ProcInfo &info)
+bool ProcessOneTime::exec(const CmdMsg::ProcInfo &info)
 {
     if (!info.silence) {
         QString cmdHint = CmdMsg::procTypeDescription(info.t) + ": " + info.proc;
@@ -114,18 +113,16 @@ void ProcessOneTime::exec(const CmdMsg::ProcInfo &info)
     switch(info.t) {
         case CmdMsg::cmd:
             start(info.proc, info.args);    //  wait for finish signal
-            break;
+            return false;
         case CmdMsg::python:
-            emit finished (0);
             break;
         case CmdMsg::script:
             mScript->exec(info.proc, info.args);
-            emit finished (0);
             break;
         default:
-            emit finished (0);
             break;
     }
+    return true;
 }
 
 

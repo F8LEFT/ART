@@ -31,14 +31,12 @@ class ProcessUtil : public QThread
 
 public:
     ProcessUtil(QObject *parent = Q_NULLPTR);
-
+    ~ProcessUtil ();
 signals:
     void ProcFinish(const CmdMsg::ProcInfo &info);
-    void execProcess(const CmdMsg::ProcInfo &info);
 
 protected slots:
     void addProc(const CmdMsg::ProcInfo &info);
-    void onProcFinish();
 
     void onProjectClosed();
 protected:
@@ -51,7 +49,8 @@ private:
     CmdMsg::ProcInfo mCurInfo;
     ProcessOneTime *mProcess;
     QSemaphore *mInfoSemaphore;
-    QMutex *mProcessMutex;
+
+    bool mContinue = true;
 };
 
 
@@ -66,7 +65,8 @@ protected slots:
     void onProcessStdRead();
     void onProcessErrRead();
 public slots:
-    void exec(const CmdMsg::ProcInfo &info);
+    // the command is finished when return true
+    bool exec(const CmdMsg::ProcInfo &info);
 
 private:
     ScriptEngine* mScript;

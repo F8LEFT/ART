@@ -18,6 +18,7 @@
 
 #include <QHostAddress>
 #include <QMutexLocker>
+#include <QtCore/QEventLoop>
 
 DebugSocket::DebugSocket (QObject *parent)
         : QThread (parent), mQuit(false), mConnected(false), mSocket(nullptr)
@@ -49,6 +50,7 @@ void DebugSocket::stopConnection ()
     if(mSocket != nullptr) {
         mSocket->close ();
         mSocket->deleteLater();
+        mSocket = nullptr;
     }
 }
 
@@ -80,6 +82,8 @@ void DebugSocket::run ()
         return;
     }
 
+    QEventLoop loop;        // used to listen readwriteclose signal
+
     emit onConnected();
 
     QByteArray mBufPool;
@@ -94,7 +98,8 @@ void DebugSocket::run ()
             continue;
         }
 
-        auto req = new JDWP::Request((const uint8_t*)mBufPool.data (), mBufPool.length ());
+        JDWP::Request* req = new JDWP::Request(
+                (const uint8_t*)mBufPool.data (), mBufPool.length ());
         if(req->isValid ()) {
             emit newJDWPRequest (req);
             mBufPool.chop (req->GetLength ());
