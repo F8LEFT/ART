@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>710</width>
-     <height>19</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -58,6 +58,12 @@
     <addaction name="actionRun"/>
     <addaction name="actionDebug"/>
     <addaction name="actionStop"/>
+    <addaction name="separator"/>
+    <addaction name="actionStep_Over"/>
+    <addaction name="actionStep_Into"/>
+    <addaction name="actionStep_Out"/>
+    <addaction name="actionRun_To_Cursor"/>
+    <addaction name="actionResume_Program"/>
     <addaction name="separator"/>
     <addaction name="actionDevices"/>
     <addaction name="actionRestart_adb"/>
@@ -363,6 +369,46 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionStep_Into">
+   <property name="text">
+    <string>Step Into</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
+  </action>
+  <action name="actionStep_Over">
+   <property name="text">
+    <string>Step Over</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
+  </action>
+  <action name="actionStep_Out">
+   <property name="text">
+    <string>Step Out</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F8</string>
+   </property>
+  </action>
+  <action name="actionRun_To_Cursor">
+   <property name="text">
+    <string>Run To Cursor</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F9</string>
+   </property>
+  </action>
+  <action name="actionResume_Program">
+   <property name="text">
+    <string>Resume Program</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
    </property>
   </action>
  </widget>

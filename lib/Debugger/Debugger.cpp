@@ -138,7 +138,9 @@ void Debugger::handleReply (QSharedPointer<JDWP::Request> &reply)
 
 void Debugger::handleCommand (QSharedPointer<JDWP::Request> &request)
 {
-    qDebug() << "Receive command!!!!!";
+    qDebug() << "Handle command for id " << request->GetId()
+        << " CommandSet:" << request->GetCommandSet ()
+        << " Command:" << request->GetCommand ();
 }
 
 bool Debugger::sendNewRequest (const QByteArray &req)

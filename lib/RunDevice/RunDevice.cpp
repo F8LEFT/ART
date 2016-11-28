@@ -17,6 +17,7 @@
 
 #include <QRegExp>
 #include <QtConcurrent/QtConcurrent>
+#include <QAtomicInteger>
 
 void getDeviceMsgThread(RunDevice* e);
 
@@ -170,7 +171,6 @@ void RunDevice::onDebugAction()
          << project->getInfo ("PackageName") +
                  "/" + project->getInfo ("ActivityEntryName");
     cmdexec("adb", args);
-
     cmdexec("DebugStart", project->getInfo ("PackageName"));
 }
 
@@ -222,17 +222,15 @@ QStringList RunDevice::getCurDeviceIdList()
 {
     AdbUtil adbUtil;
     QStringList devs = adbUtil.execute("devices");
-    while(devs.size() > 0) {
-        if(devs.at(0).contains("List of devices attached")) {
-            devs.pop_front();
-            break;
-        }
-        devs.pop_front();
-    }
+    // deviceId status
     QStringList devId;
     foreach(QString deviceMsg, devs) {
         QStringList device = deviceMsg.split(QRegExp("\\s+"), QString::SkipEmptyParts);
         if (device.size() != 2) {
+            continue;
+        }
+        if(device[1].compare("device", Qt::CaseInsensitive) != 0) {
+            // only online device is abled to use
             continue;
         }
         devId.push_back(device[0]);
@@ -259,6 +257,12 @@ QString RunDevice::getValidDeviceId()
 
 
 void getDeviceMsgThread(RunDevice* runDevice) {
+    static QAtomicInteger<bool> running;
+    if(running) {
+        return;
+    }
+    running = true;
+
     AdbUtil adbUtil;
     QStringList devIds = runDevice->getCurDeviceIdList();
     foreach(const QString& deviceId, devIds) {
@@ -279,5 +283,6 @@ void getDeviceMsgThread(RunDevice* runDevice) {
                 "$" + deviceId;
         emit runDevice->addDeviceList(deviceMsg);
     }
+    running = false;
 }
 
