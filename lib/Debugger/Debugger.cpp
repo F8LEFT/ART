@@ -33,13 +33,14 @@ Debugger::Debugger(QWidget *parent) :
     connect(script, &ScriptEngine::debugStart, this, &Debugger::startNewTarget);
 
     mSocket = new DebugSocket(this);
-    connect(mSocket, &DebugSocket::error, this, &Debugger::onSocketError, Qt::QueuedConnection);
-    connect(mSocket, &DebugSocket::connected, this, &Debugger::onSocketConnected, Qt::QueuedConnection);
-    connect(mSocket, &DebugSocket::disconnected, this, &Debugger::onSocketDisconnected, Qt::QueuedConnection);
+    connect(mSocket, &DebugSocket::error, this, &Debugger::onSocketError);
+    connect(mSocket, &DebugSocket::connected, this, &Debugger::onSocketConnected);
+    connect(mSocket, &DebugSocket::disconnected, this, &Debugger::onSocketDisconnected);
+
     connect(this, SIGNAL(sendBuffer(const char*,quint64)),
-            mSocket, SLOT(sendBuffer(const char*,quint64)), Qt::QueuedConnection);
-    connect(this, SIGNAL(sendBuffer(QByteArray)), mSocket, SLOT(sendBuffer(QByteArray)),
-            Qt::QueuedConnection);
+            mSocket->mSocketEvent, SLOT(onWrite(const char*,quint64)));
+    connect(this, SIGNAL(sendBuffer(QByteArray)), mSocket->mSocketEvent, SLOT(onWrite(QByteArray)));
+    connect(this, &Debugger::stopCurrentTarget, mSocket->mSocketEvent, &DebugSocketEvent::onStop);
 
     connect(mSocket, &DebugSocket::newJDWPRequest, this, &Debugger::onJDWPRequest);
 
@@ -70,11 +71,6 @@ void Debugger::saveToConfig()
 bool Debugger::isDebugging ()
 {
     return mSocket->isConnected ();
-}
-
-void Debugger::stopCurrentTarget()
-{
-    mSocket->stopConnection ();
 }
 
 void Debugger::startNewTarget(QStringList args)

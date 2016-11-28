@@ -324,7 +324,7 @@ void MainWindow::actionDebug()
     if(!ProjectInfo::instance ()->isProjectOpened ()) {
         return;
     }
-    cmdexec("Stop", CmdMsg::script, true, false);
+    cmdexec("Stop");
     if(mDebugger->isDebugging()) {
         mDebugger->stopCurrentTarget();
     }
@@ -333,7 +333,7 @@ void MainWindow::actionDebug()
         cmdexec("Install");
         cmdexec("Debug");
     } else {
-        cmdexec("Debug", CmdMsg::script, true, false);
+        cmdexec("Debug");
     }
 }
 

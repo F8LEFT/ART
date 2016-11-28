@@ -39,11 +39,11 @@ public:
     void saveToConfig();
 
     bool isDebugging();
-    void stopCurrentTarget();
+
 signals:
     void sendBuffer(const QByteArray& array);
     void sendBuffer(const char*data, quint64 len);
-
+    void stopCurrentTarget();
 public slots:
     void startNewTarget(QStringList args);
 

@@ -11,7 +11,6 @@
 #include <Jdwp/JdwpHeader.h>
 #include "Jdwp/Request.h"
 
-
 #include <utils/ProjectInfo.h>
 #include <utils/CmdMsgUtil.h>
 #include <utils/AdbUtil.h>
@@ -24,12 +23,15 @@ DebugSocket::DebugSocket (QObject *parent)
         : QThread (parent), mQuit(false), mConnected(false), mSocket(nullptr)
 {
     connect(this, &DebugSocket::finished, this, &DebugSocket::onThreadfinish);
+    mSocketEvent = new DebugSocketEvent();
+    mSocketEvent->moveToThread(this);
 }
 
 DebugSocket::~DebugSocket ()
 {
     mQuit = true;
     wait ();
+    mSocketEvent->deleteLater();
 }
 
 void DebugSocket::startConnection (const QString &hostName, int port,
@@ -83,48 +85,44 @@ void DebugSocket::run ()
     }
 
     QEventLoop loop;        // used to listen readwriteclose signal
+    connect(mSocketEvent, &DebugSocketEvent::newStatus, &loop, &QEventLoop::quit);
+    connect(mSocket, &QTcpSocket::readyRead, mSocketEvent, &DebugSocketEvent::onRead);
 
     emit onConnected();
 
     QByteArray mBufPool;
     while(!mQuit && mConnected) {
-        if(!mSocket->waitForReadyRead ()) {
-            continue;
-        }
-        auto buffer = mSocket->readAll ();
-        mBufPool += buffer;
-        if(!JDWP::Request::isValid (
+        loop.exec();
+        if(mSocketEvent->isReadyRead()) {
+            auto buffer = mSocket->readAll ();
+            qDebug() << "[DebugSocket] read: " << buffer.toHex();
+            mBufPool += buffer;
+            if(!JDWP::Request::isValid (
                 (const uint8_t*)mBufPool.data (), mBufPool.length ())) {
-            continue;
-        }
+                continue;
+            }
 
-        JDWP::Request* req = new JDWP::Request(
+            JDWP::Request* req = new JDWP::Request(
                 (const uint8_t*)mBufPool.data (), mBufPool.length ());
-        if(req->isValid ()) {
-            emit newJDWPRequest (req);
-            mBufPool.chop (req->GetLength ());
+            if(req->isValid ()) {
+                emit newJDWPRequest (req);
+                mBufPool.chop (req->GetLength ());
+            }
         }
+        if(mSocketEvent->isReadyWrite()) {
+            auto &wbuf = mSocketEvent->mWBuffer;
+            qDebug() << "[DebugSocket] send: " << wbuf.toHex();
+            if(mSocket->write (wbuf) != wbuf.length()) {
+                qWarning() << "Send data failed";
+            }
+            wbuf.clear();
+        }
+        if(mSocketEvent->isReadyStop()) {
+            qDebug() << "[DebugSocket] close" ;
+            stopConnection();
+        }
+        mSocketEvent->clearStatus();
     }
-}
-
-const QString &DebugSocket::hostName() const
-{
-    return mHostName;
-}
-
-const QString &DebugSocket::targetName() const
-{
-    return mTargetName;
-}
-
-const quint16 DebugSocket::port() const
-{
-    return mPort;
-}
-
-const bool DebugSocket::isConnected() const
-{
-    return mConnected;
 }
 
 bool DebugSocket::tryHandshake ()
@@ -167,21 +165,6 @@ void DebugSocket::onThreadfinish ()
     }
 }
 
-void DebugSocket::sendBuffer (const QByteArray& array)
-{
-    qDebug() << "SendBuffer: " << array.toHex();
-    sendBuffer (array.data (), array.length ());
-}
-
-void DebugSocket::sendBuffer (const char *data,quint64 len)
-{
-    if(mSocket && mSocket->isWritable ()) {
-        if(mSocket->write (data, len) != len) {
-            qWarning() << "Send data failed";
-        }
-    }
-}
-
 bool DebugSocket::tryBindJdwp()
 {
     // get Process pid
@@ -217,8 +200,32 @@ bool DebugSocket::tryBindJdwp()
     return false;
 }
 
+void DebugSocketEvent::onStop()
+{
+    mStatus = mStatus | ReadyStop;
+    emit newStatus();
+}
 
+void DebugSocketEvent::onWrite(const QByteArray &array)
+{
+    mWBuffer.append(array);
+    mStatus = mStatus | ReadyWrite;
+    emit newStatus();
+}
 
+void DebugSocketEvent::onWrite(const char *data, quint64 len)
+{
+    onWrite(QByteArray(data, len));
+}
+void DebugSocketEvent::onRead()
+{
+    mStatus = mStatus | ReadyRead;
+    emit newStatus();
+}
+DebugSocketEvent::DebugSocketEvent(QObject *parent)
+    : QObject(parent)
+{
 
+}
 
 
