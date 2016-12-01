@@ -465,6 +465,7 @@ namespace Analysis {
             opFlag = Android::gOpcodeFlagsTable[(u1)op];
             opLen = Android::gInstructionWidthTable[(u1)op];
         }
+        virtual ~OpCode() { };
         virtual std::string toString() = 0;
         virtual void deleteThis() = 0;
         const std::string getPoolStr(int i) {

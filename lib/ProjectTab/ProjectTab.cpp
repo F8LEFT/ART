@@ -13,7 +13,6 @@
 #include <utils/CmdMsgUtil.h>
 #include <utils/ProjectInfo.h>
 #include <utils/ScriptEngine.h>
-#include "yaml-cpp/yaml.h"
 #include "SmaliAnalysis/SmaliAnalysis.h"
 
 
@@ -230,19 +229,7 @@ void ProjectTab::readProjectYmlInfo ()
     }
 
     QString ymlPath = projectPath + "/apktool.yml";
-    try {
-        YAML::Node doc = YAML::LoadFile(ymlPath.toStdString());
-        mVersion = QString::fromStdString (doc["version"].as<std::string>());
-        mVersionCode = QString::fromStdString (
-                doc["versionInfo"]["versionCode"].as<std::string>());
-        mVersionName = QString::fromStdString (
-                doc["versionInfo"]["versionName"].as<std::string>());
-
-        ui->mVersionEdit->setText(mVersion);
-        ui->mVersionCodeEdit->setText(mVersionCode);
-        ui->mVersionNameEdit->setText(mVersionName);
-    } catch (const YAML::Exception& e) {
-    }
+    // TODO parse yml file.
 }
 
 void ProjectTab::readProjectManifestInfo ()

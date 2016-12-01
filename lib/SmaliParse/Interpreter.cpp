@@ -132,6 +132,7 @@ StringPool *Interpreter::stringPool (){ return mStringPool;}
 
 void Interpreter::analysisMethod (SmaliMethod *method)
 {
+
 //    for(auto it = method->mInsList.begin (), itEnd = method->mInsList.end ();
 //            it != itEnd; it++) {
 //        if((*it)->op == OP_PACKED_SWITCHDATABEG) {

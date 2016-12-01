@@ -6,10 +6,12 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-#include <utils/CmdMsgUtil.h>
-#include <QtCore/QFileInfo>
 #include "BookMark/BookMark.h"
 #include "ui_BookMark.h"
+
+#include <utils/CmdMsgUtil.h>
+#include <QtCore/QFileInfo>
+
 
 
 BookMark::BookMark(QString file, QWidget *parent) :

@@ -18,8 +18,8 @@
 
 namespace Analysis {
     /* move-result rx
-    /* move-result-wide rx
-    /* move-result-object rx
+     * move-result-wide rx
+     * move-result-object rx
      * */
 
     class Op_MOVE_RESULT: public OpCode {

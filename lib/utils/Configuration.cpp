@@ -185,7 +185,7 @@ void Configuration::save()
 }
 
 
-const QColor Configuration::getColor (const QString &category,const QString &id)
+QColor Configuration::getColor (const QString &category,const QString &id)
 {
     if(Colors.contains(category))
     {
@@ -204,7 +204,7 @@ void Configuration::setColor (const QString &category,const QString &id,
     return;
 }
 
-const bool Configuration::getBool (const QString &category,const QString &id)
+bool Configuration::getBool (const QString &category,const QString &id)
 {
     if(Bools.contains(category))
     {
@@ -220,7 +220,7 @@ void Configuration::setBool (const QString &category,const QString &id,const boo
     return;
 }
 
-const unsigned Configuration::getUint (const QString &category,const QString &id)
+unsigned Configuration::getUint (const QString &category,const QString &id)
 {
     if(Uints.contains(category))
     {
@@ -237,7 +237,7 @@ void Configuration::setUint (const QString &category,const QString &id,
     return;
 }
 
-const QFont Configuration::getFont (const QString &category,const QString &id)
+QFont Configuration::getFont (const QString &category,const QString &id)
 {
     if(Fonts.contains(category))
     {
@@ -255,7 +255,7 @@ void Configuration::setFont (const QString &category,const QString &id,const QFo
     Fonts[id][category] = f;
 }
 
-const QKeySequence Configuration::getShortcut (const QString &category,
+QKeySequence Configuration::getShortcut (const QString &category,
                                                const QString &id)
 {
     if(Shortcuts.contains(category))
@@ -273,7 +273,7 @@ void Configuration::setShortcut (const QString &category,const QString &id,
     return;
 }
 
-const QString Configuration::getString (const QString &category,const QString &id)
+QString Configuration::getString (const QString &category,const QString &id)
 {
     if(Strings.contains(category))
     {
@@ -290,7 +290,7 @@ void Configuration::setString(const QString &category,const QString &id,
     return;
 }
 
-const QByteArray Configuration::getByte(const QString &category, const QString &id)
+QByteArray Configuration::getByte(const QString &category, const QString &id)
 {
     if(Bytes.contains(category)) {
         if(Bytes[category].contains(id))

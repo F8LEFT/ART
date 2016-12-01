@@ -44,21 +44,21 @@ public:
     void load();
     void save();
 
-    const QColor getColor (const QString &category,const QString &id);
+    QColor getColor (const QString &category,const QString &id);
     void setColor (const QString &category,const QString &id,const QColor &c);
-    const bool getBool (const QString &category,const QString &id);
+    bool getBool (const QString &category,const QString &id);
     void setBool (const QString &category,const QString &id,const bool b);
-    const unsigned getUint (const QString &category,const QString &id);
+    unsigned getUint (const QString &category,const QString &id);
     void setUint (const QString &category,const QString &id,const unsigned i);
-    const QFont getFont (const QString &category,const QString &id);
+    QFont getFont (const QString &category,const QString &id);
     void setFont (const QString &category,const QString &id,const QFont &f);
-    const QKeySequence getShortcut (const QString &category,const QString &id);
+    QKeySequence getShortcut (const QString &category,const QString &id);
     void setShortcut (const QString &category,const QString &id,
                       const QKeySequence &sequence);
-    const QString getString (const QString &category,const QString &id);
+    QString getString (const QString &category,const QString &id);
     void setString (const QString &category,const QString &id,const QString &s);
 
-    const QByteArray getByte (const QString &category,const QString &id);
+    QByteArray getByte (const QString &category,const QString &id);
     void setByte (const QString &category,const QString &id,const QByteArray &s);
 
 public:

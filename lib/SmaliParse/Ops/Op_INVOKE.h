@@ -69,13 +69,13 @@ namespace Analysis {
             if (!args.empty ()) {
                 rel += args[0].toString ();
             }
-            for(int i = 1; i < args.size (); i++) {
+            for(uint i = 1; i < args.size (); i++) {
                 rel += ", " + args[i].toString ();
             }
             rel += std::string("}, ")
                    + (*mStringPool)[mClass] + "->" + (*mStringPool)[mName];
             rel += "(";
-            for(int i = 0; i < mArgs.size (); i++) {
+            for(uint i = 0; i < mArgs.size (); i++) {
                 rel += (*mStringPool)[mArgs[i]];
             }
             rel += ")";

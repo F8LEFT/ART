@@ -43,7 +43,7 @@ namespace Analysis {
                     if (!regs.empty ()) {
                         rel += regs[0].toString ();
                     }
-                    for(int i = 1; i < regs.size (); i++) {
+                    for(uint i = 1; i < regs.size (); i++) {
                         rel += ", " + regs[i].toString ();
                     }
                     break;

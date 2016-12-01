@@ -1,9 +1,51 @@
-cmake_minimum_required(VERSION 3.5)
-
+# ART version
 set(ART_VERSION_MAJOR 0)
 set(ART_VERSION_MINOR 7)
 set(ART_VERSION_PATCH 5)
 set(ART_VERSION ${ART_VERSION_MAJOR}.${ART_VERSION_MINOR}.${ART_VERSION_PATCH})
+
+################################################################################
+
+project(AndroidReverseToolkit)
+cmake_minimum_required(VERSION 3.5)
+
+find_package(ECM 5.28.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+if(POLICY CMP0063)
+    cmake_policy(SET CMP0063 NEW)
+endif()
+
+include(KDEInstallDirs)
+include(KDECompilerSettings)
+include(KDECMakeSettings)
+include(ECMSetupVersion)
+include(FeatureSummary)
+
+#
+# Dependencies
+#
+set(REQUIRED_QT_VERSION "5.7.0")
+find_package(Qt5 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED COMPONENTS Core Gui Network)
+find_package(Qt5 ${REQUIRED_QT_VERSION} NO_MODULE QUIET OPTIONAL_COMPONENTS Widgets XmlPatterns WebSockets)
+set_package_properties(Qt5 PROPERTIES URL "http://qt-project.org/")
+set_package_properties(Qt5Widgets PROPERTIES PURPOSE "MainWindow application.")
+set_package_properties(Qt5XmlPatterns PROPERTIES PURPOSE "Compile-time validation of syntax definition files.")
+set_package_properties(Qt5WebSockets PROPERTIES PURPOSE "Connect to network.")
+
+find_package(KF5 REQUIRED COMPONENTS SyntaxHighlighting)
+set_package_properties(KF5SyntaxHighlighting PROPERTIES PURPOSE "Syntax highlighting engine")
+
+
+#
+# Translations
+#
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
+    ecm_install_po_files_as_qm(po)
+endif()
+
+SET(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 IF (WIN32)
     MESSAGE("Building windows version")
@@ -20,70 +62,21 @@ ELSE()
     ADD_DEFINITIONS(-DUNIX)
 ENDIF ()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wno-comment -Wno-tautological-undefined-compare")
-
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 SET(ART_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-SET(ART_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${ART_INCLUDE_DIR})
-
-#for gui
-
-add_definitions(-DARTGUI_MAJOR=${ART_VERSION_MAJOR})
-add_definitions(-DARTGUI_MINOR=${ART_VERSION_MINOR})
-add_definitions(-DARTGUI_PATCH=${ART_VERSION_PATCH})
-add_definitions(-DARTGUI_VERSION="${ART_VERSION}")
-
-if(QTGCCDIR)
-    SET(CMAKE_PREFIX_PATH ${QTGCCDIR})
-else()
-    SET(CMAKE_PREFIX_PATH /home/f8left/CodeProgram/QT/5.7/gcc_64)
-endif()
-MESSAGE("Building ART GUI with QPath ${CMAKE_PREFIX_PATH} version.")
-
+INCLUDE_DIRECTORIES(${ART_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-SET(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-
 SET(CMAKE_SUPPRESS_REGENERATION 1)
-SET(CMAKE_USE_RELATIVE_PATHS ON)
-SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
-SET(GUI_PROJDIR ${CMAKE_CURRENT_SOURCE_DIR})
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+add_subdirectory(lib)
 
-SET(CMAKE_INSTALL_PREFIX ${PROJDIR}/bin)
+ecm_setup_version(${ART_VERSION_MAJOR}.${ART_VERSION_MINOR}.${ART_VERSION_PATCH}
+        VARIABLE_PREFIX ART
+        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/art_version.h"
+        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/ARTConfigVersion.cmake"
+        )
 
-SET(GUI_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-INCLUDE_DIRECTORIES(${GUI_INCLUDE_DIR})
-FIND_PACKAGE(Qt5Widgets REQUIRED)
-FIND_PACKAGE(Qt5Xml)
-FIND_PACKAGE(Qt5WebSockets)
-
-macro(source_group_by_dir source_files)
-    if(MSVC)
-        set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})
-        foreach(sgbd_file ${${source_files}})
-            string(REGEX REPLACE ${sgbd_cur_dir}//(.*/) //1 sgbd_fpath ${sgbd_file})
-            string(REGEX REPLACE "/(.*/)/.*" //1 sgbd_group_name ${sgbd_fpath})
-            string(COMPARE EQUAL ${sgbd_fpath} ${sgbd_group_name} sgbd_nogroup)
-            string(REPLACE "/" "//" sgbd_group_name ${sgbd_group_name})
-            if(sgbd_nogroup)
-                set(sgbd_group_name "//")
-            endif(sgbd_nogroup)
-            source_group(${sgbd_group_name} FILES ${sgbd_file})
-        endforeach(sgbd_file)
-    endif(MSVC)
-endmacro(source_group_by_dir)
-
-ADD_SUBDIRECTORY(lib)
-
-SET(LIBS ${LIBRARY_OUTPUT_PATH})
-LINK_DIRECTORIES(${LIBS})
-
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
 

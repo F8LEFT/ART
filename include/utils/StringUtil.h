@@ -20,6 +20,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QLocale>
+#include "art_version.h"
 
 QString ToDateString (const QDate &date);
 
@@ -30,22 +31,22 @@ static QDate GetCompileDate ()
 
 static QString GetCompileVersion ()
 {
-    return ARTGUI_VERSION;
+    return ART_VERSION_STRING;
 }
 
 static int GetCompileMajor ()
 {
-    return ARTGUI_MAJOR;
+    return ART_VERSION_MAJOR;
 }
 
 static int GetCompileMinor ()
 {
-    return ARTGUI_MINOR;
+    return ART_VERSION_MINOR;
 }
 
 static int GetCompilePatch ()
 {
-    return ARTGUI_PATCH;
+    return ART_VERSION_PATCH;
 }
 
 #define GetSoftPath QApplication::applicationDirPath

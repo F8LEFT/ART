@@ -1,5 +1,8 @@
 SET(TARGET_NAME SmaliParse)
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+
+
 set(SRC_FILE SmaliLexer.cpp SmaliParser.cpp Interpreter.cpp)
 
 FILE(GLOB_RECURSE ART_HEADER ${ART_INCLUDE_DIR}/${TARGET_NAME}/*.h Ops/*.h)

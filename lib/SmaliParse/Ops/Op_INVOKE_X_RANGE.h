@@ -65,7 +65,7 @@ namespace Analysis {
             rel += " {" + r1.toString () + " .. " + r2.toString ()+ "}, "
                    + (*mStringPool)[mClass] + "->" + (*mStringPool)[mName];
             rel += "(";
-            for(int i = 0; i < mArgs.size (); i++) {
+            for(uint i = 0; i < mArgs.size (); i++) {
                 rel += (*mStringPool)[mArgs[i]];
             }
             rel += ")";
