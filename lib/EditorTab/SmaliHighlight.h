@@ -15,8 +15,10 @@
 
 #ifndef PROJECT_SMALIHIGHLIGHT_H
 #define PROJECT_SMALIHIGHLIGHT_H
+
+#include <Theme>
+
 #include <QSyntaxHighlighter>
-#include <HighLighter/HighLightConfig.h>
 
 
 class SmaliHighlight: public QSyntaxHighlighter
@@ -24,15 +26,15 @@ class SmaliHighlight: public QSyntaxHighlighter
     Q_OBJECT
 
 public:
-    SmaliHighlight(QTextDocument *parent, QString fileName,
-                   HighLightConfig* config);
+    SmaliHighlight(QTextDocument *parent);
+    ~SmaliHighlight();
 
+    void setTheme(const KSyntaxHighlighting::Theme &theme);
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
-    QMap<int, QTextCharFormat> &mFormatMap;
-
+    KSyntaxHighlighting::Theme m_theme;
 };
 
 

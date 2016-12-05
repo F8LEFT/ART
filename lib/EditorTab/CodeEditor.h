@@ -1,4 +1,4 @@
-//===- SmaliEditor.h - ART-GUI Editor Tab ----------------------*- C++ -*-===//
+//===- CodeEditor.h - ART-GUI Editor Tab -----------------------*- C++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
@@ -7,39 +7,37 @@
 //
 //===---------------------------------------------------------------------===//
 //
-// SmaliEditor is a widget to open/modify/save *.smali file.
+// CodeEditor is used for edit normal file(with ksyntaxhighlighting).
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef ANDROIDREVERSETOOLKIT_CODEEDITOR_H
+#define ANDROIDREVERSETOOLKIT_CODEEDITOR_H
 
-#ifndef ANDROIDREVERSETOOLKIT_SMALIEDITOR_H
-#define ANDROIDREVERSETOOLKIT_SMALIEDITOR_H
-
-#include "SmaliHighlight.h"
-
-#include <SyntaxHighlighter>
 #include "TextEditor.h"
 
+namespace KSyntaxHighlighting {
+    class SyntaxHighlighter;
+}
 
-class SmaliEditor : public TextEditor
+class CodeEditor: public TextEditor
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    explicit SmaliEditor(QWidget *parent = Q_NULLPTR);
-    virtual ~SmaliEditor();
+    explicit CodeEditor(QWidget *parent = Q_NULLPTR);
+    virtual ~CodeEditor();
 
     bool openFile(const QString &fileName, int iLine = 1);
-
 protected:
     void setTheme(const KSyntaxHighlighting::Theme &theme);
 
     bool isFoldable(const QTextBlock &block) const;
     bool isFolded(const QTextBlock &block) const;
-    QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
+     QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
 
 private:
-    SmaliHighlight *m_highlighter;
+    KSyntaxHighlighting::SyntaxHighlighter *m_highlighter;
 };
 
 
-#endif //ANDROIDREVERSETOOLKIT_SMALIEDITOR_H
+#endif //ANDROIDREVERSETOOLKIT_CODEEDITOR_H

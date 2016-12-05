@@ -1,4 +1,4 @@
-//===- EditorTab.cpp - ART-GUI Editor Tab --------------------*- C++ -*-===//
+//===- EditorTab.cpp - ART-GUI TextEditorWidget Tab --------------------*- C++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
@@ -10,8 +10,10 @@
 #include "EditorTab/EditorTab.h"
 #include "ui_EditorTab.h"
 
-#include "Editor.h"
+#include "TextEditorWidget.h"
+#include "TextEditor.h"
 #include "SmaliEditor.h"
+#include "CodeEditor.h"
 
 #include <utils/ScriptEngine.h>
 #include <utils/ProjectInfo.h>
@@ -73,20 +75,14 @@ bool EditorTab::openFile(QString filePath, int iLine)
     if (iComIdx != -1) {
         ui->mDocumentCombo->setCurrentIndex(iComIdx);
         if(iLine != -1) {
-            Editor* p = (Editor*)ui->mEditStackedWidget->widget(iComIdx);
+            TextEditor* p = (TextEditor*)ui->mEditStackedWidget->widget(iComIdx);
             p->gotoLine (iLine);
         }
         cmdexec("OpenWindow", "EditorTab", CmdMsg::script, true, false);
         return true;
     }
     if (!filePath.isEmpty()) {
-        Editor* p;
-        if(filePath.endsWith (".smali")) {
-            p = new SmaliEditor(this);
-        } else {
-            p = new Editor(this);
-        }
-        p->setTextLayout ();
+        TextEditorWidget* p = new TextEditorWidget(this);
 
         iLine = (iLine == -1) ? 1 : iLine;
         if (p->openFile(filePath, iLine)) {
@@ -107,7 +103,7 @@ bool EditorTab::closeFile(QString filePath)
 {
     int idx = ui->mDocumentCombo->findData(filePath);
     if (idx != -1) {
-        Editor* p = (Editor*)ui->mEditStackedWidget->widget(idx);
+        TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(idx);
         ui->mEditStackedWidget->removeWidget(p);
         ui->mDocumentCombo->removeItem(idx);
         delete p;
@@ -154,63 +150,63 @@ void EditorTab::openFile(QStringList args)
 
 void EditorTab::undo()
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
-    e->mFileEdit->undo ();
+    e->editor()->undo ();
 }
 
 void EditorTab::redo()
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
-    e->mFileEdit->redo ();
+    e->editor()->redo ();
 }
 
 void EditorTab::cut()
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
-    e->mFileEdit->cut ();
+    e->editor()->cut ();
 }
 
 void EditorTab::copy()
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
-    e->mFileEdit->copy ();
+    e->editor()->copy ();
 }
 
 void EditorTab::paste()
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
-    e->mFileEdit->paste ();
+    e->editor()->paste ();
 }
 
 void EditorTab::deleteR()
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
-    e->mFileEdit->insertPlainText (QString());
+    e->editor()->insertPlainText (QString());
 }
 
 void EditorTab::selectAll()
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
-    e->mFileEdit->selectAll ();
+    e->editor()->selectAll ();
 }
 
 void EditorTab::find(QStringList args)
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
     e->onFindAction ();
@@ -218,7 +214,7 @@ void EditorTab::find(QStringList args)
 
 void EditorTab::gotoLine(QStringList args)
 {
-    Editor* e = (Editor*)ui->mEditStackedWidget->currentWidget();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
     if(e == nullptr)
         return;
     bool doGo;
@@ -226,7 +222,7 @@ void EditorTab::gotoLine(QStringList args)
                                           tr("Please input target line"), QLineEdit::Normal,
                                           QString::number (e->currentLine ()) ,&doGo);
     if(doGo) {
-        e->gotoLine (line.toInt ());
+        e->editor()->gotoLine (line.toInt ());
     }
 }
 
@@ -234,7 +230,7 @@ bool EditorTab::saveFile(QString filePath)
 {
     int idx = ui->mDocumentCombo->findData(filePath);
     if (idx != -1) {
-        Editor* p = (Editor*)ui->mEditStackedWidget->widget(idx);
+        TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(idx);
         return p->saveFile();
     }
     return false;
@@ -261,7 +257,7 @@ void EditorTab::fileChanged(QString path)
 {
     int idx = ui->mDocumentCombo->findData(path);
     if (idx != -1) {
-        Editor* p = (Editor*)ui->mEditStackedWidget->widget(idx);
+        TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(idx);
         p->reload();
     }
 }
@@ -283,7 +279,7 @@ void EditorTab::onProjectClosed ()
     Configuration cfg (cfgPath);
 
     for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {
-        Editor* p = (Editor*)ui->mEditStackedWidget->widget(i);
+        TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(i);
         cfg.setUint ("EditorTab", p->getFilePath (), p->currentLine ());
     }
     closeAll ();

@@ -14,7 +14,6 @@
 #ifndef FILESCHEMECONFIG_H
 #define FILESCHEMECONFIG_H
 
-#include <HighLighter/HighLightConfig.h>
 
 
 #include <QWidget>

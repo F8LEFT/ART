@@ -1,7 +1,7 @@
 # ART version
 set(ART_VERSION_MAJOR 0)
-set(ART_VERSION_MINOR 7)
-set(ART_VERSION_PATCH 5)
+set(ART_VERSION_MINOR 8)
+set(ART_VERSION_PATCH 0)
 set(ART_VERSION ${ART_VERSION_MAJOR}.${ART_VERSION_MINOR}.${ART_VERSION_PATCH})
 
 ################################################################################
@@ -32,9 +32,9 @@ set_package_properties(Qt5Widgets PROPERTIES PURPOSE "MainWindow application.")
 set_package_properties(Qt5XmlPatterns PROPERTIES PURPOSE "Compile-time validation of syntax definition files.")
 set_package_properties(Qt5WebSockets PROPERTIES PURPOSE "Connect to network.")
 
-find_package(KF5 REQUIRED COMPONENTS SyntaxHighlighting)
+set(KF5_DEP_VERSION "5.28.0") # we need KCrash::initialize
+find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS SyntaxHighlighting)
 set_package_properties(KF5SyntaxHighlighting PROPERTIES PURPOSE "Syntax highlighting engine")
-
 
 #
 # Translations

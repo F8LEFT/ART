@@ -1,4 +1,4 @@
-//===- TextEditorWidget.h - ART-GUI Editor Tab -----------------*- C++ -*-===//
+//===- TextEditorWidget.h - ART-GUI TextEditorWidget Tab -----------------*- C++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
@@ -7,81 +7,91 @@
 //
 //===---------------------------------------------------------------------===//
 //
-// This file defines an Editor to modify text.
+// The main TextEditorWidget widget.
 //
 //===----------------------------------------------------------------------===//
-#ifndef PROJECT_TEXTEDITOR_H
-#define PROJECT_TEXTEDITOR_H
-#include <QWidget>
-#include <QPlainTextEdit>
-#include <QAction>
-#include <QList>
-#include <BookMark/BookMark.h>
 
-class LineNumberArea;
-class TextEditorWidget: public QPlainTextEdit
+#ifndef ANDROIDREVERSETOOLKIT_TEXTEDITORWIDGET_H
+#define ANDROIDREVERSETOOLKIT_TEXTEDITORWIDGET_H
+
+#include "TextEditor.h"
+
+
+#include <BookMark/BookMark.h>
+#include <Find/FindWidget.h>
+
+
+#include <QWidget>
+#include <QThread>
+#include <QTimer>
+#include <QSyntaxHighlighter>
+#include <QAction>
+#include <QFileSystemWatcher>
+#include <QFileInfo>
+
+class TextEditorWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    TextEditorWidget (QWidget *parent = 0);
+    TextEditorWidget(QWidget *parent = Q_NULLPTR);
+    ~TextEditorWidget();
 
-    ~TextEditorWidget () override;
+    TextEditor* editor() { return mFileEdit; }
+    bool openFile(QString filePath, int iLine = 1);
+    bool saveFile();
+    bool reload();
+    void closeFile();
 
-    QString documentPath ();
-    void setDocumentPath (QString path);
+    QString getFilePath() {return mFileEdit->documentTitle();}
+    QString getFileName() {return QFileInfo(getFilePath()).fileName(); }
 
-    void lineNumberAreaPaintEvent (QPaintEvent *event);
-    int lineNumberAreaWidth ();
+    void loadFromConfig();
+    void saveToConfig();
 
-    void gotoLine (int line,int column = 0,bool centerLine = true);
     int currentLine();
-protected:
-    void resizeEvent (QResizeEvent *e) Q_DECL_OVERRIDE;
-
-    void keyPressEvent (QKeyEvent *event) Q_DECL_OVERRIDE;
-
-    virtual QWidget* allocLineArea ();
-
-private slots:
-    void updateLineNumberAreaWidth (int newBlockCount);
-
-    void highlightCurrentLine ();
-
-    void updateLineNumberArea (const QRect &,int);
 
 signals:
-    void onCTRL_F_Click();
+    void readText(const QString &text);
+    void readLine(const QString &line);
+    void readEnd();
 
+public slots:
+    void setText(const QString &text);
+    void appendLine(const QString &line);
+    void readFileEnd();
+
+    void textChanged();
+    void textChangedTimeOut();
+    void fileReloadTimeOut();
+
+    void onFindAction();
+    void onFindClose();
+
+    // find && replace text in document
+    void onFind(const QString &subString, QTextDocument::FindFlags options);
+    void onReplace(const QString &subString, const QString &replaceWith);
+    void onReplaceAll(const QString &subString, const QString &replaceWith);
+
+    // filewatcher
+    void onFileChange(const QString &filePath);
 private:
-    void updateCurrentLineBookMark();       // add or delete bookmark for currentline
-
-private:
-    QWidget *lineNumberArea;
-
-    QString mDocumentPath;
-
-};
-
-// LineNumberArea show linenumber in the TextEditorWidget
-class LineNumberArea : public QWidget
-{
-public:
-    LineNumberArea(TextEditorWidget* editor) : QWidget(editor) {
-        textEditor = editor;
-    }
-
-    QSize sizeHint() const Q_DECL_OVERRIDE {
-        return QSize(textEditor->lineNumberAreaWidth(), 0);
-    }
-
+    void highlightWord(const QString &subString, QTextDocument::FindFlags  options);
 protected:
-    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE {
-        textEditor->lineNumberAreaPaintEvent(event);
-    }
 
-private:
-    TextEditorWidget* textEditor;
+    QTimer* mFileChangedTimer;
+    QTimer* mFileReloadTimer;
+    TextEditor* mFileEdit;
+    QSyntaxHighlighter* mHighlighter;
+
+    FindWidget* mFindWidget;
+
+    QFileSystemWatcher* mFileWatcher;
+
+    int mLine;
+
+    bool notReload = false;
+
 };
 
-#endif //PROJECT_TEXTEDITOR_H
+#endif //ANDROIDREVERSETOOLKIT_TEXTEDITORWIDGET_H

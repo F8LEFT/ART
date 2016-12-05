@@ -1,4 +1,4 @@
-//===- TextEditorWidget.cpp - ART-GUI Editor Tab ---------------*- C++ -*-===//
+//===- TextEditorWidget.cpp - ART-GUI TextEditorWidget Tab ---------------*- C++ -*-===//
 //
 //                     ANDROID REVERSE TOOLKIT
 //
@@ -7,199 +7,255 @@
 //
 //===---------------------------------------------------------------------===//
 #include "TextEditorWidget.h"
-#include <QPainter>
-#include <QTextBlock>
-#include <QDebug>
-#include <BookMark/BookMarkManager.h>
-#include <QList>
 
-TextEditorWidget::TextEditorWidget(QWidget *parent):
-        QPlainTextEdit(parent)
+#include "SmaliEditor.h"
+#include "CodeEditor.h"
+
+#include <utils/Configuration.h>
+
+#include <QTextStream>
+#include <QtConcurrent/QtConcurrent>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QFileInfo>
+#include <QWidget>
+
+
+TextEditorWidget::TextEditorWidget(QWidget *parent) :
+        QWidget(parent),
+        mFileEdit(Q_NULLPTR)
 {
-    setLineWrapMode(QPlainTextEdit::NoWrap);
+    mFileChangedTimer = new QTimer(this);
+    mFileReloadTimer = new QTimer(this);
+    mFileReloadTimer->setSingleShot (true);
+    mFindWidget = new FindWidget(this);
 
-    lineNumberArea = allocLineArea();
+    mFileChangedTimer->start(60*1000);
 
-    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
-    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
+    connect(this, SIGNAL(readText(QString)), this, SLOT(setText(QString)));
+    connect(this, SIGNAL(readLine(QString)), this, SLOT(appendLine(QString)));
+    connect(this, SIGNAL(readEnd()), this, SLOT(readFileEnd()));
 
-    updateLineNumberAreaWidth(0);
-    highlightCurrentLine();
+    connect(mFileChangedTimer, SIGNAL(timeout()), this, SLOT(textChangedTimeOut()));
+    connect(mFileReloadTimer, SIGNAL(timeout()), this, SLOT(fileReloadTimeOut ()));
+
+    connect(mFileEdit, SIGNAL(onCTRL_F_Click()), this, SLOT(onFindAction ()));
+    connect(mFileEdit, SIGNAL(textChanged()), this, SLOT(textChanged ()));
+
+    // FindWidget signal
+    connect(mFindWidget, SIGNAL(find(QString,QTextDocument::FindFlags)),
+            this, SLOT(onFind(QString,QTextDocument::FindFlags)));
+    connect(mFindWidget, SIGNAL(replace(QString,QString)),
+            this, SLOT(onReplace(QString,QString)));
+    connect(mFindWidget, SIGNAL(replaceAll(QString,QString)),
+            this, SLOT(onReplaceAll(QString,QString)));
+    connect(mFindWidget, SIGNAL(closeWidget()),
+            this, SLOT(onFindClose ()));
+
+    mFileWatcher = new QFileSystemWatcher(this);
+    connect(mFileWatcher, SIGNAL(fileChanged(QString)),
+            this, SLOT(onFileChange (QString)));
+
+
+    mFindWidget->hide ();
+    loadFromConfig();
+
 }
 
 TextEditorWidget::~TextEditorWidget()
 {
+    closeFile();
+    saveToConfig();
 }
 
-QString TextEditorWidget::documentPath()
+
+bool TextEditorWidget::openFile(QString filePath, int iLine)
 {
-    return mDocumentPath;
-}
-
-void TextEditorWidget::setDocumentPath(QString path)
-{
-    mDocumentPath = path;
-}
-
-void TextEditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event)
-{
-    QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
-
-    QTextBlock block = firstVisibleBlock();
-    int blockNumber = block.blockNumber();
-    int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
-    int bottom = top + (int)blockBoundingRect(block).height();
-
-    while(block.isValid() && top <= event->rect().bottom()) {
-        if (block.isVisible() && bottom >= event->rect().top()) {
-            QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, number);
-        }
-
-        block = block.next();
-        top = bottom;
-        bottom = top + (int) blockBoundingRect(block).height();
-        ++blockNumber;
+    if(!QFileInfo::exists(filePath)) {
+        return false;
     }
+    Q_ASSERT(mFileEdit == Q_NULLPTR && "invoke again?");
+    if(filePath.endsWith(".smali")) {
+        mFileEdit = new SmaliEditor(this);
+    } else {
+        mFileEdit = new CodeEditor(this);
+    }
+    if(!mFileEdit->openFile(filePath, iLine)) {
+        mFileEdit->deleteLater();
+        return false;
+    }
+
+    mFileWatcher->addPath(filePath);
+    mFindWidget->setFilePath(filePath);
+
+    // setup editor layout
+    QVBoxLayout* vLayout = new QVBoxLayout(this);
+    vLayout->setContentsMargins(0, 0, 0, 0);
+    vLayout->addWidget(mFileEdit);
+    vLayout->addWidget(mFindWidget);
+    setLayout(vLayout);
+    return true;
 }
 
-int TextEditorWidget::lineNumberAreaWidth()
+bool TextEditorWidget::saveFile()
 {
-    int digits =1;
-    int max = qMax(1, blockCount());
-    while(max >= 10) {
-        max /= 10;
-        ++digits;
+    if(!mFileEdit->saveFile()) {
+        return false;
     }
-    int space = 3+fontMetrics().width(QLatin1Char('9')) * digits;
-    return space;
+    notReload = true;
+    return true;
 }
 
-void TextEditorWidget::gotoLine(int line, int column, bool centerLine)
+bool TextEditorWidget::reload()
 {
-    const int blockNumber = qMin(line, document()->blockCount()) - 1;
-    const QTextBlock &block = document()->findBlockByLineNumber(blockNumber);
-    if (block.isValid()) {
-        QTextCursor cursor(block);
-        if (column > 0) {
-            cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, column);
-        } else {
-            int pos = cursor.position();
-            while(document()->characterAt(pos).category() == QChar::Separator_Space) {
-                ++pos;
-            }
-            cursor.setPosition(pos);
-        }
-        setTextCursor(cursor);
-        if (centerLine) {
-            centerCursor();
-        } else {
-            ensureCursorVisible();
-        }
-    }
+    return mFileEdit->reload();
 }
+
+void TextEditorWidget::closeFile()
+{
+    saveFile();
+    mFileEdit->deleteLater();
+    mFileEdit = Q_NULLPTR;
+}
+
+void TextEditorWidget::loadFromConfig()
+{
+//    Configuration *config = Config();
+}
+
+void TextEditorWidget::saveToConfig()
+{
+//    Configuration *config = Config();
+}
+
 
 int TextEditorWidget::currentLine ()
 {
-    QTextCursor cursor = textCursor();
-    QTextLayout *pLayout = cursor.block().layout();
-    int nCurpos = cursor.position() - cursor.block().position();
-    return pLayout->lineForTextPosition(nCurpos).lineNumber()
-           + cursor.block().firstLineNumber() + 1;
+    return mFileEdit->currentLine ();
 }
 
-void TextEditorWidget::resizeEvent(QResizeEvent *e)
+void TextEditorWidget::setText (const QString &text)
 {
-    QPlainTextEdit::resizeEvent(e);
-
-    QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(),
-                                      lineNumberAreaWidth(), cr.height()));
+    mFileEdit->setPlainText (text);
 }
 
-void TextEditorWidget::keyPressEvent(QKeyEvent *e)
+void TextEditorWidget::appendLine(const QString& line)
 {
-    if(e->type() == QEvent::KeyPress ) {
-        if (e->modifiers() == (Qt::CTRL)) {
-            switch (e->key()) {
-                case Qt::Key_M:           // BookMark
-                    updateCurrentLineBookMark();
-                    return;
-                case Qt::Key_F:
-                    onCTRL_F_Click();
-                    return;
-                default:
-                    break;
-            }
+    mFileEdit->appendPlainText(line);
+}
+
+void TextEditorWidget::readFileEnd()
+{
+    mFileEdit->setReadOnly(false);
+    mFileEdit->setFocus();
+    mFileEdit->gotoLine(mLine);
+    mFileEdit->document ()->setModified (false);
+}
+
+void TextEditorWidget::textChanged()
+{
+}
+
+void TextEditorWidget::textChangedTimeOut()
+{
+    saveFile();
+}
+
+void TextEditorWidget::fileReloadTimeOut ()
+{
+    if(notReload) {
+        notReload = false;
+        return;
+    }
+    reload ();
+}
+
+void TextEditorWidget::onFindAction ()
+{
+    mFindWidget->show ();
+    auto text = mFileEdit->textCursor ().selectedText ();
+    if(!text.isEmpty ()) {
+        mFindWidget->setFindText (text);
+    }
+    mFindWidget->setFindEditFocus ();
+}
+
+void TextEditorWidget::onFindClose ()
+{
+    mFindWidget->hide ();
+    mFileEdit->setFocus ();
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    extraSelections.push_front (mFileEdit->extraSelections ().front ());
+    mFileEdit->setExtraSelections(extraSelections);
+}
+
+void TextEditorWidget::onFind(const QString &subString, QTextDocument::FindFlags options)
+{
+    highlightWord (subString, options);
+
+    auto select = mFileEdit->textCursor ().selectedText ();
+    if(select != subString) {
+        auto cursor = mFileEdit->textCursor ();
+        cursor.setPosition (cursor.selectionStart ());
+        mFileEdit->setTextCursor (cursor);
+    }
+    // find current
+    if(!mFileEdit->find (subString, options)) {
+        // research from top or buttom
+        auto cursor = mFileEdit->textCursor ();
+        if(options == QTextDocument::FindBackward) {
+            mFileEdit->moveCursor (QTextCursor::End);
+        } else {
+            mFileEdit->moveCursor (QTextCursor::Start);
+        }
+        if(!mFileEdit->find (subString, options)) {
+            // restore backup cursor
+            mFileEdit->setTextCursor (cursor);
         }
     }
-
-    QPlainTextEdit::keyPressEvent(e);
 }
 
-void TextEditorWidget::updateLineNumberAreaWidth(int newBlockCount)
+void TextEditorWidget::onReplace(const QString &subString, const QString &replaceWith)
 {
-    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
-}
-
-void TextEditorWidget::highlightCurrentLine()
-{
-    auto extra = extraSelections ();
-    if(!extra.isEmpty ()) {
-        extra.pop_front ();
+    auto select = mFileEdit->textCursor ().selectedText ();
+    if(select == subString) {
+        mFileEdit->insertPlainText (replaceWith);
     }
+}
 
-    if (!isReadOnly()) {
+void TextEditorWidget::onReplaceAll(const QString &subString, const QString &replaceWith)
+{
+    auto document = mFileEdit->document ();
+    auto cursor = document->find (subString);
+    while(!cursor.isNull ()) {
+        cursor.insertText (replaceWith);
+        cursor = document->find (subString, cursor);
+    }
+}
+
+
+void TextEditorWidget::onFileChange (const QString &filePath)
+{
+    qDebug() << "File watcher file changed " << filePath;
+    mFileReloadTimer->start (1500);
+}
+
+void TextEditorWidget::highlightWord (const QString &subString,QTextDocument::FindFlags options)
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    extraSelections.push_front (mFileEdit->extraSelections ().front ());
+    auto document = mFileEdit->document ();
+    auto cursor = document->find (subString, 0,
+                                  options & (~QTextDocument::FindBackward));
+    while(!cursor.isNull ()) {
         QTextEdit::ExtraSelection selection;
-
-        QColor lineColor = QColor(Qt::yellow).lighter(160);
-
+        QColor lineColor = QColor(Qt::yellow).lighter(100);
         selection.format.setBackground(lineColor);
-        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-        selection.cursor = textCursor();
-        selection.cursor.clearSelection();
-        extra.push_front (selection);
+        selection.cursor = cursor;
+        extraSelections.append(selection);
+        cursor = document->find (subString, cursor,
+                                 options & (~QTextDocument::FindBackward));
     }
-    setExtraSelections(extra);
-}
-
-void TextEditorWidget::updateLineNumberArea(const QRect &rect, int dy)
-{
-    if(dy != 0)
-        lineNumberArea->scroll(0, dy);
-    else
-        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
-    if (rect.contains(viewport()->rect()))
-        updateLineNumberAreaWidth(0);
-}
-
-QWidget *TextEditorWidget::allocLineArea ()
-{
-    return new LineNumberArea(this);
-}
-
-void TextEditorWidget::updateCurrentLineBookMark()
-{
-    QTextCursor cursor = textCursor();
-    int nTextLine = currentLine ();
-
-    auto* pBookMarkManager = BookMarkManager::instance ();
-
-    // find existing bookmark
-    auto &fileMap = pBookMarkManager->getFileBookMark (documentPath ());
-    auto pBookMark = pBookMarkManager->findBookMark (fileMap, nTextLine);
-    if(pBookMark != nullptr) {
-        pBookMarkManager->delBookMark (documentPath (), pBookMark);
-        return;;
-    }
-
-    // alloc new bookmark
-    BookMark* nBook = pBookMarkManager->addBookMark(documentPath ());
-    nBook->setHint(cursor.block().text());
-    nBook->setLine(nTextLine);
+    mFileEdit->setExtraSelections(extraSelections);
 }
 

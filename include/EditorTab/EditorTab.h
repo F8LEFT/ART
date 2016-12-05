@@ -20,7 +20,6 @@ namespace Ui {
 class EditorTab;
 }
 
-class Editor;
 class EditorTab : public QWidget
 {
     Q_OBJECT
@@ -29,7 +28,6 @@ public:
     EditorTab(QWidget *parent = 0);
     ~EditorTab();
 
-    void showEditor(Editor* e);
     bool openFile(QString filePath, int iLine = 1);
     bool closeFile(QString filePath);
     bool saveFile(QString filePath);

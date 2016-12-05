@@ -459,7 +459,7 @@ namespace Analysis {
     class OpCode {
 
     public:
-        OpCode(Opcode o, StringPool* sp):op(o), mStringPool(sp){
+        OpCode(Opcode o, StringPool* sp):op(o), mStringPool(sp) {
             insFormat = Android::gInstructionFormatTable[(u1)op];
             indexType = Android::gInstructionIndexTypeTable[(u1)op];
             opFlag = Android::gOpcodeFlagsTable[(u1)op];
