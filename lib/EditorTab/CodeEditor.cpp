@@ -18,7 +18,7 @@ CodeEditor::CodeEditor(QWidget *parent)
         : TextEditor(parent),
           m_highlighter(new KSyntaxHighlighting::SyntaxHighlighter(document()))
 {
-
+    m_highlighter->setTheme(m_theme);
 }
 
 CodeEditor::~CodeEditor()
@@ -28,12 +28,11 @@ CodeEditor::~CodeEditor()
 
 bool CodeEditor::openFile(const QString &fileName, int iLine)
 {
+    const auto def = m_repository.definitionForFileName(fileName);
+    m_highlighter->setDefinition(def);
     if(!TextEditor::openFile(fileName, iLine)) {
         return false;
     }
-
-    const auto def = m_repository.definitionForFileName(fileName);
-    m_highlighter->setDefinition(def);
     return true;
 }
 

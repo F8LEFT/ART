@@ -37,7 +37,6 @@ protected:
     void sidebarPaintEvent(QPaintEvent *event);
 
     void updateSidebarGeometry();
-    void updateButtombarInfo();
 
     bool isFoldable(const QTextBlock &block) const;
     bool isFolded(const QTextBlock &block) const;

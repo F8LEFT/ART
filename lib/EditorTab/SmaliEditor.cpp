@@ -16,8 +16,6 @@ SmaliEditor::SmaliEditor(QWidget *parent)
         : TextEditor(parent),
           m_highlighter(new SmaliHighlight(document()))
 {
-    connect(this, &QPlainTextEdit::cursorPositionChanged, this, &SmaliEditor::updateButtombarInfo);
-
 }
 
 SmaliEditor::~SmaliEditor()
@@ -69,8 +67,3 @@ void SmaliEditor::updateSidebarGeometry() {
     const auto r = contentsRect();
     m_sideBar->setGeometry(QRect(r.left(), r.top(), sidebarWidth(), r.height()));
 }
-
-void SmaliEditor::updateButtombarInfo() {
-
-}
-

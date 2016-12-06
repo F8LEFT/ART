@@ -22,7 +22,6 @@ SmaliOpInformation::SmaliOpInformation(QPlainTextEdit *parent):
     m_edit(parent)
 {
     Q_ASSERT(parent != Q_NULLPTR && "should not be null");
-    setText("OpCode Information");
     connect(parent, &QPlainTextEdit::cursorPositionChanged, this, &SmaliOpInformation::cursorChanged);
 }
 
