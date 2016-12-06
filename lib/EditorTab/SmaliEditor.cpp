@@ -10,10 +10,13 @@
 
 #include "SmaliEditor.h"
 
+#include <QPainter>
+
 SmaliEditor::SmaliEditor(QWidget *parent)
         : TextEditor(parent),
           m_highlighter(new SmaliHighlight(document()))
 {
+    connect(this, &QPlainTextEdit::cursorPositionChanged, this, &SmaliEditor::updateButtombarInfo);
 
 }
 
@@ -51,5 +54,23 @@ bool SmaliEditor::isFolded(const QTextBlock &block) const
 QTextBlock SmaliEditor::findFoldingRegionEnd(const QTextBlock &startBlock) const
 {
     return TextEditor::findFoldingRegionEnd(startBlock);
+}
+
+int SmaliEditor::sidebarWidth() const {
+    return TextEditor::sidebarWidth();
+}
+
+void SmaliEditor::sidebarPaintEvent(QPaintEvent *event) {
+    TextEditor::sidebarPaintEvent(event);
+}
+
+void SmaliEditor::updateSidebarGeometry() {
+    setViewportMargins(sidebarWidth(), 0, 0, 0);
+    const auto r = contentsRect();
+    m_sideBar->setGeometry(QRect(r.left(), r.top(), sidebarWidth(), r.height()));
+}
+
+void SmaliEditor::updateButtombarInfo() {
+
 }
 

@@ -15,15 +15,16 @@
 #ifndef ANDROIDREVERSETOOLKIT_SMALIEDITOR_H
 #define ANDROIDREVERSETOOLKIT_SMALIEDITOR_H
 
+#include "TextEditor.h"
+
 #include "SmaliHighlight.h"
 
 #include <SyntaxHighlighter>
-#include "TextEditor.h"
-
+#include <QPlainTextEdit>
 
 class SmaliEditor : public TextEditor
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit SmaliEditor(QWidget *parent = Q_NULLPTR);
     virtual ~SmaliEditor();
@@ -32,6 +33,11 @@ public:
 
 protected:
     void setTheme(const KSyntaxHighlighting::Theme &theme);
+    int sidebarWidth() const;
+    void sidebarPaintEvent(QPaintEvent *event);
+
+    void updateSidebarGeometry();
+    void updateButtombarInfo();
 
     bool isFoldable(const QTextBlock &block) const;
     bool isFolded(const QTextBlock &block) const;
@@ -39,7 +45,8 @@ protected:
 
 private:
     SmaliHighlight *m_highlighter;
-};
 
+    friend class SmaliEditorButtomBar;
+};
 
 #endif //ANDROIDREVERSETOOLKIT_SMALIEDITOR_H

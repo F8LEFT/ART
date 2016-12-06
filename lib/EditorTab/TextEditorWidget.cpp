@@ -10,6 +10,8 @@
 
 #include "SmaliEditor.h"
 #include "CodeEditor.h"
+#include "SmaliOpInformation.h"
+
 
 #include <utils/Configuration.h>
 
@@ -39,8 +41,6 @@ TextEditorWidget::TextEditorWidget(QWidget *parent) :
     connect(mFileChangedTimer, SIGNAL(timeout()), this, SLOT(textChangedTimeOut()));
     connect(mFileReloadTimer, SIGNAL(timeout()), this, SLOT(fileReloadTimeOut ()));
 
-    connect(mFileEdit, SIGNAL(onCTRL_F_Click()), this, SLOT(onFindAction ()));
-    connect(mFileEdit, SIGNAL(textChanged()), this, SLOT(textChanged ()));
 
     // FindWidget signal
     connect(mFindWidget, SIGNAL(find(QString,QTextDocument::FindFlags)),
@@ -85,14 +85,21 @@ bool TextEditorWidget::openFile(QString filePath, int iLine)
         return false;
     }
 
+    connect(mFileEdit, &QPlainTextEdit::textChanged, this, &TextEditorWidget::textChanged);
+
     mFileWatcher->addPath(filePath);
     mFindWidget->setFilePath(filePath);
 
     // setup editor layout
+
     QVBoxLayout* vLayout = new QVBoxLayout(this);
     vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->addWidget(mFileEdit);
     vLayout->addWidget(mFindWidget);
+    if(filePath.endsWith(".smali")) {
+        vLayout->addWidget(new SmaliOpInformation(mFileEdit));
+    }
+
     setLayout(vLayout);
     return true;
 }
