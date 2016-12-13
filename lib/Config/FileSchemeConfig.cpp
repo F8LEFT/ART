@@ -34,7 +34,7 @@ FileSchemeConfig::FileSchemeConfig (QWidget *parent,
 
     m_sampleFile = sampleFile;
     m_colorEditor = new SmaliEditor(this);
-
+    m_colorEditor->setTheme(m_theme);
     m_colorEditor->openFile(m_sampleFile);
 
     setupThemeGroup();
@@ -285,6 +285,7 @@ void FileSchemeConfig::themeChanged(const QString &themeName)
     }
 
     m_colorList->currentItemChanged(m_colorList->currentItem(), nullptr);
+    m_colorEditor->setTheme(m_theme);
 }
 
 void FileSchemeConfig::fontUpdate()

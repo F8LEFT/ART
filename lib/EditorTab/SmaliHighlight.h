@@ -21,20 +21,23 @@
 #include <QSyntaxHighlighter>
 
 
-class SmaliHighlight: public QSyntaxHighlighter
-{
-    Q_OBJECT
+class SmaliHighlight: public QSyntaxHighlighter {
+Q_OBJECT
 
 public:
     SmaliHighlight(QTextDocument *parent);
+
     ~SmaliHighlight();
 
     void setTheme(const KSyntaxHighlighting::Theme &theme);
+
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
     KSyntaxHighlighting::Theme m_theme;
+
+    QMap<KSyntaxHighlighting::Theme::TextStyle, QTextCharFormat> mFormatMap;
 };
 
 

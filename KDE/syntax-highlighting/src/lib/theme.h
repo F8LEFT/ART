@@ -254,6 +254,7 @@ public:
     * Create Theme data for current theme
     */
     bool makeData();
+
     /**
      * Returns @c true if this is a valid Theme.
      * If the theme is invalid, none of the returned colors are well-defined.
@@ -368,6 +369,7 @@ private:
 
 public:
     static QString getTextStyleName(int textStyle, bool translatedName);
+
 private:
     /**
      * Shared data holder.
