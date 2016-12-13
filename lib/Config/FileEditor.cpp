@@ -19,19 +19,10 @@ FileEditor::FileEditor(QWidget *parent)
 {
     ui->setupUi(this);
 
-    auto* smaliScmeme = new FileSchemeConfig (this,GetCfgsPath ("smaliTheme"),
+    mSmaliScheme = new FileSchemeConfig (this,
                                               ConfigString("Highlight","SmaliHighlight"),
-                                              "./cfgs/sample.smali",
-                                              HighLightConfig::SMALI);
-    ui->mTabWidget->addTab (smaliScmeme, tr("SmaliScheme"));
-    mTabs.push_back (smaliScmeme);
-
-    auto* genScmeme = new FileSchemeConfig (this,GetCfgsPath ("genHlTheme"),
-                                            ConfigString("Highlight","GenHighlight"),
-                                            "./cfgs/sample.xml",HighLightConfig::GENERAL);
-    ui->mTabWidget->addTab (genScmeme, tr("GeneralScheme"));
-    mTabs.push_back (genScmeme);
-
+                                              "./cfgs/sample.smali");
+    ui->mTabWidget->addTab (mSmaliScheme, tr("SmaliScheme"));
 
 }
 
@@ -43,7 +34,5 @@ FileEditor::~FileEditor()
 
 void FileEditor::save ()
 {
-    foreach(FileSchemeConfig* tab, mTabs) {
-            tab->save ();
-        }
+    mSmaliScheme->save();
 }

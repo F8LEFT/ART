@@ -6,5 +6,5 @@ FILE(GLOB_RECURSE GUI_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.c* ${CMAKE_CURRENT_SOUR
 
 
 add_executable(ART ${GUI_SRCS} ../../ART.qrc)
-target_link_libraries(ART AboutArt OpenApk RunDevice
+target_link_libraries(ART AboutArt OpenApk RunDevice Config
         ProjectTab EditorTab Find Debugger Qt5::Widgets)

@@ -227,8 +227,8 @@ void MainWindow::actionSaveAll()
 
 void MainWindow::actionOption()
 {
-//    Config config;
-//    config.exec();
+    Config config;
+    config.exec();
 }
 
 void MainWindow::actionUndo()

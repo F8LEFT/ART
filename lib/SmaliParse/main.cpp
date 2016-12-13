@@ -22,6 +22,8 @@ using namespace std;
 using namespace Analysis;
 
 int main() {
+
+
     string st;
     ifstream ifile;
     ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");

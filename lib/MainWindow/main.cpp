@@ -20,13 +20,20 @@
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QDebug>
+#include <QStandardPaths>
 
 bool loadTranslation(QApplication * app);
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
     QDir::setCurrent (GetSoftPath());
+
+//    "/home/f8left/.local/share" first directory
+//    qDebug() << QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+//    dirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("org.kde.syntax-highlighting/themes"), QStandardPaths::LocateDirectory);
+
 
     auto conf = Configuration::instance ();
     loadTranslation (&a);

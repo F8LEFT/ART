@@ -6,7 +6,7 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===---------------------------------------------------------------------===//
-#include "TextEditor.h"
+#include "EditorTab/TextEditor.h"
 
 #include <QFile>
 #include <QApplication>
@@ -275,7 +275,15 @@ int TextEditor::currentLine() {
 }
 
 bool TextEditor::saveFile() {
-    return false;
+    QFile file(documentTitle());
+    if (!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
+        return false;
+    }
+    QTextStream out(&file);
+    out<<toPlainText();
+    out.flush();
+    file.close();
+    return true;
 }
 
 bool TextEditor::reload() {

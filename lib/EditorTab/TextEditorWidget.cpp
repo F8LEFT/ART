@@ -8,8 +8,8 @@
 //===---------------------------------------------------------------------===//
 #include "TextEditorWidget.h"
 
-#include "SmaliEditor.h"
-#include "CodeEditor.h"
+#include "EditorTab/SmaliEditor.h"
+#include "EditorTab/CodeEditor.h"
 #include "SmaliOpInformation.h"
 
 

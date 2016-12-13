@@ -11,6 +11,7 @@
 #include "ui_FileSchemeConfig.h"
 
 #include <utils/StringUtil.h>
+#include <themedata_p.h>
 
 #include <QDebug>
 #include <QColorDialog>
@@ -18,85 +19,29 @@
 #include <utils/Configuration.h>
 #include <QInputDialog>
 #include <QtWidgets/QMessageBox>
-#include <HighLighter/HighLighter.h>
+#include <QStandardPaths>
+#include <QPainter>
+#include <QtWidgets>
+#include <EditorTab/SmaliEditor.h>
 
-FileSchemeConfig::FileSchemeConfig (QWidget *parent,const QString &cfgDir,
-                                    const QString &defName,const QString &sampleFile,
-                                    HighLightConfig::CfgType type)
+FileSchemeConfig::FileSchemeConfig (QWidget *parent,
+                                    const QString &themeName,const QString &sampleFile)
         : ui(new Ui::FileSchemeConfig),
-          QWidget(parent), mForegroundColor(Qt::black), mBackgroundColor(Qt::black),
-          mUnderlineColor(Qt::black), mCurrentConfig(nullptr), mHighlight(nullptr)
+          QWidget(parent)
 {
     ui->setupUi(this);
+    m_theme.makeData();
 
-    mCfgDir = cfgDir;
-    mCfgType = type;
-    mDefName = defName;
-    mSampleFile = sampleFile;
+    m_sampleFile = sampleFile;
+    m_colorEditor = new SmaliEditor(this);
 
+    m_colorEditor->openFile(m_sampleFile);
 
-    ui->mColorEditor->setLineWrapMode(QPlainTextEdit::NoWrap);
+    setupThemeGroup();
+    setupFontGroup();
+    setupColorGroup();
 
-    QFile file(mSampleFile);
-    if(file.open (QFile::ReadOnly | QFile::Text)) {
-        ui->mColorEditor->setPlainText (file.readAll ());
-        ui->mColorEditor->setReadOnly (true);
-    }
-
-    initSizeCombobox ();
-    initColorListWidget ();
-    initUnderlineCombobox ();
-    initSchemeCombobox ();
-
-    // signal slots
-    connect(ui->mForegroundColorBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onForegroundColorBtnClick()));
-    connect(ui->mForegroundClearBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onForegroundClearBtnClick()));
-    connect(ui->mBackgroundColorBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onBackgroundColorBtnClick()));
-    connect(ui->mBackgroundClearBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onBackgroundClearBtnClick()));
-    connect(ui->mUnderlineColorBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onUnderlineColorBtnClick()));
-    connect(ui->mUnderlineClearBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onUnderlineClearBtnClick()));
-
-
-    connect (ui->mForegroundColorBtn, SIGNAL(clicked(bool)),
-             this, SLOT(onFormatUpdate ()));
-    connect (ui->mForegroundClearBtn, SIGNAL(clicked(bool)),
-             this, SLOT(onFormatUpdate ()));
-    connect(ui->mBackgroundColorBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onFormatUpdate ()));
-    connect (ui->mBackgroundClearBtn, SIGNAL(clicked(bool)),
-             this, SLOT(onFormatUpdate ()));
-    connect (ui->mUnderlineColorBtn, SIGNAL(clicked(bool)),
-             this, SLOT(onFormatUpdate ()));
-    connect(ui->mUnderlineClearBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onFormatUpdate ()));
-    connect (ui->mUnderlineCombobox, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(onFormatUpdate ()));
-    connect (ui->mFontComboBox, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(onFormatUpdate()));
-    connect(ui->mSizeComboBox, SIGNAL(currentTextChanged(const QString &)),
-            this, SLOT(onFormatUpdate()));
-    connect (ui->mZoomCombobox, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(onFormatUpdate()));
-    connect(ui->mAntialiasCheckBox, SIGNAL(stateChanged(int)),
-            this, SLOT(onFormatUpdate ()));
-    connect(ui->mItalicCheck,SIGNAL(stateChanged(int)),
-            this, SLOT(onFormatUpdate ()));
-    connect(ui->mBoldCheck, SIGNAL(stateChanged(int)),
-            this, SLOT(onFormatUpdate ()));
-
-    connect(ui->mCopyBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onSchemeCopyBtnClick ()));
-    connect(ui->mDeleteBtn, SIGNAL(clicked(bool)),
-            this, SLOT(onSchemeDeleteBtnClick ()));
-
-    ui->mColorListWidget->setCurrentRow (0);
-
+    themeChanged(themeName);
 }
 
 FileSchemeConfig::~FileSchemeConfig()
@@ -105,168 +50,34 @@ FileSchemeConfig::~FileSchemeConfig()
 }
 
 
-void FileSchemeConfig::onForegroundColorBtnClick()
+void FileSchemeConfig::save ()
 {
-    QColor color;
-    color = QColorDialog::getColor(mForegroundColor, this);
-    if(color.isValid ()) {
-        mForegroundColor = color;
-        QString style = "background-color: " + color.name ();
-        ui->mForegroundColorBtn->setStyleSheet (style);
-        ui->mColorListWidget->currentItem ()->setForeground (mForegroundColor);
-    }
+//    auto cfg = Config ();
+//    mCurrentConfig->save ();
+//    auto configFileName = QFileInfo(mCurrentConfig->mSetFile).fileName ();
+//    if(mCfgType == HighLightConfig::SMALI) {
+//        cfg->setString ("Highlight", "SmaliHighlight", configFileName);
+//    } else {
+//        cfg->setString ("Highlight", "GenHighlight", configFileName);
+//    }
+//
+//    auto pHighLightConfig = HighLightConfig::instance (
+//            mCfgType, mCfgDir + "/" + configFileName);
+//    pHighLightConfig->mFormatMap = mCurrentConfig->mFormatMap;
+//    pHighLightConfig->onConfigUpdate ();
 }
 
-void FileSchemeConfig::onForegroundClearBtnClick()
+void FileSchemeConfig::setupThemeGroup()
 {
-    mForegroundColor = Qt::transparent;
-    ui->mForegroundColorBtn->setStyleSheet ("");
+    auto themes = m_repository.themes();
+    for(auto& theme: themes) {
+        ui->mSchemeComboBox->addItem(theme.name());
+    }
 
-    ui->mColorListWidget->currentItem ()->setForeground (mForegroundColor);
+    connect(ui->mCopyBtn, &QPushButton::clicked, this, &FileSchemeConfig::onSchemeCopyBtnClick);
+    connect(ui->mDeleteBtn, &QPushButton::clicked, this, &FileSchemeConfig::onSchemeDeleteBtnClick);
 }
 
-void FileSchemeConfig::onBackgroundColorBtnClick()
-{
-    QColor color;
-    color = QColorDialog::getColor(mBackgroundColor, this);
-    if(color.isValid ()) {
-        mBackgroundColor = color;
-        QString style = "background-color: " + color.name ();
-        ui->mBackgroundColorBtn->setStyleSheet (style);
-        ui->mColorListWidget->currentItem ()->setBackgroundColor (mBackgroundColor);
-    }
-}
-
-void FileSchemeConfig::onBackgroundClearBtnClick()
-{
-    mBackgroundColor = Qt::transparent;
-
-    ui->mBackgroundColorBtn->setStyleSheet ("");
-
-    ui->mColorListWidget->currentItem ()->setBackgroundColor (mBackgroundColor);
-}
-
-void FileSchemeConfig::onUnderlineColorBtnClick()
-{
-    QColor color;
-    color = QColorDialog::getColor(mUnderlineColor, this);
-    if(color.isValid ()) {
-        mUnderlineColor = color;
-        QString style = "background-color: " + color.name ();
-        ui->mUnderlineColorBtn->setStyleSheet (style);
-    }
-}
-
-void FileSchemeConfig::onUnderlineClearBtnClick()
-{
-    mUnderlineColor = Qt::transparent;
-    ui->mUnderlineColorBtn->setStyleSheet ("");
-}
-
-void FileSchemeConfig::onColorListItemChange(
-        QListWidgetItem *current, QListWidgetItem *prev)
-{
-    if(current == nullptr)
-        return;
-    int type = current->type ();
-    auto &format = mCurrentConfig->mFormatMap[type];
-    auto fColor = format.foreground ().color ();
-    auto bColor = format.background ().color ();
-    auto uColor = format.underlineColor ();
-    auto uType = format.underlineStyle ();
-    auto font = format.font ();
-
-    if(fColor.isValid ()) {
-        mForegroundColor = fColor;
-        QString style = "background-color: " + fColor.name ();
-        ui->mForegroundColorBtn->setStyleSheet (style);
-    } else {
-        ui->mForegroundColorBtn->setStyleSheet ("");
-    }
-    if(bColor.isValid ()) {
-        mBackgroundColor = bColor;
-        QString style = "background-color: " + bColor.name ();
-        ui->mBackgroundColorBtn->setStyleSheet (style);
-    } else {
-        ui->mBackgroundColorBtn->setStyleSheet ("");
-    }
-    if(uColor.isValid ()) {
-        mUnderlineColor = uColor;
-        QString style = "background-color: " + uColor.name ();
-        ui->mUnderlineColorBtn->setStyleSheet (style);
-    } else {
-        ui->mUnderlineColorBtn->setStyleSheet ("");
-    }
-    ui->mUnderlineCombobox->setCurrentIndex ((int)uType);
-    ui->mFontComboBox->setFont (font.family ());
-    ui->mItalicCheck->setChecked (font.italic ());
-    ui->mBoldCheck->setChecked (font.bold ());
-    ui->mAntialiasCheckBox->setChecked (
-            font.styleStrategy () == QFont::PreferAntialias);
-    ui->mSizeComboBox->setEditText (QString::number (font.pointSize ()));
-
-}
-
-void FileSchemeConfig::onSchemeComboboxChange (const QString &text)
-{
-    if(mCurrentConfig != nullptr) {
-        mCurrentConfig->deleteLater ();
-        mCurrentConfig = nullptr;
-    }
-    if(mHighlight != nullptr) {
-        mHighlight->deleteLater ();
-        mHighlight = nullptr;
-    }
-    mCurrentConfig = new HighLightConfig(
-            mCfgDir + "/" + text, mCfgType, this);
-    mHighlight = setHighLighter (ui->mColorEditor->document (), mSampleFile,
-                                 mCurrentConfig);
-
-    auto colorCount = ui->mColorListWidget->count ();
-    for(auto i = 0; i < colorCount; i++) {
-        auto item = ui->mColorListWidget->item (i);
-        auto &format = mCurrentConfig->mFormatMap[item->type ()];
-        item->setForeground (format.foreground ());
-        item->setBackground (format.background ());
-    }
-
-    emit mCurrentConfig->onConfigUpdate ();
-}
-
-void FileSchemeConfig::onFormatUpdate()
-{
-    QTextCharFormat format;
-    QFont font = ui->mFontComboBox->currentFont ();
-    font.setBold (ui->mBoldCheck->isChecked ());
-    font.setItalic (ui->mItalicCheck->isChecked ());
-    if(ui->mAntialiasCheckBox->isChecked ()) {
-        font.setStyleStrategy (QFont::PreferAntialias);
-    } else {
-        font.setStyleStrategy (QFont::NoAntialias);
-    }
-    font.setBold (ui->mBoldCheck->isChecked ());
-    font.setPointSize (ui->mSizeComboBox->currentText ().toInt ());
-
-    format.setFont (font);
-
-    if(mForegroundColor.isValid ()) {
-        format.setForeground (QBrush(mForegroundColor));
-    }
-    if(mBackgroundColor.isValid ()){
-        format.setBackground (QBrush(mBackgroundColor));
-    }
-    format.setFontUnderline (true);
-    format.setUnderlineStyle ((QTextCharFormat::UnderlineStyle)
-                                      ui->mUnderlineCombobox->currentData ().toInt ());
-    if(mUnderlineColor.isValid ()) {
-        format.setUnderlineColor (mUnderlineColor);
-    }
-
-
-
-    mCurrentConfig->mFormatMap[ui->mColorListWidget->currentItem ()->type ()] = format;
-    emit mCurrentConfig->onConfigUpdate ();
-}
 
 void FileSchemeConfig::onSchemeCopyBtnClick ()
 {
@@ -277,20 +88,29 @@ void FileSchemeConfig::onSchemeCopyBtnClick ()
                                           tr("Please input your scheme name"), QLineEdit::Normal,
                                           curScheme ,&doCopy);
     if(doCopy) {
-        if(!fileName.endsWith (".xml")) {
-            fileName += ".xml";
-        }
         if(ui->mSchemeComboBox->findText (fileName) != -1) {
             QMessageBox::warning(nullptr, tr("Copy Error"),
                                  tr("you must input a different file name!"));
             return;
         }
-        if(!QFile::copy (GetCfgsPath ("smaliTheme/" + curScheme),
-                         GetCfgsPath ("smaliTheme/" + fileName))) {
+
+        QFile file(GetCfgsPath ("themes/" + fileName + ".theme"));
+        if(!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
             QMessageBox::warning(nullptr, tr("Copy Error"),
                                  tr("Some error occurred while copying file!"));
             return;
         }
+
+        m_theme.setReadOnly(false);
+        m_theme.setName(fileName);
+
+        QTextStream out(&file);
+        out << m_theme.getThemeConfig();
+        out.flush();
+        file.close();
+
+        m_repository.reload();
+
         ui->mSchemeComboBox->addItem (fileName);
         ui->mSchemeComboBox->setCurrentText (fileName);
     }
@@ -298,12 +118,13 @@ void FileSchemeConfig::onSchemeCopyBtnClick ()
 
 void FileSchemeConfig::onSchemeDeleteBtnClick ()
 {
-    auto curScheme = ui->mSchemeComboBox->currentText ();
-    if(curScheme == "default.xml") {
+    if(m_theme.isReadOnly()) {
         QMessageBox::warning (nullptr, tr("Delete Error"),
                               tr("You can't delete default scheme file"));
         return;
     }
+
+    auto curScheme = ui->mSchemeComboBox->currentText ();
     auto doDelete = QMessageBox::information( this, tr("Delete Scheme"),
                                               tr("Do you really want to delete ") + curScheme + "?",
                                               tr("No"), tr("Yes"),
@@ -311,8 +132,7 @@ void FileSchemeConfig::onSchemeDeleteBtnClick ()
     if(!doDelete)
         return;;
 
-    ui->mSchemeComboBox->setCurrentText ("default.xml");
-    QFile file(GetCfgsPath ("smaliTheme/" + curScheme));
+    QFile file(GetCfgsPath ("themes/" + curScheme + ".theme"));
     if(!file.remove ()) {
         QMessageBox::warning(nullptr, tr("Delete Error"),
                              tr("Some error occurred while deleting file!"));
@@ -320,108 +140,225 @@ void FileSchemeConfig::onSchemeDeleteBtnClick ()
         ui->mSchemeComboBox->removeItem (
                 ui->mSchemeComboBox->findText (curScheme));
     }
+    m_repository.reload();
+    ui->mSchemeComboBox->removeItem (ui->mSchemeComboBox->findText (curScheme));
 
+    // TODO selected latest theme or default theme
 }
 
-void FileSchemeConfig::initColorListWidget ()
+void FileSchemeConfig::setupFontGroup()
 {
-    auto widget = ui->mColorListWidget;
-    for(auto i = 0; i < HighLightConfig::getFormatSize (mCfgType); i++) {
-            widget->addItem (new QListWidgetItem(
-                    HighLightConfig::getFormatName (i,mCfgType, true), widget,i));
+    int fontSizes[] = {6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28,
+                       36, 48, 72};
+    for (auto size: fontSizes) {
+        ui->mSizeComboBox->addItem(QString::number(size));
     }
 
-
-    connect(ui->mColorListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-            this, SLOT(onColorListItemChange(QListWidgetItem*,QListWidgetItem*)));
-
-
+    connect(ui->mSizeComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(fontUpdate()));
+    connect(ui->mFontComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(fontUpdate()));
+    connect(ui->mAntialiasCheckBox, SIGNAL(clicked(bool)), this, SLOT(fontUpdate()));
 }
 
-void FileSchemeConfig::initUnderlineCombobox ()
+void FileSchemeConfig::setupColorGroup()
 {
-    auto combobox = ui->mUnderlineCombobox;
-    combobox->addItem (tr("No Underline"), QTextCharFormat::NoUnderline);
-    combobox->addItem (tr("Single Underline"), QTextCharFormat::SingleUnderline);
-    combobox->addItem (tr("Dot Underline"), QTextCharFormat::DotLine);
-    combobox->addItem (tr("Dash Underline"), QTextCharFormat::DashUnderline);
-    combobox->addItem (tr("Dash-Dot Underline"), QTextCharFormat::DashDotLine);
-    combobox->addItem (tr("Dash-Dot-Dot Underline"), QTextCharFormat::DashDotDotLine);
-    combobox->addItem (tr("Wave Underline"), QTextCharFormat::WaveUnderline);
-
-}
-
-void FileSchemeConfig::initSizeCombobox ()
-{
-    auto combobox = ui->mSizeComboBox;
-    combobox->addItem ("6");
-    combobox->addItem ("7");
-    combobox->addItem ("8");
-    combobox->addItem ("9");
-    combobox->addItem ("10");
-    combobox->addItem ("11");
-    combobox->addItem ("12");
-    combobox->addItem ("14");
-    combobox->addItem ("16");
-    combobox->addItem ("18");
-    combobox->addItem ("20");
-    combobox->addItem ("22");
-    combobox->addItem ("24");
-    combobox->addItem ("26");
-    combobox->addItem ("28");
-    combobox->addItem ("36");
-    combobox->addItem ("48");
-    combobox->addItem ("72");
-}
-
-void FileSchemeConfig::initSchemeCombobox ()
-{
-    connect(ui->mSchemeComboBox, SIGNAL(currentTextChanged(const QString &)),
-            this, SLOT(onSchemeComboboxChange (const QString &)));
-
-    auto combobox = ui->mSchemeComboBox;
-    QDir dir(mCfgDir);
-    if (dir.exists()) {
-        dir.setFilter(QDir::Files | QDir::NoSymLinks);
-                foreach(QFileInfo mfi ,dir.entryInfoList())
-            {
-                if(mfi.isFile ())
-                {
-                    if(mfi.fileName ().endsWith (".xml")) {
-                        combobox->addItem (mfi.fileName ());
-                    }
-                }
-            }
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    QHBoxLayout* hTopLayout = new QHBoxLayout();
+    // setup color list
+    m_colorList = new QListWidget(this);
+    for(int i = 0; i < (int)KSyntaxHighlighting::Theme::TextStyle::Others; i++) {
+        m_colorList->addItem(new QListWidgetItem(
+                KSyntaxHighlighting::Theme::getTextStyleName(i, true), m_colorList, i));
     }
+    QVBoxLayout* m_colorConfigLayout = new QVBoxLayout();
 
-    if(combobox->findText ("default.xml") == -1) {
-        combobox->addItem ("default.xml");
-    }
-    auto curTheme = mDefName;
-    if(curTheme.isEmpty ())
-        curTheme = "default.xml";
-    auto index = combobox->findText (curTheme);
-    if(index == -1) {
-        combobox->setCurrentText ("default.xml");
+    m_foreground = new ColorItem(this, tr("Foreground"));
+    m_background = new ColorItem(this, tr("Background"));
+    m_colorConfigLayout->addWidget(m_foreground);
+    m_colorConfigLayout->addWidget(m_background);
+
+    m_bold = new QCheckBox(tr("Bold"), this);
+    m_italic = new QCheckBox(tr("Italic"), this);
+    m_underline = new QCheckBox(tr("Underline"), this);
+    m_strikThrough = new QCheckBox(tr("StrikThrough"), this);
+    QHBoxLayout* checkBoxLayout = new QHBoxLayout();
+    checkBoxLayout->addWidget(m_bold); checkBoxLayout->addWidget(m_italic);
+    m_colorConfigLayout->addLayout(checkBoxLayout);
+    checkBoxLayout = new QHBoxLayout();
+    checkBoxLayout->addWidget(m_underline); checkBoxLayout->addWidget(m_strikThrough);
+    m_colorConfigLayout->addLayout(checkBoxLayout);
+
+    hTopLayout->addWidget(m_colorList);
+    hTopLayout->addLayout(m_colorConfigLayout);
+    vLayout->addLayout(hTopLayout);
+    vLayout->addWidget(m_colorEditor);
+
+    ui->mColorGroupBox->setLayout(vLayout);
+
+    m_colorList->setCurrentRow(0);
+
+    connect(m_colorList, &QListWidget::currentItemChanged,
+            [this](QListWidgetItem *current, QListWidgetItem *previous) {
+                auto style = (KSyntaxHighlighting::Theme::TextStyle)current->type();
+                m_foreground->setColor(m_theme.textColor(style));
+                m_background->setColor(m_theme.backgroundColor(style));
+                m_bold->setChecked(m_theme.isBold(style));
+                m_italic->setChecked(m_theme.isItalic(style));
+                m_underline->setChecked(m_theme.isUnderline(style));
+                m_strikThrough->setChecked(m_theme.isStrikeThrough(style));
+    });
+
+    connect(m_foreground, &ColorItem::colorChanged, [this](QRgb rgb) {
+        auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
+        m_theme.setTextColor(style, rgb);
+    });
+
+    connect(m_background, &ColorItem::colorChanged, [this](QRgb rgb) {
+        auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
+        m_theme.setBackgroundColor(style, rgb);
+    });
+
+    connect(m_bold, &QCheckBox::clicked, [this](bool checked){
+        auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
+        m_theme.setBold(style, checked);
+    });
+
+    connect(m_italic, &QCheckBox::clicked, [this](bool checked){
+        auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
+        m_theme.setItalic(style, checked);
+    });
+
+    connect(m_underline, &QCheckBox::clicked, [this](bool checked){
+        auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
+        m_theme.setUnderline(style, checked);
+    });
+
+    connect(m_strikThrough, &QCheckBox::clicked, [this](bool checked){
+        auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
+        m_theme.setStrikeThrough(style, checked);
+    });
+}
+
+void FileSchemeConfig::themeChanged(const QString &themeName)
+{
+    auto theme = m_repository.theme(themeName);
+    if(!theme.isValid()) {
+        m_theme.loadFromJson(m_repository.defaultTheme().getThemeConfig());
     } else {
-        combobox->setCurrentIndex (index);
+        m_theme.loadFromJson(theme.getThemeConfig());
     }
+
+    if(m_theme.isReadOnly()) {
+        m_foreground->setEnabled(false);
+        m_background->setEnabled(false);
+        m_bold->setEnabled(false);
+        m_italic->setEnabled(false);
+        m_underline->setEnabled(false);
+        m_strikThrough->setEnabled(false);
+    } else {
+        m_foreground->setEnabled(true);
+        m_background->setEnabled(true);
+        m_bold->setEnabled(true);
+        m_italic->setEnabled(true);
+        m_underline->setEnabled(true);
+        m_strikThrough->setEnabled(true);
+    }
+
+    // refresh all color list item data
+    for(int i = 0; i < (int)KSyntaxHighlighting::Theme::TextStyle::Others; i++) {
+        auto style = (KSyntaxHighlighting::Theme::TextStyle)i;
+        auto* item = m_colorList->item(i);
+        auto foreground = m_theme.textColor(style);
+        if(foreground != 0) {
+            item->setForeground(QBrush(foreground));
+        }
+        auto background = m_theme.backgroundColor(style);
+        if(background != 0) {
+            item->setBackground(QBrush(background));
+        }
+
+        QFont font;
+        font.setBold(m_theme.isBold(style));
+        font.setItalic(m_theme.isItalic(style));
+        font.setUnderline(m_theme.isUnderline(style));
+        font.setStrikeOut(m_theme.isStrikeThrough(style));
+        item->setFont(font);
+    }
+
+    m_colorList->currentItemChanged(m_colorList->currentItem(), nullptr);
 }
 
-
-void FileSchemeConfig::save ()
+void FileSchemeConfig::fontUpdate()
 {
-    auto cfg = Config ();
-    mCurrentConfig->save ();
-    auto configFileName = QFileInfo(mCurrentConfig->mSetFile).fileName ();
-    if(mCfgType == HighLightConfig::SMALI) {
-        cfg->setString ("Highlight", "SmaliHighlight", configFileName);
+    // TODO reset font data
+}
+
+ColorItem::ColorItem(QWidget *parent, const QString &name):
+    QWidget(parent),
+    m_rgb(0)
+{
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    QLabel *label = new QLabel(this);
+    label->setText(name);
+    m_colorBtn = new ColorButton(this);
+    m_clearBtn = new QPushButton(this);
+    m_clearBtn->setIcon(QIcon(":/images/close.png"));
+
+    layout->addWidget(label);
+    layout->addWidget(m_colorBtn);
+    layout->addWidget(m_clearBtn);
+
+    setLayout(layout);
+
+    connect(m_colorBtn, &QPushButton::clicked, [this]() {
+        QColor color;
+        color = QColorDialog::getColor(QColor(m_rgb), this);
+        if(color.isValid()) {
+            setColor(color.rgb());
+            emit colorChanged(m_rgb);
+        }
+    });
+
+    connect(m_clearBtn, &QPushButton::clicked, [this]() {
+        setColor(0);
+        emit colorChanged(m_rgb);
+    });
+}
+
+void ColorItem::setColor(QRgb c)
+{
+    m_rgb = c;
+    m_colorBtn->paintColor(m_rgb);
+}
+
+void ColorButton::paintColor(QRgb rgb)
+{
+    m_rgb = rgb;
+    repaint();
+}
+
+void ColorButton::paintEvent(QPaintEvent *event) {
+    QPushButton::paintEvent(event);
+
+    QPainter painter(this);
+
+    QStyleOptionButton opt;
+    opt.rect = rect();
+    opt.palette = palette();
+
+
+    style()->drawControl(QStyle::CE_PushButton, &opt, &painter, this);
+    style()->subElementRect(QStyle::SE_PushButtonContents, &opt, this);
+    opt.rect.adjust(1, 1, -1, -1);
+
+    if(m_rgb != 0) {
+        QColor c(m_rgb);
+        painter.fillRect(opt.rect, c);
     } else {
-        cfg->setString ("Highlight", "GenHighlight", configFileName);
+        painter.fillRect(opt.rect, Qt::white);
+        painter.drawText(opt.rect, tr("None"), QTextOption(Qt::AlignCenter));
     }
 
-    auto pHighLightConfig = HighLightConfig::instance (
-            mCfgType, mCfgDir + "/" + configFileName);
-    pHighLightConfig->mFormatMap = mCurrentConfig->mFormatMap;
-    pHighLightConfig->onConfigUpdate ();
+    qDrawShadePanel(&painter, opt.rect, opt.palette, true, 1, NULL);
 }

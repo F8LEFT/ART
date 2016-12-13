@@ -7,7 +7,7 @@
 //
 //===---------------------------------------------------------------------===//
 
-#include "CodeEditor.h"
+#include "EditorTab/CodeEditor.h"
 
 #include <syntaxhighlighter.h>
 #include <definition.h>

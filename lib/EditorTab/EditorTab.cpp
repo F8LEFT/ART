@@ -11,9 +11,9 @@
 #include "ui_EditorTab.h"
 
 #include "TextEditorWidget.h"
-#include "TextEditor.h"
-#include "SmaliEditor.h"
-#include "CodeEditor.h"
+#include "EditorTab/TextEditor.h"
+#include "EditorTab/SmaliEditor.h"
+#include "EditorTab/CodeEditor.h"
 
 #include <utils/ScriptEngine.h>
 #include <utils/ProjectInfo.h>

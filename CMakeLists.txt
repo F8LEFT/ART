@@ -9,6 +9,7 @@ set(ART_VERSION ${ART_VERSION_MAJOR}.${ART_VERSION_MINOR}.${ART_VERSION_PATCH})
 project(AndroidReverseToolkit)
 cmake_minimum_required(VERSION 3.5)
 
+add_subdirectory(KDE)
 find_package(ECM 5.28.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 if(POLICY CMP0063)

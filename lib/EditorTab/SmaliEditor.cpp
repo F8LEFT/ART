@@ -8,7 +8,8 @@
 //===---------------------------------------------------------------------===//
 
 
-#include "SmaliEditor.h"
+#include "EditorTab/SmaliEditor.h"
+#include "SmaliHighlight.h"
 
 #include <QPainter>
 
@@ -16,6 +17,7 @@ SmaliEditor::SmaliEditor(QWidget *parent)
         : TextEditor(parent),
           m_highlighter(new SmaliHighlight(document()))
 {
+    m_highlighter->setTheme(m_theme);
 }
 
 SmaliEditor::~SmaliEditor()

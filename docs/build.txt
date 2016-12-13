@@ -19,7 +19,7 @@ mkdir build
 
 cd build
 
-cmake -DCMAKE_BUILD_TYPE=Release -DQTGCCDIR=${QTGCCDIR} -D[WIN32|APPLE|UNIX]=1 --build ..
+cmake -DCMAKE_BUILD_TYPE=STRING=Release -DQTGCCDIR=${QTGCCDIR} -D[WIN32|APPLE|UNIX]=1 --build ..
 
 make MainWindow
 

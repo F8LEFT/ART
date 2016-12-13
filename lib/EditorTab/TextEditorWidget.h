@@ -14,7 +14,7 @@
 #ifndef ANDROIDREVERSETOOLKIT_TEXTEDITORWIDGET_H
 #define ANDROIDREVERSETOOLKIT_TEXTEDITORWIDGET_H
 
-#include "TextEditor.h"
+#include "EditorTab/TextEditor.h"
 
 
 #include <BookMark/BookMark.h>

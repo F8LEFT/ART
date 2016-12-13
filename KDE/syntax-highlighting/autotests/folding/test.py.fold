@@ -1,0 +1,38 @@
+<indentfold># comment with ALERT
+
+</indentfold><beginfold id='4'>'''</beginfold id='4'> multiline
+    comment
+    ###
+<indentfold>    <endfold id='4'>'''</endfold id='4'>
+
+def func<beginfold id='3'>(</beginfold id='3'>x<endfold id='3'>)</endfold id='3'>:
+    <beginfold id='5'>"""</beginfold id='5'> API docs <endfold id='5'>"""</endfold id='5'>
+    if x == 42:
+        func<beginfold id='3'>(</beginfold id='3'><endfold id='3'>)</endfold id='3'>
+        c1 = <beginfold id='1'>{</beginfold id='1'><endfold id='1'>}</endfold id='1'>
+</indentfold>        c2 = <beginfold id='1'>{</beginfold id='1'>
+            2.4,
+            0x42
+<indentfold>            <endfold id='1'>}</endfold id='1'>
+        a1 = <beginfold id='2'>[</beginfold id='2'><endfold id='2'>]</endfold id='2'>
+</indentfold>        a2 = <beginfold id='2'>[</beginfold id='2'>
+            "a", 032, <beginfold id='3'>(</beginfold id='3'>
+<indentfold>                <endfold id='3'>)</endfold id='3'><endfold id='2'>]</endfold id='2'>
+    else:
+</indentfold>        print<beginfold id='3'>(</beginfold id='3'><beginfold id='5'>"""</beginfold id='5'>multi
+            line
+<indentfold>            string<endfold id='5'>"""</endfold id='5'><endfold id='3'>)</endfold id='3'>
+        print<beginfold id='3'>(</beginfold id='3'>"single \
+                continued line "<endfold id='3'>)</endfold id='3'>
+        print<beginfold id='3'>(</beginfold id='3'>'single line'<endfold id='3'>)</endfold id='3'>
+    return float<beginfold id='3'>(</beginfold id='3'>len<beginfold id='3'>(</beginfold id='3'>a2<endfold id='3'>)</endfold id='3'><endfold id='3'>)</endfold id='3'>
+
+
+def test_f_literals<beginfold id='3'>(</beginfold id='3'><endfold id='3'>)</endfold id='3'>:
+    f'xy'
+    f'x{bar}y'
+    f'x{bar<beginfold id='2'>[</beginfold id='2'>"baz"<endfold id='2'>]</endfold id='2'>}y'
+    f'x{bar<beginfold id='2'>[</beginfold id='2'>"baz"<endfold id='2'>]</endfold id='2'>}y\n'
+
+    f'x{bar<beginfold id='2'>[</beginfold id='2'>"baz"<endfold id='2'>]</endfold id='2'>!r}y\n'
+    f'x{bar<beginfold id='2'>[</beginfold id='2'>"baz"<endfold id='2'>]</endfold id='2'>:.2}y\n'

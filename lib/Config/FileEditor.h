@@ -14,7 +14,6 @@
 #define FILEEDITOR_H
 
 #include "FileSchemeConfig.h"
-#include "HighLighter/HighLightConfig.h"
 
 #include <QWidget>
 #include <QList>
@@ -35,7 +34,8 @@ public:
 
 private:
     Ui::FileEditor *ui;
-    QList<FileSchemeConfig*> mTabs;
+
+    FileSchemeConfig* mSmaliScheme;
 
 };
 

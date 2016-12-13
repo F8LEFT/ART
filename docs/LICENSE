@@ -34,9 +34,10 @@ Program             Web
 -------             ---------
 X64Dbg              https://github.com/x64dbg/x64dbg
 KateTextEditor      https://kate-editor.org/
+KSyntaxHighlighting kde:syntax-highlighting
+extra-cmake-modules kde:extra-cmake-modules
 jadx                https://github.com/skylot/jadx
 avmdbg              https://github.com/cheetahsec/avmdbg
 QtCreator           https://www.qt.io/download/
 ApkTool             https://github.com/iBotPeaches/Apktool
 ShakaApkTool        https://github.com/rover12421/ShakaApktool
-yamlcpp             https://github.com/jbeder/yaml-cpp
