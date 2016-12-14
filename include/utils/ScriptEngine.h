@@ -104,6 +104,9 @@ signals:
     void debugStart(QStringList);
     // DebugStop
     void debugStop(QStringList);
+
+    // repaint
+    void repaint(QStringList);
 public slots:
     void adbShell(QStringList);
 

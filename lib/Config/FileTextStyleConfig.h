@@ -35,15 +35,13 @@
 
 
 
-class FileSchemeConfig : public QWidget
+class FileTextStyleConfig : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit FileSchemeConfig (QWidget *parent);
-    ~FileSchemeConfig();
-
-    void save();
+    explicit FileTextStyleConfig (QWidget *parent);
+    ~FileTextStyleConfig();
 
     void setTheme(KSyntaxHighlighting::Theme theme);
 

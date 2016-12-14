@@ -29,11 +29,15 @@ public:
     explicit FileFontConfig(QWidget *parent = 0);
     ~FileFontConfig();
 
-    void save();
+    QFont getFont();
+    void setFont(const QFont& font);
 
-    void setTheme(KSyntaxHighlighting::Theme theme);
 signals:
-    void formatUpdate();
+    void formatUpdate(const QFont& font);
+
+
+protected slots:
+    void fontUpdate();
 
 private:
     KSyntaxHighlighting::Theme m_theme;

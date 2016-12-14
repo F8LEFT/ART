@@ -9,7 +9,6 @@
 
 #include "FileEditorColorConfig.h"
 
-
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QVBoxLayout>
@@ -22,9 +21,6 @@ FileEditorColorConfig::FileEditorColorConfig(QWidget *parent)
 {
     // init item
     m_colorTable = new QTableWidget(KSyntaxHighlighting::Theme::TemplateReadOnlyPlaceholder+1, 2, this);
-
-//    QStringList header;
-//    header<<"EditorRole"<<"Color";
 
     m_colorTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     auto header = m_colorTable->horizontalHeader();
@@ -67,11 +63,6 @@ FileEditorColorConfig::FileEditorColorConfig(QWidget *parent)
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(m_colorTable);
     setLayout(layout);
-
-}
-void FileEditorColorConfig::save()
-{
-
 }
 
 void FileEditorColorConfig::setTheme(KSyntaxHighlighting::Theme theme)

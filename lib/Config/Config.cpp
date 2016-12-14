@@ -38,13 +38,9 @@ Config::Config(QWidget *parent) :
         mWidgetList[i]->hide ();
     }
 
-    connect(ui->mConfigList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-            this, SLOT(onConfigTabChange (QListWidgetItem*, QListWidgetItem*)));
-
-    connect(ui->buttonBox, SIGNAL(accepted ()), this, SLOT(save()));
-    connect((const QObject*)ui->buttonBox->button (QDialogButtonBox::Apply), SIGNAL(clicked()),
-            this, SLOT(save()));
-
+    connect(ui->mConfigList, &QListWidget::currentItemChanged, this, &Config::onConfigTabChange);
+    connect(ui->buttonBox->button(QDialogButtonBox::Ok), &QPushButton::clicked, this, &Config::save);
+    connect(ui->buttonBox->button(QDialogButtonBox::Apply), &QPushButton::clicked, this, &Config::save);
 
     ui->mConfigList->setCurrentRow (0);
 }

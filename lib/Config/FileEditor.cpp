@@ -15,6 +15,7 @@
 #include <QInputDialog>
 #include <QFile>
 #include <QTextStream>
+#include <utils/ScriptEngine.h>
 
 
 FileEditor::FileEditor(QWidget *parent)
@@ -23,33 +24,50 @@ FileEditor::FileEditor(QWidget *parent)
 {
     ui->setupUi(this);
 
+
     m_Editor = new SmaliEditor(this);
     m_Editor->setTheme(m_theme);
     m_Editor->openFile("./cfgs/sample.smali");
     ((QVBoxLayout*)layout())->addWidget(m_Editor);
 
-    m_textStyleConfig = new FileSchemeConfig (this);
+    m_textStyleConfig = new FileTextStyleConfig (this);
     ui->mTabWidget->addTab (m_textStyleConfig, tr("TextStyle"));
-    m_fontConfig = new FileFontConfig(this);
-    ui->mTabWidget->addTab(m_fontConfig, tr("Font"));
     m_editorColorConfig = new FileEditorColorConfig(this);
     ui->mTabWidget->addTab(m_editorColorConfig, tr("EditorRole"));
+    m_fontConfig = new FileFontConfig(this);
+    ui->mTabWidget->addTab(m_fontConfig, tr("Font"));
 
     m_theme.makeData();
     auto theme = m_repository.theme(ConfigString("Highlight","Theme"));
     if(!theme.isValid()) {
-        m_theme.loadFromJson((
-        palette().color(QPalette::Base).lightness() < 128
-            ? m_repository.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme)
-            : m_repository.defaultTheme(KSyntaxHighlighting::Repository::LightTheme))
-                                     .getThemeConfig());
-    } else {
-        m_theme.loadFromJson(theme.getThemeConfig());
+        theme = palette().color(QPalette::Base).lightness() < 128
+                ? m_repository.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme)
+                : m_repository.defaultTheme(KSyntaxHighlighting::Repository::LightTheme);
     }
 
+    QFont font;
+    font.setFamily(ConfigString("Highlight","Font"));
+    font.setPixelSize(ConfigUint("Highlight", "FontSize"));
+    if(ConfigBool("Highlight", "Antialias")) {
+        font.setStyleStrategy(QFont::PreferAntialias);
+    }
+    m_fontConfig->setFont(font);
+    m_Editor->setFont(font);
+
+    setTheme(theme);
     setupThemeGroup();
 
-    setTheme(m_theme);
+    // connect signal slots
+    connect(m_textStyleConfig, &FileTextStyleConfig::formatUpdate, [this](){
+        m_Editor->setTheme(m_theme);
+    });
+    connect(m_editorColorConfig, &FileEditorColorConfig::formatUpdate, [this](){
+        m_Editor->setTheme(m_theme);
+    });
+    connect(m_fontConfig, &FileFontConfig::formatUpdate, [this](QFont font){
+        m_Editor->setFont(font);
+    });
+
 }
 
 FileEditor::~FileEditor()
@@ -60,6 +78,27 @@ FileEditor::~FileEditor()
 
 void FileEditor::save ()
 {
+    auto fileName = m_theme.name();
+
+    if(!m_theme.isReadOnly()) {
+        QFile file(GetCfgsPath ("themes/" + fileName + ".theme"));
+        if(file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
+            QMessageBox::warning(nullptr, tr("Save Error"),
+                                 tr("Unable to save config to file!!"));
+            file.write(m_theme.getThemeConfig());
+            file.close();
+        }
+        m_repository.reload();
+    }
+
+    Config()->setString("Highlight","Theme", fileName);
+    auto font = m_fontConfig->getFont();
+    Config()->setString("Highlight", "Font", font.family());
+    Config()->setUint("Highlight", "FontSize", font.pixelSize());
+    Config()->setBool("Highlight", "Antialias", font.styleStrategy() == QFont::PreferAntialias);
+
+    ScriptEngine* engine = ScriptEngine::instance();
+    emit engine->repaint(QStringList());
 }
 
 
@@ -77,8 +116,7 @@ void FileEditor::setupThemeGroup()
     connect(ui->mSchemeComboBox, &QComboBox::currentTextChanged, [this](const QString& name){
         auto theme = m_repository.theme(name);
         if(theme.isValid()) {
-            m_theme.loadFromJson(theme.getThemeConfig());
-            setTheme(m_theme);  // update all theme config
+            setTheme(theme);  // update all theme config
         }
     });
 }
@@ -145,14 +183,15 @@ void FileEditor::onSchemeDeleteBtnClick ()
     // TODO selected latest theme or default theme
 }
 
-void FileEditor::setTheme(KSyntaxHighlighting::Theme theme) {
-    if(theme.isReadOnly()) {
+void FileEditor::setTheme(KSyntaxHighlighting::Theme theme)
+{
+    m_theme.loadFromJson(theme.getThemeConfig());
+    if(m_theme.isReadOnly()) {
         ui->mDeleteBtn->setEnabled(false);
     } else {
         ui->mDeleteBtn->setEnabled(true);
     }
     m_textStyleConfig->setTheme(m_theme);
-    m_fontConfig->setTheme(m_theme);
     m_editorColorConfig->setTheme(m_theme);
     m_Editor->setTheme(m_theme);
 }

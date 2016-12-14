@@ -35,6 +35,9 @@ FileFontConfig::FileFontConfig(QWidget *parent)
 
     // connect signal slots
     // TODO get Font config and set
+    connect(m_fontComboBox, &QFontComboBox::currentTextChanged, this, &FileFontConfig::fontUpdate);
+    connect(m_fontSizeComboBox, &QComboBox::currentTextChanged, this, &FileFontConfig::fontUpdate);
+    connect(m_antialis, &QCheckBox::clicked, this, &FileFontConfig::fontUpdate);
 
     // setup basic ui
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -54,25 +57,29 @@ FileFontConfig::FileFontConfig(QWidget *parent)
     setLayout(layout);
 }
 
-//void FileTextStyleConfig::setupFontGroup()
-//{
-
-//
-//    connect(ui->mSizeComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(fontUpdate()));
-//    connect(ui->mFontComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(fontUpdate()));
-//    connect(ui->mAntialiasCheckBox, SIGNAL(clicked(bool)), this, SLOT(fontUpdate()));
-//}
-
 FileFontConfig::~FileFontConfig()
 {
 }
 
-void FileFontConfig::setTheme(KSyntaxHighlighting::Theme theme)
+
+
+void FileFontConfig::fontUpdate()
 {
-    m_theme = theme;
+    emit formatUpdate(getFont());
 }
 
-void FileFontConfig::save()
-{
-
+QFont FileFontConfig::getFont() {
+    QFont font = m_fontComboBox->currentFont();
+    font.setPixelSize(m_fontSizeComboBox->currentText().toInt());
+    if(m_antialis->isChecked()) {
+        font.setStyleStrategy(QFont::PreferAntialias);
+    }
+    return font;
 }
+
+void FileFontConfig::setFont(const QFont &font) {
+    m_fontComboBox->setCurrentText(font.family());
+    m_fontSizeComboBox->setCurrentText(QString::number(font.pixelSize()));
+    m_antialis->setChecked(font.styleStrategy() == QFont::PreferAntialias);
+}
+

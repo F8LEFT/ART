@@ -22,7 +22,7 @@
 #include <QtWidgets>
 #include <EditorTab/SmaliEditor.h>
 
-FileSchemeConfig::FileSchemeConfig (QWidget *parent)
+FileTextStyleConfig::FileTextStyleConfig (QWidget *parent)
         : QWidget(parent)
 {
     // init sub item
@@ -111,32 +111,11 @@ FileSchemeConfig::FileSchemeConfig (QWidget *parent)
     setLayout(vLayout);
 }
 
-FileSchemeConfig::~FileSchemeConfig()
+FileTextStyleConfig::~FileTextStyleConfig()
 {
 }
 
-
-void FileSchemeConfig::save ()
-{
-//    auto cfg = Config ();
-//    mCurrentConfig->save ();
-//    auto configFileName = QFileInfo(mCurrentConfig->mSetFile).fileName ();
-//    if(mCfgType == HighLightConfig::SMALI) {
-//        cfg->setString ("Highlight", "SmaliHighlight", configFileName);
-//    } else {
-//        cfg->setString ("Highlight", "GenHighlight", configFileName);
-//    }
-//
-//    auto pHighLightConfig = HighLightConfig::instance (
-//            mCfgType, mCfgDir + "/" + configFileName);
-//    pHighLightConfig->mFormatMap = mCurrentConfig->mFormatMap;
-//    pHighLightConfig->onConfigUpdate ();
-}
-
-
-
-
-void FileSchemeConfig::setTheme(KSyntaxHighlighting::Theme theme)
+void FileTextStyleConfig::setTheme(KSyntaxHighlighting::Theme theme)
 {
     m_theme = theme;
 

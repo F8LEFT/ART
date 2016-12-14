@@ -49,6 +49,8 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
     scripts.insert("Devices", &ScriptEngine::devices);
 
     scripts.insert("DebugStart", &ScriptEngine::debugStart);
+
+    scripts.insert("Repaint", &ScriptEngine::repaint);
 }
 
 ScriptEngine::~ScriptEngine()

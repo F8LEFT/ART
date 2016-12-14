@@ -49,7 +49,7 @@ protected slots:
 private:
     Ui::FileEditor *ui;
 
-    FileSchemeConfig* m_textStyleConfig;
+    FileTextStyleConfig* m_textStyleConfig;
     FileFontConfig* m_fontConfig;
     FileEditorColorConfig* m_editorColorConfig;
 

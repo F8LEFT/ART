@@ -31,8 +31,6 @@ class FileEditorColorConfig: public QWidget
 public:
     FileEditorColorConfig(QWidget* parent = Q_NULLPTR);
 
-    void save();
-
     void setTheme(KSyntaxHighlighting::Theme theme);
 
 signals:
