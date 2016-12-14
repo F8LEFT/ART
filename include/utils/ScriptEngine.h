@@ -106,7 +106,7 @@ signals:
     void debugStop(QStringList);
 
     // repaint
-    void repaint(QStringList);
+    void themeUpdate(QStringList);
 public slots:
     void adbShell(QStringList);
 

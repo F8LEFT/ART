@@ -50,7 +50,7 @@ ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
 
     scripts.insert("DebugStart", &ScriptEngine::debugStart);
 
-    scripts.insert("Repaint", &ScriptEngine::repaint);
+    scripts.insert("ThemeUpdate", &ScriptEngine::themeUpdate);
 }
 
 ScriptEngine::~ScriptEngine()

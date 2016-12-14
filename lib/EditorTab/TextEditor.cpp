@@ -8,6 +8,10 @@
 //===---------------------------------------------------------------------===//
 #include "EditorTab/TextEditor.h"
 
+#include <utils/ScriptEngine.h>
+#include <utils/Configuration.h>
+
+
 #include <QFile>
 #include <QApplication>
 #include <QPalette>
@@ -22,14 +26,14 @@ TextEditor::TextEditor(QWidget *parent) :
     setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     setLineWrapMode(QPlainTextEdit::NoWrap);
 
-    setTheme((palette().color(QPalette::Base).lightness() < 128)
-             ? m_repository.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme)
-             : m_repository.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
-
+    resetTheme(QStringList());
 
     connect(this, &QPlainTextEdit::blockCountChanged, this, &TextEditor::updateSidebarGeometry);
     connect(this, &QPlainTextEdit::updateRequest, this, &TextEditor::updateSidebarArea);
     connect(this, &QPlainTextEdit::cursorPositionChanged, this, &TextEditor::highlightCurrentLine);
+
+    ScriptEngine* engine = ScriptEngine::instance();
+    connect(engine, &ScriptEngine::themeUpdate, this, &TextEditor::resetTheme);
 
     updateSidebarGeometry();
     highlightCurrentLine();
@@ -69,6 +73,27 @@ void TextEditor::resizeEvent(QResizeEvent *event)
 {
     QPlainTextEdit::resizeEvent(event);
     updateSidebarGeometry();
+}
+
+void TextEditor::resetTheme(QStringList name)
+{
+    auto theme = m_repository.theme(ConfigString("Highlight","Theme"));
+    if(!theme.isValid()) {
+        theme = (palette().color(QPalette::Base).lightness() < 128)
+                ? m_repository.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme)
+                : m_repository.defaultTheme(KSyntaxHighlighting::Repository::LightTheme);
+    }
+    m_theme = theme;
+    setTheme(m_theme);
+
+    QFont font;
+    font.setFamily(ConfigString("Highlight", "Font"));
+    font.setPixelSize(ConfigUint("Highlight", "FontSize"));
+    if(ConfigBool("Highlight", "Antialias")) {
+        font.setStyleStrategy(QFont::PreferAntialias);
+    }
+
+    setFont(font);
 }
 
 void TextEditor::setTheme(const KSyntaxHighlighting::Theme &theme)
@@ -286,9 +311,12 @@ bool TextEditor::saveFile() {
     return true;
 }
 
-bool TextEditor::reload() {
+bool TextEditor::reload()
+{
     return false;
 }
+
+
 
 // -------------------class TextEditorSidebar---------------------------
 

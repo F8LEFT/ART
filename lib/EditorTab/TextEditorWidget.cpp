@@ -34,13 +34,20 @@ TextEditorWidget::TextEditorWidget(QWidget *parent) :
 
     mFileChangedTimer->start(60*1000);
 
-    connect(this, SIGNAL(readText(QString)), this, SLOT(setText(QString)));
-    connect(this, SIGNAL(readLine(QString)), this, SLOT(appendLine(QString)));
-    connect(this, SIGNAL(readEnd()), this, SLOT(readFileEnd()));
-
-    connect(mFileChangedTimer, SIGNAL(timeout()), this, SLOT(textChangedTimeOut()));
-    connect(mFileReloadTimer, SIGNAL(timeout()), this, SLOT(fileReloadTimeOut ()));
-
+    connect(mFileChangedTimer, &QTimer::timeout, [this](){
+        if(mFileEdit->document()->isModified()) {
+            if(saveFile()) {
+                mFileEdit->document()->setModified(false);
+            }
+        }
+    });
+    connect(mFileReloadTimer, &QTimer::timeout, [this]() {
+        if(notReload) {
+            notReload = false;
+            return;
+        }
+        reload ();
+    });
 
     // FindWidget signal
     connect(mFindWidget, SIGNAL(find(QString,QTextDocument::FindFlags)),
@@ -53,9 +60,10 @@ TextEditorWidget::TextEditorWidget(QWidget *parent) :
             this, SLOT(onFindClose ()));
 
     mFileWatcher = new QFileSystemWatcher(this);
-    connect(mFileWatcher, SIGNAL(fileChanged(QString)),
-            this, SLOT(onFileChange (QString)));
-
+    connect(mFileWatcher, &QFileSystemWatcher::fileChanged, [this](QString path) {
+        qDebug() << "File watcher file changed " << path;
+        mFileReloadTimer->start (1500);
+    });
 
     mFindWidget->hide ();
     loadFromConfig();
@@ -141,40 +149,8 @@ int TextEditorWidget::currentLine ()
     return mFileEdit->currentLine ();
 }
 
-void TextEditorWidget::setText (const QString &text)
-{
-    mFileEdit->setPlainText (text);
-}
-
-void TextEditorWidget::appendLine(const QString& line)
-{
-    mFileEdit->appendPlainText(line);
-}
-
-void TextEditorWidget::readFileEnd()
-{
-    mFileEdit->setReadOnly(false);
-    mFileEdit->setFocus();
-    mFileEdit->gotoLine(mLine);
-    mFileEdit->document ()->setModified (false);
-}
-
 void TextEditorWidget::textChanged()
 {
-}
-
-void TextEditorWidget::textChangedTimeOut()
-{
-    saveFile();
-}
-
-void TextEditorWidget::fileReloadTimeOut ()
-{
-    if(notReload) {
-        notReload = false;
-        return;
-    }
-    reload ();
 }
 
 void TextEditorWidget::onFindAction ()
@@ -238,13 +214,6 @@ void TextEditorWidget::onReplaceAll(const QString &subString, const QString &rep
         cursor.insertText (replaceWith);
         cursor = document->find (subString, cursor);
     }
-}
-
-
-void TextEditorWidget::onFileChange (const QString &filePath)
-{
-    qDebug() << "File watcher file changed " << filePath;
-    mFileReloadTimer->start (1500);
 }
 
 void TextEditorWidget::highlightWord (const QString &subString,QTextDocument::FindFlags options)

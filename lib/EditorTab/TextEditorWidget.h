@@ -51,19 +51,9 @@ public:
 
     int currentLine();
 
-signals:
-    void readText(const QString &text);
-    void readLine(const QString &line);
-    void readEnd();
-
 public slots:
-    void setText(const QString &text);
-    void appendLine(const QString &line);
-    void readFileEnd();
 
     void textChanged();
-    void textChangedTimeOut();
-    void fileReloadTimeOut();
 
     void onFindAction();
     void onFindClose();
@@ -73,8 +63,6 @@ public slots:
     void onReplace(const QString &subString, const QString &replaceWith);
     void onReplaceAll(const QString &subString, const QString &replaceWith);
 
-    // filewatcher
-    void onFileChange(const QString &filePath);
 private:
     void highlightWord(const QString &subString, QTextDocument::FindFlags  options);
 protected:

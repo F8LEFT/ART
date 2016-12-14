@@ -40,7 +40,7 @@ protected:
 
 public:
     virtual void setTheme(const KSyntaxHighlighting::Theme &theme);
-
+    void resetTheme(QStringList name);
 protected:
     friend class TextEditorSidebar;
     virtual int sidebarWidth() const;
@@ -60,11 +60,9 @@ protected:
     KSyntaxHighlighting::Theme m_theme;
 };
 
-
-
 class TextEditorSidebar : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit TextEditorSidebar(TextEditor *editor);
     virtual ~TextEditorSidebar();

@@ -49,4 +49,27 @@ private:
 
 };
 
+// TODO store method info, breakpoint info...in block userdata
+class SmaliData: public QTextBlockUserData
+{
+public:
+    SmaliData();
+    ~SmaliData();
+
+private:
+    bool m_breakpoint;
+
+};
+
+class SmaliSideBar: public TextEditorSidebar
+{
+Q_OBJECT
+public:
+    explicit SmaliSideBar(SmaliEditor *editor);
+    ~SmaliSideBar();
+
+private:
+    friend class SmaliEditor;
+};
+
 #endif //ANDROIDREVERSETOOLKIT_SMALIEDITOR_H

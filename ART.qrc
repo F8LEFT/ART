@@ -24,5 +24,6 @@
         <file>images/settings.png</file>
         <file>images/mainicon.png</file>
         <file>images/ProjectTab.png</file>
+        <file>images/breakpoint.png</file>
     </qresource>
 </RCC>

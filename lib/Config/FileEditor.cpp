@@ -9,13 +9,16 @@
 #include "FileEditor.h"
 #include "ui_FileEditor.h"
 
+#include <utils/ScriptEngine.h>
+#include <utils/CmdMsgUtil.h>
+
 #include <utils/StringUtil.h>
 #include <utils/Configuration.h>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFile>
 #include <QTextStream>
-#include <utils/ScriptEngine.h>
+
 
 
 FileEditor::FileEditor(QWidget *parent)
@@ -98,7 +101,7 @@ void FileEditor::save ()
     Config()->setBool("Highlight", "Antialias", font.styleStrategy() == QFont::PreferAntialias);
 
     ScriptEngine* engine = ScriptEngine::instance();
-    emit engine->repaint(QStringList());
+    cmdexec("ThemeUpdate");
 }
 
 
