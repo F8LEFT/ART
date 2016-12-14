@@ -67,7 +67,6 @@ void Config::onConfigTabChange (QListWidgetItem *current,QListWidgetItem *previo
         auto idx = mWidgetNativeNameList.indexOf (name);
         if(idx != -1)
             mWidgetList[idx]->show ();
-        ui->mWidgetTitle->setText (name);
     }
 }
 

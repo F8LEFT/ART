@@ -32,8 +32,9 @@ public:
 
     bool openFile(const QString &fileName, int iLine = 1);
 
-protected:
     void setTheme(const KSyntaxHighlighting::Theme &theme);
+
+public:
     int sidebarWidth() const;
     void sidebarPaintEvent(QPaintEvent *event);
 

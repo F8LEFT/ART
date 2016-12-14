@@ -369,7 +369,7 @@ private:
 
 public:
     static QString getTextStyleName(int textStyle, bool translatedName);
-
+    static QString getEditorColorRoleName(int role, bool translatedName);
 private:
     /**
      * Shared data holder.

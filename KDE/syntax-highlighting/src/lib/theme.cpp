@@ -297,11 +297,85 @@ QString Theme::getTextStyleName(int n, bool translated) {
     return translated ? translatedNames[n] : names[n];
 }
 
+QString Theme::getEditorColorRoleName(int n, bool translated) {
+    static QStringList names;
+    static QStringList translatedNames;
+
+    if (names.isEmpty()) {
+        names << QStringLiteral("BackgroundColor");
+        names << QStringLiteral("TextSelection");
+        names << QStringLiteral("CurrentLine");
+        names << QStringLiteral("SearchHighlight");
+        names << QStringLiteral("ReplaceHighlight");
+        names << QStringLiteral("BracketMatching");
+        names << QStringLiteral("TabMarker");
+        names << QStringLiteral("SpellChecking");
+        names << QStringLiteral("IndentationLine");
+        names << QStringLiteral("IconBorder");
+        names << QStringLiteral("CodeFolding");
+        names << QStringLiteral("LineNumbers");
+        names << QStringLiteral("CurrentLineNumber");
+        names << QStringLiteral("WordWrapMarker");
+        names << QStringLiteral("ModifiedLines");
+        names << QStringLiteral("SavedLines");
+        names << QStringLiteral("Separator");
+        names << QStringLiteral("MarkBookmark");
+        names << QStringLiteral("MarkBreakpointActive");
+        names << QStringLiteral("MarkBreakpointReached");
+        names << QStringLiteral("MarkBreakpointDisabled");
+        names << QStringLiteral("MarkExecution");
+        names << QStringLiteral("MarkWarning");
+        names << QStringLiteral("MarkError");
+        names << QStringLiteral("TemplateBackground");
+        names << QStringLiteral("TemplatePlaceholder");
+        names << QStringLiteral("TemplateFocusedPlaceholder");
+        names << QStringLiteral("TemplateReadOnlyPlaceholder");
+
+
+        translatedNames << QObject::tr("BackgroundColor");
+        translatedNames << QObject::tr("TextSelection");
+        translatedNames << QObject::tr("CurrentLine");
+        translatedNames << QObject::tr("SearchHighlight");
+        translatedNames << QObject::tr("ReplaceHighlight");
+        translatedNames << QObject::tr("BracketMatching");
+        translatedNames << QObject::tr("TabMarker");
+        translatedNames << QObject::tr("SpellChecking");
+        translatedNames << QObject::tr("IndentationLine");
+        translatedNames << QObject::tr("IconBorder");
+        translatedNames << QObject::tr("CodeFolding");
+        translatedNames << QObject::tr("LineNumbers");
+        translatedNames << QObject::tr("CurrentLineNumber");
+        translatedNames << QObject::tr("WordWrapMarker");
+        translatedNames << QObject::tr("ModifiedLines");
+        translatedNames << QObject::tr("SavedLines");
+        translatedNames << QObject::tr("Separator");
+        translatedNames << QObject::tr("MarkBookmark");
+        translatedNames << QObject::tr("MarkBreakpointActive");
+        translatedNames << QObject::tr("MarkBreakpointReached");
+        translatedNames << QObject::tr("MarkBreakpointDisabled");
+        translatedNames << QObject::tr("MarkExecution");
+        translatedNames << QObject::tr("MarkWarning");
+        translatedNames << QObject::tr("MarkError");
+        translatedNames << QObject::tr("TemplateBackground");
+        translatedNames << QObject::tr("TemplatePlaceholder");
+        translatedNames << QObject::tr("TemplateFocusedPlaceholder");
+        translatedNames << QObject::tr("TemplateReadOnlyPlaceholder");
+    }
+
+    // sanity checks
+    Q_ASSERT(n >= 0);
+    Q_ASSERT(n < names.size());
+
+    return translated ? translatedNames[n] : names[n];
+}
+
 bool Theme::loadFromJson(const QByteArray &jsonData) {
     if(m_data) {
         return m_data->loadFromJson(jsonData);
     }
     return false;
 }
+
+
 
 
