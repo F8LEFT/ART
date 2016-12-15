@@ -19,7 +19,7 @@
 #define PROJECT_DEBUGSOCKET_H
 
 #include <Jdwp/Request.h>
-
+#include "DebugHandler.h"
 
 #include <QThread>
 #include <QTcpSocket>
@@ -81,8 +81,12 @@ private:
 
     bool mConnected;
 
-    friend class Debugger;
+    friend class DebugHandler;
+
     DebugSocketEvent* mSocketEvent;
+
+public:
+    DebugHandler* mDbgHandler;
 };
 
 class DebugSocketEvent: public QObject {

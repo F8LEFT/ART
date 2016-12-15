@@ -33,6 +33,7 @@ bool CodeEditor::openFile(const QString &fileName, int iLine)
     if(!TextEditor::openFile(fileName, iLine)) {
         return false;
     }
+
     return true;
 }
 

@@ -37,6 +37,7 @@ VirtualMachine::ClassesBySignature::ClassesBySignature (
 {
     mSize = Read4 ();
     mInfos.resize (mSize);
+    // mSize > 0 ? why
     for(int i = 0; i < mSize; i++) {
         auto &info = mInfos[i];
         info.mRefTypeTag = Read1 ();

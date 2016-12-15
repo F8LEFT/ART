@@ -25,6 +25,8 @@ DebugSocket::DebugSocket (QObject *parent)
     connect(this, &DebugSocket::finished, this, &DebugSocket::onThreadfinish);
     mSocketEvent = new DebugSocketEvent();
     mSocketEvent->moveToThread(this);
+    mDbgHandler = new DebugHandler(this, this);
+    mDbgHandler->moveToThread(this);
 }
 
 DebugSocket::~DebugSocket ()
@@ -32,6 +34,7 @@ DebugSocket::~DebugSocket ()
     mQuit = true;
     wait ();
     mSocketEvent->deleteLater();
+    mDbgHandler->deleteLater();
 }
 
 void DebugSocket::startConnection (const QString &hostName, int port,
