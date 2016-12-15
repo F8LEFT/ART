@@ -9,6 +9,7 @@ set(ART_VERSION ${ART_VERSION_MAJOR}.${ART_VERSION_MINOR}.${ART_VERSION_PATCH})
 project(AndroidReverseToolkit)
 cmake_minimum_required(VERSION 3.5)
 
+set(ECM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/KDE/share/ECM/cmake)
 
 add_subdirectory(KDE)
 find_package(ECM 5.28.0 REQUIRED NO_MODULE)
@@ -35,7 +36,7 @@ set_package_properties(Qt5XmlPatterns PROPERTIES PURPOSE "Compile-time validatio
 set_package_properties(Qt5WebSockets PROPERTIES PURPOSE "Connect to network.")
 
 set(KF5_DEP_VERSION "5.28.0") # we need KCrash::initialize
-find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS SyntaxHighlighting)
+#find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS SyntaxHighlighting)
 set_package_properties(KF5SyntaxHighlighting PROPERTIES PURPOSE "Syntax highlighting engine")
 
 #

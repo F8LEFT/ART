@@ -1,3 +1,0 @@
-[submodule "KDE/extra-cmake-modules"]
-	path = KDE/extra-cmake-modules
-	url = https://anongit.kde.org/extra-cmake-modules
