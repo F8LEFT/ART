@@ -40,7 +40,16 @@ ProcessUtil::~ProcessUtil ()
 void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
 {
     if (info.toqueue) {
-        mProcList.push_back(info);
+        mInfoMutex.lock();
+        auto i = 0, size = mProcList.size();
+        for(; i < size; i++) {
+            if(mProcList.at(i).level < info.level) {
+                break;
+            }
+        }
+        mProcList.insert(i, info);
+        mInfoMutex.unlock();
+
         mInfoSemaphore->release ();
         return;
     }
@@ -64,10 +73,11 @@ void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
 
 void ProcessUtil::onProjectClosed ()
 {
-    // TODO Clear mProcList
+    mInfoMutex.lock();
     int n = mProcList.size ();
     mInfoSemaphore->acquire (n);
     mProcList.clear ();
+    mInfoMutex.unlock();
 }
 
 void ProcessUtil::run ()
@@ -76,14 +86,14 @@ void ProcessUtil::run ()
     while(mContinue) {
         mInfoSemaphore->acquire ();
 
+        mInfoMutex.lock();
         mCurInfo = mProcList.front();
         mProcList.pop_front();
+        mInfoMutex.unlock();
 
         qDebug() << "exec command " << mCurInfo.proc << mCurInfo.args;
         if(!mProcess->exec (mCurInfo)) {
-            qDebug() << "wait for finished" ;
             mProcess->waitForFinished (-1);
-            qDebug() << "finished";
         }
         emit ProcFinish(mCurInfo);
     }

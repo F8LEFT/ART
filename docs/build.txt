@@ -13,7 +13,7 @@ cd build
 
 export $PATH=/directory/to/qmake:$PATH
 
-cmake -DCMAKE_BUILD_TYPE=STRING=Release -DQT_QMAKE_EXECUTABLE:STRING=/path/to/qmake  --build ..
+cmake -DCMAKE_BUILD_TYPE=STRING=Release --build ..
 
 make ART
 

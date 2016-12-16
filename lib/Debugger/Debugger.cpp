@@ -29,7 +29,6 @@ Debugger::Debugger(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     // script
     auto* script = ScriptEngine::instance();
     connect(script, &ScriptEngine::debugStart, this, &Debugger::startNewTarget);

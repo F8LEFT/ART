@@ -123,7 +123,7 @@ void CommandLineEdit::execute()
 {
     const QString & cmd = text();
 
-    cmdexec(cmd, mCurrentScriptType, false);
+    cmdexec(cmd, 0, mCurrentScriptType, false);
 
     // Add this line to the history and clear text, regardless if it was executed
     addLineToHistory(cmd);

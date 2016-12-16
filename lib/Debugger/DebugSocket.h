@@ -44,8 +44,8 @@ public:
 
     const QString &hostName() const { return mHostName; }
     int targetPid() const { return mPid; }
-    const quint16 port() const { return mPort; }
-    const bool isConnected() const { return mConnected; }
+    quint16 port() const { return mPort; }
+    bool isConnected() const { return mConnected; }
 
 
 signals:

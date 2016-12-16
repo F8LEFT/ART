@@ -14,7 +14,7 @@
 
 ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
 {
-    connect(this, SIGNAL(adb(QStringList)), this, SLOT(adbShell(QStringList)));
+    connect(this, &ScriptEngine::adb, this, &ScriptEngine::adbShell);
 
     // command list
     scripts.insert("adb", &ScriptEngine::adb);
@@ -92,6 +92,6 @@ void ScriptEngine::adbShell(QStringList args)
         adbPath = "adb";
     }
 
-    cmdexec(adbPath, args, CmdMsg::ProcType::cmd);
+    cmdexec(adbPath, args, 0, CmdMsg::ProcType::cmd);
 }
 

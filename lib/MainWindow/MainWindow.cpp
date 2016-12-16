@@ -9,6 +9,7 @@
 #include "MainWindow/MainWindow.h"
 #include "ui_MainWindow.h"
 
+
 #include "StatusLabel.h"
 #include "CommandLineEdit.h"
 #include "AboutArt/AboutArt.h"
@@ -193,7 +194,7 @@ void MainWindow::closeEvent (QCloseEvent *event)
 //                                      0, 1 ))
 //    {
 //        case 1:
-    cmdexec("CloseProject", CmdMsg::script, true, false);
+    cmdexec("CloseProject", 0, CmdMsg::script, true, false);
     event->accept();
 //            break;
 //        default:
@@ -293,7 +294,7 @@ void MainWindow::actionBuild()
     if(!ProjectInfo::instance ()->isProjectOpened ()) {
         return;
     }
-    cmdexec("Build", CmdMsg::script, true, false);
+    mRunDevice->onBuildAction();
 }
 
 void MainWindow::actionInstall()
@@ -301,7 +302,7 @@ void MainWindow::actionInstall()
     if(!ProjectInfo::instance ()->isProjectOpened ()) {
         return;
     }
-    cmdexec("Install", CmdMsg::script, true, false);
+    mRunDevice->onInstallAction();
 }
 
 void MainWindow::actionRun()
@@ -311,12 +312,11 @@ void MainWindow::actionRun()
     }
     if(needToRebuild ()) {
         qDebug() << "Current project need to rebuild.";
-        cmdexec("Build");
-        cmdexec("Install");
-        cmdexec("Run");
-    } else {
-        cmdexec("Run", CmdMsg::script, true, false);
+        mRunDevice->onBuildAction();
+        mRunDevice->onInstallAction();
     }
+    mRunDevice->onRunAction();
+
 }
 
 void MainWindow::actionDebug()
@@ -324,17 +324,13 @@ void MainWindow::actionDebug()
     if(!ProjectInfo::instance ()->isProjectOpened ()) {
         return;
     }
-    cmdexec("Stop");
-    if(mDebugger->isDebugging()) {
-        mDebugger->stopCurrentTarget();
-    }
+    mRunDevice->onStopAction();
     if(needToRebuild ()) {
-        cmdexec("Build");
-        cmdexec("Install");
-        cmdexec("Debug");
-    } else {
-        cmdexec("Debug", CmdMsg::script, true, false);
+        qDebug() << "Current project need to rebuild.";
+        mRunDevice->onBuildAction();
+        mRunDevice->onInstallAction();
     }
+    mRunDevice->onDebugAction();
 }
 
 bool MainWindow::needToRebuild ()
@@ -358,12 +354,12 @@ bool MainWindow::needToRebuild ()
 
 void MainWindow::actionStop()
 {
-    cmdexec("Stop", CmdMsg::script, true, false);
+    mRunDevice->onStopAction();
 }
 
 void MainWindow::actionDevices()
 {
-    cmdexec("Devices", CmdMsg::script, true, false);
+    mRunDevice->exec();
 }
 
 void MainWindow::onProjectOpened(QStringList projName)

@@ -8,6 +8,8 @@
 //===----------------------------------------------------------------------===//
 #include "utils/CmdMsgUtil.h"
 
+#include <QStringList>
+
 CmdMsg::CmdMsg (QObject *parent): QObject (parent)
 {
 }
@@ -27,24 +29,24 @@ CmdMsg *CmdMsg::instance ()
 }
 
 
-void CmdMsg::executeCommand(QString cmd, ProcType t, bool silence, bool toqueue)
+void CmdMsg::executeCommand(QString cmd, int level, ProcType t, bool silence, bool toqueue)
 {
     QStringList args = cmd.split(' ', QString::SkipEmptyParts);
     if (args.size() > 0) {
         QString proc = args.front();
         args.pop_front();       // just pop process
-        executeCommand(proc, args, t, silence, toqueue);
+        executeCommand(proc, args, level, t, silence, toqueue);
     }
 }
 
-void CmdMsg::executeCommand(QString proc, QString cmd, ProcType t,
+void CmdMsg::executeCommand(QString proc, QString cmd, int level, ProcType t,
                             bool silence, bool toqueue)
 {
     QStringList args = cmd.split(' ', QString::SkipEmptyParts);
-    executeCommand(proc, args, t, silence, toqueue);
+    executeCommand(proc, args, level, t, silence, toqueue);
 }
 
-void CmdMsg::executeCommand(QString proc, QStringList args, ProcType t,
+void CmdMsg::executeCommand(QString proc, QStringList args, int level, ProcType t,
                             bool silence, bool toqueue)
 {
     ProcInfo info;
@@ -53,6 +55,7 @@ void CmdMsg::executeCommand(QString proc, QStringList args, ProcType t,
     info.t = t;
     info.silence = silence;
     info.toqueue = toqueue;
+    info.level = level;
 
     emit onExecuteCommand (info);
 }

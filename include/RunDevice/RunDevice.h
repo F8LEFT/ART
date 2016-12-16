@@ -40,6 +40,7 @@ protected slots:
     void accept();
     void reject();
 
+public slots:
     // adb command
     void onBuildAction();
     void onInstallAction();

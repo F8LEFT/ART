@@ -33,7 +33,7 @@ namespace JDWP {
         uint8_t GetCommand() { return command_; }
 
         const uint8_t* GetExtra() const;
-        const size_t GetExtraLen() const;
+        size_t GetExtraLen() const;
 
         bool isValid() { return valid_; }
         bool isReply() { return reply; }

@@ -32,12 +32,12 @@ RunDevice::RunDevice(QWidget *parent) :
     setFixedSize(this->width(), this->height());
 
     ScriptEngine* script = ScriptEngine::instance();
-    connect(script, SIGNAL(build(QStringList)), this, SLOT(onBuildAction ()));
-    connect(script, SIGNAL(install(QStringList)), this, SLOT(onInstallAction()));
-    connect(script, SIGNAL(run(QStringList)), this, SLOT(onRunAction()));
-    connect(script, SIGNAL(debug(QStringList)), this, SLOT(onDebugAction()));
-    connect(script, SIGNAL(stop(QStringList)), this, SLOT(onStopAction()));
-    connect(script, SIGNAL(devices(QStringList)), this, SLOT(exec()));
+    connect(script, &ScriptEngine::build, this, &RunDevice::onBuildAction);
+    connect(script, &ScriptEngine::install, this, &RunDevice::onInstallAction);
+    connect(script, &ScriptEngine::run, this, &RunDevice::onRunAction);
+    connect(script, &ScriptEngine::debug, this, &RunDevice::onDebugAction);
+    connect(script, &ScriptEngine::stop, this, &RunDevice::onStopAction);
+    connect(script, &ScriptEngine::devices, this, &RunDevice::exec);
 
 
     connect(this, SIGNAL(addDeviceList(QString)), this, SLOT(onNewDevice(QString)));
@@ -86,7 +86,7 @@ void RunDevice::onBuildAction ()
     }
     // build
     QString buildCmd = project->getInfo ("CompileCmd");
-    cmdexec(buildCmd, CmdMsg::cmd);
+    cmdexec(buildCmd, 10, CmdMsg::cmd);
 
     // signed
     QStringList signArgs;
@@ -96,7 +96,7 @@ void RunDevice::onBuildAction ()
              << "./cfgs/keystore/FDA.pk8"
              << project->getProjectPath() + "/Bin/unsigned.apk"
              << project->getProjectPath() + "/Bin/signed.apk";
-    cmdexec("java", signArgs, CmdMsg::cmd);
+    cmdexec("java", signArgs, 10, CmdMsg::cmd);
 }
 
 
@@ -118,7 +118,7 @@ void RunDevice::onInstallAction()
          << "install"
          << "-r"
          << projectRoot + "/Bin/signed.apk";
-    cmdexec("adb", args);
+    ScriptEngine::instance()->adbShell(args);
 }
 
 void RunDevice::onRunAction()
@@ -143,7 +143,7 @@ void RunDevice::onRunAction()
          << "start"
          << project->getInfo ("PackageName") +
                  "/" + project->getInfo ("ActivityEntryName");
-    cmdexec("adb", args);
+    ScriptEngine::instance()->adbShell(args);
 }
 
 void RunDevice::onDebugAction()
@@ -158,7 +158,6 @@ void RunDevice::onDebugAction()
 
     cmdmsg()->addCmdMsg ("Running apk file " + project->getInfo ("PackageName"));
 
-
     QString projectRoot = project->getProjectPath();
     QStringList args;
     args << "-s"
@@ -170,7 +169,7 @@ void RunDevice::onDebugAction()
          << "-n"
          << project->getInfo ("PackageName") +
                  "/" + project->getInfo ("ActivityEntryName");
-    cmdexec("adb", args);
+    ScriptEngine::instance()->adbShell(args);
     cmdexec("DebugStart", project->getInfo ("PackageName"));
 }
 
@@ -194,7 +193,7 @@ void RunDevice::onStopAction()
          << "am"
          << "force-stop"
          << project->getInfo ("PackageName");
-    cmdexec("adb", args);
+    ScriptEngine::instance()->adbShell(args);
 }
 
 void RunDevice::onNewDevice(QString dev)

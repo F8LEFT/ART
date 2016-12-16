@@ -39,13 +39,14 @@ ChooseProcess::ChooseProcess(const QString& host, int port,
         resetProcessInfo();
     });
     connect(ui->mFilterEdit, &QLineEdit::textChanged, [this](QString filter){
+        bool empty = filter.isEmpty();
         for( int i = 0; i < ui->mTableWidget->rowCount(); ++i ) {
-            bool match = false;
+            bool hidden = false;
             QTableWidgetItem *item = ui->mTableWidget->item(i, 1);
-            if( item->text().contains(filter) ) {
-                match = true;
+            if(!empty && !item->text().contains(filter)) {
+                hidden = true;
             }
-            ui->mTableWidget->setRowHidden(i, !match);
+            ui->mTableWidget->setRowHidden(i, hidden);
         }
     });
     connect(ui->mTableWidget, &QTableWidget::itemDoubleClicked, this, &ChooseProcess::accept);

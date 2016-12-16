@@ -107,6 +107,7 @@ namespace JDWP {
     size_t GetTagWidth(JDWP::JdwpTag tag);
 
     struct JValue {
+        JdwpTag tag;
         union {
             // 0
             void* V;            // JT_VOID
@@ -131,7 +132,6 @@ namespace JDWP {
             double D;           // JT_DOUBLE
             int64_t J;          // JT_LONG
         };
-        JdwpTag tag;
     public:
         JValue():tag(JT_VOID), V(nullptr) { }
         JValue(unsigned char B_):tag(JT_BYTE), B(B_) { }

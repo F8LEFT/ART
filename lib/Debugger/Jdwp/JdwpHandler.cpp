@@ -38,7 +38,7 @@ VirtualMachine::ClassesBySignature::ClassesBySignature (
     mSize = Read4 ();
     mInfos.resize (mSize);
     // mSize > 0 ? why
-    for(int i = 0; i < mSize; i++) {
+    for(uint32_t i = 0; i < mSize; i++) {
         auto &info = mInfos[i];
         info.mRefTypeTag = Read1 ();
         info.mTypeId = ReadRefTypeId ();
@@ -167,7 +167,7 @@ VirtualMachine::AllClasses::AllClasses (
 {
     mSize = Read4 ();
     mInfos.resize (mSize);
-    for(int i = 0; i < mSize; i++) {
+    for(uint32_t i = 0; i < mSize; i++) {
         auto &info = mInfos[i];
 
         info.mRefTypeTag = Read1 ();
@@ -189,7 +189,7 @@ VirtualMachine::AllThreads::AllThreads (
 {
     mSize = Read4 ();
     mThreadIds.resize (mSize);
-    for(int i = 0; i < mSize; i++) {
+    for(uint i = 0; i < mSize; i++) {
         mThreadIds[i] = ReadObjectId ();
     }
 }
@@ -328,13 +328,13 @@ VirtualMachine::ClassPaths::ClassPaths (
 
     mClassPathSize = Read4 ();
     mClassPath.resize (mClassPathSize);
-    for(int i = 0; i < mClassPathSize; i++) {
+    for(uint i = 0; i < mClassPathSize; i++) {
         mClassPath[i] = ReadString ();
     }
 
     mBootClassPathSize = Read4 ();
     mBootClassPath.resize (mBootClassPathSize);
-    for(int i = 0; i < mBootClassPathSize; i++) {
+    for(uint32_t i = 0; i < mBootClassPathSize; i++) {
         mBootClassPath[i] = ReadString ();
     }
 }
@@ -415,7 +415,7 @@ VirtualMachine::CapabilitiesNew::CapabilitiesNew (
 
     // Fill in reserved22 through reserved32; note count started at 1.
     for (size_t i = 22; i <= 32; ++i) {
-        auto reversed = Read1 ();
+        /*auto reversed = */Read1 ();
     }
 }
 
@@ -458,7 +458,7 @@ VirtualMachine::AllClassesWithGeneric::AllClassesWithGeneric (
 {
     mSize = Read4 ();
     mInfos.resize (mSize);
-    for(int i = 0; i < mSize; i++) {
+    for(uint32_t i = 0; i < mSize; i++) {
         auto &info = mInfos[i];
 
         info.mRefTypeTag = Read1 ();
@@ -482,7 +482,7 @@ VirtualMachine::InstanceCounts::InstanceCounts (
 {
     mCountSize = Read4 ();
     mCounts.resize (mCountSize);
-    for(auto i = 0; i < mCountSize; i++) {
+    for(uint32_t i = 0; i < mCountSize; i++) {
         mCounts[i] = Read8 ();
     }
 }
@@ -549,7 +549,7 @@ ReferenceType::Fields::Fields (
 {
     mSize = Read4 ();
     mFields.resize (mSize);
-    for (int i = 0; i<mSize; ++i)
+    for (uint32_t i = 0; i<mSize; ++i)
     {
         mFields[i].mFieldId = ReadFieldId ();
         mFields[i].mName = ReadString ();
@@ -571,7 +571,7 @@ ReferenceType::Methods::Methods (
 {
     mSize = Read4 ();
     mMethods.resize (mSize);
-    for (int i = 0; i<mSize; ++i)
+    for (uint i = 0; i<mSize; ++i)
     {
         mMethods[i].mMethodId = ReadMethodId ();
         mMethods[i].mName = ReadString ();
@@ -661,7 +661,7 @@ ReferenceType::Interfaces::Interfaces (
 {
     mCounts = Read4 ();
     mDirectInterfaces.resize (mCounts);
-    for(auto i = 0; i < mCounts; i++) {
+    for(uint32_t i = 0; i < mCounts; i++) {
         mDirectInterfaces[i] = ReadRefTypeId ();
     }
 }
@@ -724,7 +724,7 @@ ReferenceType::FieldsWithGeneric::FieldsWithGeneric (
 {
     mSize = Read4 ();
     mFields.resize (mSize);
-    for (int i = 0; i<mSize; ++i)
+    for (uint32_t i = 0; i<mSize; ++i)
     {
         mFields[i].mFieldId = ReadFieldId ();
         mFields[i].mName = ReadString ();
@@ -748,7 +748,7 @@ ReferenceType::MethodsWithGeneric::MethodsWithGeneric (
 {
     mSize = Read4 ();
     mMethods.resize (mSize);
-    for (int i = 0; i<mSize; ++i)
+    for (uint32_t i = 0; i<mSize; ++i)
     {
         mMethods[i].mMethodId = ReadMethodId ();
         mMethods[i].mName = ReadString ();
@@ -772,7 +772,7 @@ ReferenceType::Instances::Instances (
 {
     mSize = Read4 ();
     mObjTags.resize (mSize);
-    for(auto i = 0; i < mSize; i++) {
+    for(uint32_t i = 0; i < mSize; i++) {
         mObjTags[i].tag = (JDWP::JdwpTag)Read1 ();
         mObjTags[i].objectId = ReadObjectId ();
     }
@@ -928,7 +928,7 @@ Method::LineTable::LineTable (const uint8_t *bytes,uint32_t available)
     mEnd = Read8();
     mNumLines = Read4();
     mItems.resize (mNumLines);
-    for(auto i = 0; i < mNumLines; i++) {
+    for(size_t i = 0; i < mNumLines; i++) {
         mItems[i].address = Read8 ();
         mItems[i].line_number = Read4 ();
     }
@@ -950,7 +950,7 @@ Method::VariableTable::VariableTable (const uint8_t *bytes,uint32_t available)
     mNumArgRegisters = Read4 ();
     mVariableCount = Read4();
     mItems.resize (mVariableCount);
-    for(auto i = 0; i < mVariableCount; i++) {
+    for(size_t i = 0; i < mVariableCount; i++) {
         mItems[i].startAddress = Read8 ();
         mItems[i].name = ReadString ();
         mItems[i].descriptor = ReadString ();
@@ -974,7 +974,7 @@ Method::Bytecodes::Bytecodes (const uint8_t *bytes,uint32_t available)
 {
     mByteCodesSize = Read4();
     mByteCodes.resize (mByteCodesSize);
-    for(auto i = 0; i < mByteCodesSize; i++) {
+    for(uint32_t i = 0; i < mByteCodesSize; i++) {
         mByteCodes[i] = Read1 ();
     }
 }
@@ -1011,7 +1011,7 @@ Method::VariableTableWithGeneric::VariableTableWithGeneric (
     mNumArgRegisters = Read4 ();
     mVariableCount = Read4();
     mItems.resize (mVariableCount);
-    for(auto i = 0; i < mVariableCount; i++) {
+    for(size_t i = 0; i < mVariableCount; i++) {
         mItems[i].startAddress = Read8 ();
         mItems[i].name = ReadString ();
         mItems[i].descriptor = ReadString ();
@@ -1110,7 +1110,7 @@ ObjectReference::MonitorInfo::MonitorInfo (
     mEntryCount = Read4 ();
     mWaiterSize = Read4 ();
     mWaiters.resize (mWaiterSize);
-    for(auto i = 0; i < mWaiterSize; i++) {
+    for(uint32_t i = 0; i < mWaiterSize; i++) {
         mWaiters[i] = ReadObjectId ();
     }
 }
@@ -1729,7 +1729,7 @@ StackFrame::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
 {
     mSlotCount = Read4 ();
     mSlots.resize (mSlotCount);
-    for(auto i = 0; i < mSlotCount; i++) {
+    for(uint32_t i = 0; i < mSlotCount; i++) {
         mSlots[i].tag = (JdwpTag)Read1 ();
         mSlots[i].L = ReadValue (GetTagWidth (mSlots[i].tag));
     }

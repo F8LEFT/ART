@@ -20,7 +20,7 @@
 #include <QtCore/QEventLoop>
 
 DebugSocket::DebugSocket (QObject *parent)
-        : QThread (parent), mQuit(false), mConnected(false), mSocket(nullptr)
+        : QThread (parent), mQuit(false), mSocket(nullptr), mConnected(false)
 {
     connect(this, &DebugSocket::finished, this, &DebugSocket::onThreadfinish);
     mSocketEvent = new DebugSocketEvent();
@@ -137,7 +137,7 @@ bool DebugSocket::tryHandshake ()
         return false;
     }
     auto buffer = mSocket->readAll ();
-    if(buffer.length () < kMagicHandshakeLen) {
+    if(buffer.length () < (int)kMagicHandshakeLen) {
         return false;
     }
     if(memcmp (buffer.data (), kMagicHandshake, kMagicHandshakeLen) != 0) {

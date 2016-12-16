@@ -22,8 +22,8 @@
 
 
 FileEditor::FileEditor(QWidget *parent)
-        : ui(new Ui::FileEditor),
-        QWidget(parent)
+        : QWidget(parent),
+          ui(new Ui::FileEditor)
 {
     ui->setupUi(this);
 
@@ -100,7 +100,7 @@ void FileEditor::save ()
     Config()->setUint("Highlight", "FontSize", font.pixelSize());
     Config()->setBool("Highlight", "Antialias", font.styleStrategy() == QFont::PreferAntialias);
 
-    ScriptEngine* engine = ScriptEngine::instance();
+//    ScriptEngine* engine = ScriptEngine::instance();
     cmdexec("ThemeUpdate");
 }
 

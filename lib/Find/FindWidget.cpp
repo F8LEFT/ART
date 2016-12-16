@@ -109,7 +109,7 @@ void FindWidget::onCloseBtnClicked ()
 
 void FindWidget::onFindAdvance ()
 {
-    cmdexec("FindAdvance", mFilePath,  CmdMsg::script, true, false);
+    cmdexec("FindAdvance", mFilePath, 0,  CmdMsg::script, true, false);
 }
 
 

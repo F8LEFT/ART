@@ -49,6 +49,7 @@ private:
     CmdMsg::ProcInfo mCurInfo;
     ProcessOneTime *mProcess;
     QSemaphore *mInfoSemaphore;
+    QMutex mInfoMutex;
 
     bool mContinue = true;
 };

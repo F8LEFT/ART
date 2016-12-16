@@ -66,7 +66,7 @@ ELSE()
     MESSAGE("Unknown system config")
 ENDIF ()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wno-unused-function -Wno-unused-parameter")
 
 SET(ART_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${ART_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})

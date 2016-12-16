@@ -17,7 +17,7 @@
 using namespace JDWP;
 
 JDWP::Request::Request (const uint8_t *bytes,uint32_t available)
-    : JdwpReader(bytes, available), valid_(true), reply(false)
+    : JdwpReader(bytes, available), reply(false), valid_(true)
 {
 
     byte_count_ = Read4 ();
@@ -45,7 +45,7 @@ const uint8_t *Request::GetExtra () const
     return (const uint8_t*)extra.data ();
 }
 
-const size_t Request::GetExtraLen () const
+size_t Request::GetExtraLen () const
 {
     return extra.length ();
 }

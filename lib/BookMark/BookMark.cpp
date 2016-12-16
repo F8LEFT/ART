@@ -62,5 +62,5 @@ void BookMark::onClicked(BookMark *pBook)
     QStringList args;
     args<< mFilePath
         << ui->mLineLabel->text();
-    cmdexec("OpenFile", args, CmdMsg::script, true, false);
+    cmdexec("OpenFile", args, 0, CmdMsg::script, true, false);
 }

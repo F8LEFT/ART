@@ -307,7 +307,7 @@ void ProjectTab::openActivityInEditor (QString activityName)
         }
 
     if(!filePath.isEmpty ()) {
-        cmdexec("OpenFile", filePath, CmdMsg::script, true, false);
+        cmdexec("OpenFile", filePath, 0, CmdMsg::script, true, false);
     }
 }
 
