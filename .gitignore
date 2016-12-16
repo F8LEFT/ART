@@ -4,5 +4,4 @@ ARTGUI.pro.user
 TODOLIST
 res/
 build/
-bin/
 cmake-build-*/

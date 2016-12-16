@@ -11,40 +11,18 @@ mkdir build
 
 cd build
 
-git submodule init
+export $PATH=/directory/to/qmake:$PATH
 
-git submodule update
+cmake -DCMAKE_BUILD_TYPE=STRING=Release -DQT_QMAKE_EXECUTABLE:STRING=/path/to/qmake  --build ..
 
-mkdir build
+make ART
 
-cd build
+Or just use QtCreator to build it. Use QtCreator to open ${ART}/CmakeLists.txt, and build.
 
-cmake -DCMAKE_BUILD_TYPE=STRING=Release -DQTGCCDIR=${QTGCCDIR} -D[WIN32|APPLE|UNIX]=1 --build ..
-
-make MainWindow
-
-You can see generated files in ./bin.
-QTGCCDIR is the compile toolkit path from qt.
-In Linux, it means ${QTINSTALL}/5.7/gcc_64
-In Mac, it means ${QTINSTALL}/5.7/clang_64
-In Windows, it means ${QTINSTALL}/5.7/mingw53_32
-
-or use QtCreator to build file.
-
-Open QtCreator.
-
-File -> Open File or Project -> choose CmakeList.txt in ART project root.
-
-Projects -> Setting ->
-set Boolean : YAML_CPP_BUILD_CONTRIB:OFF YAML_CPP_BUILD_TOOLS:OFF
-Add Boolean : [WIN32|APPLE|UNIX]:ON
-
-build RELEASE version.
-
-generated files can be found in ./bin.
+build file will be found in CMAKE_BUILD/bin.
 
 Ps: If you are building ART in Windows Platform, you need to generate dependency
 file after building. Just open Qt Mingw, then change root directory to ./bin.
 Use windeployqt to generate it.
 
-windeployqt --release MainWindow.exe
+windeployqt --release ART.exe

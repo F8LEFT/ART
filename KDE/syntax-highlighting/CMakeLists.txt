@@ -39,8 +39,8 @@ set_package_properties(Qt5 PROPERTIES URL "http://qt-project.org/")
 set_package_properties(Qt5Widgets PROPERTIES PURPOSE "Example application.")
 set_package_properties(Qt5XmlPatterns PROPERTIES PURPOSE "Compile-time validation of syntax definition files.")
 
-find_package(Perl REQUIRED)
-set_package_properties(Perl PROPERTIES PURPOSE "Auto-generate PHP syntax definition files.")
+#find_package(Perl REQUIRED)
+#set_package_properties(Perl PROPERTIES PURPOSE "Auto-generate PHP syntax definition files.")
 
 #
 # Translations

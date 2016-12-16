@@ -36,7 +36,6 @@ set_package_properties(Qt5XmlPatterns PROPERTIES PURPOSE "Compile-time validatio
 set_package_properties(Qt5WebSockets PROPERTIES PURPOSE "Connect to network.")
 
 set(KF5_DEP_VERSION "5.28.0") # we need KCrash::initialize
-#find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS SyntaxHighlighting)
 set_package_properties(KF5SyntaxHighlighting PROPERTIES PURPOSE "Syntax highlighting engine")
 
 #
@@ -54,15 +53,17 @@ IF (WIN32)
     MESSAGE("Building windows version")
     ADD_DEFINITIONS(-DWIN32)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
+    set(SYSNAME win)
 ELSEIF (APPLE)
     MESSAGE("Building apple version")
     ADD_DEFINITIONS(-DAPPLE)
+    set(SYSNAME mac)
 ELSEIF (UNIX)
     MESSAGE("Building UNIX version.")
     ADD_DEFINITIONS(-DUNIX)
+    set(SYSNAME unix)
 ELSE()
-    MESSAGE("Building DEFAULT(UNIX) version.")
-    ADD_DEFINITIONS(-DUNIX)
+    MESSAGE("Unknown system config")
 ENDIF ()
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -72,6 +73,15 @@ INCLUDE_DIRECTORIES(${ART_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_SUPPRESS_REGENERATION 1)
+
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bin/cfgs
+        DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bin/platforms/${SYSNAME}/adb
+        DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/thirdparty)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bin/thirdparty
+        DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
 
 add_subdirectory(lib)
 

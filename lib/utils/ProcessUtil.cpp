@@ -10,6 +10,8 @@
 #include <utils/StringUtil.h>
 #include <QApplication>
 
+#include <QDebug>
+
 ProcessUtil::ProcessUtil(QObject *parent)
         : QThread(parent)
 {
@@ -77,8 +79,11 @@ void ProcessUtil::run ()
         mCurInfo = mProcList.front();
         mProcList.pop_front();
 
+        qDebug() << "exec command " << mCurInfo.proc << mCurInfo.args;
         if(!mProcess->exec (mCurInfo)) {
+            qDebug() << "wait for finished" ;
             mProcess->waitForFinished (-1);
+            qDebug() << "finished";
         }
         emit ProcFinish(mCurInfo);
     }

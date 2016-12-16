@@ -38,14 +38,14 @@ DebugSocket::~DebugSocket ()
 }
 
 void DebugSocket::startConnection (const QString &hostName, int port,
-                                   const QString &targetName)
+                                    int pid)
 {
     QMutexLocker locker(&mMutex);
     if(isRunning ())
         return;
     mHostName = hostName;
     mPort = port;
-    mTargetName = targetName;
+    mPid = pid;
     start ();
 }
 
@@ -171,32 +171,21 @@ void DebugSocket::onThreadfinish ()
 bool DebugSocket::tryBindJdwp()
 {
     // get Process pid
-    int pid = 0;
+    int pid = mPid;
     AdbUtil adbUtil;
     auto deviceId = projinfo("DeviceId");
-    if(deviceId.isEmpty()) {
-        return false;
-    }
-    QStringList pidList = adbUtil.execute("-s " + deviceId + " shell pidof " + mTargetName);
-    foreach(const QString& s, pidList) {
-            pid = s.toInt();
-            if(pid != 0) {
-                break;
-            }
-        }
-    if(pid == 0)
-        return false;
+    auto prefix = deviceId.isEmpty() ?  QString() : "-s " + deviceId + " ";
 
     // open Debug port
     QString bindConfig = "tcp:" +  QString::number(mPort) +
                     " jdwp:" +  QString::number(pid);
-    adbUtil.execute("-s " + deviceId + " forward " + bindConfig);
+    adbUtil.execute(prefix + "forward " + bindConfig);
 
-    QStringList bindResult = adbUtil.execute("-s " + deviceId + " forward --list");
+    QStringList bindResult = adbUtil.execute(prefix + "forward --list");
 
-    QString bindCheck = deviceId + " " + bindConfig;
+    QString bindCheck = bindConfig;
     foreach(const QString& s, bindResult) {
-            if(bindCheck == s) {
+            if(bindResult.contains(s)) {
                 return true;
             }
         }

@@ -19,14 +19,16 @@
 #include <QHostAddress>
 #include <QDebug>
 #include <Jdwp/JdwpHandler.h>
-
-
+#include <ChooseProcess.h>
 
 Debugger::Debugger(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Debugger)
+    ui(new Ui::Debugger),
+    m_lastHost("localhost"),
+    m_lastPort(8100)
 {
     ui->setupUi(this);
+
 
     // script
     auto* script = ScriptEngine::instance();
@@ -53,6 +55,7 @@ void Debugger::loadFromConfig()
     ui->mSplitter->restoreGeometry(config->getByte("Debugger", "SplitGeometry"));
     ui->mSplitter->restoreState(config->getByte("Debugger", "SplitState"));
 }
+
 void Debugger::saveToConfig()
 {
     Configuration *config = Config();
@@ -71,9 +74,18 @@ void Debugger::startNewTarget(QStringList args)
     if(args.empty() || mSocket->isConnected ()) {
         return;
     }
-
     auto& target = args.front();
-    mSocket->startConnection("localhost", 8100, target);
+
+    ChooseProcess chooseProcess(m_lastHost, m_lastPort, target);
+    if(chooseProcess.exec() != QDialog::Accepted
+        || !chooseProcess.isValid()) {
+        return;
+    }
+
+    m_lastHost = chooseProcess.getHostname();
+    m_lastPort = chooseProcess.getPort();
+
+    mSocket->startConnection(m_lastHost, m_lastPort, chooseProcess.getTargetPid());
 }
 
 void Debugger::stopCurrentTarget()

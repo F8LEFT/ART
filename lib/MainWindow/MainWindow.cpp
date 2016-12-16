@@ -333,7 +333,7 @@ void MainWindow::actionDebug()
         cmdexec("Install");
         cmdexec("Debug");
     } else {
-        cmdexec("Debug");
+        cmdexec("Debug", CmdMsg::script, true, false);
     }
 }
 

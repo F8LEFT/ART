@@ -10,6 +10,7 @@
 #include <utils/CmdMsgUtil.h>
 #include <utils/StringUtil.h>
 #include <QtGlobal>
+#include <utils/Configuration.h>
 
 ScriptEngine::ScriptEngine(MainWindow *parent) : QObject((QObject*)parent)
 {
@@ -82,10 +83,15 @@ QStringList ScriptEngine::getAllCommand ()
     return scripts.keys ();
 }
 
-
 void ScriptEngine::adbShell(QStringList args)
 {
-    QString adbPath = GetThirdPartyPath ("adb") + "/" + GetSystemType() + "/adb";
+    QString adbPath;
+    if(ConfigBool("System", "UseDefaultAdb")) {
+        adbPath = GetThirdPartyPath ("adb") + "/adb";
+    } else {
+        adbPath = "adb";
+    }
+
     cmdexec(adbPath, args, CmdMsg::ProcType::cmd);
 }
 

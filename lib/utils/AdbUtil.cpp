@@ -9,6 +9,10 @@
 #include "utils/AdbUtil.h"
 #include "utils/StringUtil.h"
 
+#include <utils/Configuration.h>
+#include <utils/ProjectInfo.h>
+
+
 AdbUtil::AdbUtil()
 {
 
@@ -22,7 +26,12 @@ QStringList AdbUtil::execute(QString arg, bool waitForRet)
 
 QStringList AdbUtil::execute(QStringList args, bool waitForRet)
 {
-    QString adbPath = GetThirdPartyPath ("adb") + "/" + GetSystemType() + "/adb";
+    QString adbPath;
+    if(ConfigBool("System", "UseDefaultAdb")) {
+        adbPath = GetThirdPartyPath ("adb") + "/adb";
+    } else {
+        adbPath = "adb";
+    }
     mProcess.start(adbPath, args);
     if (waitForRet) {
         mProcess.waitForFinished(-1);
@@ -31,4 +40,31 @@ QStringList AdbUtil::execute(QStringList args, bool waitForRet)
         return rel;
     }
     return QStringList();
+}
+
+QVector<AdbUtil::ProcessInfo> AdbUtil::getProcessInfo(QString deviceid)
+{
+    QStringList pidList = deviceid.isEmpty() ?
+                          execute("shell ps"):
+                          execute("-s " + deviceid + " shell ps");
+    QVector<AdbUtil::ProcessInfo> vector;
+
+    for(auto &info : pidList) {
+        QStringList procInfo = info.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+        if(procInfo.size() != 9) {
+            continue;
+        }
+        vector.push_back({procInfo[0],            // user
+                          procInfo[1].toUInt(),   // pid
+                          procInfo[2].toUInt(),   // ppid
+                          procInfo[3].toUInt(),   // vsize
+                          procInfo[4].toUInt(),   // rss
+                          procInfo[5],            // wchan
+                          procInfo[6].toUInt(nullptr, 16),    // PC
+                          procInfo[7],            // status
+                          procInfo[8]             // name
+                         });
+
+    }
+    return vector;
 }

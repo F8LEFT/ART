@@ -38,14 +38,16 @@ class DebugSocket: public QThread
 public:
     DebugSocket(QObject *parent = 0);
 
-    void startConnection(const QString &hostName, int port, const QString &targetName);
+    void startConnection(const QString &hostName, int port, int pid);
 
     void run() Q_DECL_OVERRIDE;
 
     const QString &hostName() const { return mHostName; }
-    const QString &targetName() const { return mTargetName; }
+    int targetPid() const { return mPid; }
     const quint16 port() const { return mPort; }
     const bool isConnected() const { return mConnected; }
+
+
 signals:
     void error(int socketError, const QString &message);
 
@@ -72,8 +74,8 @@ private:
 
 private:
     QString mHostName;
-    QString mTargetName;
     quint16 mPort;
+    int mPid;
     QMutex mMutex;
     QAtomicInteger<bool> mQuit;
 

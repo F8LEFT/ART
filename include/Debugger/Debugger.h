@@ -68,6 +68,9 @@ private:
     DebugSocket* mSocket = nullptr;
     DebugHandler* mDbgHandler = Q_NULLPTR;
 
+    QString m_lastHost;
+    int m_lastPort;
+
 };
 
 #endif // DEBUGGER_H
