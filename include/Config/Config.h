@@ -22,6 +22,7 @@ class Config;
 }
 
 class FileEditor;
+class Environment;
 
 class Config : public QDialog
 {
@@ -44,6 +45,7 @@ private:
     QVector<QIcon> mIconList;
 
     FileEditor* mFileEditor;
+    Environment* mEnvironment;
 
 
 };

@@ -10,6 +10,7 @@
 #include "ui_Config.h"
 
 #include "FileEditor.h"
+#include "Environment.h"
 
 #include <QGridLayout>
 
@@ -20,12 +21,15 @@ Config::Config(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     mFileEditor = new FileEditor(this);
+    mEnvironment = new Environment(this);
 
     mWidgetList.push_back (mFileEditor);
     mWidgetNativeNameList.push_back (tr("Text Editot"));
     mIconList.push_back (QIcon(QPixmap(":/images/editorsettings.png")));
+    mWidgetList.push_back(mEnvironment);
+    mWidgetNativeNameList.push_back(tr("Environment"));
+    mIconList.push_back (QIcon(QPixmap(":/images/environment.png")));
 
     ui->mConfigWidget->layout ()->addWidget (mFileEditor);
 
@@ -69,4 +73,5 @@ void Config::onConfigTabChange (QListWidgetItem *current,QListWidgetItem *previo
 void Config::save ()
 {
     mFileEditor->save ();
+    mEnvironment->save();
 }

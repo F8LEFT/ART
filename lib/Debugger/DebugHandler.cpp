@@ -115,7 +115,6 @@ void DebugHandler::onSocketConnected()
                         QString::number(mSocket->port ()));
     mSockId = 0;
     mRequestMap.clear ();
-
 }
 
 void DebugHandler::onSocketDisconnected()
@@ -124,8 +123,6 @@ void DebugHandler::onSocketDisconnected()
     mSockId = 0;
     mRequestMap.clear ();
 }
-
-
 
 // -------------------for debug interface----------------------
 void DebugHandler::dbgResume()

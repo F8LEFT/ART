@@ -38,7 +38,8 @@ SOURCES += lib/MainWindow/main.cpp\
     lib/Config/FileSchemeConfig.cpp \
     lib/Debugger/Debugger.cpp \
     lib/Config/FileFontConfig.cpp \
-    lib/Debugger/ChooseProcess.cpp
+    lib/Debugger/ChooseProcess.cpp \
+    lib/Config/Environment.cpp
 
 
 HEADERS  += \
@@ -68,7 +69,8 @@ HEADERS  += \
     lib/Config/FileSchemeConfig.h \
     lib/Debugger/Debugger.h \
     lib/Config/FileFontConfig.h \
-    lib/Debugger/ChooseProcess.h
+    lib/Debugger/ChooseProcess.h \
+    lib/Config/Environment.h
 
 FORMS    += \
     lib/MainWindow/MainWindow.ui \
@@ -90,7 +92,8 @@ FORMS    += \
     lib/Find/FindResult.ui \
     lib/Debugger/Debugger.ui \
     lib/Config/FileFontConfig.ui \
-    lib/Debugger/ChooseProcess.ui
+    lib/Debugger/ChooseProcess.ui \
+    lib/Config/Environment.ui
 
 RESOURCES += \
     ART.qrc \
