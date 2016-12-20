@@ -377,9 +377,9 @@ bool Configuration::writeCfgElement (QDomDocument &doc,QDomElement &element,
 }
 QByteArray Configuration::byteFromString(const QString &value)
 {
-    return QByteArray::fromHex(value.toLatin1());
+    return QByteArray::fromBase64(value.toLatin1());
 }
 QString Configuration::byteToString(const QByteArray &byte)
 {
-    return byte.toHex();
+    return byte.toBase64();
 }

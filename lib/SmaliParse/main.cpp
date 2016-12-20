@@ -12,55 +12,52 @@
 //===----------------------------------------------------------------------===//
 
 #include <iostream>
-#include "SmaliLexer.h"
 #include <sstream>
 #include <fstream>
-#include "SmaliParser.hpp"
-#include "Interpreter.h"
+
+#include "SmaliLexer.h"
+#include <QString>
 
 using namespace std;
-using namespace Analysis;
+
+void testANRLR() {
+    std::string file = "/home/f8left/CodeSrc/ART/res/Loader$ForceLoadContentObserver.smali";
+
+
+    antlr4::ANTLRFileStream input(file);
+    SmaliLexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+
+    auto names = lexer.getTokenNames();
+
+    tokens.fill();
+    for (auto token : tokens.getTokens()) {
+        if(token->getType() >= names.size()) {
+            break;
+        }
+        std::cout << (int)token->getLine() << "," << (int)token->getCharPositionInLine() << ":" <<
+                  token->getText() << "," << names[token->getType()] << std::endl;
+    }
+
+    for (auto token : tokens.getTokens()) {
+        std::cout << token->toString() << std::endl;
+    }
+
+//    antlr4::CommonToken tok;
+//    QString sb;
+//    sb.length();
+//
+//    std::string s;
+//    lexer.getCharPositionInLine()
+
+
+//    TParser parser(&tokens);
+//    tree::ParseTree* tree = parser.main();
+
+//    std::cout << tree->toStringTree(&parser) << std::endl << std::endl;
+}
 
 int main() {
-
-
-    string st;
-    ifstream ifile;
-    ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");
-
-    // test Lexer
-    if (ifile.is_open ()) {
-        SmaliLexer lexer;
-        lexer.switch_streams (&ifile,nullptr);
-        while(true) {
-            auto token = lexer.get_next_token ();
-            if(token.token () == 0)
-                break;
-            if(token.token () == SmaliParser::token::TOKEN_EOL) {
-                continue;
-            }
-            cout << "type " << token.token ()
-                 << " line :" << lexer.line ()
-                 << " column :" << lexer.column ()
-                 << " len :" << lexer.curTokenLen ()
-                 << " token :" << lexer.curTokenText () << endl;
-//                 << " text :" << lexer.text() << endl;
-        }
-    }
-    ifile.close ();
-    // test parser
-    ifile.open ("/home/f8left/CodeSrc/ART/res/LruCache.smali");
-    if(ifile.is_open ()) {
-        Interpreter interpreter;
-        SmaliClass sClass;
-        StringPool sp;
-        sClass.setStringPool (&sp);
-        interpreter.switchInputStream (&ifile,&sClass);
-        interpreter.parse ();
-        interpreter.analysis ();
-        cout << "print file tree" << endl;
-        interpreter.print ();
-    }
-    ifile.close ();
+    testANRLR();
     return 0;
 }

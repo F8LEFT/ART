@@ -63,8 +63,13 @@ ELSEIF (UNIX)
     ADD_DEFINITIONS(-DUNIX)
     set(SYSNAME unix)
 ELSE()
-    MESSAGE("Unknown system config")
+    message(FATAL_ERROR "Unknown system config")
 ENDIF ()
+
+# just generate all file into one folder.
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wno-unused-function -Wno-unused-parameter")
 
