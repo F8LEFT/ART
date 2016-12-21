@@ -29,14 +29,14 @@ add_custom_target(GenerateParser
         COMMAND
         ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/generated/
         COMMAND
-        java -jar ${ANTLR_JAR_LOCATION} -Werror -Dlanguage=Cpp -o ${CMAKE_CURRENT_SOURCE_DIR}/generated/ ${CMAKE_CURRENT_SOURCE_DIR}/SmaliLexer.g4
+        java -jar ${ANTLR_JAR_LOCATION} -Werror -Dlanguage=Cpp -o generated/ SmaliLexer.g4 SmaliParser.g4
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/SmaliLexer.g4
+        DEPENDS SmaliLexer.g4 SmaliParser.g4
         )
 
 #FILE(GLOB_RECURSE ART_HEADER ${ART_INCLUDE_DIR}/${TARGET_NAME}/*.h Ops/*.h)
 
-set(SmaliParse_src InvalidToken.cpp ${smali-GENERATED_SRC})
+set(SmaliParse_src InvalidToken.cpp LiteralTools.cpp ${smali-GENERATED_SRC})
 
 ADD_LIBRARY(SmaliParse STATIC ${SmaliParse_src})
 add_dependencies(SmaliParse GenerateParser)
