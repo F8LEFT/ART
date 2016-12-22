@@ -156,7 +156,7 @@ void MHTabWidget::tabMoved(int from, int to)
     nativeName = mNativeNames.at(from);
     mNativeNames.removeAt(from);
     mNativeNames.insert(to, nativeName);
-    emit tabMovedTabWidget(from, to);
+     tabMovedTabWidget(from, to);
 }
 
 void MHTabWidget::setCurrentIndex(int index)
@@ -212,5 +212,5 @@ void MHDetachedWindow::closeEvent(QCloseEvent* event)
 {
     Q_UNUSED(event);
 
-    emit OnClose(this);
+     OnClose(this);
 }

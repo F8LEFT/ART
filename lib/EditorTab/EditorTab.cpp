@@ -78,7 +78,7 @@ bool EditorTab::openFile(QString filePath, int iLine)
             TextEditor* p = (TextEditor*)ui->mEditStackedWidget->widget(iComIdx);
             p->gotoLine (iLine);
         }
-        cmdexec("OpenWindow", "EditorTab", 0, CmdMsg::script, true, false);
+        cmdexec("OpenWindow", "EditorTab", CmdMsg::script, true, false);
         return true;
     }
     if (!filePath.isEmpty()) {
@@ -90,7 +90,7 @@ bool EditorTab::openFile(QString filePath, int iLine)
             ui->mEditStackedWidget->insertWidget(0, p);
             ui->mDocumentCombo->insertItem(0, fileName, filePath);
             ui->mDocumentCombo->setCurrentIndex(0);
-            cmdexec("OpenWindow", "EditorTab", 0, CmdMsg::script, true, false);
+            cmdexec("OpenWindow", "EditorTab", CmdMsg::script, true, false);
             return true;
         } else {
             delete p;

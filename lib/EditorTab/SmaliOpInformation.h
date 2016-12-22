@@ -26,7 +26,7 @@ public:
 protected slots:
     void cursorChanged();
 
-    static QString getOpInformation(int token);
+    static QString getOpInformation(QString token);
 private:
     QPlainTextEdit* m_edit;
 };

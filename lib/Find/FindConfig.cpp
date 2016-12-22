@@ -93,6 +93,6 @@ void FindConfig::onSearch (bool needReplace)
     reset (ui->mFilterList->itemData (0).toString (),
            ui->mFilterList->itemData (0).toString ());
 
-    emit startNewFind (findtext, directory, options, useRegexp, needReplace);
+     startNewFind (findtext, directory, options, useRegexp, needReplace);
 }
 

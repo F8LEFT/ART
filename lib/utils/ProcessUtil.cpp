@@ -41,13 +41,7 @@ void ProcessUtil::addProc(const CmdMsg::ProcInfo & info)
 {
     if (info.toqueue) {
         mInfoMutex.lock();
-        auto i = 0, size = mProcList.size();
-        for(; i < size; i++) {
-            if(mProcList.at(i).level < info.level) {
-                break;
-            }
-        }
-        mProcList.insert(i, info);
+        mProcList.push_back(info);
         mInfoMutex.unlock();
 
         mInfoSemaphore->release ();
@@ -95,7 +89,7 @@ void ProcessUtil::run ()
         if(!mProcess->exec (mCurInfo)) {
             mProcess->waitForFinished (-1);
         }
-        emit ProcFinish(mCurInfo);
+         ProcFinish(mCurInfo);
     }
 }
 

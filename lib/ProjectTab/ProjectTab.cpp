@@ -133,8 +133,8 @@ void ProjectTab::openProject (QString projectName)
     projinfoset ("PackageName", mPackageName);
     projinfoset ("ActivityEntryName", mActivityEntryName);
 
-    auto analysis = new SmaliAnalysis(this);
-    analysis->addSmaliFolder (mSmaliDirectory);
+//    auto analysis = new SmaliAnalysis(this);
+//    analysis->addSmaliFolder (mSmaliDirectory);
 
     cmdexec("ProjectOpened", projectName);
 }
@@ -162,8 +162,8 @@ void ProjectTab::closeProject()
     cfg.setString ("ProjectInfo", "CompileCmd", projinfo ("CompileCmd"));
     cfg.setString ("ProjectInfo", "DecompileCmd", projinfo ("DecompileCmd"));
 
-    auto analysis = SmaliAnalysis::instance ();
-    delete analysis;
+//    auto analysis = SmaliAnalysis::instance ();
+//    delete analysis;
 
     cmdexec("ProjectClosed");
 }
@@ -307,7 +307,7 @@ void ProjectTab::openActivityInEditor (QString activityName)
         }
 
     if(!filePath.isEmpty ()) {
-        cmdexec("OpenFile", filePath, 0, CmdMsg::script, true, false);
+        cmdexec("OpenFile", filePath, CmdMsg::script, true, false);
     }
 }
 

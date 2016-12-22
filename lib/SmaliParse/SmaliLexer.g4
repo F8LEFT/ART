@@ -17,8 +17,6 @@ lexer grammar SmaliLexer;
 
 // Lexer file header. Appears at the top of h + cpp files. Use e.g. for copyrights.
 @lexer::header {/* lexer header section */
-    #include "InvalidToken.h"
-    #include <QString>
 }
 
 // Appears before any #include in h + cpp files.
@@ -28,6 +26,8 @@ lexer grammar SmaliLexer;
 // Follows directly after the standard #includes in h + cpp files.
 @lexer::postinclude {/* lexer postinclude section */
     #include <string>
+    #include "InvalidToken.h"
+    #include <QString>
 }
 
 // Directly preceds the lexer class declaration in the h file (e.g. for additional types etc.).
@@ -74,7 +74,7 @@ lexer grammar SmaliLexer;
         ptr->setStopIndex(*(text.end()-1));
         ptr->setLine(stringStartLine);
         ptr->setCharPositionInLine(stringStartCol);
-        return std::move(token);
+        return token;
     }
 
     void setStringOrCharError(std::string message) {
@@ -144,7 +144,7 @@ lexer grammar SmaliLexer;
             default:
                 break;
         }
-        return std::move(token);
+        return token;
     }
 }
 
@@ -487,7 +487,7 @@ INVALID_TOKEN: '.end'
 // ----------------- About how to parse a string --------------------
 mode STRING;
 STRING_LITERAL: '"' { sb.append('\"'); } -> popMode;    // end STRING mode and return token
-STRING_DATA: ~[\r\n"\\]+ { sb.append(QString::fromStdString(getText())); };
+STRING_DATA: ~[\r\n"\\]+ { sb.append(QString::fromStdString(getText())); } -> more;
 STRING_ESCAPE
     :  '\\b' { sb.append('\b'); }
     |  '\\t' { sb.append('\t'); }
@@ -502,7 +502,7 @@ STRING_ESCAPEERROR: '\\' ~[btnfr\'"\\u] {        // no match ESCAPE
         setStringOrCharError(std::string("Invalid escape sequence ") + getText());
     } -> popMode;
 STRING_UTFENCODE
-    : '\\u' HexDigits { sb.append(decodeUtf16(getText())); };
+    : '\\u' HexDigits { sb.append(decodeUtf16(getText())); } -> more;
 STRING_UTFERROR: '\\u' FewerHexDigits {
         sb.append(QString::fromStdString(getText()));
         setStringOrCharError("Invalid \\u sequence. \\u must be followed by 4 hex digits");
@@ -519,7 +519,7 @@ CHAR_LITERAL: '\'' { sb.append('\'');
            setStringOrCharError("Character literal with multiple chars");
        }
    } -> popMode;
-CHAR_DATA: ~[\r\n'\\]+ { sb.append(QString::fromStdString(getText())); };
+CHAR_DATA: ~[\r\n'\\]+ { sb.append(QString::fromStdString(getText())); } -> more;
 CHAR_ESCAPE
     :  '\\b' { sb.append('\b'); }
     |  '\\t' { sb.append('\t'); }
@@ -533,7 +533,7 @@ CHAR_ESCAPEERROR: '\\' ~[btnfr\'"\\u] {       // no match ESCAPE
         sb.append(QString::fromStdString(getText()));
         setStringOrCharError(std::string("Invalid escape sequence ") + getText());
     } -> popMode;
-CHAR_UTFENCODE: '\\u' HexDigits { sb.append(decodeUtf16(getText())); };
+CHAR_UTFENCODE: '\\u' HexDigits { sb.append(decodeUtf16(getText())); } -> more;
 CHAR_UTFERROR: '\\u' FewerHexDigits {
         sb.append(QString::fromStdString(getText()));
         setStringOrCharError("Invalid \\u sequence. \\u must be followed by 4 hex digits");

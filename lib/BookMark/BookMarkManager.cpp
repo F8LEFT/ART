@@ -41,7 +41,7 @@ BookMark *BookMarkManager::addBookMark(QString file)
     auto& pFileBookMap = mBookMap[file];
     pFileBookMap[pBook] = pItem;
 
-    emit addBookMark(pBook, pItem);
+    addBookMark(pBook, pItem);
     return pBook;
 }
 
@@ -51,7 +51,7 @@ bool BookMarkManager::delBookMark(QString file, BookMark *bookMark)
 
     auto it = pFileBookMap.find(bookMark);
     if (it != pFileBookMap.end()) {
-        emit delBookMark(it.value());
+        delBookMark(it.value());
         pFileBookMap.erase(it);
     }
     return true;
@@ -83,7 +83,7 @@ void BookMarkManager::onProjectClosed()
     for(auto it = mBookMap.begin(), itEnd = mBookMap.end(); it != itEnd; it++) {
         for(auto fileMap = it.value ().begin (), fileMapEnd = it.value ().end ();
                 fileMap != fileMapEnd; fileMap++) {
-            emit delBookMark(fileMap.value());
+            delBookMark(fileMap.value());
         }
         it->clear ();
     }

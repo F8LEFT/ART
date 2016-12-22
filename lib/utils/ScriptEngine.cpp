@@ -72,7 +72,7 @@ void ScriptEngine::exec(QString proc, QStringList args)
 {
     auto s = scripts.find(proc);
     if (s != scripts.end()) {
-        emit (this->*(s.value()))(args);
+         (this->*(s.value()))(args);
     } else {
         cmdmsg ()->addCmdMsg("script proc not found: " + proc);
     }
@@ -92,6 +92,6 @@ void ScriptEngine::adbShell(QStringList args)
         adbPath = "adb";
     }
 
-    cmdexec(adbPath, args, 0, CmdMsg::ProcType::cmd);
+    cmdexec(adbPath, args, CmdMsg::ProcType::cmd);
 }
 

@@ -86,7 +86,7 @@ void RunDevice::onBuildAction ()
     }
     // build
     QString buildCmd = project->getInfo ("CompileCmd");
-    cmdexec(buildCmd, 10, CmdMsg::cmd);
+    cmdexec(buildCmd, CmdMsg::cmd);
 
     // signed
     QStringList signArgs;
@@ -96,7 +96,7 @@ void RunDevice::onBuildAction ()
              << "./cfgs/keystore/FDA.pk8"
              << project->getProjectPath() + "/Bin/unsigned.apk"
              << project->getProjectPath() + "/Bin/signed.apk";
-    cmdexec("java", signArgs, 10, CmdMsg::cmd);
+    cmdexec("java", signArgs, CmdMsg::cmd);
 }
 
 
@@ -280,7 +280,7 @@ void getDeviceMsgThread(RunDevice* runDevice) {
                 "Android " + propMap["ro.build.version.release"] +
                 ", API " + propMap["ro.build.version.sdk"]   + ")" +
                 "$" + deviceId;
-        emit runDevice->addDeviceList(deviceMsg);
+         runDevice->addDeviceList(deviceMsg);
     }
     running = false;
 }

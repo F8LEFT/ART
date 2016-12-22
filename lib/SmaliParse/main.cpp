@@ -19,6 +19,7 @@
 #include "SmaliParser.h"
 #include <QString>
 
+
 using namespace std;
 
 void testANRLR() {
@@ -48,20 +49,6 @@ void testANRLR() {
     antlr4::tree::ParseTree* tree = parser.smali_file();
 
     std::cout << tree->toStringTree(&parser) << std::endl << std::endl;
-
-
-//    antlr4::CommonToken tok;
-//    QString sb;
-//    sb.length();
-//
-    std::string s;
-//    lexer.getCharPositionInLine()
-
-
-//    TParser parser(&tokens);
-//    tree::ParseTree* tree = parser.main();
-
-//    std::cout << tree->toStringTree(&parser) << std::endl << std::endl;
 }
 
 int main() {

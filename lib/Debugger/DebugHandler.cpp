@@ -382,7 +382,7 @@ void DebugHandler::_handle_ThreadReference_Suspend(JDWP::Request *request, JDWP:
 }
 void DebugHandler::_handle_ThreadReference_Resume(JDWP::Request *request, JDWP::Request *reply)
 {
-    emit dbgOnResume();
+     dbgOnResume();
 }
 void DebugHandler::_handle_ThreadReference_Status(JDWP::Request *request, JDWP::Request *reply)
 {

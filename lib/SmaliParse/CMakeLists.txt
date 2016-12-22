@@ -1,6 +1,6 @@
 SET(TARGET_NAME SmaliParse)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -Wno-undef -Wno-overloaded-virtual")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 if(NOT ANTLR_JAR_LOCATION)
     message(FATAL_ERROR "Missing antlr4.jar location. You can specify it's path using: -DANTLR_JAR_LOCATION=<path>")
@@ -40,8 +40,9 @@ set(SmaliParse_src InvalidToken.cpp LiteralTools.cpp ${smali-GENERATED_SRC})
 
 ADD_LIBRARY(SmaliParse STATIC ${SmaliParse_src})
 add_dependencies(SmaliParse GenerateParser)
-TARGET_LINK_LIBRARIES(SmaliParse utils ${ANTLR_RUNTIME_LIBRARY}/libantlr4-runtime.a)
+TARGET_LINK_LIBRARIES(SmaliParse utils ${ANTLR_RUNTIME_LIBRARY})
 TARGET_INCLUDE_DIRECTORIES(SmaliParse PUBLIC
+        .
         ${ANTLR_RUNTIME_HEADER}
         generated)
 

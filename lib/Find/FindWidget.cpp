@@ -70,46 +70,46 @@ void FindWidget::setFilePath (const QString &fp)
 void FindWidget::onFindPrevBtnClick()
 {
     auto findtext = ui->mFindEdit->text();
-    emit find(findtext, QTextDocument::FindBackward);
+     find(findtext, QTextDocument::FindBackward);
 }
 
 
 void FindWidget::onFindNextBtnClick ()
 {
     auto findtext = ui->mFindEdit->text ();
-    emit find (findtext);
+     find (findtext);
 }
 
 void FindWidget::onReplaceBtnClick()
 {
     auto findtext = ui->mFindEdit->text();
     auto replacetext = ui->mReplaceEdit->text();
-    emit replace(findtext, replacetext);
+     replace(findtext, replacetext);
 }
 
 void FindWidget::onReplaceNextBtnClick()
 {
     auto findtext = ui->mFindEdit->text();
     auto replacetext = ui->mReplaceEdit->text();
-    emit replace(findtext, replacetext);
-    emit find (findtext);
+     replace(findtext, replacetext);
+     find (findtext);
 }
 
 void FindWidget::onReplaceAllBtnClick()
 {
     auto findtext = ui->mFindEdit->text();
     auto replacetext = ui->mReplaceEdit->text();
-    emit replaceAll(findtext, replacetext);
+     replaceAll(findtext, replacetext);
 }
 
 void FindWidget::onCloseBtnClicked ()
 {
-    emit closeWidget ();
+     closeWidget ();
 }
 
 void FindWidget::onFindAdvance ()
 {
-    cmdexec("FindAdvance", mFilePath, 0,  CmdMsg::script, true, false);
+    cmdexec("FindAdvance", mFilePath,  CmdMsg::script, true, false);
 }
 
 

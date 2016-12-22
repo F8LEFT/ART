@@ -70,7 +70,7 @@ void DebugSocket::run ()
         sleep(3);
     }
     if(!bindSuccess) {
-        emit error(-1, tr("Unable to open debug port."));
+         error(-1, tr("Unable to open debug port."));
         return;
     }
     mSocket = new QTcpSocket();
@@ -79,11 +79,11 @@ void DebugSocket::run ()
     mSocket->connectToHost (mHostName, mPort);
 
     if(!mSocket->waitForConnected ()) {
-        emit error (mSocket->error (), mSocket->errorString ());
+         error (mSocket->error (), mSocket->errorString ());
         return;
     }
     if(!tryHandshake ()) {
-        emit error(-1, tr("Unable to send handshake packet"));
+         error(-1, tr("Unable to send handshake packet"));
         return;
     }
 
@@ -91,7 +91,7 @@ void DebugSocket::run ()
     connect(mSocketEvent, &DebugSocketEvent::newStatus, &loop, &QEventLoop::quit);
     connect(mSocket, &QTcpSocket::readyRead, mSocketEvent, &DebugSocketEvent::onRead);
 
-    emit onConnected();
+     onConnected();
 
     QByteArray mBufPool;
     while(!mQuit && mConnected) {
@@ -108,7 +108,7 @@ void DebugSocket::run ()
             JDWP::Request* req = new JDWP::Request(
                 (const uint8_t*)mBufPool.data (), mBufPool.length ());
             if(req->isValid ()) {
-                emit newJDWPRequest (req);
+                 newJDWPRequest (req);
                 mBufPool.chop (req->GetLength ());
             }
         }
@@ -149,15 +149,15 @@ bool DebugSocket::tryHandshake ()
 void DebugSocket::onDisconnected ()
 {
     mConnected = false;
-    emit error(0, tr("Debugger Socket closed"));
-    emit disconnected ();
+     error(0, tr("Debugger Socket closed"));
+     disconnected ();
 }
 
 void DebugSocket::onConnected ()
 {
     mQuit = false;
     mConnected = true;
-    emit connected();
+     connected();
 }
 
 void DebugSocket::onThreadfinish ()
@@ -195,14 +195,14 @@ bool DebugSocket::tryBindJdwp()
 void DebugSocketEvent::onStop()
 {
     mStatus = mStatus | ReadyStop;
-    emit newStatus();
+     newStatus();
 }
 
 void DebugSocketEvent::onWrite(const QByteArray &array)
 {
     mWBuffer.append(array);
     mStatus = mStatus | ReadyWrite;
-    emit newStatus();
+     newStatus();
 }
 
 void DebugSocketEvent::onWrite(const char *data, quint64 len)
@@ -212,7 +212,7 @@ void DebugSocketEvent::onWrite(const char *data, quint64 len)
 void DebugSocketEvent::onRead()
 {
     mStatus = mStatus | ReadyRead;
-    emit newStatus();
+     newStatus();
 }
 DebugSocketEvent::DebugSocketEvent(QObject *parent)
     : QObject(parent)

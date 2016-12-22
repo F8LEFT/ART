@@ -123,11 +123,11 @@ void CommandLineEdit::execute()
 {
     const QString & cmd = text();
 
-    cmdexec(cmd, 0, mCurrentScriptType, false);
+    cmdexec(cmd, mCurrentScriptType, false);
 
     // Add this line to the history and clear text, regardless if it was executed
     addLineToHistory(cmd);
-    emit textEdited("");
+     textEdited("");
     setText("");
 }
 
@@ -190,7 +190,7 @@ void CommandLineEdit::scriptTypeChanged(int index)
     mCurrentScriptType = CmdMsg::getProcType(mCmdScriptType->itemText(index));
 
     // Force reset autocompletion (blank string)
-    emit textEdited("");
+     textEdited("");
 }
 
 

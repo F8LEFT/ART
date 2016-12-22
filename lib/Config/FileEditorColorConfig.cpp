@@ -55,7 +55,7 @@ FileEditorColorConfig::FileEditorColorConfig(QWidget *parent)
         if(color.isValid()) {
             m_theme.setEditorColor(role, color.rgb());
             item->setBackgroundColor(color);
-            emit formatUpdate();
+            formatUpdate();
         }
     });
 

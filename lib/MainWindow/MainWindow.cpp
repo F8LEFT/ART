@@ -194,7 +194,7 @@ void MainWindow::closeEvent (QCloseEvent *event)
 //                                      0, 1 ))
 //    {
 //        case 1:
-    cmdexec("CloseProject", 0, CmdMsg::script, true, false);
+    cmdexec("CloseProject", CmdMsg::script, true, false);
     event->accept();
 //            break;
 //        default:
@@ -616,7 +616,7 @@ void MainWindow::bookmarkClick(QListWidgetItem *item)
 {
     BookMark* pBook = (BookMark*)mBookMarkListWidget->itemWidget(item);
     Q_ASSERT(pBook != nullptr);
-    emit pBook->onClicked(pBook);
+     pBook->onClicked(pBook);
 }
 
 void MainWindow::setTab(QWidget *widget)

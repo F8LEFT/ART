@@ -55,37 +55,37 @@ FileTextStyleConfig::FileTextStyleConfig (QWidget *parent)
     connect(m_foreground, &ColorItem::colorChanged, [this](QRgb rgb) {
         auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
         m_theme.setTextColor(style, rgb);
-        emit formatUpdate();
+         formatUpdate();
     });
 
     connect(m_background, &ColorItem::colorChanged, [this](QRgb rgb) {
         auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
         m_theme.setBackgroundColor(style, rgb);
-        emit formatUpdate();
+         formatUpdate();
     });
 
     connect(m_bold, &QCheckBox::clicked, [this](bool checked){
         auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
         m_theme.setBold(style, checked);
-        emit formatUpdate();
+         formatUpdate();
     });
 
     connect(m_italic, &QCheckBox::clicked, [this](bool checked){
         auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
         m_theme.setItalic(style, checked);
-        emit formatUpdate();
+         formatUpdate();
     });
 
     connect(m_underline, &QCheckBox::clicked, [this](bool checked){
         auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
         m_theme.setUnderline(style, checked);
-        emit formatUpdate();
+         formatUpdate();
     });
 
     connect(m_strikThrough, &QCheckBox::clicked, [this](bool checked){
         auto style = (KSyntaxHighlighting::Theme::TextStyle)m_colorList->currentItem()->type();
         m_theme.setStrikeThrough(style, checked);
-        emit formatUpdate();
+         formatUpdate();
     });
 
     // setup basic ui;

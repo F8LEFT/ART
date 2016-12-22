@@ -38,7 +38,6 @@ public:
         ProcType t;
         bool silence;       // no message hint
         bool toqueue;       // add to queue, wait for last proc finish
-        int level;          // command level,
     };
 private:
     CmdMsg(QObject *parent = 0);
@@ -53,11 +52,11 @@ signals:
     void setLastLogMsg(QString s);
     void onExecuteCommand(CmdMsg::ProcInfo info);
 public:
-    void executeCommand(QString cmd, int level = 0, ProcType t = script,
+    void executeCommand(QString cmd, ProcType t = script,
                         bool silence = true, bool toqueue = true);
-    void executeCommand(QString proc, QString args, int level = 0, ProcType t = script,
+    void executeCommand(QString proc, QString args, ProcType t = script,
                         bool silence = true, bool toqueue = true);
-    void executeCommand(QString proc, QStringList args, int level = 0, ProcType t = script,
+    void executeCommand(QString proc, QStringList args, ProcType t = script,
                         bool silence = true, bool toqueue = true);
 
     static QString procTypeDescription(ProcType t);

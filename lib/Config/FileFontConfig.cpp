@@ -65,7 +65,7 @@ FileFontConfig::~FileFontConfig()
 
 void FileFontConfig::fontUpdate()
 {
-    emit formatUpdate(getFont());
+    formatUpdate(getFont());
 }
 
 QFont FileFontConfig::getFont() {

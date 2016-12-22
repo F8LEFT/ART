@@ -37,13 +37,13 @@ ColorItem::ColorItem(QWidget *parent, const QString &name):
         color = QColorDialog::getColor(QColor(m_rgb), this);
         if(color.isValid()) {
             setColor(color.rgb());
-            emit colorChanged(m_rgb, m_data);
+            colorChanged(m_rgb, m_data);
         }
     });
 
     connect(m_clearBtn, &QPushButton::clicked, [this]() {
         setColor(0);
-        emit colorChanged(m_rgb, m_data);
+        colorChanged(m_rgb, m_data);
     });
 }
 

@@ -192,7 +192,7 @@ void FindThread::searchFile (QString filePath)
                 cursor = document.find(regExp, cursor, mOptions);
             }
             if(!text.isEmpty ()) {
-                emit newResult (filePath, text, lines);
+                 newResult (filePath, text, lines);
             }
         } else {
             auto cursor = document.find(mSubString, 0, mOptions);
@@ -205,7 +205,7 @@ void FindThread::searchFile (QString filePath)
                 cursor = document.find(mSubString, cursor, mOptions);
             }
             if(!text.isEmpty ()) {
-                emit newResult (filePath, text, lines);
+                 newResult (filePath, text, lines);
             }
         }
     }
