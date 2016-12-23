@@ -457,7 +457,7 @@ OPEN_BRACE: '{';
 CLOSE_BRACE: '}';
 OPEN_PAREN: '(';
 CLOSE_PAREN: ')';
-WHITE_SPACE: [\r\n\t ]+ -> skip;
+WHITE_SPACE: [\n\r\t ] -> skip;
 //    <<EOF>> { return newToken(EOF); }
 
 /*catch all*/
@@ -554,7 +554,8 @@ mode TYPE_LIST_MODE;
 PRIMITIVE_TYPE: PrimitiveType;
 CLASS_DESCRIPTOR: ClassDescriptor;
 ARRAY_TYPE_PREFIX: ArrayPrefix;
-TYPE_LIST_END: . {
+TYPE_LIST_END: ~[\n] {
         resumeInput(1);
     }-> more, popMode;
+TYPE_LIST_NEXT_LINE: '\n' -> skip, popMode;
 TYPE_LIST_EOF: EOF -> popMode;

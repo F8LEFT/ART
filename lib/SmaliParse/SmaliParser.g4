@@ -79,9 +79,10 @@ options {
 
 
 smali_file
-  locals [bool hasClassSpec, bool hasSuperSpec, bool hasSourceSpec]
+  locals [bool hasClassSpec, bool hasSuperSpec, bool hasSourceSpec, bool isValid]
   @init
   { $hasClassSpec = $hasSuperSpec = $hasSourceSpec = false;
+    $isValid = true;
   }
   :
   ( {!$hasClassSpec}? class_spec {$hasClassSpec = true;}
@@ -95,12 +96,12 @@ smali_file
   EOF
   {
     if (!$hasClassSpec) {
-        // TODO class not valid
+        $isValid = false;
     }
 
     if (!$hasSuperSpec) {
       if ($class_spec.className == "Ljava/lang/Object;") {
-        // TODO class not valid
+        $isValid = false;
       }
     }
   }

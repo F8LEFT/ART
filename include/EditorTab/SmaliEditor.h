@@ -17,11 +17,15 @@
 
 #include "TextEditor.h"
 
+#include "SmaliFile.h"
+
 
 #include <SyntaxHighlighter>
 #include <QPlainTextEdit>
+#include <QSharedPointer>
 
 class SmaliHighlight;
+class SmaliBlockData;
 
 class SmaliEditor : public TextEditor
 {
@@ -34,6 +38,8 @@ public:
 
     void setTheme(const KSyntaxHighlighting::Theme &theme);
 
+    void reloadSmaliData();
+
 public:
     int sidebarWidth() const;
     void sidebarPaintEvent(QPaintEvent *event);
@@ -45,11 +51,15 @@ public:
     QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
 
 private:
-    SmaliHighlight *m_highlighter;
+    void setAnnotationFold(SmaliParser::AnnotationContext* annotation);
+    void setFoldableArea(int startLine, int endLine, int type);
+    SmaliBlockData* blockDataAtLine(int line);
 
+private:
+    SmaliHighlight *m_highlighter;
+    QSharedPointer<SmaliFile> m_smalidata;
 };
 
-// TODO store method info, breakpoint info...in block userdata
 class SmaliData: public QTextBlockUserData
 {
 public:
@@ -67,6 +77,12 @@ Q_OBJECT
 public:
     explicit SmaliSideBar(SmaliEditor *editor);
     ~SmaliSideBar();
+
+    QSize sizeHint() const Q_DECL_OVERRIDE;
+
+protected:
+    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 private:
     friend class SmaliEditor;

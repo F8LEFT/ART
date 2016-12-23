@@ -95,10 +95,13 @@ OpenApk::OpenApk(QString file, QWidget *parent) :
             ui->mApkToolListWidget->setCurrentRow(0);
         }
     }
+
+    loadFromConfig();
 }
 
 OpenApk::~OpenApk()
 {
+    saveToConfig();
     delete ui;
 }
 
@@ -189,5 +192,15 @@ void OpenApk::compileOptionChanged()
     df ? cmd += " -df":0;
     fnd ? cmd += " -fnd":0;
     ui->mCompileEdit->setText(cmd);
+}
+
+void OpenApk::loadFromConfig() {
+    Configuration *config = Config();
+    restoreGeometry(config->getByte("OpenApk", "Geometry"));
+}
+
+void OpenApk::saveToConfig() {
+    Configuration *config = Config();
+    config->setByte("OpenApk", "Geometry", saveGeometry());
 }
 

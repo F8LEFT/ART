@@ -218,6 +218,10 @@ QTextBlock TextEditor::blockAtPosition(int y) const
     return QTextBlock();
 }
 
+QTextBlock TextEditor::blockAtLine(int l) const {
+    return document()->findBlockByLineNumber(l);
+}
+
 bool TextEditor::isFoldable(const QTextBlock &block) const
 {
     return false;
@@ -315,6 +319,8 @@ bool TextEditor::reload()
 {
     return false;
 }
+
+
 
 
 

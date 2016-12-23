@@ -50,6 +50,7 @@ protected:
     void highlightCurrentLine();
 
     QTextBlock blockAtPosition(int y) const;
+    QTextBlock blockAtLine(int l) const;
     virtual bool isFoldable(const QTextBlock &block) const;
     virtual bool isFolded(const QTextBlock &block) const;
     virtual QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
@@ -66,11 +67,11 @@ class TextEditorSidebar : public QWidget
 public:
     explicit TextEditorSidebar(TextEditor *editor);
     virtual ~TextEditorSidebar();
-    QSize sizeHint() const Q_DECL_OVERRIDE;
+    virtual QSize sizeHint() const Q_DECL_OVERRIDE;
 
 protected:
-    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    virtual void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
+    virtual void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 private:
     TextEditor *m_textEditor;

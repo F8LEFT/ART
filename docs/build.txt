@@ -13,7 +13,11 @@ cd build
 
 export $PATH=/directory/to/qmake:$PATH
 
-cmake -DCMAKE_BUILD_TYPE=STRING=Release --build ..
+cmake -DCMAKE_BUILD_TYPE=STRING=Release
+    -DANTLR_JAR_LOCATION=/path/to/Antlr4.jar
+    -DANTLR_RUNTIME_HEADER=/path/to/antlr4-runtime
+    -DANTLR_RUNTIME_LIBRARY=/path/to/compiledantlrlibrary
+    --build ..
 
 make ART
 
@@ -22,7 +26,6 @@ Or just use QtCreator to build it. Use QtCreator to open ${ART}/CmakeLists.txt, 
 build file will be found in CMAKE_BUILD/bin.
 
 Ps: If you are building ART in Windows Platform, you need to generate dependency
-file after building. Just open Qt Mingw, then change root directory to ./bin.
-Use windeployqt to generate it.
+file after building.
 
 windeployqt --release ART.exe

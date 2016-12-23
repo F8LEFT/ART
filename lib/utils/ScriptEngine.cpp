@@ -94,4 +94,3 @@ void ScriptEngine::adbShell(QStringList args)
 
     cmdexec(adbPath, args, CmdMsg::ProcType::cmd);
 }
-

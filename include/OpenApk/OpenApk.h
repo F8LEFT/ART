@@ -27,6 +27,11 @@ class OpenApk : public QDialog
 public:
     explicit OpenApk(QString file, QWidget *parent = 0);
     ~OpenApk();
+
+    // configuration
+    void loadFromConfig();
+    void saveToConfig();
+
     QString getDecompileCmd();
     QString getCompileCmd();
     QString getFileName();
