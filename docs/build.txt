@@ -1,7 +1,7 @@
 How to build:
 
 Before building this project, you must conform that you have installed
-the latest Qt program(Qt5.7) and cmake.
+the latest Qt program(Qt5.7), java and cmake.
 
 git clone https://github.com/F8LEFT/ART
 
@@ -11,13 +11,9 @@ mkdir build
 
 cd build
 
-export $PATH=/directory/to/qmake:$PATH
+export $PATH=/directory/to/qmake:/path/to/java:$PATH
 
-cmake -DCMAKE_BUILD_TYPE=STRING=Release
-    -DANTLR_JAR_LOCATION=/path/to/Antlr4.jar
-    -DANTLR_RUNTIME_HEADER=/path/to/antlr4-runtime
-    -DANTLR_RUNTIME_LIBRARY=/path/to/compiledantlrlibrary
-    --build ..
+cmake -DCMAKE_BUILD_TYPE=STRING=Release  --build ..
 
 make ART
 

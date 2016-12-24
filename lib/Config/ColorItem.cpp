@@ -12,7 +12,6 @@
 
 #include <QtWidgets>
 
-
 ColorItem::ColorItem(QWidget *parent, const QString &name):
         QWidget(parent),
         m_rgb(0)

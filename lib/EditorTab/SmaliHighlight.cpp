@@ -99,7 +99,7 @@ void SmaliHighlight::highlightBlock (const QString &text)
             case SmaliLexer::ACCESS_SPEC :
             case SmaliLexer::INLINE_INDEX :
             case SmaliLexer::VTABLE_INDEX :
-            case SmaliLexer::FIELD_OFFSET :
+            case SmaliLexer::FIELD_INDEX :
                 style = KSyntaxHighlighting::Theme::Variable;
                 break;
             case SmaliLexer::LINE_COMMENT :

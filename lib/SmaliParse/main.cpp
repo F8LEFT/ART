@@ -24,7 +24,7 @@
 using namespace std;
 
 void testANRLR() {
-    std::string file = "/home/f8left/CodeSrc/ART/res/Loader$ForceLoadContentObserver.smali";
+    std::string file = "D:\\F8Tool\\Crack\\decompile\\AndroidKiller_v1.3.1\\projects\\cm2(Fibonacci)\\Project\\smali\\com\\ctf\\WestWorld\\MainActivity.smali";
 
 
     antlr4::ANTLRFileStream input(file);
@@ -55,32 +55,32 @@ void testANRLR() {
 }
 
 int main() {
-//    testANRLR();
+    testANRLR();
 //    SmaliFile file("/home/f8left/CodeSrc/ART/res/Loader$ForceLoadContentObserver.smali");
 //    file.print();
-    auto m_smalidata = new SmaliFile("/home/f8left/CodeSrc/ART/cmake-build-debug/bin/Projects/crackme/Project/smali/com/bradzhao/crackme/MainActivity.smali");
-
-    auto tokens = m_smalidata->m_tokens;
-    for(auto& token : tokens->getTokens()) {
-        cout << token->getLine() << ", " << token->getText() << endl;
-    }
-
-    auto root = m_smalidata->m_smali;
-
-    // for foldable
-    auto annotations = root->annotation();
-    for(auto &annotation: annotations) {
-        auto startLine = annotation->ANNOTATION_DIRECTIVE()->getSymbol()->getLine();
-        auto endLine = annotation->END_ANNOTATION_DIRECTIVE()->getSymbol()->getLine();
-        cout << startLine << "--" << endLine << endl;
-//        setFoldableArea(startLine, endLine, SmaliParser::ANNOTATION_DIRECTIVE);
-    }
-    auto methods = root->method();
-    for(auto& method: methods) {
-        auto startLine = method->METHOD_DIRECTIVE()->getSymbol()->getLine();
-        auto endLine = method->END_METHOD_DIRECTIVE()->getSymbol()->getLine();
-        cout << startLine << "--" << endLine << endl;
-//        setFoldableArea(startLine, endLine, SmaliParser::METHOD_DIRECTIVE);
-    }
+//    auto m_smalidata = new SmaliFile("D:\\F8Tool\\Crack\\decompile\\AndroidKiller_v1.3.1\\projects\\cm2(Fibonacci)\\Project\\smali\\com\\ctf\\WestWorld\\MainActivity.smali");
+//
+//    auto tokens = m_smalidata->m_tokens;
+//    for(auto& token : tokens->getTokens()) {
+//        cout << token->getLine() << ", " << token->getText() << endl;
+//    }
+//
+//    auto root = m_smalidata->m_smali;
+//
+//    // for foldable
+//    auto annotations = root->annotation();
+//    for(auto &annotation: annotations) {
+//        auto startLine = annotation->ANNOTATION_DIRECTIVE()->getSymbol()->getLine();
+//        auto endLine = annotation->END_ANNOTATION_DIRECTIVE()->getSymbol()->getLine();
+//        cout << startLine << "--" << endLine << endl;
+////        setFoldableArea(startLine, endLine, SmaliParser::ANNOTATION_DIRECTIVE);
+//    }
+//    auto methods = root->method();
+//    for(auto& method: methods) {
+//        auto startLine = method->METHOD_DIRECTIVE()->getSymbol()->getLine();
+//        auto endLine = method->END_METHOD_DIRECTIVE()->getSymbol()->getLine();
+//        cout << startLine << "--" << endLine << endl;
+////        setFoldableArea(startLine, endLine, SmaliParser::METHOD_DIRECTIVE);
+//    }
     return 0;
 }

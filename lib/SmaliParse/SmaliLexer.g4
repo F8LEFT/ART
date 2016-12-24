@@ -284,7 +284,7 @@ VERIFICATION_ERROR_TYPE:
 
 INLINE_INDEX: 'inline@0x' HexDigit+ ;
 VTABLE_INDEX: 'vtable@0x' HexDigit+ ;
-FIELD_OFFSET: 'field@0x' HexDigit+;
+FIELD_INDEX: 'field@0x' HexDigit+;
 
 LINE_COMMENT: '#' ~[\r\n]*;
 

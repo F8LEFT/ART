@@ -570,7 +570,7 @@ insn_format22c_type
 
 insn_format22cs_field
   : //e.g. iget-quick v0, v1, field@0xc
-    INSTRUCTION_FORMAT22cs_FIELD REGISTER COMMA REGISTER COMMA FIELD_OFFSET
+    INSTRUCTION_FORMAT22cs_FIELD REGISTER COMMA REGISTER COMMA FIELD_INDEX
     {
 // TODO odex
     };
