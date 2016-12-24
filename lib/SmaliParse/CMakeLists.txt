@@ -44,7 +44,7 @@ ADD_LIBRARY(SmaliParse STATIC ${SmaliParse_src})
 if(GENRATEANTLR)
     add_dependencies(SmaliParse GenerateParser)
 endif()
-TARGET_LINK_LIBRARIES(SmaliParse utils antlr4_shared)
+TARGET_LINK_LIBRARIES(SmaliParse utils antlr4_static)
 TARGET_INCLUDE_DIRECTORIES(SmaliParse PUBLIC
         .
         antlr4.6/runtime/src
