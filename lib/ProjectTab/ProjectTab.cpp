@@ -21,6 +21,7 @@
 #include <QMenu>
 #include <QtGui/QDesktopServices>
 #include <QtCore/QUrl>
+#include "QPushButton"
 
 ProjectTab::ProjectTab(QWidget *parent) :
         QStackedWidget(parent),
@@ -59,27 +60,29 @@ ProjectTab::ProjectTab(QWidget *parent) :
 
 
     // button
-    connect((QObject*)ui->mButtonBox->button (QDialogButtonBox::Save), SIGNAL(clicked(bool)),
-            this, SLOT(onSaveBtnClick ()));
-    connect((QObject*)ui->mButtonBox->button (QDialogButtonBox::Reset), SIGNAL(clicked(bool)),
-            this, SLOT(onResetBtnClick ()));
+    connect(ui->mButtonBox->button (QDialogButtonBox::Save), &QPushButton::clicked, [this]() {
+                projinfoset ("CompileCmd", ui->mCompileEdit->text ());
+            });
+    connect(ui->mButtonBox->button (QDialogButtonBox::Reset), &QPushButton::clicked, [this]{
+                ui->mCompileEdit->setText (projinfo ("CompileCmd"));
+                readProjectInfo();
+            });
 
     connect(ui->mEntryLabel, SIGNAL(linkActivated(QString)),
             this, SLOT(openActivityInEditor(QString)));
 
     // script
     auto* script = ScriptEngine::instance();
-    connect(ui->mProjectList, SIGNAL(doubleClicked(QModelIndex)),
-            this, SLOT(onProjectOpenClick(QModelIndex)));
+    connect(ui->mProjectList, &QTableView::doubleClicked, [this](const QModelIndex &index) {
+        openProject (ui->mProjectList->model()->
+                index(index.row(), 0, ui->mProjectList->rootIndex()).data().toString());
+    });
 
     connect(script, SIGNAL(openProject (QStringList)),
             this, SLOT(openProject (QStringList)));
-    connect(script, SIGNAL(closeProject (QStringList)),
-            this, SLOT(closeProject ()));
-    connect(script, SIGNAL(projectOpened(QStringList)),
-            this, SLOT(onProjectOpened(QStringList)));
-    connect(script, SIGNAL(projectClosed(QStringList)),
-            this, SLOT(onProjectClosed()));
+    connect(script, &ScriptEngine::closeProject, this, &ProjectTab::closeProject);
+    connect(script, &ScriptEngine::projectOpened, this, &ProjectTab::onProjectOpened);
+    connect(script, &ScriptEngine::projectClosed, this, &ProjectTab::onProjectClosed);
 
 
     connect(ui->mActivityInfoList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
@@ -89,12 +92,6 @@ ProjectTab::ProjectTab(QWidget *parent) :
 ProjectTab::~ProjectTab()
 {
     delete ui;
-}
-
-void ProjectTab::onProjectOpenClick(const QModelIndex &index)
-{
-    openProject (ui->mProjectList->model()->
-            index(index.row(), 0, ui->mProjectList->rootIndex()).data().toString());
 }
 
 void ProjectTab::openProject (QStringList args)
@@ -181,16 +178,6 @@ void ProjectTab::onProjectClosed()
     setCurrentIndex(0);
 }
 
-void ProjectTab::onSaveBtnClick ()
-{
-    projinfoset ("CompileCmd", ui->mCompileEdit->text ());
-}
-
-void ProjectTab::onResetBtnClick ()
-{
-    ui->mCompileEdit->setText (projinfo ("CompileCmd"));
-    readProjectInfo();
-}
 
 void ProjectTab::onActivityClick (QListWidgetItem *item)
 {
@@ -228,8 +215,38 @@ void ProjectTab::readProjectYmlInfo ()
             }
     }
 
+    mVersion.clear(); mVersionCode.clear(); mVersionName.clear();
     QString ymlPath = projectPath + "/apktool.yml";
-    // TODO parse yml file.
+    QFile file(ymlPath);
+    if(!file.open(QFile::ReadOnly)) {
+        return;
+    }
+    for(bool version = false, versioncode = false, versionname = false;
+            !file.atEnd(); ) {
+        auto line = file.readLine();
+        if(line.contains("version:")) {
+            auto msglist = QString(line).split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            QString& msg = msglist.last();
+            mVersion = msg; version = true;
+
+        } else
+        if(line.contains("versionCode:")) {
+            auto msglist = QString(line).split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            QString& msg = msglist.last();
+            mVersionCode = msg; versioncode = true;
+        } else
+        if(line.contains("versionName:")) {
+            auto msglist = QString(line).split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            QString& msg = msglist.last();
+            mVersionName = msg; versionname = true;
+        }
+        if(version && versioncode && versionname) {
+            break;
+        }
+    }
+    ui->mVersionLabel->setText(mVersion);
+    ui->mVersionCodeLabel->setText(mVersionCode);
+    ui->mVersionNameLabel->setText(mVersionName);
 }
 
 void ProjectTab::readProjectManifestInfo ()
@@ -250,6 +267,7 @@ void ProjectTab::readProjectManifestInfo ()
         return;
     }
     // Root Element
+    mApplicationName.clear(); mActivityEntryName.clear();
     QDomElement docElem= doc.firstChildElement("manifest");
     if (!docElem.isNull()) {
         mPackageName = docElem.attribute("package");
@@ -257,6 +275,9 @@ void ProjectTab::readProjectManifestInfo ()
         QDomElement appElem = docElem.firstChildElement("application");
         if (!appElem.isNull()) {
             mApplicationName = appElem.attribute("android:name");
+            if(mApplicationName.isEmpty()) {
+                mApplicationName = "Landroid/app/Application;";
+            }
 
             for(QDomElement avityElem = appElem.firstChildElement("activity");
                 !avityElem.isNull();

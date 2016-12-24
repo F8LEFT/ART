@@ -50,6 +50,12 @@
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_4">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Application:</string>
            </property>
@@ -57,16 +63,25 @@
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>PackageName:</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="3">
-          <widget class="QLineEdit" name="mVersionEdit"/>
-         </item>
          <item row="0" column="2">
           <widget class="QLabel" name="label_9">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Version:</string>
            </property>
@@ -74,13 +89,23 @@
          </item>
          <item row="1" column="2">
           <widget class="QLabel" name="label_12">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>versionCode</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
-          <widget class="QLineEdit" name="mVersionCodeEdit"/>
+         <item row="0" column="3">
+          <widget class="QLabel" name="mVersionLabel">
+           <property name="text">
+            <string>Version</string>
+           </property>
+          </widget>
          </item>
          <item row="1" column="1">
           <widget class="QLabel" name="mApplicationNameLabel">
@@ -97,6 +122,12 @@
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_6">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Entry:</string>
            </property>
@@ -117,13 +148,30 @@
          </item>
          <item row="2" column="2">
           <widget class="QLabel" name="label_11">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>versionName</string>
            </property>
           </widget>
          </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="mVersionCodeLabel">
+           <property name="text">
+            <string>VersionCode</string>
+           </property>
+          </widget>
+         </item>
          <item row="2" column="3">
-          <widget class="QLineEdit" name="mVersionNameEdit"/>
+          <widget class="QLabel" name="mVersionNameLabel">
+           <property name="text">
+            <string>VersionName</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

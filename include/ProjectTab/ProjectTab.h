@@ -32,17 +32,12 @@ public:
 
 protected slots:
     // script
-    void onProjectOpenClick(const QModelIndex &index);
     void openProject(QStringList args);
     void openProject(QString projectName);
     void closeProject();
 
     void onProjectOpened(QStringList projName);
     void onProjectClosed();
-
-    // button
-    void onSaveBtnClick();
-    void onResetBtnClick();
 
     // ActivityInfo
     void onActivityClick(QListWidgetItem* item);
