@@ -16,7 +16,6 @@
 #ifndef PROJECT_SMALIANALYSIS_H
 #define PROJECT_SMALIANALYSIS_H
 
-#include "utils/StringPool.hpp"
 
 #include <QMap>
 #include <QObject>

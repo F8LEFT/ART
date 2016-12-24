@@ -26,6 +26,7 @@
 
 class SmaliHighlight;
 class SmaliBlockData;
+class SmaliSideBar;
 
 class SmaliEditor : public TextEditor
 {
@@ -50,14 +51,18 @@ public:
     bool isFolded(const QTextBlock &block) const;
     QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
 
+    void toggleBreakpoint(QTextBlock &startBlock);
 private:
     void setAnnotationFold(SmaliParser::AnnotationContext* annotation);
     void setFoldableArea(int startLine, int endLine, int type);
     SmaliBlockData* blockDataAtLine(int line);
+    SmaliBlockData* blockData(QTextBlock& block);
 
 private:
     SmaliHighlight *m_highlighter;
     QSharedPointer<SmaliFile> m_smalidata;
+
+    friend class SmaliSideBar;
 };
 
 class SmaliData: public QTextBlockUserData
@@ -78,13 +83,11 @@ public:
     explicit SmaliSideBar(SmaliEditor *editor);
     ~SmaliSideBar();
 
-    QSize sizeHint() const Q_DECL_OVERRIDE;
-
 protected:
-    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 private:
+
     friend class SmaliEditor;
 };
 

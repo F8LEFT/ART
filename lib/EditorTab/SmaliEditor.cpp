@@ -33,6 +33,7 @@ SmaliEditor::SmaliEditor(QWidget *parent)
         : TextEditor(parent),
           m_highlighter(new SmaliHighlight(document()))
 {
+    setSidebar(new SmaliSideBar(this));
     m_highlighter->setTheme(m_theme);
 }
 
@@ -95,12 +96,72 @@ QTextBlock SmaliEditor::findFoldingRegionEnd(const QTextBlock &startBlock) const
 
 int SmaliEditor::sidebarWidth() const
 {
-    return TextEditor::sidebarWidth();
+    int digits = 1;
+    auto count = blockCount();
+    while (count >= 10) {
+        ++digits;
+        count /= 10;
+    }
+    return 4 + fontMetrics().width(QLatin1Char('9')) * digits + 2 * fontMetrics().lineSpacing();
+
 }
 
 void SmaliEditor::sidebarPaintEvent(QPaintEvent *event)
 {
-    TextEditor::sidebarPaintEvent(event);
+    QPainter painter(m_sideBar);
+    painter.fillRect(event->rect(), m_theme.editorColor(KSyntaxHighlighting::Theme::IconBorder));
+
+    auto block = firstVisibleBlock();
+    auto blockNumber = block.blockNumber();
+    int top = blockBoundingGeometry(block).translated(contentOffset()).top();
+    int bottom = top + blockBoundingRect(block).height();
+    const int currentBlockNumber = textCursor().blockNumber();
+
+    const auto foldingMarkerSize = fontMetrics().lineSpacing();
+
+    while (block.isValid() && top <= event->rect().bottom()) {
+        if (block.isVisible() && bottom >= event->rect().top()) {
+            const auto number = QString::number(blockNumber + 1);
+            painter.setPen(m_theme.editorColor(
+                    (blockNumber == currentBlockNumber) ? KSyntaxHighlighting::Theme::CurrentLineNumber
+                                                        : KSyntaxHighlighting::Theme::LineNumbers));
+            painter.drawText(0, top, m_sideBar->width() - 2 - 2 * foldingMarkerSize, fontMetrics().height(), Qt::AlignRight, number);
+        }
+
+        // folding marker
+        if (block.isVisible() && isFoldable(block)) {
+            QPolygonF polygon;
+            if (isFolded(block)) {
+                polygon << QPointF(foldingMarkerSize * 0.4, foldingMarkerSize * 0.25);
+                polygon << QPointF(foldingMarkerSize * 0.4, foldingMarkerSize * 0.75);
+                polygon << QPointF(foldingMarkerSize * 0.8, foldingMarkerSize * 0.5);
+            } else {
+                polygon << QPointF(foldingMarkerSize * 0.25, foldingMarkerSize * 0.4);
+                polygon << QPointF(foldingMarkerSize * 0.75, foldingMarkerSize * 0.4);
+                polygon << QPointF(foldingMarkerSize * 0.5, foldingMarkerSize * 0.8);
+            }
+            painter.save();
+            painter.setRenderHint(QPainter::Antialiasing);
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(QColor(m_theme.editorColor(KSyntaxHighlighting::Theme::CodeFolding)));
+            painter.translate(m_sideBar->width() - 2 * foldingMarkerSize, top);
+            painter.drawPolygon(polygon);
+            painter.restore();
+        }
+
+        // breakpoint
+        auto blockdata = (SmaliBlockData*)block.userData();
+        if(blockdata != nullptr && blockdata->m_breakpoint) {
+            QPixmap image(":/images/breakpoint.png");
+            painter.drawPixmap(m_sideBar->width() - foldingMarkerSize + 1, top + 1,
+                               foldingMarkerSize - 2, foldingMarkerSize - 2, image);
+        }
+
+        block = block.next();
+        top = bottom;
+        bottom = top + blockBoundingRect(block).height();
+        ++blockNumber;
+    }
 }
 
 void SmaliEditor::updateSidebarGeometry() {
@@ -144,6 +205,10 @@ void SmaliEditor::setFoldableArea(int startLine, int endLine, int type) {
 
 SmaliBlockData *SmaliEditor::blockDataAtLine(int line) {
     auto block = blockAtLine(line);
+    return blockData(block);
+}
+
+SmaliBlockData *SmaliEditor::blockData(QTextBlock& block) {
     auto userdata = (SmaliBlockData*)block.userData();
     if(userdata == nullptr) {
         userdata = new SmaliBlockData();
@@ -151,6 +216,19 @@ SmaliBlockData *SmaliEditor::blockDataAtLine(int line) {
     }
     return userdata;
 }
+
+void SmaliEditor::toggleBreakpoint(QTextBlock &startBlock) {
+    auto userdata = blockData(startBlock);
+    userdata->m_breakpoint = !userdata->m_breakpoint;   // TODO emit breakpoint change
+
+    // redraw document
+    document()->markContentsDirty(startBlock.position(), startBlock.next().position() - startBlock.position() + 1);
+
+    // update scrollbars
+    document()->documentLayout()->documentSizeChanged(document()->documentLayout()->documentSize());
+
+}
+
 
 
 
@@ -173,14 +251,27 @@ SmaliSideBar::~SmaliSideBar()
 
 }
 
-QSize SmaliSideBar::sizeHint() const {
-    return TextEditorSidebar::sizeHint();
-}
-
-void SmaliSideBar::paintEvent(QPaintEvent *event) {
-    TextEditorSidebar::paintEvent(event);
-}
 
 void SmaliSideBar::mouseReleaseEvent(QMouseEvent *event) {
-    TextEditorSidebar::mouseReleaseEvent(event);
+    auto block = m_textEditor->blockAtPosition(event->y());
+    if(!block.isValid())
+        return;
+    auto space = m_textEditor->fontMetrics().lineSpacing();
+    auto x1 = width() - 2 * space;
+    auto x2 = width() - space;
+    if (event->x() >= x1 && event->x() < x2) {
+        // fold
+        if (m_textEditor->isFoldable(block)) {
+            m_textEditor->toggleFold(block);
+            return;
+        }
+    }
+    if (event->x() >= x1) {
+        // breakpoint
+        SmaliEditor* editor = (SmaliEditor*)m_textEditor;
+        editor->toggleBreakpoint(block);
+        return;
+    }
+    // select current block(TODO or make bookmark?)
+    m_textEditor->gotoLine(block.firstLineNumber() + 1, 1, false);
 }

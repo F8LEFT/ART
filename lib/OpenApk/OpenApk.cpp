@@ -143,13 +143,11 @@ void OpenApk::accept()
     mComCmd = cmd;
 
     // set information
-    QString projectsRoot = GetProjectsPath ();
-    QDir dir(projectsRoot);
-    if(!dir.exists (mFileName)) {
-        dir.mkdir (mFileName);
-    } 
+    QString projectsRoot = GetProjectsPath (mFileName);
+    QDir dir;
+    dir.mkpath(projectsRoot);
 
-    QString cfgPath = GetProjectsPath (mFileName) + "/Config.xml" ;
+    QString cfgPath = projectsRoot + "/Config.xml" ;
 
     Configuration cfg(cfgPath);
     cfg.setString ("ProjectInfo", "CompileCmd", mComCmd);

@@ -49,12 +49,16 @@ protected:
     void updateSidebarArea(const QRect &rect, int dy);
     void highlightCurrentLine();
 
+
+    virtual QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
+
+public:
     QTextBlock blockAtPosition(int y) const;
     QTextBlock blockAtLine(int l) const;
     virtual bool isFoldable(const QTextBlock &block) const;
     virtual bool isFolded(const QTextBlock &block) const;
-    virtual QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
     void toggleFold(const QTextBlock &block);
+
 
     TextEditorSidebar *m_sideBar;
     KSyntaxHighlighting::Repository m_repository;
@@ -73,7 +77,6 @@ protected:
     virtual void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
     virtual void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
-private:
     TextEditor *m_textEditor;
     friend class TextEditor;
 };
