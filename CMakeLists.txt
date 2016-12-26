@@ -49,7 +49,7 @@ SET(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-IF (WIN32)
+IF (WIN32 OR WIN64)
     MESSAGE("Building windows version")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
     set(SYSNAME win)

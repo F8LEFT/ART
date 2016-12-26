@@ -28,6 +28,16 @@ public:
 
     void save();
 
+    bool isJavaValid();
+    bool isAdbValid();
+
+    QString getJavaPath();
+    QString getAdbPath();
+
+    QString getJavaVersion();
+    QString getAdbVersion();
+
+    QStringList getProcessDir(QString name);
 private:
     Ui::Environment *ui;
 };

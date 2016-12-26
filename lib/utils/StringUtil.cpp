@@ -67,12 +67,12 @@ QString GetCfgsPath (const QString &expend)
 
 QString GetSystemType ()
 {
-#if defined(UNIX)
-    return "unix";
-#elif defined(APPLE)
+#if _WIN32 || _WIN64
+    return "win";
+#elif __APPLE__
     return "mac";
 #else
-    return "win";
+    return "unix";
 #endif
 }
 

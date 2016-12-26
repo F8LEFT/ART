@@ -24,12 +24,13 @@ Config::Config(QWidget *parent) :
     mFileEditor = new FileEditor(this);
     mEnvironment = new Environment(this);
 
-    mWidgetList.push_back (mFileEditor);
-    mWidgetNativeNameList.push_back (tr("Text Editot"));
-    mIconList.push_back (QIcon(QPixmap(":/images/editorsettings.png")));
     mWidgetList.push_back(mEnvironment);
     mWidgetNativeNameList.push_back(tr("Environment"));
     mIconList.push_back (QIcon(QPixmap(":/images/environment.png")));
+    mWidgetList.push_back (mFileEditor);
+    mWidgetNativeNameList.push_back (tr("Text Editot"));
+    mIconList.push_back (QIcon(QPixmap(":/images/editorsettings.png")));
+
 
     ui->mConfigWidget->layout ()->addWidget (mFileEditor);
 

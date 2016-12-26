@@ -33,8 +33,7 @@ void CmdMsg::executeCommand(QString cmd, ProcType t, bool silence, bool toqueue)
 {
     QStringList args = cmd.split(' ', QString::SkipEmptyParts);
     if (args.size() > 0) {
-        QString proc = args.front();
-        args.pop_front();       // just pop process
+        QString proc = args.takeFirst();
         executeCommand(proc, args, t, silence, toqueue);
     }
 }
