@@ -15,9 +15,10 @@
 #ifndef ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H
 #define ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H
 
+#include <Jdwp/jdwp.h>
 #include <Jdwp/Request.h>
 #include <Jdwp/JdwpHandler.h>
-
+#include <QEventLoop>
 
 #include <QObject>
 #include <QMap>
@@ -34,9 +35,24 @@ public:
 
 public:
     // Debugger interfaces
+    void dbgVersion();
+    void dbgAllClasses();   // not support for dalvik
+    void dbgAllClassesWithGeneric();
     void dbgResume();
-//    void dbgSetBreakPoint();
+    void dbgSetBreakPoint(const QString& classSignature, const QString& methodName,
+                          const QString& methodSign, int32_t codeIdx);
 
+    void dbgEventRequestSet(JDWP::JdwpEventKind eventkind, JDWP::JdwpSuspendPolicy policy,
+                            const std::vector<JDWP::JdwpEventMod>& mod = std::vector<JDWP::JdwpEventMod>() );
+
+    JDWP::ClassInfo dbgGetClassBySignature(const QString& classSignature);
+
+    void waitForResponse() {
+        m_event.exec();
+    }
+    void requestResponse() {
+        m_event.exit(0);
+    }
 signals:
     // handle request/reply result;
     void dbgOnResume();
@@ -180,6 +196,10 @@ private:
     void _handle_Event_Composite(JDWP::Request *request,JDWP::Request *reply);
 
     QMap<int, QMap<int, pkgHandle >> mHandleMap;
+
+public:
+//  stack for
+    QEventLoop m_event;
 };
 
 

@@ -16,6 +16,7 @@
 #define PROJECT_JDWPHANDLER_H
 
 #include "JdwpReader.h"
+#include <QVector>
 /* JDWP Command
  * cmd  cmdset  name
  *
@@ -351,7 +352,7 @@ namespace JDWP {
             AllClassesWithGeneric(const uint8_t* bytes, uint32_t available);
 
             uint32_t mSize;
-            std::vector<ClassInfo> mInfos;
+            QVector<ClassInfo> mInfos;
             static QByteArray buildReq(int id = 0);
             const static uint8_t cmd = 20;
         };

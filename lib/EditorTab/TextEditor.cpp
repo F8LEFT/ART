@@ -350,12 +350,16 @@ void TextEditorSidebar::paintEvent(QPaintEvent *event)
 
 void TextEditorSidebar::mouseReleaseEvent(QMouseEvent *event)
 {
+    auto block = m_textEditor->blockAtPosition(event->y());
+
     if (event->x() >= width() - m_textEditor->fontMetrics().lineSpacing()) {
-        auto block = m_textEditor->blockAtPosition(event->y());
         if (!block.isValid() || !m_textEditor->isFoldable(block))
             return;
         m_textEditor->toggleFold(block);
+        return;
     }
+    m_textEditor->gotoLine(block.firstLineNumber() + 1, 1, false);
+
     QWidget::mouseReleaseEvent(event);
 }
 

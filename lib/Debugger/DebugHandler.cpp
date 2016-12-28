@@ -12,6 +12,7 @@
 
 #include <QDebug>
 #include <utils/CmdMsgUtil.h>
+#include <Jdwp/jdwp.h>
 
 DebugHandler::DebugHandler(QObject *parent, DebugSocket* socket)
         : QObject(parent)
@@ -69,9 +70,12 @@ void DebugHandler::handleReply (QSharedPointer<JDWP::Request> &reply)
 
 void DebugHandler::handleCommand (QSharedPointer<JDWP::Request> &request)
 {
+    // Command is sended form VM to debugger,
     qDebug() << "Handle command for id " << request->GetId()
              << " CommandSet:" << request->GetCommandSet ()
              << " Command:" << request->GetCommand ();
+    // when event is finished, Composite command will be sended
+
 }
 
 bool DebugHandler::sendNewRequest (const QByteArray &req)
@@ -81,7 +85,6 @@ bool DebugHandler::sendNewRequest (const QByteArray &req)
     if(!request->isValid ()) {
         return false;
     }
-    request->SetId(mSockId++);
     mRequestMap[request->GetId ()] = request;
     sendBuffer (req);
     return true;
@@ -113,35 +116,117 @@ void DebugHandler::onSocketConnected()
 {
     cmdmsg()->addCmdMsg("DebugHandler connect to " + mSocket->hostName () + ":" +
                         QString::number(mSocket->port ()));
-    mSockId = 0;
+    mSockId = 1;
     mRequestMap.clear ();
+
+//    dbgResume();
+    // Init
+    dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_NONE);
+    dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_UNLOAD, JDWP::JdwpSuspendPolicy::SP_NONE);
+    {
+        std::vector<JDWP::JdwpEventMod> mod;
+        JDWP::JdwpEventMod m1;
+        m1.modKind = JDWP::JdwpModKind::MK_CLASS_MATCH;
+        std::string m1Class = "java.lang.Throwable";
+        m1.classMatch.classPattern = (char*)m1Class.c_str();
+        mod.push_back(m1);
+        JDWP::JdwpEventMod m2;
+        m2.modKind = JDWP::JdwpModKind::MK_COUNT;
+        m2.count.count = 1;
+        mod.push_back(m2);
+        dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_ALL, mod);
+    }
+
+    // set breakpoint to process entrypoint and resume program
+    //
+//    dbgResume();
+//    dbgVersion();
+//    dbgAllClassesWithGeneric();
+//    dbgGetClassBySignature("Ljava/lang/Object;");
 }
 
 void DebugHandler::onSocketDisconnected()
 {
     cmdmsg()->addCmdMsg("DebugHandler disconnected");
-    mSockId = 0;
+    m_event.exit();
+    mSockId = 1;
     mRequestMap.clear ();
 }
 
 // -------------------for debug interface----------------------
-void DebugHandler::dbgResume()
-{
-    auto request = JDWP::VirtualMachine::Resume::buildReq ();
+void DebugHandler::dbgVersion() {
+    auto request = JDWP::VirtualMachine::Version::buildReq (mSockId++);
     sendNewRequest (request);
 }
+
+void DebugHandler::dbgAllClasses() {
+    auto request = JDWP::VirtualMachine::AllClasses::buildReq (mSockId++);
+    sendNewRequest (request);
+}
+
+
+void DebugHandler::dbgAllClassesWithGeneric() {
+    auto request = JDWP::VirtualMachine::AllClassesWithGeneric::buildReq (mSockId++);
+    sendNewRequest (request);
+}
+
+
+void DebugHandler::dbgResume()
+{
+    auto request = JDWP::VirtualMachine::Resume::buildReq (mSockId++);
+    sendNewRequest (request);
+}
+
+void DebugHandler::dbgSetBreakPoint(const QString& classSignature, const QString& methodName,
+                                    const QString& methodSign, int32_t codeIdx)
+{
+//    QMetaObject::invokeMethod(this, "rehighlightBlock", Qt::QueuedConnection, Q_ARG(QTextBlock, nextBlock));
+
+}
+
+void DebugHandler::dbgEventRequestSet(JDWP::JdwpEventKind eventkind,
+                                      JDWP::JdwpSuspendPolicy policy,
+                                      const std::vector<JDWP::JdwpEventMod> &mod) {
+    auto request = JDWP::EventRequest::Set::buildReq(eventkind, policy, mod, mSockId++);
+    sendNewRequest(request);
+    waitForResponse();
+}
+
+JDWP::ClassInfo DebugHandler::dbgGetClassBySignature(const QString &classSignature) {
+    auto request = JDWP::VirtualMachine::ClassesBySignature::buildReq(classSignature.toLocal8Bit(), mSockId++);
+    sendNewRequest(request);
+    waitForResponse();
+
+    return JDWP::ClassInfo();
+}
+
 
 // ------------------for handle map-------------------------
 void DebugHandler::_handle_VirtualMachine_Version(JDWP::Request *request, JDWP::Request *reply)
 {
-
+    qDebug() << "VirtualMachine::Version";
+    JDWP::VirtualMachine::Version ver(reply->GetExtra(), reply->GetExtraLen());
+    qDebug() << ver.version << "major" << ver.major << "monor" << ver.minor
+            << "javaVersion" << ver.javaVersion << "javaVmName" << ver.javaVmName;
 }
 void DebugHandler::_handle_VirtualMachine_ClassesBySignature(JDWP::Request *request, JDWP::Request *reply)
 {
-
+    qDebug() << "VirtualMachine::ClassesBySignature: ";
+    JDWP::VirtualMachine::ClassesBySignature signature(reply->GetExtra(), reply->GetExtraLen());
+    for(auto& info: signature.mInfos) {
+        qDebug() << info.mRefTypeTag << info.mTypeId << info.mStatus;
+    }
 }
 void DebugHandler::_handle_VirtualMachine_AllClasses(JDWP::Request *request, JDWP::Request *reply)
 {
+    qDebug() << "VirtualMachine::AllClasses: ";
+    JDWP::VirtualMachine::AllClasses signature(reply->GetExtra(), reply->GetExtraLen());
+    for(auto& info: signature.mInfos) {
+        qDebug() << "RefTypeTag" << info.mRefTypeTag
+                 << "RefTypeId" << info.mTypeId
+                 << "Descriptor" << info.mDescriptor
+                 << "Status" << info.mStatus;
+    }
 
 }
 void DebugHandler::_handle_VirtualMachine_AllThreads(JDWP::Request *request, JDWP::Request *reply)
@@ -210,7 +295,15 @@ void DebugHandler::_handle_VirtualMachine_SetDefaultStratum(JDWP::Request *reque
 }
 void DebugHandler::_handle_VirtualMachine_AllClassesWithGeneric(JDWP::Request *request, JDWP::Request *reply)
 {
-
+    qDebug() << "VirtualMachine::AllClassesWithGeneric: ";
+    JDWP::VirtualMachine::AllClassesWithGeneric signature(reply->GetExtra(), reply->GetExtraLen());
+    for(auto& info: signature.mInfos) {
+        qDebug() << "RefTypeTag" << info.mRefTypeTag
+                 << "RefTypeId" << info.mTypeId
+                 << "Descriptor" << info.mDescriptor
+                 << "GenericSignature" << info.mGenericSignature
+                 << "Status" << info.mStatus;
+    }
 }
 void DebugHandler::_handle_VirtualMachine_InstanceCounts(JDWP::Request *request, JDWP::Request *reply)
 {
@@ -382,7 +475,9 @@ void DebugHandler::_handle_ThreadReference_Suspend(JDWP::Request *request, JDWP:
 }
 void DebugHandler::_handle_ThreadReference_Resume(JDWP::Request *request, JDWP::Request *reply)
 {
-     dbgOnResume();
+    qDebug() << "Proecess Resumed";
+    dbgOnResume();
+
 }
 void DebugHandler::_handle_ThreadReference_Status(JDWP::Request *request, JDWP::Request *reply)
 {
@@ -458,7 +553,10 @@ void DebugHandler::_handle_ClassLoaderReference_VisibleClasses(JDWP::Request *re
 }
 void DebugHandler::_handle_EventRequest_Set(JDWP::Request *request, JDWP::Request *reply)
 {
-
+    JDWP::EventRequest::Set set(reply->GetExtra(), reply->GetExtraLen());
+    qDebug() << "EventRequestSet: " << set.mRequestId;
+    requestResponse();
+    // TODO record requestId
 }
 void DebugHandler::_handle_EventRequest_Clear(JDWP::Request *request, JDWP::Request *reply)
 {
@@ -495,6 +593,24 @@ void DebugHandler::_handle_Event_Composite(JDWP::Request *request, JDWP::Request
 
 void DebugHandler::setupHandleMap()
 {
-    mHandleMap[JDWP::ThreadReference::set_][JDWP::ThreadReference::Resume::cmd] = &DebugHandler::_handle_ThreadReference_Resume;
+    mHandleMap[JDWP::VirtualMachine::set_][JDWP::VirtualMachine::Version::cmd] = &DebugHandler::_handle_VirtualMachine_Version;
+    mHandleMap[JDWP::VirtualMachine::set_][JDWP::VirtualMachine::AllClasses::cmd] = &DebugHandler::_handle_VirtualMachine_AllClasses;
+    mHandleMap[JDWP::VirtualMachine::set_][JDWP::VirtualMachine::AllClassesWithGeneric::cmd] = &DebugHandler::_handle_VirtualMachine_AllClassesWithGeneric;
+    mHandleMap[JDWP::VirtualMachine::set_][JDWP::VirtualMachine::ClassesBySignature::cmd] = &DebugHandler::_handle_VirtualMachine_ClassesBySignature;
+    mHandleMap[JDWP::VirtualMachine::set_][JDWP::VirtualMachine::Resume::cmd] = &DebugHandler::_handle_ThreadReference_Resume;
+
+    mHandleMap[JDWP::EventRequest::set_][JDWP::EventRequest::Set::cmd] = &DebugHandler::_handle_EventRequest_Set;
+
+
 }
 
+
+
+
+
+
+
+
+
+// jdb classes
+// VirtualMachine::IDSizes

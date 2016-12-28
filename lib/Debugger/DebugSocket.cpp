@@ -25,8 +25,6 @@ DebugSocket::DebugSocket (QObject *parent)
     connect(this, &DebugSocket::finished, this, &DebugSocket::onThreadfinish);
     mSocketEvent = new DebugSocketEvent();
     mSocketEvent->moveToThread(this);
-    mDbgHandler = new DebugHandler(this, this);
-    mDbgHandler->moveToThread(this);
 }
 
 DebugSocket::~DebugSocket ()
@@ -34,7 +32,6 @@ DebugSocket::~DebugSocket ()
     mQuit = true;
     wait ();
     mSocketEvent->deleteLater();
-    mDbgHandler->deleteLater();
 }
 
 void DebugSocket::startConnection (const QString &hostName, int port,
@@ -61,18 +58,18 @@ void DebugSocket::stopConnection ()
 
 void DebugSocket::run ()
 {
-    bool bindSuccess = false;
-    for(auto trytime = 0; trytime < 3; trytime++) {
-        bindSuccess = tryBindJdwp();
-        if(bindSuccess) {
-            break;
-        }
-        sleep(3);
-    }
-    if(!bindSuccess) {
-         error(-1, tr("Unable to open debug port."));
-        return;
-    }
+//    bool bindSuccess = false;
+//    for(auto trytime = 0; trytime < 3; trytime++) {
+//        bindSuccess = tryBindJdwp();
+//        if(bindSuccess) {
+//            break;
+//        }
+//        sleep(3);
+//    }
+//    if(!bindSuccess) {
+//         error(-1, tr("Unable to open debug port."));
+//        return;
+//    }
     mSocket = new QTcpSocket();
     connect(mSocket, &QTcpSocket::disconnected, this, &DebugSocket::onDisconnected);
 
@@ -88,41 +85,48 @@ void DebugSocket::run ()
     }
 
     QEventLoop loop;        // used to listen readwriteclose signal
-    connect(mSocketEvent, &DebugSocketEvent::newStatus, &loop, &QEventLoop::quit);
-    connect(mSocket, &QTcpSocket::readyRead, mSocketEvent, &DebugSocketEvent::onRead);
-
-     onConnected();
-
     QByteArray mBufPool;
-    while(!mQuit && mConnected) {
-        loop.exec();
-        if(mSocketEvent->isReadyRead()) {
-            auto buffer = mSocket->readAll ();
+
+    connect(mSocketEvent, &DebugSocketEvent::newStatus, &loop, &QEventLoop::quit);
+
+    connect(mSocket, &QTcpSocket::readyRead, [this, &mBufPool](){
+        while(mSocket->isReadable()) {
+            auto buffer = mSocket->readAll();
+            if(buffer.isEmpty()) {
+                qDebug() << "empty buffer read, exit loop";
+                break;
+            }
             qDebug() << "[DebugSocket] read: " << buffer.toHex();
             mBufPool += buffer;
-            if(!JDWP::Request::isValid (
-                (const uint8_t*)mBufPool.data (), mBufPool.length ())) {
+            if(!JDWP::Request::isValid ((const uint8_t*)mBufPool.data (), mBufPool.length ())) {
                 continue;
             }
 
-            JDWP::Request* req = new JDWP::Request(
-                (const uint8_t*)mBufPool.data (), mBufPool.length ());
+            auto req = new JDWP::Request((const uint8_t*)mBufPool.data (), mBufPool.length ());
             if(req->isValid ()) {
-                 newJDWPRequest (req);
+                newJDWPRequest (req);
                 mBufPool.chop (req->GetLength ());
             }
         }
-        if(mSocketEvent->isReadyWrite()) {
-            auto &wbuf = mSocketEvent->mWBuffer;
-            qDebug() << "[DebugSocket] send: " << wbuf.toHex();
-            if(mSocket->write (wbuf) != wbuf.length()) {
-                qWarning() << "Send data failed";
-            }
-            wbuf.clear();
-        }
+    });
+    onConnected();
+
+    while(!mQuit && mConnected) {
+        loop.exec();
         if(mSocketEvent->isReadyStop()) {
             qDebug() << "[DebugSocket] close" ;
             stopConnection();
+        }
+        if(mSocketEvent->isReadyWrite()) {
+            auto &wbuf = mSocketEvent->mWBuffer;
+            while(!wbuf.isEmpty()) {
+                qDebug() << "[DebugSocket] send: " << wbuf.toHex();
+                auto wLen = mSocket->write(wbuf);
+                wbuf.chop(wLen);
+                if(wLen == 0) {
+                    break;
+                }
+            }
         }
         mSocketEvent->clearStatus();
     }
@@ -149,8 +153,9 @@ bool DebugSocket::tryHandshake ()
 void DebugSocket::onDisconnected ()
 {
     mConnected = false;
-     error(0, tr("Debugger Socket closed"));
-     disconnected ();
+    error(0, tr("Debugger Socket closed"));
+    disconnected ();
+    mSocketEvent->onStop();
 }
 
 void DebugSocket::onConnected ()
@@ -209,11 +214,7 @@ void DebugSocketEvent::onWrite(const char *data, quint64 len)
 {
     onWrite(QByteArray(data, len));
 }
-void DebugSocketEvent::onRead()
-{
-    mStatus = mStatus | ReadyRead;
-     newStatus();
-}
+
 DebugSocketEvent::DebugSocketEvent(QObject *parent)
     : QObject(parent)
 {

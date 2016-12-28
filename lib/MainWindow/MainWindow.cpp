@@ -405,6 +405,7 @@ void MainWindow::openFile(QString fileName)
     if (openWidget->exec() == QDialog::Accepted) {
         // decompile
         QString cmd = openWidget->getDecompileCmd();
+        qDebug() << "decompile: " << cmd;
         cmdexec(cmd, CmdMsg::cmd);
 //         openProject
         QStringList args;

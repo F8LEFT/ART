@@ -31,7 +31,7 @@ uint8_t JdwpReader::Read1 ()
     if(size() >= 1)
         return *p_++;
     error = true;
-    return -1;
+    return 0;
 }
 
 uint16_t JdwpReader::Read2 ()
@@ -45,7 +45,7 @@ uint16_t JdwpReader::Read2 ()
         return result;
     }
     error = true;
-    return -1;
+    return 0;
 
 }
 
@@ -60,7 +60,7 @@ uint32_t JdwpReader::Read4 ()
         return result;
     }
     error = true;
-    return -1;
+    return 0;
 }
 
 uint64_t JdwpReader::Read8 ()
@@ -73,12 +73,12 @@ uint64_t JdwpReader::Read8 ()
         return (high << 32) | low;
     }
     error = true;
-    return -1;
+    return 0;
 }
 
 uint64_t JdwpReader::ReadValue (size_t width)
 {
-    uint64_t value = -1;
+    uint64_t value = 0;
     switch (width) {
         case 0: value = 0; break;
         case 1: value = Read1(); break;

@@ -25,7 +25,7 @@ Debugger::Debugger(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Debugger),
     m_lastHost("localhost"),
-    m_lastPort(8100)
+    m_lastPort(8700)
 {
     ui->setupUi(this);
 
@@ -34,7 +34,8 @@ Debugger::Debugger(QWidget *parent) :
     connect(script, &ScriptEngine::debugStart, this, &Debugger::startNewTarget);
 
     mSocket = new DebugSocket(this);
-    mDbgHandler = mSocket->mDbgHandler;
+    mDbgHandler = new DebugHandler(this, mSocket);
+    mSocket->mDbgHandler = mDbgHandler;
 
     loadFromConfig();
 

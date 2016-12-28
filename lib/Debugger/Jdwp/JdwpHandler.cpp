@@ -83,6 +83,7 @@ bool JDWP::Write8 (QByteArray &s,uint64_t v)
     Write4 (s, low);
     return true;
 }
+
 bool JDWP::WriteString(QByteArray &s, const QByteArray &v)
 {
     auto vLen = v.length ();
@@ -457,7 +458,7 @@ VirtualMachine::AllClassesWithGeneric::AllClassesWithGeneric (
         : JdwpReader (bytes,available)
 {
     mSize = Read4 ();
-    mInfos.resize (mSize);
+    mInfos.resize(mSize);
     for(uint32_t i = 0; i < mSize; i++) {
         auto &info = mInfos[i];
 
@@ -467,6 +468,9 @@ VirtualMachine::AllClassesWithGeneric::AllClassesWithGeneric (
         info.mGenericSignature = ReadString ();
         info.mStatus = Read4 ();
     }
+    qSort(mInfos.begin(), mInfos.end(), [](const JDWP::ClassInfo & e1, const JDWP::ClassInfo & e2) {
+        return qstrcmp(e1.mDescriptor, e2.mDescriptor);
+    });
 }
 
 QByteArray VirtualMachine::AllClassesWithGeneric::buildReq (int id)

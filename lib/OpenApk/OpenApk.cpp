@@ -34,6 +34,8 @@ OpenApk::OpenApk(QString file, QWidget *parent) :
     connect(ui->mApkToolListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
             this, SLOT(accept()));
 
+    mFilePath.replace(' ', "\\ ");
+
     bool isApk = file.endsWith(".apk");
     if (isApk) {
         mDecCmd = "java -jar $(tool) d $(target)";

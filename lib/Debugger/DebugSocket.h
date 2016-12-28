@@ -113,7 +113,6 @@ public slots:
     void onStop();
     void onWrite(const QByteArray& array);
     void onWrite(const char*data, quint64 len);
-    void onRead();  // read data is not saved by event
 private:
     int mStatus = 0;
     QByteArray mWBuffer;
