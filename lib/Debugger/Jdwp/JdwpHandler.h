@@ -1066,7 +1066,7 @@ namespace JDWP {
             std::vector<JValue> mSlots;
 
             static QByteArray buildReq (ObjectId thread_id,FrameId frame_id,
-                                         const std::vector<uint32_t> &slots,
+                                         const std::vector<uint32_t> &fslots,
                                          const std::vector<JdwpTag> &reqSig,int id = 0);
 
             const static uint8_t cmd = 1;
@@ -1076,7 +1076,7 @@ namespace JDWP {
             SetValues(const uint8_t* bytes, uint32_t available);
 
             static QByteArray buildReq(ObjectId thread_id, FrameId frame_id,
-                            const std::vector<uint32_t > &slots,
+                            const std::vector<uint32_t > &fslots,
                              const std::vector<JValue> &reqSig, int id = 0);
 
             const static uint8_t cmd = 2;
@@ -1125,10 +1125,109 @@ namespace JDWP {
         const static uint8_t set_ = 64;
 
         struct ReflectedType : public JdwpReader {
+            struct  EventObject {
+                JdwpEventKind mEventKind;
+                uint32_t mRequestId;
+                virtual ~EventObject() {};
+            };
+/*
+ * Tell the debugger that we have finished initializing.  This is always
+ * sent, even if the debugger hasn't requested it.
+ *
+ * This should be sent "before the main thread is started and before
+ * any application code has been executed".  The thread ID in the message
+ * must be for the main thread.
+ */
+            struct EventVmStart: public EventObject {
+                ObjectId mThreadId;
+                ~EventVmStart() {};
+            };
+/*
+ * A location of interest has been reached.  This handles:
+ *   Breakpoint
+ *   SingleStep
+ *   MethodEntry
+ *   MethodExit
+ * These four types must be grouped together in a single response.  The
+ * "eventFlags" indicates the type of event(s) that have happened.
+ *
+ * Valid mods:
+ *   Count, ThreadOnly, ClassOnly, ClassMatch, ClassExclude, InstanceOnly
+ *   LocationOnly (for breakpoint/step only)
+ *   Step (for step only)
+ *
+ * Interesting test cases:
+ *  - Put a breakpoint on a native method.  Eclipse creates METHOD_ENTRY
+ *    and METHOD_EXIT events with a ClassOnly mod on the method's class.
+ *  - Use "run to line".  Eclipse creates a BREAKPOINT with Count=1.
+ *  - Single-step to a line with a breakpoint.  Should get a single
+ *    event message with both events in it.
+ */
+            struct EventLocationEvent: public EventObject {
+                ObjectId mThreadId;
+                JdwpLocation mLocation;
+                ~EventLocationEvent() {}
+            };
+/*
+ * A thread is starting or stopping.
+ *
+ * Valid mods:
+ *  Count, ThreadOnly
+ */
+            struct EventThreadChange: public EventObject {
+                ObjectId mThreadId;
+                ~EventThreadChange() {}
+            };
+/*
+ * Send a polite "VM is dying" message to the debugger.
+ *
+ * Skips the usual "event token" stuff.
+ */
+            struct EventVmDeath: public EventObject {
+                ~EventVmDeath() {}
+            };
+/*
+ * An exception has been thrown.  It may or may not have been caught.
+ *
+ * Valid mods:
+ *  Count, ThreadOnly, ClassOnly, ClassMatch, ClassExclude, LocationOnly,
+ *    ExceptionOnly, InstanceOnly
+ *
+ * The "exceptionId" has not been added to the GC-visible object registry,
+ * because there's a pretty good chance that we're not going to send it
+ * up the debugger.
+ */
+            struct EventException: public EventObject {
+                ObjectId mThreadId;
+                JdwpLocation mThrowLoc;
+                JdwpTag mTag;
+                RefTypeId mExceptionId;
+                JdwpLocation mCatchLoc;
+                ~EventException(){};
+            };
+/*
+ * Announce that a class has been loaded.
+ *
+ * Valid mods:
+ *  Count, ThreadOnly, ClassOnly, ClassMatch, ClassExclude
+ */
+            struct EventClassPrepare: public EventObject {
+                ObjectId mThreadId;
+                JdwpTag mTag;
+                RefTypeId mTypeId;
+                QByteArray mSignature;
+                uint32_t mStatus;
+                ~EventClassPrepare(){};
+            };
+        public:
             ReflectedType(const uint8_t* bytes, uint32_t available);
+            ~ReflectedType();
+
+            JdwpSuspendPolicy  mSuspendPolicy;
+            int32_t mCount;
+            QVector<EventObject*> mEventList;
 
             static QByteArray buildReq(int id = 0);
-
             const static uint8_t cmd = 100;
         };
     }

@@ -98,14 +98,12 @@ void DebugSocket::run ()
             }
             qDebug() << "[DebugSocket] read: " << buffer.toHex();
             mBufPool += buffer;
-            if(!JDWP::Request::isValid ((const uint8_t*)mBufPool.data (), mBufPool.length ())) {
-                continue;
-            }
-
+        }
+        while(JDWP::Request::isValid ((const uint8_t*)mBufPool.data (), mBufPool.length ())) {
             auto req = new JDWP::Request((const uint8_t*)mBufPool.data (), mBufPool.length ());
             if(req->isValid ()) {
                 newJDWPRequest (req);
-                mBufPool.chop (req->GetLength ());
+                mBufPool.remove (0, req->GetLength ());
             }
         }
     });
@@ -122,7 +120,7 @@ void DebugSocket::run ()
             while(!wbuf.isEmpty()) {
                 qDebug() << "[DebugSocket] send: " << wbuf.toHex();
                 auto wLen = mSocket->write(wbuf);
-                wbuf.chop(wLen);
+                wbuf.remove(0, wLen);
                 if(wLen == 0) {
                     break;
                 }

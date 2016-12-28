@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <utils/CmdMsgUtil.h>
 #include <Jdwp/jdwp.h>
+#include <QTimer>
 
 DebugHandler::DebugHandler(QObject *parent, DebugSocket* socket)
         : QObject(parent)
@@ -74,8 +75,89 @@ void DebugHandler::handleCommand (QSharedPointer<JDWP::Request> &request)
     qDebug() << "Handle command for id " << request->GetId()
              << " CommandSet:" << request->GetCommandSet ()
              << " Command:" << request->GetCommand ();
-    // when event is finished, Composite command will be sended
-
+    JDWP::Composite::ReflectedType composite(request->GetExtra(), request->GetExtraLen());
+    qDebug() << "Composite suspend" << composite.mSuspendPolicy << "even count" << composite.mCount;
+    for(auto &pevent: composite.mEventList) {
+        auto eventKind = pevent->mEventKind;
+        switch(eventKind) {
+            case JDWP::JdwpEventKind::EK_SINGLE_STEP:
+            case JDWP::JdwpEventKind::EK_BREAKPOINT:
+            case JDWP::JdwpEventKind::EK_METHOD_ENTRY:
+            case JDWP::JdwpEventKind::EK_METHOD_EXIT: {
+                auto event = (JDWP::Composite::ReflectedType::EventLocationEvent*)pevent;
+                qDebug() << "EventLocatoinEvent" << event->mLocation.dex_pc;
+            }
+                break;
+//            case JdwpEventKind::EK_FRAME_POP:
+//                Q_ASSERT(false);
+//                break;
+            case JDWP::JdwpEventKind::EK_EXCEPTION: {
+                auto event = (JDWP::Composite::ReflectedType::EventException*)pevent;
+                qDebug() << "EventException at" << event->mThrowLoc.dex_pc << "to" << event->mCatchLoc.dex_pc;
+            }
+                break;
+//            case JdwpEventKind::EK_USER_DEFINED:
+//                Q_ASSERT(false);
+//                break;
+            case JDWP::JdwpEventKind::EK_THREAD_START:
+            case JDWP::JdwpEventKind::EK_THREAD_DEATH: {
+                auto event = (JDWP::Composite::ReflectedType::EventThreadChange*)pevent;
+                qDebug() << "EventThreadChange" << event->mThreadId;
+            }
+                break;
+            case JDWP::JdwpEventKind::EK_CLASS_PREPARE: {
+                auto event = (JDWP::Composite::ReflectedType::EventClassPrepare*)pevent;
+                qDebug() << "EventClassPrepare" << event->mSignature << event->mStatus;
+            }
+                break;
+//            case JdwpEventKind::EK_CLASS_UNLOAD:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_CLASS_LOAD:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_FIELD_ACCESS:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_FIELD_MODIFICATION:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_EXCEPTION_CATCH:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_METHOD_EXIT_WITH_RETURN_VALUE:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTER:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTERED:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_WAIT:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_WAITED:
+//                Q_ASSERT(false);
+//                break;
+            case JDWP::JdwpEventKind::EK_VM_START: {
+                auto event = (JDWP::Composite::ReflectedType::EventVmStart*)pevent;
+                qDebug() << "EventVmStart" << event->mThreadId;
+            }
+                break;
+            case JDWP::JdwpEventKind::EK_VM_DEATH: {
+                //auto event = (JDWP::Composite::ReflectedType::EventVmDeath*)pevent;
+                qDebug() << "EventVmDeath";
+            }
+                break;
+//            case JdwpEventKind::EK_VM_DISCONNECTED:
+//                Q_ASSERT(false);
+//                break;
+            default:
+                qDebug() << "Unknown EventKind?" << eventKind;
+                break;
+        }
+    }
 }
 
 bool DebugHandler::sendNewRequest (const QByteArray &req)
@@ -137,12 +219,13 @@ void DebugHandler::onSocketConnected()
         dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_ALL, mod);
     }
 
-    // set breakpoint to process entrypoint and resume program
-    //
-//    dbgResume();
-//    dbgVersion();
-//    dbgAllClassesWithGeneric();
-//    dbgGetClassBySignature("Ljava/lang/Object;");
+    QTimer::singleShot(10000, [this]() {
+        // wait for classloading finished
+        dbgVersion();
+        dbgAllClassesWithGeneric();
+        // TODO set breakpoint and resume
+        dbgResume();
+    });
 }
 
 void DebugHandler::onSocketDisconnected()
@@ -189,14 +272,11 @@ void DebugHandler::dbgEventRequestSet(JDWP::JdwpEventKind eventkind,
                                       const std::vector<JDWP::JdwpEventMod> &mod) {
     auto request = JDWP::EventRequest::Set::buildReq(eventkind, policy, mod, mSockId++);
     sendNewRequest(request);
-    waitForResponse();
 }
 
 JDWP::ClassInfo DebugHandler::dbgGetClassBySignature(const QString &classSignature) {
     auto request = JDWP::VirtualMachine::ClassesBySignature::buildReq(classSignature.toLocal8Bit(), mSockId++);
     sendNewRequest(request);
-    waitForResponse();
-
     return JDWP::ClassInfo();
 }
 
@@ -555,7 +635,6 @@ void DebugHandler::_handle_EventRequest_Set(JDWP::Request *request, JDWP::Reques
 {
     JDWP::EventRequest::Set set(reply->GetExtra(), reply->GetExtraLen());
     qDebug() << "EventRequestSet: " << set.mRequestId;
-    requestResponse();
     // TODO record requestId
 }
 void DebugHandler::_handle_EventRequest_Clear(JDWP::Request *request, JDWP::Request *reply)

@@ -12,6 +12,7 @@
 
 #include <Jdwp/jdwp.h>
 #include <QtEndian>
+#include <QDebug>
 
 using namespace JDWP;
 
@@ -1740,18 +1741,18 @@ StackFrame::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
 }
 
 QByteArray StackFrame::GetValues::buildReq (
-        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &slots,
+        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &fslots,
         const std::vector<JdwpTag> &reqSig,int id)
 {
-    if(slots.size () != reqSig.size ())
+    if(fslots.size () != reqSig.size ())
         return "";
     QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
-    int count = slots.size ();
+    int count = fslots.size ();
     Write4 (rel, count);
     for(auto i = 0; i < count; i++) {
-        Write4 (rel, slots[i]);
+        Write4 (rel, fslots[i]);
         Write1 (rel, reqSig[i]);
     }
     return BuildReq (id, set_, cmd, rel);
@@ -1763,18 +1764,18 @@ StackFrame::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
 }
 
 QByteArray StackFrame::SetValues::buildReq (
-        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &slots,
+        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &fslots,
         const std::vector<JValue> &reqSig,int id)
 {
-    if(slots.size () != reqSig.size ())
+    if(fslots.size () != reqSig.size ())
         return "";
     QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
-    int count = slots.size ();
+    int count = fslots.size ();
     Write4 (rel, count);
     for(auto i = 0; i < count; i++) {
-        Write4 (rel, slots[i]);
+        Write4 (rel, fslots[i]);
         Write1 (rel, reqSig[i].tag);
         WriteValue (rel, reqSig[i].L, GetTagWidth (reqSig[i].tag));
     }
@@ -1834,13 +1835,143 @@ Composite::ReflectedType::ReflectedType (
         const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)
 {
+    mSuspendPolicy = (JdwpSuspendPolicy)Read1();
+    mCount = Read4();
+    mEventList.resize(mCount);
+    for(auto i = 0; i < mCount; i++) {
+        JdwpEventKind eventKind = (JdwpEventKind)Read1();
+        auto requestId = Read4();
+        switch(eventKind) {
+            case JdwpEventKind::EK_SINGLE_STEP:
+            case JdwpEventKind::EK_BREAKPOINT:
+            case JdwpEventKind::EK_METHOD_ENTRY:
+            case JdwpEventKind::EK_METHOD_EXIT: {
+                auto event = new EventLocationEvent();
+                event->mEventKind = eventKind;
+                event->mRequestId = requestId;
+                event->mThreadId = ReadThreadId();
+                event->mLocation = ReadJdwpLocation();
+                mEventList[i] = event;
+            }
+                break;
+            case JdwpEventKind::EK_FRAME_POP:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_EXCEPTION: {
+                auto event = new EventException();
+                event->mEventKind = eventKind;
+                event->mRequestId = requestId;
+                event->mThreadId = ReadThreadId();
+                event->mThrowLoc = ReadJdwpLocation();
+                event->mTag = (JdwpTag)Read1(); // it should be JT_OBJECT
+                event->mExceptionId = ReadRefTypeId();
+                event->mCatchLoc = ReadJdwpLocation();
+                mEventList[i] = event;
+            }
+                break;
+            case JdwpEventKind::EK_USER_DEFINED:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_THREAD_START:
+            case JdwpEventKind::EK_THREAD_DEATH: {
+                auto event = new EventThreadChange();
+                event->mEventKind = eventKind;
+                event->mRequestId = requestId;
+                event->mThreadId = ReadThreadId();
+                mEventList[i] = event;
+            }
+                break;
+            case JdwpEventKind::EK_CLASS_PREPARE: {
+                auto event = new EventClassPrepare();
+                event->mEventKind = eventKind;
+                event->mRequestId = requestId;
+                event->mThreadId = ReadThreadId();
+                event->mTag = (JdwpTag)Read1();
+                event->mTypeId = ReadRefTypeId();
+                event->mSignature = ReadString();
+                event->mStatus = Read4();
+                mEventList[i] = event;
+            }
+                break;
+            case JdwpEventKind::EK_CLASS_UNLOAD:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_CLASS_LOAD:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_FIELD_ACCESS:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_FIELD_MODIFICATION:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_EXCEPTION_CATCH:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_METHOD_EXIT_WITH_RETURN_VALUE:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTER:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTERED:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_MONITOR_WAIT:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_MONITOR_WAITED:Q_ASSERT(false);
+                break;
+            case JdwpEventKind::EK_VM_START: {
+                auto event = new EventVmStart();
+                event->mEventKind = eventKind;
+                event->mRequestId = requestId;
+                event->mThreadId = ReadThreadId();
+                mEventList[i] = event;
+            }
+                break;
+            case JdwpEventKind::EK_VM_DEATH: {
+                auto event = new EventVmDeath();
+                event->mEventKind = eventKind;
+                event->mRequestId = requestId;
+                mEventList[i] = event;
+            }
+                break;
+            case JdwpEventKind::EK_VM_DISCONNECTED:Q_ASSERT(false);
+                break;
+            default:
+                qDebug() << "Unknown EventKind?" << eventKind;
+                break;
+        }
+    }
+
+    /*
+ * A location of interest has been reached.  This handles:
+ *   Breakpoint
+ *   SingleStep
+ *   MethodEntry
+ *   MethodExit
+ * These four types must be grouped together in a single response.  The
+ * "eventFlags" indicates the type of event(s) that have happened.
+ *
+ * Valid mods:
+ *   Count, ThreadOnly, ClassOnly, ClassMatch, ClassExclude, InstanceOnly
+ *   LocationOnly (for breakpoint/step only)
+ *   Step (for step only)
+ *
+ * Interesting test cases:
+ *  - Put a breakpoint on a native method.  Eclipse creates METHOD_ENTRY
+ *    and METHOD_EXIT events with a ClassOnly mod on the method's class.
+ *  - Use "run to line".  Eclipse creates a BREAKPOINT with Count=1.
+ *  - Single-step to a line with a breakpoint.  Should get a single
+ *    event message with both events in it.
+ */
+    // dvmJdwpPostLocationEvent
+
+
 
 }
+
+Composite::ReflectedType::~ReflectedType() {
+    qDeleteAll(mEventList);
+}
+
 
 QByteArray Composite::ReflectedType::buildReq (int id)
 {
+    Q_ASSERT(false && "This handle is not used by debugger");
     return QByteArray();
 }
+
 
 DDM::Chunk::Chunk (const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)

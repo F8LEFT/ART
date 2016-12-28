@@ -21,7 +21,7 @@ JDWP::Request::Request (const uint8_t *bytes,uint32_t available)
 {
 
     byte_count_ = Read4 ();
-    if(byte_count_ > available) {
+    if(byte_count_ < kJDWPHeaderLen || byte_count_ > available) {
         valid_ = false;
         return ;
     }
@@ -56,7 +56,7 @@ bool Request::isValid (const uint8_t *bytes,uint32_t available)
         return false;
     uint32_t d = *((uint32_t *) bytes);
     auto pkgSize = qFromBigEndian (d);
-    return pkgSize <= available;
+    return pkgSize >= kJDWPHeaderLen && pkgSize <= available;
 }
 
 
