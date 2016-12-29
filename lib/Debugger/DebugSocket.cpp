@@ -93,18 +93,17 @@ void DebugSocket::run ()
         while(mSocket->isReadable()) {
             auto buffer = mSocket->readAll();
             if(buffer.isEmpty()) {
-                qDebug() << "empty buffer read, exit loop";
+//                qDebug() << "empty buffer read, exit loop";
                 break;
             }
             qDebug() << "[DebugSocket] read: " << buffer.toHex();
             mBufPool += buffer;
         }
         while(JDWP::Request::isValid ((const uint8_t*)mBufPool.data (), mBufPool.length ())) {
-            auto req = new JDWP::Request((const uint8_t*)mBufPool.data (), mBufPool.length ());
-            if(req->isValid ()) {
-                newJDWPRequest (req);
-                mBufPool.remove (0, req->GetLength ());
-            }
+            auto len = JDWP::Request::GetPackageLength((const uint8_t*)mBufPool.data (), mBufPool.length ());
+            auto array = mBufPool.left(len);
+            newJDWPRequest(array);
+            mBufPool.remove(0, len);
         }
     });
     onConnected();

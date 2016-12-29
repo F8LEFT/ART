@@ -52,7 +52,7 @@ signals:
     void error(int socketError, const QString &message);
 
     // request need to be deleted in slot
-    void newJDWPRequest(JDWP::Request* request);
+    void newJDWPRequest(const QByteArray& data);
     // this will be emited when handshake finished
     void connected();
     // this will be emited when connect close, and DebugSocket object will be deleted.

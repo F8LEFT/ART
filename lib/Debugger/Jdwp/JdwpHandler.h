@@ -492,7 +492,7 @@ namespace JDWP {
         struct MethodsWithGeneric : public JdwpReader {
             MethodsWithGeneric(const uint8_t* bytes, uint32_t available);
             uint32_t mSize;
-            std::vector<MethodInfo> mMethods;
+            QVector<MethodInfo> mMethods;
 
             static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 15;

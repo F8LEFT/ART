@@ -34,11 +34,13 @@ namespace JDWP {
 
         const uint8_t* GetExtra() const;
         size_t GetExtraLen() const;
+        QByteArray GetExtraArray() const;
 
         bool isValid() { return valid_; }
         bool isReply() { return reply; }
 
         static bool isValid(const uint8_t* bytes, uint32_t available);
+        static size_t GetPackageLength(const uint8_t *bytes,uint32_t available);
     private:
         uint32_t byte_count_;
 

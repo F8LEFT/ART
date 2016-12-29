@@ -453,7 +453,6 @@ QByteArray VirtualMachine::SetDefaultStratum::buildReq (int id)
     return BuildReq (id, set_, cmd, rel);
 }
 
-
 VirtualMachine::AllClassesWithGeneric::AllClassesWithGeneric (
         const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)
@@ -469,9 +468,9 @@ VirtualMachine::AllClassesWithGeneric::AllClassesWithGeneric (
         info.mGenericSignature = ReadString ();
         info.mStatus = Read4 ();
     }
-    qSort(mInfos.begin(), mInfos.end(), [](const JDWP::ClassInfo & e1, const JDWP::ClassInfo & e2) {
-        return qstrcmp(e1.mDescriptor, e2.mDescriptor);
-    });
+    //qSort(mInfos.begin(), mInfos.end(), [](const JDWP::ClassInfo & e1, const JDWP::ClassInfo & e2) {
+    //    return qstrcmp(e1.mDescriptor, e2.mDescriptor);
+    //});
 }
 
 QByteArray VirtualMachine::AllClassesWithGeneric::buildReq (int id)
@@ -1933,32 +1932,6 @@ Composite::ReflectedType::ReflectedType (
                 break;
         }
     }
-
-    /*
- * A location of interest has been reached.  This handles:
- *   Breakpoint
- *   SingleStep
- *   MethodEntry
- *   MethodExit
- * These four types must be grouped together in a single response.  The
- * "eventFlags" indicates the type of event(s) that have happened.
- *
- * Valid mods:
- *   Count, ThreadOnly, ClassOnly, ClassMatch, ClassExclude, InstanceOnly
- *   LocationOnly (for breakpoint/step only)
- *   Step (for step only)
- *
- * Interesting test cases:
- *  - Put a breakpoint on a native method.  Eclipse creates METHOD_ENTRY
- *    and METHOD_EXIT events with a ClassOnly mod on the method's class.
- *  - Use "run to line".  Eclipse creates a BREAKPOINT with Count=1.
- *  - Single-step to a line with a breakpoint.  Should get a single
- *    event message with both events in it.
- */
-    // dvmJdwpPostLocationEvent
-
-
-
 }
 
 Composite::ReflectedType::~ReflectedType() {

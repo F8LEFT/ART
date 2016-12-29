@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
 //    qDebug() << QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
 //    dirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("org.kde.syntax-highlighting/themes"), QStandardPaths::LocateDirectory);
 
-
     auto conf = Configuration::instance ();
     loadTranslation (&a);
 

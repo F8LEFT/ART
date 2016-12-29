@@ -50,6 +50,10 @@ size_t Request::GetExtraLen () const
     return extra.length ();
 }
 
+QByteArray Request::GetExtraArray() const {
+    return extra;
+}
+
 bool Request::isValid (const uint8_t *bytes,uint32_t available)
 {
     if(available < kJDWPHeaderLen)
@@ -58,6 +62,19 @@ bool Request::isValid (const uint8_t *bytes,uint32_t available)
     auto pkgSize = qFromBigEndian (d);
     return pkgSize >= kJDWPHeaderLen && pkgSize <= available;
 }
+
+size_t Request::GetPackageLength(const uint8_t *bytes,uint32_t available) {
+    if(available < kJDWPHeaderLen)
+        return 0;
+    uint32_t d = *((uint32_t *) bytes);
+    auto pkgSize = qFromBigEndian (d);
+    if(pkgSize < kJDWPHeaderLen || pkgSize > available) {
+        return 0;
+    }
+    return pkgSize;
+}
+
+
 
 
 
