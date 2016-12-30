@@ -19,6 +19,7 @@
 #include <Jdwp/Request.h>
 #include <Jdwp/JdwpHandler.h>
 #include <QEventLoop>
+#include <QMultiMap>
 
 #include <QObject>
 #include <QMap>
@@ -46,29 +47,36 @@ public:
 
 
     void dbgAllClassesWithGeneric();
+
+    // Func(JDWP::JdwpEventKind eventkind, uint32_t requestId)
     template <typename Func>
     void dbgEventRequestSet(JDWP::JdwpEventKind eventkind, JDWP::JdwpSuspendPolicy policy,
                             const std::vector<JDWP::JdwpEventMod>& mod,
                             Func callback);
     void dbgEventRequestClear(JDWP::JdwpEventKind kind, uint32_t requestId);
+
+    // Func(QVector<JDWP::MethodInfo> methods)
     template  <typename Func>
     void dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId,
                                          Func callback);
+
+    // Func(JDWP::ClassInfo classinfo)
     template <typename Func>
     void dbgGetClassBySignature(const QString &classSignature, Func callback);
 
     // wait for class loaded, input signature must like java.lang.String
+    // Func(JDWP::Composite::ReflectedType::EventClassPrepare* prepare)
     template <typename Func>
     void waitForClassPrepared(QString javaSignature, Func callback);
+
+    // Func(JDWP::ThreadReference::Frames)
+    template <typename Func>
+    void dbgThreadReferenceFrames(JDWP::ObjectId thread_id, Func callback);
+    void dbgReferenceTypeSignatureWithGeneric(JDWP::RefTypeId refTypeId);
+    void dbgReferenceTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId);
+
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
-
-    void waitForResponse() {
-        m_event.exec();
-    }
-    void requestResponse() {
-        m_event.exit(0);
-    }
 signals:
     // handle request/reply result;
     void dbgOnResume();
@@ -94,17 +102,19 @@ private:
     bool sendNewRequest(QSharedPointer<ReqestPackage>& req);
 
 private:
+    void breakPointHit(JDWP::JdwpSuspendPolicy  policy,
+                       JDWP::Composite::ReflectedType::EventLocationEvent*event);
+private:
     DebugSocket* mSocket;
     QMap<int, QSharedPointer<ReqestPackage>> mRequestMap;
     QVector<QVector<QSharedPointer<CommandPackage>>> mCommandVector;    // [EventGroup][CommandPackage]
     int mSockId = 0;
-
 public:
-    QEventLoop m_event;
-
     // classsign - classinfo map
-//    QMap<QString, JDWP::ClassInfo> mLoadedClassInfo;
-//    QMap<JDWP::RefTypeId, QVector<JDWP::MethodInfo>> mMethodsInfo;
+    QMultiMap<QString, JDWP::RefTypeId> mLoadedClassRef;
+    QMap<JDWP::RefTypeId, JDWP::ClassInfo> mLoadedClassInfo;
+    QMap<JDWP::RefTypeId, QVector<JDWP::MethodInfo>> mLoadedMethodsInfo;    // map to ClassId, methodinfo
+
 };
 
 struct RequestExtraBreakPoint{
@@ -170,5 +180,10 @@ public:
     JDWP::JdwpSuspendPolicy  mSuspendPolicy;
     bool clear = false;
 };
+
+
+
+QString jniSigToJavaSig(QString sig);
+QByteArray jniSigToJavaSig(QByteArray sig);
 
 #endif //ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H

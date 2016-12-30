@@ -157,7 +157,7 @@ QString SmaliOpInformation::getOpInformation(QString token) {
         mHintMap["sput-byte"] = tr ("sput-byte vx,field_id : Puts byte value in vx into a static field.");
         mHintMap["sput-char"] = tr ("sput-char vx,field_id : Puts char value in vx into a static field.");
         mHintMap["sput-short"] = tr ("sput-short vx,field_id : Puts short value in vx into a static field.");
-        mHintMap["invoke-virtual "] = tr ("invoke-virtual { parameters }, methodtocall : Invokes a virtual method with parameters.");
+        mHintMap["invoke-virtual"] = tr ("invoke-virtual { parameters }, methodtocall : Invokes a virtual method with parameters.");
         mHintMap["invoke-super"] = tr ("invoke-super {parameter},methodtocall : Invokes the virtual method of the immediate parent class.");
         mHintMap["invoke-direct"] = tr ("invoke-direct { parameters }, methodtocall : Invokes a method with parameters without the virtual method resolution.");
         mHintMap["invoke-static"] = tr ("invoke-static {parameters}, methodtocall : Invokes a static method with parameters.");

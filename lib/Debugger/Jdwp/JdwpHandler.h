@@ -851,7 +851,7 @@ namespace JDWP {
         public:
             Frames(const uint8_t* bytes, uint32_t available);
             int mFrameCount;
-            std::vector<Frame> mFrames;
+            QVector<Frame> mFrames;
 
             static QByteArray buildReq(ObjectId thread_id, uint32_t start_frame,
                                         uint32_t length, int id = 0);

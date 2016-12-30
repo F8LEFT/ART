@@ -96,7 +96,7 @@ void DebugSocket::run ()
 //                qDebug() << "empty buffer read, exit loop";
                 break;
             }
-            qDebug() << "[DebugSocket] read: " << buffer.toHex();
+//            qDebug() << "[DebugSocket] read: " << buffer.toHex();
             mBufPool += buffer;
         }
         while(JDWP::Request::isValid ((const uint8_t*)mBufPool.data (), mBufPool.length ())) {
@@ -117,7 +117,7 @@ void DebugSocket::run ()
         if(mSocketEvent->isReadyWrite()) {
             auto &wbuf = mSocketEvent->mWBuffer;
             while(!wbuf.isEmpty()) {
-                qDebug() << "[DebugSocket] send: " << wbuf.toHex();
+//                qDebug() << "[DebugSocket] send: " << wbuf.toHex();
                 auto wLen = mSocket->write(wbuf);
                 wbuf.remove(0, wLen);
                 if(wLen == 0) {
