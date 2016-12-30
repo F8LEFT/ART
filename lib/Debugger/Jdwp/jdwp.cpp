@@ -7,6 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 #include "Jdwp/jdwp.h"
+#include "jdwp.h"
 
 bool ::JDWP::IsPrimitiveTag (JDWP::JdwpTag tag)
 {
@@ -51,6 +52,25 @@ size_t JDWP::GetTagWidth(JDWP::JdwpTag tag){
         case JDWP::JT_LONG:
             return 8;
         default:
-            return -1;
+            return 0;
     }
+}
+
+bool JDWP::JdwpLocation::operator==(const JDWP::JdwpLocation &location) {
+    return type_tag == location.type_tag
+           && class_id == location.class_id
+           && method_id == location.method_id
+           && dex_pc == location.dex_pc;
+}
+
+JDWP::JdwpEventModPad::JdwpEventModPad(JDWP::JdwpEventMod mod) {
+    mMod = mod;
+    if(mMod.modKind != MK_CLASS_EXCLUDE && mMod.modKind != MK_CLASS_MATCH) {
+        return ;
+    }
+    mArray = mod.classMatch.classPattern;
+
+}
+
+JDWP::JdwpEventModPad::~JdwpEventModPad() {
 }

@@ -180,6 +180,7 @@ namespace JDWP {
         RefTypeId class_id;
         MethodId method_id;
         uint64_t dex_pc;
+        bool operator == (const JdwpLocation& loc);
     };
 
     union JdwpEventMod {
@@ -234,6 +235,11 @@ namespace JDWP {
             ObjectId    objectId;
         } instanceOnly;
     };
-
+    struct JdwpEventModPad {
+        JdwpEventModPad(JdwpEventMod mod);
+        ~JdwpEventModPad();
+        JdwpEventMod mMod;
+        QByteArray mArray;
+    };
 }
 #endif //PROJECT_JDWP_H

@@ -27,6 +27,7 @@
 class DebugSocket;
 class RequestExtra;
 class ReqestPackage;
+class CommandPackage;
 
 class DebugHandler: public QObject {
     Q_OBJECT
@@ -45,12 +46,21 @@ public:
 
 
     void dbgAllClassesWithGeneric();
-    void dbgEventRequestSet(JDWP::JdwpEventKind eventkind, JDWP::JdwpSuspendPolicy policy,
-                            const std::vector<JDWP::JdwpEventMod>& mod = std::vector<JDWP::JdwpEventMod>());
-    template  <typename Func>
-    bool dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId, Func callback);
     template <typename Func>
-    bool dbgGetClassBySignature(const QString& classSignature, Func callback);
+    void dbgEventRequestSet(JDWP::JdwpEventKind eventkind, JDWP::JdwpSuspendPolicy policy,
+                            const std::vector<JDWP::JdwpEventMod>& mod,
+                            Func callback);
+    void dbgEventRequestClear(JDWP::JdwpEventKind kind, uint32_t requestId);
+    template  <typename Func>
+    void dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId,
+                                         Func callback);
+    template <typename Func>
+    void dbgGetClassBySignature(const QString &classSignature, Func callback);
+
+    // wait for class loaded, input signature must like java.lang.String
+    template <typename Func>
+    void waitForClassPrepared(QString javaSignature, Func callback);
+    void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
 
     void waitForResponse() {
@@ -86,6 +96,7 @@ private:
 private:
     DebugSocket* mSocket;
     QMap<int, QSharedPointer<ReqestPackage>> mRequestMap;
+    QVector<QVector<QSharedPointer<CommandPackage>>> mCommandVector;    // [EventGroup][CommandPackage]
     int mSockId = 0;
 
 public:
@@ -111,6 +122,7 @@ struct RequestExtraBreakPoint{
     uint64_t mCodeIdx;
 };
 
+// for JDWP package request and reply
 class ReqestPackage: public QObject {
     Q_OBJECT
 public:
@@ -126,5 +138,37 @@ public:
     JDWP::Request mRequest;
 };
 
+// for JDWP package command. set command hook and wait for match command.
+class CommandPackage: public QObject {
+    Q_OBJECT
+
+public:
+    CommandPackage(JDWP::JdwpEventModPad mod, JDWP::JdwpSuspendPolicy policy, QObject* parent = nullptr);
+    ~CommandPackage();
+signals:
+    void onLocation(JDWP::Composite::ReflectedType::EventLocationEvent* location, JDWP::JdwpSuspendPolicy  policy, bool *clear);
+    void onException(JDWP::Composite::ReflectedType::EventException* exception, JDWP::JdwpSuspendPolicy  policy, bool *clear);
+    void onThreadChange(JDWP::Composite::ReflectedType::EventThreadChange* thread, JDWP::JdwpSuspendPolicy  policy, bool *clear);
+    void onClassPrepare(JDWP::Composite::ReflectedType::EventClassPrepare* prepare, JDWP::JdwpSuspendPolicy  policy, bool *clear);
+    void onVmStart(JDWP::Composite::ReflectedType::EventVmStart* vmStart, JDWP::JdwpSuspendPolicy  policy, bool *clear);
+    void onVmDeath(bool *clear);
+public:
+    bool match(JDWP::Composite::ReflectedType::EventObject* pevent, JDWP::JdwpSuspendPolicy  policy);
+public:
+    enum EventGroup {
+        Location = 0,
+        Exception,
+        Thread,
+        Prepare,
+        VmStart,
+        VmDeath,
+        Unknown,
+    };
+    static int getEventGroup(JDWP::JdwpEventKind kind);
+public:
+    JDWP::JdwpEventModPad mMod;
+    JDWP::JdwpSuspendPolicy  mSuspendPolicy;
+    bool clear = false;
+};
 
 #endif //ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H

@@ -32,6 +32,8 @@ DebugHandler::DebugHandler(QObject *parent, DebugSocket* socket)
     connect(this, SIGNAL(sendBuffer(QByteArray)), mSocket->mSocketEvent, SLOT(onWrite(QByteArray)));
 
     connect(this, &DebugHandler::stopCurrentTarget, mSocket->mSocketEvent, &DebugSocketEvent::onStop);
+
+    mCommandVector.resize(CommandPackage::EventGroup::Unknown + 1);
 }
 
 DebugHandler::~DebugHandler()
@@ -152,6 +154,19 @@ void DebugHandler::handleCommand (JDWP::Request &request)
                 qDebug() << "Unknown EventKind?" << eventKind;
                 break;
         }
+
+        // find group matching
+        auto group = CommandPackage::getEventGroup(eventKind);
+        auto &commands = mCommandVector[group];
+        for(auto it = commands.begin(); it != commands.end(); ) {
+            auto command = it->data();
+            command->match(pevent, composite.mSuspendPolicy);
+            if(command->clear) {
+                it = commands.erase(it);
+            } else {
+                it ++;
+            }
+        }
     }
 }
 
@@ -175,50 +190,36 @@ void DebugHandler::onSocketConnected()
     mRequestMap.clear ();
 
     // Init
-    dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_NONE);
-    dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_UNLOAD, JDWP::JdwpSuspendPolicy::SP_NONE);
+    dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_NONE, std::vector<JDWP::JdwpEventMod>(),
+                       [this](JDWP::JdwpEventKind eventkind, uint32_t requestId) {});
+    dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_UNLOAD, JDWP::JdwpSuspendPolicy::SP_NONE, std::vector<JDWP::JdwpEventMod>(),
+                       [this](JDWP::JdwpEventKind eventkind, uint32_t requestId) {});
     // suspend and set breakpoiont to catch exception
-    {
-        std::vector<JDWP::JdwpEventMod> mod;
-
-        JDWP::JdwpEventMod m1;
-        m1.modKind = JDWP::JdwpModKind::MK_CLASS_MATCH;
-        std::string m1Class = "java.lang.Throwable";
-        m1.classMatch.classPattern = (char*)m1Class.c_str();
-        mod.push_back(m1);
-
-        JDWP::JdwpEventMod m2;
-        m2.modKind = JDWP::JdwpModKind::MK_COUNT;
-        m2.count.count = 1;
-        mod.push_back(m2);
-
-        dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_ALL, mod);
-    }
+//    {
+//        std::vector<JDWP::JdwpEventMod> mod;
+//
+//        JDWP::JdwpEventMod m1;
+//        m1.modKind = JDWP::JdwpModKind::MK_CLASS_MATCH;
+//        std::string m1Class = "java.lang.Throwable";
+//        m1.classMatch.classPattern = (char*)m1Class.c_str();
+//        mod.push_back(m1);
+//
+//        JDWP::JdwpEventMod m2;
+//        m2.modKind = JDWP::JdwpModKind::MK_COUNT;
+//        m2.count.count = 1;
+//        mod.push_back(m2);
+//
+//        dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_ALL, mod,
+//                           [this](JDWP::JdwpEventKind eventkind, uint32_t requestId) {});
+//    }
     // suspend and set breakpoint to process entry point
-    {
-        std::vector<JDWP::JdwpEventMod> mod;
-
-        JDWP::JdwpEventMod m1;
-        m1.modKind = JDWP::JdwpModKind::MK_CLASS_MATCH;
-        std::string m1Class = "com.example.ring.myapplication.MainActivity";
-        m1.classMatch.classPattern = (char*)m1Class.c_str();
-        mod.push_back(m1);
-
-        JDWP::JdwpEventMod m2;
-        m2.modKind = JDWP::JdwpModKind::MK_COUNT;
-        m2.count.count = 1;
-        mod.push_back(m2);
-
-        dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_ALL, mod);
-    }
+    waitForClassPrepared("com.example.ring.myapplication.MainActivity", [this]() {
+        dbgSetBreakPoint("Lcom/example/ring/myapplication/MainActivity;", "onCreate", "(Landroid/os/Bundle;)V", 0);
+    });
 
     QTimer::singleShot(10000, [this]() {
-        // wait for classloading finished
-        dbgVersion();
-//        dbgAllClassesWithGeneric();
-        // TODO set breakpoint and resume
-        dbgSetBreakPoint("Lcom/example/ring/myapplication/MainActivity;", "onCreate", "(Landroid/os/Bundle;)V", 0);
-//        dbgResume();
+        // wait for classloading finished and breakpoint set
+        dbgResume();
     });
 }
 
@@ -291,33 +292,46 @@ void DebugHandler::dbgSetBreakPoint(const QString &classSignature,
                 bpMod.locationOnly.loc = JDWP::JdwpLocation{
                         JDWP::TT_CLASS, classinfo.mTypeId, method.mMethodId, extra->mCodeIdx};
                 mod.push_back(bpMod);
-                dbgEventRequestSet(JDWP::EK_BREAKPOINT, JDWP::SP_ALL, mod);
-                dbgResume();
+                dbgEventRequestSet(JDWP::EK_BREAKPOINT, JDWP::SP_ALL, mod,
+                                   [this](JDWP::JdwpEventKind eventkind, uint32_t requestId) {});
                 break;
             }
         });
     });
 }
 
+template <typename Func>
 void DebugHandler::dbgEventRequestSet(JDWP::JdwpEventKind eventkind,
                                       JDWP::JdwpSuspendPolicy policy,
-                                      const std::vector<JDWP::JdwpEventMod> &mod) {
+                                      const std::vector<JDWP::JdwpEventMod> &mod,
+                                      Func callback) {
     auto request = JDWP::EventRequest::Set::buildReq(eventkind, policy, mod, mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
-    connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
+    connect(package.data(), &ReqestPackage::onReply, [this, eventkind, callback](JDWP::Request *request,QByteArray& reply) {
         JDWP::EventRequest::Set set((uint8_t*)reply.data(), reply.length());
         qDebug() << "EventRequestSet: " << set.mRequestId;
         // TODO Record event id
+        callback(eventkind, set.mRequestId);
+    });
+    sendNewRequest (package);
+}
+
+void DebugHandler::dbgEventRequestClear(JDWP::JdwpEventKind kind, uint32_t requestId) {
+    auto request = JDWP::EventRequest::Clear::buildReq(kind, requestId, mSockId++);
+    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+    connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
+        qDebug() << "EventRequestClear";
     });
     sendNewRequest (package);
 }
 
 template  <typename Func>
-bool DebugHandler::dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId, Func callback) {
+void DebugHandler::dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId,
+                                                   Func callback) {
     auto request = JDWP::ReferenceType::MethodsWithGeneric::buildReq(refTypeId, mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
     connect(package.data(), &ReqestPackage::onReply, [this, callback](JDWP::Request *request,QByteArray& reply) {
-            qDebug() << "ReferenceType::MethodsWithGeneric: ";
+        qDebug() << "ReferenceType::MethodsWithGeneric: ";
         JDWP::ReferenceType::MethodsWithGeneric signature((uint8_t*)reply.data(), reply.length());;
         if(signature.mSize == 0) {
             return;
@@ -333,11 +347,11 @@ bool DebugHandler::dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId, Fu
         callback(signature.mMethods);
     });
     sendNewRequest (package);
-    return true;
 }
 
 template <typename Func>
-bool DebugHandler::dbgGetClassBySignature(const QString &classSignature, Func callback) {
+void DebugHandler::dbgGetClassBySignature(const QString &classSignature,
+                                          Func callback) {
     auto request = JDWP::VirtualMachine::ClassesBySignature::buildReq(classSignature.toLocal8Bit(), mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
     connect(package.data(), &ReqestPackage::onReply, [this, callback](JDWP::Request *request,QByteArray& reply) {
@@ -358,20 +372,57 @@ bool DebugHandler::dbgGetClassBySignature(const QString &classSignature, Func ca
         callback(info);
     });
     sendNewRequest (package);
-    return true;
 }
 
+template<typename Func>
+void DebugHandler::waitForClassPrepared(QString javaSignature, Func callback) {
+    std::vector<JDWP::JdwpEventMod> mod;
+
+    JDWP::JdwpEventMod mMatch;
+    mMatch.modKind = JDWP::JdwpModKind::MK_CLASS_MATCH;
+    auto matchClass = javaSignature.toLatin1();
+    mMatch.classMatch.classPattern = matchClass.data(); // TODO how to store javaSinature?
+    mod.push_back(mMatch);
+
+    JDWP::JdwpEventMod mCount;
+    mCount.modKind = JDWP::JdwpModKind::MK_COUNT;
+    mCount.count.count = 1;
+    mod.push_back(mCount);
+
+    JDWP::JdwpEventModPad modPad(mMatch);
+
+    dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_ALL, mod,
+          [this, modPad, callback](JDWP::JdwpEventKind eventkind, uint32_t requestId) {
+              auto package = QSharedPointer<CommandPackage>(new CommandPackage(modPad, JDWP::JdwpSuspendPolicy::SP_ALL));
+              connect(package.data(), &CommandPackage::onClassPrepare,
+                  [this, requestId, callback](JDWP::Composite::ReflectedType::EventClassPrepare* prepare, JDWP::JdwpSuspendPolicy  policy, bool *clear) {
+                      dbgEventRequestClear(JDWP::JdwpEventKind::EK_CLASS_PREPARE, requestId);
+                      callback();
+                      *clear = true;
+              });
+              setCommandPackage(eventkind, package);
+    });
+}
+
+void DebugHandler::setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package) {
+
+    auto group = CommandPackage::getEventGroup(eventkind);
+    auto &commands = mCommandVector[group];
+    commands.push_back(package);
+}
+
+
+
 ReqestPackage::ReqestPackage(QByteArray& data,  QObject *parent)
-    : QObject(parent),
-      mData(data),
-      mRequest((uint8_t*)data.data (), data.length())
+        : QObject(parent),
+          mData(data),
+          mRequest((uint8_t*)data.data (), data.length())
 {
 
 }
 
 ReqestPackage::~ReqestPackage()
 {
-
 }
 
 void ReqestPackage::handleReply(QByteArray& reply)
@@ -381,3 +432,182 @@ void ReqestPackage::handleReply(QByteArray& reply)
              << " Command:" << mRequest.GetCommand ();
     onReply(&mRequest, reply);
 }
+
+CommandPackage::CommandPackage(JDWP::JdwpEventModPad mod, JDWP::JdwpSuspendPolicy policy, QObject* parent)
+    : QObject(parent), mMod(mod), mSuspendPolicy(policy)
+{
+
+}
+
+int CommandPackage::getEventGroup(JDWP::JdwpEventKind kind) {
+    int egroup = (int)EventGroup::Unknown;
+    switch(kind) {
+        case JDWP::JdwpEventKind::EK_SINGLE_STEP:
+        case JDWP::JdwpEventKind::EK_BREAKPOINT:
+        case JDWP::JdwpEventKind::EK_METHOD_ENTRY:
+        case JDWP::JdwpEventKind::EK_METHOD_EXIT:
+            egroup = (int)EventGroup::Location;
+            break;
+//            case JdwpEventKind::EK_FRAME_POP:
+//                Q_ASSERT(false);
+//                break;
+        case JDWP::JdwpEventKind::EK_EXCEPTION:
+            egroup = (int)EventGroup::Exception;
+            break;
+//            case JdwpEventKind::EK_USER_DEFINED:
+//                Q_ASSERT(false);
+//                break;
+        case JDWP::JdwpEventKind::EK_THREAD_START:
+        case JDWP::JdwpEventKind::EK_THREAD_DEATH:
+            egroup = (int)EventGroup::Thread;
+            break;
+        case JDWP::JdwpEventKind::EK_CLASS_PREPARE:
+            egroup = (int)EventGroup::Prepare;
+            break;
+//            case JdwpEventKind::EK_CLASS_UNLOAD:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_CLASS_LOAD:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_FIELD_ACCESS:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_FIELD_MODIFICATION:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_EXCEPTION_CATCH:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_METHOD_EXIT_WITH_RETURN_VALUE:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTER:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTERED:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_WAIT:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_WAITED:
+//                Q_ASSERT(false);
+//                break;
+        case JDWP::JdwpEventKind::EK_VM_START:
+            egroup = (int)EventGroup::VmStart;
+            break;
+        case JDWP::JdwpEventKind::EK_VM_DEATH:
+            egroup = (int)EventGroup::VmDeath;
+            break;
+//            case JdwpEventKind::EK_VM_DISCONNECTED:
+//                Q_ASSERT(false);
+//                break;
+        default:
+            egroup = (int)EventGroup::Unknown;
+            break;
+    }
+    return egroup;
+}
+
+
+
+bool CommandPackage::match(JDWP::Composite::ReflectedType::EventObject *pevent,
+                           JDWP::JdwpSuspendPolicy  policy) {
+    if(policy != mSuspendPolicy) {
+        return false;
+    }
+    bool matched = false;
+    auto eventKind = pevent->mEventKind;
+    switch(eventKind) {
+        case JDWP::JdwpEventKind::EK_SINGLE_STEP:
+        case JDWP::JdwpEventKind::EK_BREAKPOINT:
+        case JDWP::JdwpEventKind::EK_METHOD_ENTRY:
+        case JDWP::JdwpEventKind::EK_METHOD_EXIT: {
+            auto event = (JDWP::Composite::ReflectedType::EventLocationEvent*)pevent;
+            if(mMod.mMod.locationOnly.loc == event->mLocation) {
+                onLocation(event, policy, &clear);
+                matched = true;
+            }
+        }
+            break;
+//            case JdwpEventKind::EK_FRAME_POP:
+//                Q_ASSERT(false);
+//                break;
+//        case JDWP::JdwpEventKind::EK_EXCEPTION: {
+//            auto event = (JDWP::Composite::ReflectedType::EventException*)pevent;
+//            qDebug() << "EventException at" << event->mThrowLoc.dex_pc << "to" << event->mCatchLoc.dex_pc;
+//        }
+//            break;
+//            case JdwpEventKind::EK_USER_DEFINED:
+//                Q_ASSERT(false);
+//                break;
+//        case JDWP::JdwpEventKind::EK_THREAD_START:
+//        case JDWP::JdwpEventKind::EK_THREAD_DEATH: {
+//            auto event = (JDWP::Composite::ReflectedType::EventThreadChange*)pevent;
+//            qDebug() << "EventThreadChange" << event->mThreadId;
+//        }
+//            break;
+        case JDWP::JdwpEventKind::EK_CLASS_PREPARE: {
+            auto event = (JDWP::Composite::ReflectedType::EventClassPrepare*)pevent;
+            auto sig = event->mSignature.mid(1, event->mSignature.length() - 2);
+            sig.replace('/', '.');
+            if(sig == mMod.mArray) {
+                onClassPrepare(event, policy, &clear);
+            }
+        }
+            break;
+//            case JdwpEventKind::EK_CLASS_UNLOAD:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_CLASS_LOAD:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_FIELD_ACCESS:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_FIELD_MODIFICATION:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_EXCEPTION_CATCH:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_METHOD_EXIT_WITH_RETURN_VALUE:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTER:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_CONTENDED_ENTERED:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_WAIT:
+//                Q_ASSERT(false);
+//                break;
+//            case JdwpEventKind::EK_MONITOR_WAITED:
+//                Q_ASSERT(false);
+//                break;
+//        case JDWP::JdwpEventKind::EK_VM_START: {
+//            auto event = (JDWP::Composite::ReflectedType::EventVmStart*)pevent;
+//            qDebug() << "EventVmStart" << event->mThreadId;
+//        }
+//            break;
+//        case JDWP::JdwpEventKind::EK_VM_DEATH: {
+//            auto event = (JDWP::Composite::ReflectedType::EventVmDeath*)pevent;
+//            qDebug() << "EventVmDeath";
+//        }
+//            break;
+//            case JdwpEventKind::EK_VM_DISCONNECTED:
+//                Q_ASSERT(false);
+//                break;
+        default:
+//            qDebug() << "Unknown EventKind?" << eventKind;
+            break;
+    }
+    return matched;
+}
+
+CommandPackage::~CommandPackage() {
+}
+
+
