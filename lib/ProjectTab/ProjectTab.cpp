@@ -61,12 +61,12 @@ ProjectTab::ProjectTab(QWidget *parent) :
 
     // button
     connect(ui->mButtonBox->button (QDialogButtonBox::Save), &QPushButton::clicked, [this]() {
-                projinfoset ("CompileCmd", ui->mCompileEdit->text ());
-            });
+        ProjectInfo::current()->config().m_compileCmd = ui->mCompileEdit->text ();
+    });
     connect(ui->mButtonBox->button (QDialogButtonBox::Reset), &QPushButton::clicked, [this]{
-                ui->mCompileEdit->setText (projinfo ("CompileCmd"));
-                readProjectInfo();
-            });
+        ui->mCompileEdit->setText (ProjectInfo::current()->config().m_compileCmd);
+        readProjectInfo();
+    });
 
     connect(ui->mEntryLabel, SIGNAL(linkActivated(QString)),
             this, SLOT(openActivityInEditor(QString)));
@@ -115,20 +115,13 @@ void ProjectTab::openProject (QString projectName)
         cmdmsg ()->addCmdMsg("project " + projectName + " not exist");
         return;
     }
-    projinfoset ("ProjectName", projectName);
-    projinfoset ("ProjectCur", projectName);
-
-    QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
-
-    Configuration cfg(cfgPath);
-    projinfoset ("CompileCmd", cfg.getString ("ProjectInfo", "CompileCmd"));
-    projinfoset ("DecompileCmd", cfg.getString ("ProjectInfo", "DecompileCmd"));
+    auto pinfo = ProjectInfo::openProject(projectName);
 
     mProjectName = projectName;
 
     readProjectInfo();
-    projinfoset ("PackageName", mPackageName);
-    projinfoset ("ActivityEntryName", mActivityEntryName);
+    pinfo->config().m_packageName = mPackageName;
+    pinfo->config().m_activityEntryName = mActivityEntryName;
 
 //    auto analysis = new SmaliAnalysis(this);
 //    analysis->addSmaliFolder (mSmaliDirectory);
@@ -143,21 +136,7 @@ void ProjectTab::closeProject()
     mHasProject = false;
     cmdmsg ()->addCmdMsg ("closing project " + mProjectName);
 
-    projinfoset ("ProjectName", QString());
-    projinfoset ("ProjectLast", mProjectName);
-    projinfoset ("PackageName", QString());
-    projinfoset ("ActivityEntryName", QString());
-
-
-    QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
-    QFile cfgFile(cfgPath);
-    if(cfgFile.exists ()) {
-        cfgFile.remove ();
-    }
-
-    Configuration cfg(cfgPath);
-    cfg.setString ("ProjectInfo", "CompileCmd", projinfo ("CompileCmd"));
-    cfg.setString ("ProjectInfo", "DecompileCmd", projinfo ("DecompileCmd"));
+    ProjectInfo::closeProject();
 
 //    auto analysis = SmaliAnalysis::instance ();
 //    delete analysis;
@@ -188,7 +167,7 @@ void ProjectTab::onActivityClick (QListWidgetItem *item)
 void ProjectTab::readProjectInfo ()
 {
     if(mHasProject) {
-        QString cmd = projinfo ("CompileCmd");
+        QString cmd = ProjectInfo::current()->config().m_compileCmd;
         ui->mCompileEdit->setText(cmd);
         readProjectYmlInfo();
         readProjectManifestInfo();

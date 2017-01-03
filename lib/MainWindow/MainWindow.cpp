@@ -291,7 +291,7 @@ void MainWindow::actionAboutArt()
 
 void MainWindow::actionBuild()
 {
-    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
     mRunDevice->onBuildAction();
@@ -299,7 +299,7 @@ void MainWindow::actionBuild()
 
 void MainWindow::actionInstall()
 {
-    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
     mRunDevice->onInstallAction();
@@ -307,7 +307,7 @@ void MainWindow::actionInstall()
 
 void MainWindow::actionRun()
 {
-    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
     if(needToRebuild ()) {
@@ -321,7 +321,7 @@ void MainWindow::actionRun()
 
 void MainWindow::actionDebug()
 {
-    if(!ProjectInfo::instance ()->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
     mRunDevice->onStopAction();
@@ -335,13 +335,13 @@ void MainWindow::actionDebug()
 
 bool MainWindow::needToRebuild ()
 {
-    auto project = ProjectInfo::instance ();
-    QFileInfo buildFile(project->getProjectPath() + "/Bin/signed.apk");
+    auto pinfo = ProjectInfo::current();
+    QFileInfo buildFile(pinfo->getBuildPath() + "/signed.apk");
     if(!buildFile.exists()) {
         return true;
     }
     auto buildModified = buildFile.lastModified ();
-    QDirIterator it(project->getProjectPath() + "/Project", QDirIterator::Subdirectories);
+    QDirIterator it(pinfo->getSourcePath(), QDirIterator::Subdirectories);
     while (it.hasNext()) {
         auto filePath = it.next();
         auto info = QFileInfo(filePath);
@@ -388,7 +388,7 @@ void MainWindow::openFile(QString fileName)
     if (!fileName.endsWith(".apk") && !fileName.endsWith(".dex")) {
         return;
     }
-    if(ProjectInfo::instance ()->isProjectOpened ()) {
+    if(ProjectInfo::isProjectOpened ()) {
         QMessageBox msg(QMessageBox::Warning,
                         tr("an opened project has been found"),
                         tr("do you want to close current project?"),

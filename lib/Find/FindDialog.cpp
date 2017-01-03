@@ -59,7 +59,7 @@ bool FindDialog::closeAll ()
 
 void FindDialog::onProjectOpened (QStringList args)
 {
-    QString projectPath = GetProjectsProjectPath (projinfo ("ProjectName"));
+    QString projectPath = ProjectInfo::current()->getSourcePath();
     mFindConfig->reset (projectPath, projectPath);
 }
 
@@ -71,7 +71,12 @@ void FindDialog::onProjectClosed ()
 
 void FindDialog::onFindAdvance (const QString& dir)
 {
-    QString projectPath = GetProjectsProjectPath (projinfo ("ProjectName"));
+    auto pinfo = ProjectInfo::current();
+    if(pinfo == nullptr) {
+        return;
+    }
+
+    QString projectPath = pinfo->getSourcePath();
     if(dir.isEmpty ()) {
         mFindConfig->reset (projectPath, projectPath);
     } else {

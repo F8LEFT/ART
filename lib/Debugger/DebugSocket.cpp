@@ -175,7 +175,7 @@ bool DebugSocket::tryBindJdwp()
     // get Process pid
     int pid = mPid;
     AdbUtil adbUtil;
-    auto deviceId = projinfo("DeviceId");
+    auto deviceId = ProjectInfo::sConfig().m_deviceId;
     auto prefix = deviceId.isEmpty() ?  QString() : "-s " + deviceId + " ";
 
     // open Debug port

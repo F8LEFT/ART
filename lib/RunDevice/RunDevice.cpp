@@ -68,7 +68,7 @@ void RunDevice::accept()
     if (devMsg.size() > 1) {
         mDeviceId = devMsg.last();
         useDefault = ui->mSameCheckBox->isChecked();
-        projinfoset("DeviceId", mDeviceId);
+        ProjectInfo::SConfig().m_deviceId = mDeviceId;
     }
     QDialog::accept();
 }
@@ -80,12 +80,12 @@ void RunDevice::reject()
 
 void RunDevice::onBuildAction ()
 {
-    auto* project = ProjectInfo::instance ();
-    if(!project->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
+    auto pinfo = ProjectInfo::current();
     // build
-    QString buildCmd = project->getInfo ("CompileCmd");
+    QString buildCmd = pinfo->config().m_compileCmd;
     cmdexec(buildCmd, CmdMsg::cmd);
 
     // signed
@@ -94,71 +94,68 @@ void RunDevice::onBuildAction ()
              << "./thirdparty/signapk/signapk.jar"
              << "./cfgs/keystore/FDA.x509.pem"
              << "./cfgs/keystore/FDA.pk8"
-             << project->getProjectPath() + "/Bin/unsigned.apk"
-             << project->getProjectPath() + "/Bin/signed.apk";
+             << pinfo->getBuildPath() + "/unsigned.apk"
+             << pinfo->getBuildPath() + "/signed.apk";
     cmdexec("java", signArgs, CmdMsg::cmd);
 }
 
 
 void RunDevice::onInstallAction()
 {
-    auto* project = ProjectInfo::instance ();
-    if(!project->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
+    auto pinfo = ProjectInfo::current();
     QString devId = getValidDeviceId();
     if (devId.isEmpty())
         return;
-    cmdmsg()->addCmdMsg ("install apk package " + project->getInfo ("PackageName"));
+    cmdmsg()->addCmdMsg ("install apk package " + pinfo->config().m_packageName);
 
-    QString projectRoot = project->getProjectPath();
     QStringList args;
     args << "-s"
          << mDeviceId
          << "install"
          << "-r"
-         << projectRoot + "/Bin/signed.apk";
+         << pinfo->getBuildPath() + "/signed.apk";
     ScriptEngine::instance()->adbShell(args);
 }
 
 void RunDevice::onRunAction()
 {
-    auto* project = ProjectInfo::instance ();
-    if(!project->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
+    auto pinfo = ProjectInfo::current();
+
     QString devId = getValidDeviceId();
     if (devId.isEmpty())
         return;
 
-    cmdmsg()->addCmdMsg ("Running apk file " + project->getInfo ("PackageName"));
+    cmdmsg()->addCmdMsg ("Running apk file " + pinfo->config().m_packageName);
 
-
-    QString projectRoot = project->getProjectPath();
     QStringList args;
     args << "-s"
          << mDeviceId
          << "shell"
          << "am"
          << "start"
-         << project->getInfo ("PackageName") +
-                 "/" + project->getInfo ("ActivityEntryName");
+         << pinfo->config().m_packageName + "/" + pinfo->config().m_activityEntryName;
     ScriptEngine::instance()->adbShell(args);
 }
 
 void RunDevice::onDebugAction()
 {
-    auto* project = ProjectInfo::instance ();
-    if(!project->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
+    auto pinfo = ProjectInfo::current();
+
     QString devId = getValidDeviceId();
     if (devId.isEmpty())
         return;
 
-    cmdmsg()->addCmdMsg ("Running apk file " + project->getInfo ("PackageName"));
+    cmdmsg()->addCmdMsg ("Running apk file " + pinfo->config().m_packageName);
 
-    QString projectRoot = project->getProjectPath();
     QStringList args;
     args << "-s"
          << mDeviceId
@@ -167,32 +164,31 @@ void RunDevice::onDebugAction()
          << "start"
          << "-D"
          << "-n"
-         << project->getInfo ("PackageName") +
-                 "/" + project->getInfo ("ActivityEntryName");
+         << pinfo->config().m_packageName + "/" + pinfo->config().m_activityEntryName;
     ScriptEngine::instance()->adbShell(args);
-    cmdexec("DebugStart", project->getInfo ("PackageName"));
+    cmdexec("DebugStart", pinfo->config().m_packageName);
 }
 
 void RunDevice::onStopAction()
 {
-    auto* project = ProjectInfo::instance ();
-    if(!project->isProjectOpened ()) {
+    if(!ProjectInfo::isProjectOpened()) {
         return;
     }
+    auto pinfo = ProjectInfo::current();
+
     QString devId = getValidDeviceId();
     if (devId.isEmpty())
         return;
 
-    cmdmsg()->addCmdMsg ("Stoping apk file " + project->getInfo ("PackageName"));
+    cmdmsg()->addCmdMsg ("Stoping apk file " + pinfo->config().m_packageName);
 
-    QString projectRoot = project->getProjectPath();
     QStringList args;
     args << "-s"
          << mDeviceId
          << "shell"
          << "am"
          << "force-stop"
-         << project->getInfo ("PackageName");
+         << pinfo->config().m_packageName;
     ScriptEngine::instance()->adbShell(args);
 }
 

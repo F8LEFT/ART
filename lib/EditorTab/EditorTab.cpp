@@ -264,7 +264,7 @@ void EditorTab::fileChanged(QString path)
 
 void EditorTab::onProjectOpened (QStringList args)
 {
-    QString cfgPath = ProjectInfo::instance ()->getProjectCfgCurPath ();
+    QString cfgPath = ProjectInfo::current()->getConfigPath();
     Configuration cfg(cfgPath);
 
     auto &openMap = cfg.Uints["EditorTab"];
@@ -275,7 +275,7 @@ void EditorTab::onProjectOpened (QStringList args)
 
 void EditorTab::onProjectClosed ()
 {
-    QString cfgPath = ProjectInfo::instance ()->getProjectCfgLastPath ();
+    QString cfgPath = ProjectInfo::current()->getConfigPath();
     Configuration cfg (cfgPath);
 
     for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {

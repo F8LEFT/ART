@@ -73,7 +73,7 @@ void ChooseProcess::resetProcessInfo()
     ui->mTableWidget->clear();
 
     AdbUtil adbUtil;
-    auto deviceId = projinfo("DeviceId");
+    auto deviceId = ProjectInfo::sConfig().m_deviceId;
     auto procinfo = adbUtil.getProcessInfo(deviceId);
     ui->mTableWidget->setRowCount(procinfo.size());
     ui->mTableWidget->setColumnCount(2);

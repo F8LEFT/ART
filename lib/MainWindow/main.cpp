@@ -21,6 +21,7 @@
 #include <QLocale>
 #include <QDebug>
 #include <QStandardPaths>
+#include <utils/ProjectInfo.h>
 
 bool loadTranslation(QApplication * app);
 
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
     MainWindow* w = new MainWindow;
     w->show();
     int ret = a.exec();
+    ProjectInfo::saveAllConfig();
     delete w;
 
     // auto save config
