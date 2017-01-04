@@ -88,14 +88,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mFileTreeView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(treeFileMenuRequested(QPoint)));
 
-    // BookMark signal
-    connect(mBookMarkManager, SIGNAL(addBookMark(BookMark*,QListWidgetItem*)),
-            this, SLOT(addBookMark(BookMark*,QListWidgetItem*)));
-    connect(mBookMarkManager, SIGNAL(delBookMark(QListWidgetItem*)),
-            this, SLOT(delBookMark(QListWidgetItem*)));
-    connect(mBookMarkListWidget, SIGNAL(itemClicked(QListWidgetItem*)),
-            this, SLOT(bookmarkClick(QListWidgetItem*)));
-
     // command line signal
     auto *cmdMsgUtil = CmdMsg::instance ();
     connect(cmdMsgUtil, SIGNAL(addCmdMsg(QString)), this, SLOT(onCmdMessage(QString)));
@@ -475,9 +467,9 @@ void MainWindow::setupDockWindows()
     mFileTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
     mFileTreeView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    mBookMarkManager = BookMarkManager::instance(this);
-    mBookMarkListWidget = new QListWidget(this);
-    mBookMarkListWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    mBookMarkManager = BookMarkManager::instance();
+    mBookMarkListView = new BookMarkView(this);
+    mBookMarkListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     mFindDialog = new FindDialog (this);
     mFindDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -496,7 +488,7 @@ void MainWindow::setupDockWindows()
     mDockBookMark = new QDockWidget(tr("BookMark"), this);
     mDockBookMark->setObjectName("BookMark");
     mDockBookMark->setAllowedAreas(Qt::AllDockWidgetAreas);
-    mDockBookMark->setWidget(mBookMarkListWidget);
+    mDockBookMark->setWidget(mBookMarkListView);
     mDockBookMark->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
 
     tabifyDockWidget(mDockFileTree, mDockBookMark);
@@ -594,30 +586,6 @@ void MainWindow::onOpenWindow (QStringList args)
             break;
         }
     }
-}
-
-void MainWindow::addBookMark(BookMark *pBook, QListWidgetItem *pItem)
-{
-    pItem->setSizeHint(QSize(0, pBook->height()));
-
-    mBookMarkListWidget->addItem(pItem);
-    mBookMarkListWidget->setItemWidget(pItem, pBook);
-}
-
-void MainWindow::delBookMark(QListWidgetItem *pItem)
-{
-    Q_ASSERT(pItem != nullptr);
-    BookMark* pBook = (BookMark*)mBookMarkListWidget->itemWidget(pItem);
-    Q_ASSERT(pBook != nullptr);
-    delete pBook;
-    delete pItem;
-}
-
-void MainWindow::bookmarkClick(QListWidgetItem *item)
-{
-    BookMark* pBook = (BookMark*)mBookMarkListWidget->itemWidget(item);
-    Q_ASSERT(pBook != nullptr);
-     pBook->onClicked(pBook);
 }
 
 void MainWindow::setTab(QWidget *widget)

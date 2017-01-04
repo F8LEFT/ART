@@ -275,7 +275,7 @@ void EditorTab::onProjectOpened (QStringList args)
 
 void EditorTab::onProjectClosed ()
 {
-    QString cfgPath = ProjectInfo::current()->getConfigPath();
+    QString cfgPath = ProjectInfo::last()->getConfigPath();
     Configuration cfg (cfgPath);
 
     for (int i = 0, count = ui->mEditStackedWidget->count (); i < count; i++) {

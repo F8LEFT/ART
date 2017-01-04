@@ -106,11 +106,6 @@ protected slots:
 
     void onOpenWindow(QStringList args);
 
-    // BookMark message
-    void addBookMark(BookMark* pBook, QListWidgetItem *pItem);
-    void delBookMark(QListWidgetItem *pItem);
-    void bookmarkClick(QListWidgetItem* item);
-
     // WidgetTab
     void addQWidgetTab(QWidget* qWidget, QString nativeName);
     void addQWidgetTab(QWidget* qWidget);
@@ -144,7 +139,7 @@ private:
     QDockWidget* mDockFileTree = nullptr;
 
     // BookMark
-    QListWidget* mBookMarkListWidget = nullptr;
+    QListView* mBookMarkListView = nullptr;
     BookMarkManager* mBookMarkManager = nullptr;
     QDockWidget* mDockBookMark = nullptr;
 

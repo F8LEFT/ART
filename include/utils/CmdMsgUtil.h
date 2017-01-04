@@ -63,5 +63,7 @@ public:
     static ProcType getProcType(QString p);
 };
 
+Q_DECLARE_METATYPE(CmdMsg::ProcInfo)
+
 
 #endif //PROJECT_CMDMSGUTIL_H

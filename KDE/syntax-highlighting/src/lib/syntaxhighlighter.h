@@ -21,10 +21,28 @@
 #include "ksyntaxhighlighting_export.h"
 
 #include "abstracthighlighter.h"
+#include "state.h"
+#include "foldingregion.h"
+
 
 #include <QSyntaxHighlighter>
 
+
+
 namespace KSyntaxHighlighting {
+    // Expending BlockData, for storing extra data in other place
+    class TextBlockUserData : public QTextBlockUserData
+    {
+    public:
+        virtual ~TextBlockUserData() {
+            if(data != nullptr) {
+                delete data;
+            }
+        };
+        State state;
+        QVector<FoldingRegion> foldingRegions;
+        QTextBlockUserData* data = nullptr;
+    };
 
 class SyntaxHighlighterPrivate;
 

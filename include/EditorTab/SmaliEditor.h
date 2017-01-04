@@ -55,25 +55,12 @@ public:
 private:
     void setAnnotationFold(SmaliParser::AnnotationContext* annotation);
     void setFoldableArea(int startLine, int endLine, int type);
-    SmaliBlockData* blockDataAtLine(int line);
-    SmaliBlockData* blockData(QTextBlock& block);
 
 private:
     SmaliHighlight *m_highlighter;
     QSharedPointer<SmaliFile> m_smalidata;
 
     friend class SmaliSideBar;
-};
-
-class SmaliData: public QTextBlockUserData
-{
-public:
-    SmaliData();
-    ~SmaliData();
-
-private:
-    bool m_breakpoint;
-
 };
 
 class SmaliSideBar: public TextEditorSidebar

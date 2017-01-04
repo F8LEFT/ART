@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     auto conf = Configuration::instance ();
     loadTranslation (&a);
 
-    qRegisterMetaType<CmdMsg::ProcInfo>("CmdMsg::ProcInfo");
+//    qRegisterMetaType<>("CmdMsg::ProcInfo");
 
     // init global class
     ScriptEngine::instance();

@@ -11,13 +11,14 @@
 #include <utils/ScriptEngine.h>
 #include <utils/Configuration.h>
 
-
 #include <QFile>
 #include <QApplication>
 #include <QPalette>
 #include <QTextBlock>
 #include <QPainter>
 #include <QDebug>
+#include <QShortcut>
+#include <BookMark/BookMarkManager.h>
 
 TextEditor::TextEditor(QWidget *parent) :
         QPlainTextEdit(parent),
@@ -27,6 +28,7 @@ TextEditor::TextEditor(QWidget *parent) :
     setLineWrapMode(QPlainTextEdit::NoWrap);
 
     resetTheme(QStringList());
+
 
     connect(this, &QPlainTextEdit::blockCountChanged, this, &TextEditor::updateSidebarGeometry);
     connect(this, &QPlainTextEdit::updateRequest, this, &TextEditor::updateSidebarArea);
@@ -63,8 +65,8 @@ bool TextEditor::openFile(const QString &fileName, int iLine)
 
     clear();
 
-
     setDocumentTitle(fileName);
+    m_filePath = fileName;
     setPlainText(QString::fromUtf8(f.readAll()));
     return true;
 }
@@ -219,7 +221,7 @@ QTextBlock TextEditor::blockAtPosition(int y) const
 }
 
 QTextBlock TextEditor::blockAtLine(int l) const {
-    return document()->findBlockByLineNumber(l);
+    return document()->findBlockByLineNumber(l - 1);
 }
 
 bool TextEditor::isFoldable(const QTextBlock &block) const
@@ -296,15 +298,15 @@ void TextEditor::gotoLine(int line, int column, bool centerLine) {
 }
 
 int TextEditor::currentLine() {
-    QTextCursor cursor = textCursor();
-    QTextLayout *pLayout = cursor.block().layout();
-    int nCurpos = cursor.position() - cursor.block().position();
-    return pLayout->lineForTextPosition(nCurpos).lineNumber() +
-            cursor.block().firstLineNumber() + 1;
+    return textCursor().blockNumber() + 1;
+//    QTextLayout *pLayout = cursor.block().layout();
+//    int nCurpos = cursor.position() - cursor.block().position();
+//    return pLayout->lineForTextPosition(nCurpos).lineNumber() +
+//            cursor.block().firstLineNumber() + 1;
 }
 
 bool TextEditor::saveFile() {
-    QFile file(documentTitle());
+    QFile file(m_filePath);
     if (!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
         return false;
     }
@@ -320,9 +322,59 @@ bool TextEditor::reload()
     return false;
 }
 
+UserBlockExtraData *TextEditor::blockData(QTextBlock &block) {
+    auto userdata = (KSyntaxHighlighting::TextBlockUserData*)block.userData();
+    if(userdata == nullptr) {
+        userdata = new KSyntaxHighlighting::TextBlockUserData();
+        block.setUserData(userdata);
+    }
+    if(userdata->data == nullptr) {
+        userdata->data = new UserBlockExtraData();
+    }
+    return (UserBlockExtraData *)userdata->data;
+}
 
+void TextEditor::toggleBookmark() {
+    BookMarkManager::instance()->toggleBookmark(m_filePath, currentLine());
+    updateBookMark();
+}
 
+void TextEditor::keyPressEvent(QKeyEvent *e) {
+    if(e->type() == QEvent::KeyPress && e->modifiers() == Qt::ControlModifier) {
+        switch (e->key()) {
+            case Qt::Key_M:
+                toggleBookmark();
+                return;
+            default:
+                break;
+        }
+    }
+    QPlainTextEdit::keyPressEvent(e);
+}
 
+void TextEditor::updateBookMark() {
+    auto bookmarks = BookMarkManager::instance()->getBookMarks(m_filePath);
+    TextMarks marks;
+    for(auto bookmark: bookmarks) {
+        marks.push_back(bookmark);
+    }
+    updateTextMark(marks);
+}
+
+void TextEditor::updateTextMark(TextMarks marks) {
+    for(auto mark: marks) {
+        auto line = mark->lineNumber();
+        auto block = blockAtLine(line);
+        if(!block.isValid()) {
+            continue;
+        }
+        auto data = blockData(block);
+        if(!data->m_marks.contains(mark)) {
+            data->m_marks.push_back(mark);
+        }
+        mark->updateBlock(block);
+    }
+}
 
 // -------------------class TextEditorSidebar---------------------------
 

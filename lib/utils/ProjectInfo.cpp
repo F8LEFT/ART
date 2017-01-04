@@ -12,56 +12,6 @@
 #include <utils/ProjectInfo.h>
 
 
-
-//ProjectInfo *ProjectInfo::instance ()
-//{
-//    static ProjectInfo* mInstance = nullptr;
-//    if(mInstance == nullptr) {
-//        mInstance = new ProjectInfo;
-//    }
-//    return mInstance;
-//}
-//
-//QString ProjectInfo::getInfo(QString key)
-//{
-//    return mMap[key];
-//}
-//
-//void ProjectInfo::setInfo(QString key, QString value)
-//{
-//    mMap[key] = value;
-//}
-//
-//void ProjectInfo::reset()
-//{
-//    mMap.clear();
-//}
-//
-//ProjectInfo::ProjectInfo()
-//{
-//
-//}
-//
-//QString ProjectInfo::getProjectPath ()
-//{
-//    return GetProjectsPath (mMap["ProjectName"]);
-//}
-//
-//QString ProjectInfo::getProjectCfgLastPath ()
-//{
-//    return GetProjectsPath (mMap["ProjectLast"]) + "/Config.xml";
-//}
-//
-//QString ProjectInfo::getProjectCfgCurPath ()
-//{
-//    return GetProjectsPath (mMap["ProjectCur"]) + "/Config.xml";
-//}
-//
-//bool ProjectInfo::isProjectOpened ()
-//{
-//    return !mMap["ProjectName"].isEmpty ();
-//}
-
 ProjectInfo::SConfig ProjectInfo::m_sconfig;
 
 ProjectInfo* ProjectInfo::m_current = nullptr;
@@ -90,7 +40,6 @@ bool ProjectInfo::closeProject() {
 }
 
 ProjectInfo::ProjectInfo(QString name) {
-    // TODO load conformation from configuration
     m_config.m_projectName = name;
     Configuration cfg(getConfigPath());
     m_config.m_compileCmd = cfg.getString("ProjectInfo", "CompileCmd");
@@ -119,7 +68,6 @@ void ProjectInfo::saveAllConfig() {
         cfg.setString ("ProjectInfo", "CompileCmd", info->m_config.m_compileCmd);
         cfg.setString ("ProjectInfo", "DecompileCmd", info->m_config.m_decompileCmd);
     }
-
 }
 
 

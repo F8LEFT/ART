@@ -13,36 +13,38 @@
 #ifndef BOOKMARK_H
 #define BOOKMARK_H
 
+#include <EditorTab/TextMark.h>
+
 #include <QWidget>
+#include <QTextBlock>
 
-namespace Ui {
-class BookMark;
-}
-
-
-class BookMark : public QWidget
-{
-    Q_OBJECT
-
+class BookMarkManager;
+class BookMark: public TextMark {
 public:
-    explicit BookMark(QString file, QWidget *parent = 0);
-    ~BookMark();
+    BookMark(int lineNumber, BookMarkManager *manager);
 
-    void setHint(QString hint);
-    void setLine(int line);
+    void updateLineNumber(int lineNumber);
+    void move(int line);
+    void updateBlock(const QTextBlock &block);
+    void updateFileName(const QString &fileName);
+    void setNote(const QString &note);
+    void updateNote(const QString &note);
+    void removedFromEditor();
 
-    QString filePath();
-    QString hint();
-    int line();
+    QString lineText() const;
+    QString note() const;
 
-    void onClicked(BookMark* pBook);
-signals:
-
+    void paintMark(QPainter *painter, const QRect &rect, const QPalette &palette) const;
+    QSize sizeHint();
 private:
-    Ui::BookMark *ui;
-    QString mFilePath;
-    QString mHint;
-    int mLine;
+    BookMarkManager *m_manager;
+    QString m_lineText;
+    QString m_note;
+
+    int m_fontWidth;
+    int m_fontHeight;
 };
+
+Q_DECLARE_METATYPE(BookMark*)
 
 #endif // BOOKMARK_H

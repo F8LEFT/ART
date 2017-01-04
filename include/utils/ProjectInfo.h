@@ -19,30 +19,6 @@
 #include <QString>
 #include <QObject>
 
-//#define projinfoset(x,y) ProjectInfo::instance()->setInfo(x, y)
-//#define projinfo(x) ProjectInfo::instance()->getInfo(x)
-//
-//class ProjectInfo {
-//public:
-//    // make sure this has only one instance
-//    static ProjectInfo* instance();
-//
-//    QString getInfo(QString key);
-//    void setInfo(QString key, QString value);
-//    void reset();
-//    //such key can be used (key, set by)
-//    //projectName       ProjectTab.cpp
-//    //compileCmd        OpenApk.cpp, ProjectTab.cpp
-//    //decompileCmd      OpenApk.cpp
-//    QString getProjectPath();
-//    QString getProjectCfgLastPath();
-//    QString getProjectCfgCurPath();
-//    bool isProjectOpened();
-//private:
-//    ProjectInfo();
-//    QMap<QString, QString> mMap;
-//};
-
 class ProjectInfo: public QObject {
 public:
     struct SConfig {
@@ -55,6 +31,13 @@ public:
 
         QString m_packageName;
         QString m_activityEntryName;
+    };
+    struct BreakPoint {
+        QString m_sourceFile;
+        QString m_classSig;
+        QString m_methodName;
+        QString m_methodSign;
+// codeIdx? or line number?
     };
 private:
     Q_OBJECT

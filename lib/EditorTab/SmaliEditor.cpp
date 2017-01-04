@@ -13,20 +13,6 @@
 
 
 #include <QPainter>
-// ---------------------------- BlockData ---------------
-class SmaliBlockData : public QTextBlockUserData {
-public:
-    SmaliBlockData() {};
-    ~SmaliBlockData() {};
-
-    bool m_bookmark = false;    // How to change bookmark to blockdata?
-
-    bool m_breakpoint = false;
-    bool m_foldable = false;
-    bool m_foloded = false;
-
-    int m_foldType = 0;
-};
 // ------------------------------------------------------
 
 SmaliEditor::SmaliEditor(QWidget *parent)
@@ -60,10 +46,10 @@ void SmaliEditor::setTheme(const KSyntaxHighlighting::Theme &theme)
 
 bool SmaliEditor::isFoldable(const QTextBlock &block) const
 {
-    auto userdata = (SmaliBlockData*) block.userData();
-    if(userdata != nullptr) {
-        return userdata->m_foldable;
-    }
+//    auto userdata = (SmaliBlockData*) block.userData();
+//    if(userdata != nullptr) {
+//        return userdata->m_foldable;
+//    }
     return false;
 }
 
@@ -79,19 +65,7 @@ bool SmaliEditor::isFolded(const QTextBlock &block) const
 
 QTextBlock SmaliEditor::findFoldingRegionEnd(const QTextBlock &startBlock) const
 {
-    auto userdata = (SmaliBlockData*) startBlock.userData();
-    if(userdata == nullptr)
-        return QTextBlock();
-    auto type = userdata->m_foldType;
-    auto block = startBlock.next();
-    while(block.isValid()) {
-        userdata = (SmaliBlockData*) block.userData();
-        if(userdata != nullptr && userdata->m_foldType == type) {
-            break;
-        }
-        block = block.next();
-    }
-    return block;
+    return QTextBlock();
 }
 
 int SmaliEditor::sidebarWidth() const
@@ -116,16 +90,16 @@ void SmaliEditor::sidebarPaintEvent(QPaintEvent *event)
     int top = blockBoundingGeometry(block).translated(contentOffset()).top();
     int bottom = top + blockBoundingRect(block).height();
 
-    const auto foldingMarkerSize = fontMetrics().lineSpacing();
+//    const auto foldingMarkerSize = fontMetrics().lineSpacing();
 
     while (block.isValid() && top <= event->rect().bottom()) {
         // breakpoint
-        auto blockdata = (SmaliBlockData*)block.userData();
-        if(blockdata != nullptr && blockdata->m_breakpoint) {
-            QPixmap image(":/images/breakpoint.png");
-            painter.drawPixmap(1, top + 1,
-                               foldingMarkerSize - 2, foldingMarkerSize - 2, image);
-        }
+//        auto blockdata = (SmaliBlockData*)block.userData();
+//        if(blockdata != nullptr && blockdata->m_breakpoint) {
+//            QPixmap image(":/images/breakpoint.png");
+//            painter.drawPixmap(1, top + 1,
+//                               foldingMarkerSize - 2, foldingMarkerSize - 2, image);
+//        }
 
         block = block.next();
         top = bottom;
@@ -141,21 +115,22 @@ void SmaliEditor::updateSidebarGeometry() {
 }
 
 void SmaliEditor::reloadSmaliData() {
-    m_smalidata.reset(new SmaliFile("", toPlainText().toStdString()));
-
-    auto root = m_smalidata->m_smali;
-
-    // for foldable
-    auto annotations = root->annotation();
-    for(auto &annotation: annotations) {
-        setAnnotationFold(annotation);
-    }
-    auto methods = root->method();
-    for(auto& method: methods) {
-        auto startLine = method->METHOD_DIRECTIVE()->getSymbol()->getLine() - 1;
-        auto endLine = method->END_METHOD_DIRECTIVE()->getSymbol()->getLine() - 1;
-        setFoldableArea(startLine, endLine, SmaliParser::METHOD_DIRECTIVE);
-    }
+    // TODO parse data in another thread
+//    m_smalidata.reset(new SmaliFile("", toPlainText().toStdString()));
+//
+//    auto root = m_smalidata->m_smali;
+//
+//    // for foldable
+//    auto annotations = root->annotation();
+//    for(auto &annotation: annotations) {
+//        setAnnotationFold(annotation);
+//    }
+//    auto methods = root->method();
+//    for(auto& method: methods) {
+//        auto startLine = method->METHOD_DIRECTIVE()->getSymbol()->getLine() - 1;
+//        auto endLine = method->END_METHOD_DIRECTIVE()->getSymbol()->getLine() - 1;
+//        setFoldableArea(startLine, endLine, SmaliParser::METHOD_DIRECTIVE);
+//    }
 }
 
 void SmaliEditor::setAnnotationFold(SmaliParser::AnnotationContext *annotation) {
@@ -165,48 +140,24 @@ void SmaliEditor::setAnnotationFold(SmaliParser::AnnotationContext *annotation) 
 }
 
 void SmaliEditor::setFoldableArea(int startLine, int endLine, int type) {
-    auto blockstartdata = blockDataAtLine(startLine);
-    auto blockenddata = blockDataAtLine(endLine);
-    // TODO clear data between two block?
-    blockstartdata->m_foldable = true;
-    blockstartdata->m_foldType = type;
-    blockenddata->m_foldType = type;
+//    auto blockstartdata = blockDataAtLine(startLine);
+//    auto blockenddata = blockDataAtLine(endLine);
+//    // TODO clear data between two block?
+//    blockstartdata->m_foldable = true;
+//    blockstartdata->m_foldType = type;
+//    blockenddata->m_foldType = type;
 }
 
-SmaliBlockData *SmaliEditor::blockDataAtLine(int line) {
-    auto block = blockAtLine(line);
-    return blockData(block);
-}
-
-SmaliBlockData *SmaliEditor::blockData(QTextBlock& block) {
-    auto userdata = (SmaliBlockData*)block.userData();
-    if(userdata == nullptr) {
-        userdata = new SmaliBlockData();
-        block.setUserData(userdata);
-    }
-    return userdata;
-}
 
 void SmaliEditor::toggleBreakpoint(QTextBlock &startBlock) {
-    auto userdata = blockData(startBlock);
-    userdata->m_breakpoint = !userdata->m_breakpoint;   // TODO emit breakpoint change
+//    auto userdata = blockData(startBlock);
+//    userdata->m_breakpoint = !userdata->m_breakpoint;   // TODO emit breakpoint change
 
     // redraw document
     document()->markContentsDirty(startBlock.position(), startBlock.next().position() - startBlock.position() + 1);
 
     // update scrollbars
     document()->documentLayout()->documentSizeChanged(document()->documentLayout()->documentSize());
-
-}
-
-
-
-
-SmaliData::SmaliData() {
-
-}
-
-SmaliData::~SmaliData() {
 
 }
 

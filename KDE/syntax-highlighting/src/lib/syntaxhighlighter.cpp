@@ -18,9 +18,7 @@
 #include "syntaxhighlighter.h"
 #include "abstracthighlighter_p.h"
 #include "definition.h"
-#include "foldingregion.h"
 #include "format.h"
-#include "state.h"
 #include "theme.h"
 
 #include <QDebug>
@@ -30,12 +28,6 @@ Q_DECLARE_METATYPE(QTextBlock)
 using namespace KSyntaxHighlighting;
 
 namespace KSyntaxHighlighting {
-class TextBlockUserData : public QTextBlockUserData
-{
-public:
-    State state;
-    QVector<FoldingRegion> foldingRegions;
-};
 
 class SyntaxHighlighterPrivate : public AbstractHighlighterPrivate
 {

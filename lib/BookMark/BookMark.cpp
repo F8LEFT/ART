@@ -7,60 +7,97 @@
 //
 //===----------------------------------------------------------------------===//
 #include "BookMark/BookMark.h"
-#include "ui_BookMark.h"
+
+#include "BookMark/BookMarkManager.h"
 
 #include <utils/CmdMsgUtil.h>
 #include <QtCore/QFileInfo>
+#include <QPainter>
+#include <QFontMetrics>
 
-
-
-BookMark::BookMark(QString file, QWidget *parent) :
-        QWidget(parent),
-        ui(new Ui::BookMark)
+BookMark::BookMark(int lineNumber, BookMarkManager *manager) :
+        TextMark(QString(), lineNumber),
+        m_manager(manager)
 {
-    ui->setupUi(this);
-    mFilePath = file;
-
-    ui->mFileLabel->setText(QFileInfo(mFilePath).fileName ());
-
+    setIcon(m_manager->bookmarkIcon());
+    QFont font;
+    QFontMetrics fontMetrics(font);
+    m_fontWidth = fontMetrics.width('9');
+    m_fontHeight = fontMetrics.height();
 }
 
-BookMark::~BookMark()
+void BookMark::removedFromEditor()
 {
-    delete ui;
+    m_manager->deleteBookmark(this);
 }
 
-void BookMark::setHint(QString hint)
+void BookMark::updateLineNumber(int line)
 {
-    mHint = hint.trimmed();
-    ui->mHintLabel->setText(hint);
+    if (line != lineNumber()) {
+        TextMark::updateLineNumber(line);
+        m_manager->updateBookmark(this);
+    }
 }
 
-void BookMark::setLine(int line)
+void BookMark::move(int line)
 {
-    mLine = line;
-    ui->mLineLabel->setText(QString().number(mLine));
+    if (line != lineNumber()) {
+        TextMark::move(line);
+        m_manager->updateBookmark(this);
+    }
 }
 
-QString BookMark::filePath()
+void BookMark::updateBlock(const QTextBlock &block)
 {
-    return mFilePath;
+    if (m_lineText != block.text()) {
+        m_lineText = block.text();
+        m_manager->updateBookmark(this);
+    }
 }
 
-QString BookMark::hint()
+void BookMark::updateFileName(const QString &fileName)
 {
-    return mHint;
+    const QString &oldFileName = this->fileName();
+    TextMark::updateFileName(fileName);
+    m_manager->updateBookmarkFileName(this, oldFileName);
 }
 
-int BookMark::line()
+void BookMark::setNote(const QString &note)
 {
-    return mLine;
+    m_note = note;
 }
 
-void BookMark::onClicked(BookMark *pBook)
+void BookMark::updateNote(const QString &note)
 {
-    QStringList args;
-    args<< mFilePath
-        << ui->mLineLabel->text();
-    cmdexec("OpenFile", args, CmdMsg::script, true, false);
+    setNote(note);
+    m_manager->updateBookmark(this);
+}
+
+QString BookMark::lineText() const
+{
+    return m_lineText;
+}
+
+QString BookMark::note() const
+{
+    return m_note;
+}
+
+void BookMark::paintMark(QPainter *painter, const QRect &rect,
+                         const QPalette &palette) const {
+    painter->save();
+    painter->setPen(Qt::black);
+    QString name = QFileInfo(fileName()).fileName();
+    QString line =  QString::number(lineNumber());
+
+    painter->drawText(rect.x(), rect.y(), rect.width() - m_fontWidth * line.length() - 2, rect.height(),
+                      Qt::AlignLeft | Qt::AlignTop, name);
+    painter->drawText(rect, Qt::AlignRight | Qt::AlignRight, line);
+    painter->setPen(Qt::gray);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignBottom, m_lineText.trimmed());
+    painter->restore();
+}
+
+QSize BookMark::sizeHint() {
+    return QSize(0, m_fontHeight * 2 + 5);
 }
