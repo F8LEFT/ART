@@ -20,30 +20,6 @@
 #include <QListWidgetItem>
 #include <QObject>
 #include "BookMark.h"
-//class BookMarkManager: public QObject
-//{
-//    Q_OBJECT
-//public:
-//    BookMarkManager(QObject* parnet = nullptr);
-//    static BookMarkManager* instance(QWidget* parent = nullptr);
-//
-//    BookMark* addBookMark(QString file);
-//    bool delBookMark(QString file, BookMark* bookMark);
-//    QMap<BookMark*, QListWidgetItem*> &getFileBookMark(QString file);
-//
-//    static BookMark* findBookMark(
-//            const QMap<BookMark*, QListWidgetItem*> & map,int iLine);
-//signals:
-//    void addBookMark(BookMark* bookMark, QListWidgetItem* listItem);
-//    void delBookMark(QListWidgetItem* listItem);
-//public slots:
-//    void onProjectOpened(QStringList args);
-//    void onProjectClosed();
-//private:
-//    const QIcon m_bookmarkIcon;
-//
-//    QMap<QString, QMap<BookMark*, QListWidgetItem*>> mBookMap;
-//};
 
 
 class BookMarkManager: public QAbstractListModel {
@@ -105,6 +81,7 @@ signals:
     void updateActions(bool enableToggle, int state);
     void currentIndexChanged(const QModelIndex &);
 
+    void updateBookMark(BookMark* bookmark, bool isAdd);
 private:
     void updateActionStatus();
     void loadBookmarks();
@@ -137,6 +114,8 @@ public:
     BookMarkView(QWidget* parent = nullptr);
     ~BookMarkView();
 
+private:
+    BookMarkManager* m_model;
 };
 
 

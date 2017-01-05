@@ -15,6 +15,8 @@
 #include "EditorTab/SmaliEditor.h"
 #include "EditorTab/CodeEditor.h"
 
+#include <utils/CmdMsgUtil.h>
+#include <BookMark/BookMarkManager.h>
 #include <utils/ScriptEngine.h>
 #include <utils/ProjectInfo.h>
 #include <utils/Configuration.h>
@@ -23,7 +25,8 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QInputDialog>
-#include <utils/CmdMsgUtil.h>
+#include <BreakPoint/BreakPointManager.h>
+
 
 EditorTab::EditorTab(QWidget *parent) :
         QWidget(parent),
@@ -54,6 +57,11 @@ EditorTab::EditorTab(QWidget *parent) :
             this, SLOT(onProjectOpened(QStringList)));
     connect(script, SIGNAL(projectClosed(QStringList)),
             this, SLOT(onProjectClosed ()));
+
+    auto bookmarkManager = BookMarkManager::instance();
+    connect(bookmarkManager, &BookMarkManager::updateBookMark, this, &EditorTab::onTextMarkUpdate);
+    auto breakpointManager = BreakPointManager::instance();
+    connect(breakpointManager, &BreakPointManager::updateBreakPoint, this, &EditorTab::onTextMarkUpdate);
 }
 
 EditorTab::~EditorTab()
@@ -75,8 +83,8 @@ bool EditorTab::openFile(QString filePath, int iLine)
     if (iComIdx != -1) {
         ui->mDocumentCombo->setCurrentIndex(iComIdx);
         if(iLine != -1) {
-            TextEditor* p = (TextEditor*)ui->mEditStackedWidget->widget(iComIdx);
-            p->gotoLine (iLine);
+            TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(iComIdx);
+            p->editor()->gotoLine (iLine);
         }
         cmdexec("OpenWindow", "EditorTab", CmdMsg::script, true, false);
         return true;
@@ -283,5 +291,14 @@ void EditorTab::onProjectClosed ()
         cfg.setUint ("EditorTab", p->getFilePath (), p->currentLine ());
     }
     closeAll ();
+}
+
+void EditorTab::onTextMarkUpdate(TextMark *mark, bool isAdd) {
+    QString filePath = mark->fileName();
+    int iComIdx = ui->mDocumentCombo->findData(filePath);
+    if (iComIdx != -1) {
+        TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(iComIdx);
+        p->editor()->updateTextMark(mark, isAdd);
+    }
 }
 

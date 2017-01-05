@@ -13,6 +13,7 @@
 //===----------------------------------------------------------------------===//
 #ifndef EDITORTAB_H
 #define EDITORTAB_H
+#include "TextMark.h"
 
 #include <QWidget>
 
@@ -57,6 +58,7 @@ public slots:
     void onProjectOpened(QStringList args);
     void onProjectClosed ();
 
+    void onTextMarkUpdate(TextMark* mark, bool isAdd);
 private:
     Ui::EditorTab *ui;
 };

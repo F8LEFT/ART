@@ -42,16 +42,14 @@ public:
     void reloadSmaliData();
 
 public:
-    int sidebarWidth() const;
     void sidebarPaintEvent(QPaintEvent *event);
 
-    void updateSidebarGeometry();
 
     bool isFoldable(const QTextBlock &block) const;
     bool isFolded(const QTextBlock &block) const;
     QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
 
-    void toggleBreakpoint(QTextBlock &startBlock);
+    void toggleBreakpoint();
 private:
     void setAnnotationFold(SmaliParser::AnnotationContext* annotation);
     void setFoldableArea(int startLine, int endLine, int type);

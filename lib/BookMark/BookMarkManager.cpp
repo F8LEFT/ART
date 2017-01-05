@@ -29,58 +29,6 @@
 //    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed()));
 //}
 //
-//BookMarkManager *BookMarkManager::instance(QWidget* parent)
-//{
-//    static BookMarkManager* mPtr = nullptr;
-//    if(mPtr == nullptr) {
-//        Q_ASSERT (parent != nullptr && "BookMarkManager must init in WorkSpace");
-//        mPtr = new BookMarkManager(parent);
-//    }
-//    return mPtr;
-//}
-//
-//// INFO BookMark* and QListWidgetItem* will be deleted in WorkSpace.cpp
-//// when delBookMark invoked.
-//BookMark *BookMarkManager::addBookMark(QString file)
-//{
-//    BookMark* pBook = new BookMark(file);
-//    QListWidgetItem* pItem = new QListWidgetItem;
-//
-//    auto& pFileBookMap = mBookMap[file];
-//    pFileBookMap[pBook] = pItem;
-//
-//    addBookMark(pBook, pItem);
-//    return pBook;
-//}
-//
-//bool BookMarkManager::delBookMark(QString file, BookMark *bookMark)
-//{
-//    auto &pFileBookMap = mBookMap[file];
-//
-//    auto it = pFileBookMap.find(bookMark);
-//    if (it != pFileBookMap.end()) {
-//        delBookMark(it.value());
-//        pFileBookMap.erase(it);
-//    }
-//    return true;
-//}
-//
-//QMap<BookMark *,QListWidgetItem *> &BookMarkManager::getFileBookMark (QString file)
-//{
-//    return mBookMap[file];;
-//}
-//
-//BookMark * BookMarkManager::findBookMark (
-//        const QMap<BookMark *,QListWidgetItem *> &map,int iLine)
-//{
-//    for(auto it = map.begin (), itEnd = map.end (); it != itEnd; it++) {
-//        if(it.key ()->line () == iLine) {
-//            return it.key ();
-//        }
-//    }
-//    return nullptr;
-//}
-//
 //void BookMarkManager::onProjectOpened (QStringList args)
 //{
 //
@@ -280,6 +228,8 @@ void BookMarkManager::deleteBookmark(BookMark *bookmark)
     beginRemoveRows(QModelIndex(), idx, idx);
 
     removeBookmarkFromMap(bookmark);
+    updateBookMark(bookmark, false);
+
     delete bookmark;
 
     m_bookmarksList.removeAt(idx);
@@ -510,6 +460,7 @@ void BookMarkManager::addBookmark(BookMark *bookmark, bool userset)
     addBookmarkToMap(bookmark);
 
     m_bookmarksList.append(bookmark);
+    updateBookMark(bookmark, true);
 
     endInsertRows();
     if (userset) {
@@ -517,6 +468,7 @@ void BookMarkManager::addBookmark(BookMark *bookmark, bool userset)
         saveBookmarks();
     }
     selectionModel()->setCurrentIndex(index(m_bookmarksList.size()-1 , 0, QModelIndex()), QItemSelectionModel::Select | QItemSelectionModel::Clear);
+
 }
 
 /* Adds a new bookmark based on information parsed from the string. */
@@ -615,8 +567,16 @@ QList<BookMark *> BookMarkManager::getBookMarks(QString fileName) {
 }
 
 BookMarkView::BookMarkView(QWidget *parent) : QListView(parent) {
+    m_model = BookMarkManager::instance();
+
     setItemDelegate(new BookMarkDelegate);
-    setModel(BookMarkManager::instance());
+    setModel(m_model);
+
+    connect(this, &BookMarkView::clicked, [this](const QModelIndex& index) {
+        m_model->gotoBookmark(m_model->data(index, Qt::DisplayRole).value<BookMark*>());
+    });
+
+
 }
 
 BookMarkView::~BookMarkView() {

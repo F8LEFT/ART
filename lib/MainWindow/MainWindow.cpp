@@ -467,9 +467,11 @@ void MainWindow::setupDockWindows()
     mFileTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
     mFileTreeView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    mBookMarkManager = BookMarkManager::instance();
     mBookMarkListView = new BookMarkView(this);
     mBookMarkListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    mBreakPointListView = new BreakPointView(this);
+    mBreakPointListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     mFindDialog = new FindDialog (this);
     mFindDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -492,6 +494,14 @@ void MainWindow::setupDockWindows()
     mDockBookMark->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
 
     tabifyDockWidget(mDockFileTree, mDockBookMark);
+
+    mDockBreakMark = new QDockWidget(tr("BreakPoint"), this);
+    mDockBreakMark->setObjectName("BreakMark");
+    mDockBreakMark->setAllowedAreas(Qt::AllDockWidgetAreas);
+    mDockBreakMark->setWidget(mBreakPointListView);
+    mDockBreakMark->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+
+    tabifyDockWidget(mDockBookMark, mDockBreakMark);
 
     mDockCommand = new QDockWidget(tr("Messages"), this);
     mDockCommand->setObjectName("Message");

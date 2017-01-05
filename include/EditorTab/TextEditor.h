@@ -22,6 +22,7 @@
 #include <QPlainTextEdit>
 #include <syntaxhighlighter.h>
 #include <QShortcut>
+#include <QTimer>
 
 
 class TextEditorSidebar;
@@ -44,8 +45,11 @@ public:
     void gotoLine (int line,int column = 0,bool centerLine = true);
     int currentLine();
 
+    void updateTextMark(TextMark* textMark, bool add);
 public slots:
     void toggleBookmark();
+    void editorContentsChange(int position, int charsRemoved, int charsAdded);
+
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     virtual void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
@@ -64,6 +68,12 @@ protected:
 
     void updateBookMark();
     void updateTextMark(TextMarks marks);
+
+protected:
+    QTimer m_sideBarUpdateTimer;
+private:
+    void updateMarksLineNumber();
+    void updateMarksBlock(QTextBlock &block);
 public:
     QTextBlock blockAtPosition(int y) const;
     QTextBlock blockAtLine(int l) const;

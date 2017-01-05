@@ -14,6 +14,7 @@
 
 
 #include <utils/Configuration.h>
+#include <BookMark/BookMarkManager.h>
 
 #include <QTextStream>
 #include <QtConcurrent/QtConcurrent>
@@ -58,6 +59,7 @@ TextEditorWidget::TextEditorWidget(QWidget *parent) :
             this, SLOT(onReplaceAll(QString,QString)));
     connect(mFindWidget, SIGNAL(closeWidget()),
             this, SLOT(onFindClose ()));
+
 
     mFileWatcher = new QFileSystemWatcher(this);
     connect(mFileWatcher, &QFileSystemWatcher::fileChanged, [this](QString path) {

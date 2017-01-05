@@ -14,6 +14,8 @@
 #define MAINWINDOW_H
 
 #include <BookMark/BookMarkManager.h>
+#include <BreakPoint/BreakPointManager.h>
+
 #include <Find/FindDialog.h>
 #include <EditorTab/EditorTab.h>
 #include <ProjectTab/ProjectTab.h>
@@ -140,8 +142,11 @@ private:
 
     // BookMark
     QListView* mBookMarkListView = nullptr;
-    BookMarkManager* mBookMarkManager = nullptr;
     QDockWidget* mDockBookMark = nullptr;
+
+    // BreakPoint
+    QListView* mBreakPointListView = nullptr;
+    QDockWidget* mDockBreakMark = nullptr;
 
     // Command Area
     QTextBrowser *mCmdTextBrowser = nullptr;

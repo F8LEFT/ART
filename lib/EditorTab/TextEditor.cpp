@@ -28,7 +28,9 @@ TextEditor::TextEditor(QWidget *parent) :
     setLineWrapMode(QPlainTextEdit::NoWrap);
 
     resetTheme(QStringList());
+    m_sideBarUpdateTimer.setSingleShot(true);
 
+    connect(document(), &QTextDocument::contentsChange, this, &TextEditor::editorContentsChange);
 
     connect(this, &QPlainTextEdit::blockCountChanged, this, &TextEditor::updateSidebarGeometry);
     connect(this, &QPlainTextEdit::updateRequest, this, &TextEditor::updateSidebarArea);
@@ -36,6 +38,10 @@ TextEditor::TextEditor(QWidget *parent) :
 
     ScriptEngine* engine = ScriptEngine::instance();
     connect(engine, &ScriptEngine::themeUpdate, this, &TextEditor::resetTheme);
+
+    connect(&m_sideBarUpdateTimer, &QTimer::timeout, [this](){
+        document()->documentLayout()->documentSizeChanged(document()->documentLayout()->documentSize());
+    });
 
     updateSidebarGeometry();
     highlightCurrentLine();
@@ -121,7 +127,7 @@ int TextEditor::sidebarWidth() const
         ++digits;
         count /= 10;
     }
-    return 4 + fontMetrics().width(QLatin1Char('9')) * digits + fontMetrics().lineSpacing();
+    return 4 + fontMetrics().width(QLatin1Char('9')) * digits + 2 * fontMetrics().lineSpacing();
 }
 
 void TextEditor::sidebarPaintEvent(QPaintEvent *event)
@@ -146,6 +152,12 @@ void TextEditor::sidebarPaintEvent(QPaintEvent *event)
             painter.drawText(0, top, m_sideBar->width() - 2 - foldingMarkerSize, fontMetrics().height(), Qt::AlignRight, number);
         }
 
+        // marks
+        auto userdata = blockData(block);
+        for(auto mark: userdata->m_marks) {
+            mark->paint(&painter, QRect(0, top, foldingMarkerSize, foldingMarkerSize));
+        }
+
         // folding marker
         if (block.isVisible() && isFoldable(block)) {
             QPolygonF polygon;
@@ -166,6 +178,8 @@ void TextEditor::sidebarPaintEvent(QPaintEvent *event)
             painter.drawPolygon(polygon);
             painter.restore();
         }
+
+
 
         block = block.next();
         top = bottom;
@@ -269,8 +283,7 @@ void TextEditor::toggleFold(const QTextBlock &startBlock)
     document()->markContentsDirty(startBlock.position(), endBlock.position() - startBlock.position() + 1);
 
     // update scrollbars
-     document()->documentLayout()->documentSizeChanged(document()->documentLayout()->documentSize());
-
+    m_sideBarUpdateTimer.start(500);
 }
 
 void TextEditor::gotoLine(int line, int column, bool centerLine) {
@@ -299,10 +312,6 @@ void TextEditor::gotoLine(int line, int column, bool centerLine) {
 
 int TextEditor::currentLine() {
     return textCursor().blockNumber() + 1;
-//    QTextLayout *pLayout = cursor.block().layout();
-//    int nCurpos = cursor.position() - cursor.block().position();
-//    return pLayout->lineForTextPosition(nCurpos).lineNumber() +
-//            cursor.block().firstLineNumber() + 1;
 }
 
 bool TextEditor::saveFile() {
@@ -336,7 +345,6 @@ UserBlockExtraData *TextEditor::blockData(QTextBlock &block) {
 
 void TextEditor::toggleBookmark() {
     BookMarkManager::instance()->toggleBookmark(m_filePath, currentLine());
-    updateBookMark();
 }
 
 void TextEditor::keyPressEvent(QKeyEvent *e) {
@@ -359,6 +367,8 @@ void TextEditor::updateBookMark() {
         marks.push_back(bookmark);
     }
     updateTextMark(marks);
+
+
 }
 
 void TextEditor::updateTextMark(TextMarks marks) {
@@ -372,6 +382,68 @@ void TextEditor::updateTextMark(TextMarks marks) {
         if(!data->m_marks.contains(mark)) {
             data->m_marks.push_back(mark);
         }
+        mark->updateBlock(block);
+    }
+}
+
+void TextEditor::updateTextMark(TextMark *textMark, bool add) {
+    auto line = textMark->lineNumber();
+    auto block = blockAtLine(line);
+    if(!block.isValid()) {
+        return;
+    }
+    auto data = blockData(block);
+    if(add == data->m_marks.contains(textMark)) {
+        return;
+    }
+    if(add) {
+        data->m_marks.push_back(textMark);
+        textMark->updateBlock(block);
+    } else {
+        data->m_marks.removeOne(textMark);
+    }
+
+    m_sideBarUpdateTimer.start(500);
+}
+
+void TextEditor::editorContentsChange(int position, int charsRemoved,
+                                      int charsAdded) {
+    QTextDocument *doc = document();
+    QTextBlock posBlock = doc->findBlock(position);
+
+    // Keep the line numbers and the block information for the text marks updated
+    if (charsRemoved != 0) {
+        updateMarksLineNumber();
+        updateMarksBlock(posBlock);
+    } else {
+        QTextBlock nextBlock = doc->findBlock(position + charsAdded);
+        if (posBlock != nextBlock) {
+            updateMarksLineNumber();
+            updateMarksBlock(posBlock);
+            updateMarksBlock(nextBlock);
+        } else {
+            updateMarksBlock(posBlock);
+        }
+    }
+    m_sideBarUpdateTimer.start(500);
+}
+
+void TextEditor::updateMarksLineNumber() {
+    QTextBlock block = document()->begin();
+    int blockNumber = 0;
+    while (block.isValid()) {
+        auto userData = blockData(block);
+        for(auto mark: userData->m_marks) {
+            mark->updateLineNumber(blockNumber + 1);
+        }
+        block = block.next();
+        ++blockNumber;
+    }
+}
+
+void TextEditor::updateMarksBlock(QTextBlock &block) {
+    auto userData = blockData(block);
+    for(auto mark: userData->m_marks) {
         mark->updateBlock(block);
     }
 }
@@ -403,10 +475,13 @@ void TextEditorSidebar::paintEvent(QPaintEvent *event)
 void TextEditorSidebar::mouseReleaseEvent(QMouseEvent *event)
 {
     auto block = m_textEditor->blockAtPosition(event->y());
+    if(!block.isValid()) {
+        QWidget::mouseReleaseEvent(event);
+        return;
+    }
 
-    if (event->x() >= width() - m_textEditor->fontMetrics().lineSpacing()) {
-        if (!block.isValid() || !m_textEditor->isFoldable(block))
-            return;
+    if (event->x() >= width() - m_textEditor->fontMetrics().lineSpacing()
+        && m_textEditor->isFoldable(block)) {
         m_textEditor->toggleFold(block);
         return;
     }
