@@ -32,13 +32,6 @@ public:
         QString m_packageName;
         QString m_activityEntryName;
     };
-    struct BreakPoint {
-        QString m_sourceFile;
-        QString m_classSig;
-        QString m_methodName;
-        QString m_methodSign;
-// codeIdx? or line number?
-    };
 private:
     Q_OBJECT
 public:

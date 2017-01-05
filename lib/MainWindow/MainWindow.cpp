@@ -69,6 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionFind_Replace, SIGNAL(triggered(bool)), this, SLOT(actionFind()));
     connect(ui->actionGoto_Line, SIGNAL(triggered(bool)), this, SLOT(actionGotoLine()));
     connect(ui->actionSearch_Global, SIGNAL(triggered(bool)), this, SLOT(actionFindAdvance()));
+    connect(ui->actionToggle_Bookmark, SIGNAL(triggered(bool)), this, SLOT(actionBookMark()));
+
 
     // run
     connect(ui->actionBuild, SIGNAL(triggered(bool)), this, SLOT(actionBuild()));
@@ -77,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionDebug, SIGNAL(triggered(bool)), this, SLOT(actionDebug()));
     connect(ui->actionStop, SIGNAL(triggered(bool)), this, SLOT(actionStop()));
     connect(ui->actionDevices, SIGNAL(triggered(bool)), this, SLOT(actionDevices()));
+    connect(ui->actionToggle_Breakpoint, SIGNAL(triggered(bool)), this, SLOT(actionBreakpoint()));
+
 
     // About Menu
     connect(ui->actionAbout_ART, SIGNAL(triggered(bool)),
@@ -274,6 +278,10 @@ void MainWindow::actionFindAdvance()
     mDockFind->raise();
 }
 
+void MainWindow::actionBookMark() {
+    mEditorTab->toggleBookMark();
+}
+
 void MainWindow::actionAboutArt()
 {
     AboutArt about(this);
@@ -352,6 +360,11 @@ void MainWindow::actionStop()
 void MainWindow::actionDevices()
 {
     mRunDevice->exec();
+}
+
+
+void MainWindow::actionBreakpoint() {
+    mEditorTab->toggleBreakPoint();
 }
 
 void MainWindow::onProjectOpened(QStringList projName)
@@ -666,6 +679,9 @@ void MainWindow::tabMovedSlot(int from, int to)
         Config()->setUint("TabOrder", tabName, i);
     }
 }
+
+
+
 
 
 

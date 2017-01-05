@@ -59,6 +59,8 @@
     <addaction name="actionDebug"/>
     <addaction name="actionStop"/>
     <addaction name="separator"/>
+    <addaction name="actionToggle_Breakpoint"/>
+    <addaction name="separator"/>
     <addaction name="actionStep_Over"/>
     <addaction name="actionStep_Into"/>
     <addaction name="actionStep_Out"/>
@@ -67,6 +69,7 @@
     <addaction name="separator"/>
     <addaction name="actionDevices"/>
     <addaction name="actionRestart_adb"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -84,6 +87,8 @@
     <addaction name="separator"/>
     <addaction name="actionFind_Replace"/>
     <addaction name="actionGoto_Line"/>
+    <addaction name="separator"/>
+    <addaction name="actionToggle_Bookmark"/>
     <addaction name="separator"/>
     <addaction name="actionSearch_Global"/>
    </widget>
@@ -409,6 +414,30 @@
    </property>
    <property name="shortcut">
     <string>F9</string>
+   </property>
+  </action>
+  <action name="actionToggle_Bookmark">
+   <property name="icon">
+    <iconset resource="../../ART.qrc">
+     <normaloff>:/images/bookmark.png</normaloff>:/images/bookmark.png</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle Bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionToggle_Breakpoint">
+   <property name="icon">
+    <iconset resource="../../ART.qrc">
+     <normaloff>:/images/breakpoint.png</normaloff>:/images/breakpoint.png</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle Breakpoint</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
    </property>
   </action>
  </widget>

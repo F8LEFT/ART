@@ -79,6 +79,7 @@ protected slots:
     void actionFind();
     void actionGotoLine();
     void actionFindAdvance();
+    void actionBookMark();
 
     // Help Menu
     void actionAboutArt();
@@ -90,6 +91,7 @@ protected slots:
     void actionDebug();
     void actionStop();
     void actionDevices();
+    void actionBreakpoint();
 
     // cmdLine Message
     void onCmdMessage(QString msg);

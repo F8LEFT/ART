@@ -19,13 +19,13 @@ ProjectInfo* ProjectInfo::m_last = nullptr;
 QMap<QString, ProjectInfo*> ProjectInfo::m_infoMap;
 
 ProjectInfo *ProjectInfo::openProject(QString name) {
-    if(m_infoMap.contains(name)) {
-        return m_infoMap[name];
-    }
     Q_ASSERT(m_current == nullptr && "current project not closed???");
-
-    m_current = new ProjectInfo(name);
-    m_infoMap[name] = m_current;
+    if(m_infoMap.contains(name)) {
+        m_current = m_infoMap[name];
+    } else {
+        m_current = new ProjectInfo(name);
+        m_infoMap[name] = m_current;
+    }
     return m_current;
 }
 

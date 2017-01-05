@@ -66,8 +66,7 @@ protected:
 
     virtual QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
 
-    void updateBookMark();
-    void updateTextMark(TextMarks marks);
+    void readBookMark();
 
 protected:
     QTimer m_sideBarUpdateTimer;

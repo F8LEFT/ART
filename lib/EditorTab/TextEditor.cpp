@@ -74,6 +74,8 @@ bool TextEditor::openFile(const QString &fileName, int iLine)
     setDocumentTitle(fileName);
     m_filePath = fileName;
     setPlainText(QString::fromUtf8(f.readAll()));
+
+    readBookMark();
     return true;
 }
 
@@ -348,41 +350,23 @@ void TextEditor::toggleBookmark() {
 }
 
 void TextEditor::keyPressEvent(QKeyEvent *e) {
-    if(e->type() == QEvent::KeyPress && e->modifiers() == Qt::ControlModifier) {
-        switch (e->key()) {
-            case Qt::Key_M:
-                toggleBookmark();
-                return;
-            default:
-                break;
-        }
-    }
+//    if(e->type() == QEvent::KeyPress && e->modifiers() == Qt::ControlModifier) {
+//        switch (e->key()) {
+//            case Qt::Key_M:
+//                toggleBookmark();
+//                return;
+//            default:
+//                break;
+//        }
+//    }
     QPlainTextEdit::keyPressEvent(e);
 }
 
-void TextEditor::updateBookMark() {
+void TextEditor::readBookMark() {
     auto bookmarks = BookMarkManager::instance()->getBookMarks(m_filePath);
     TextMarks marks;
     for(auto bookmark: bookmarks) {
-        marks.push_back(bookmark);
-    }
-    updateTextMark(marks);
-
-
-}
-
-void TextEditor::updateTextMark(TextMarks marks) {
-    for(auto mark: marks) {
-        auto line = mark->lineNumber();
-        auto block = blockAtLine(line);
-        if(!block.isValid()) {
-            continue;
-        }
-        auto data = blockData(block);
-        if(!data->m_marks.contains(mark)) {
-            data->m_marks.push_back(mark);
-        }
-        mark->updateBlock(block);
+        updateTextMark(bookmark, true);
     }
 }
 

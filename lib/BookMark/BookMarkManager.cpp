@@ -18,6 +18,8 @@
 #include <QDir>
 #include <QToolTip>
 #include <QDebug>
+#include <utils/ProjectInfo.h>
+#include <utils/Configuration.h>
 
 
 //BookMarkManager::BookMarkManager(QObject *parent)
@@ -55,6 +57,10 @@ BookMarkManager::BookMarkManager() :
 
 //    connect(SessionManager::instance(), &SessionManager::sessionLoaded,
 //            this, &BookMarkManager::loadBookmarks);
+
+    auto* script = ScriptEngine::instance();
+    connect(script, &ScriptEngine::projectOpened, this, &BookMarkManager::onProjectOpened);
+    connect(script, &ScriptEngine::projectClosed, this, &BookMarkManager::onProjectClosed);
 
     updateActionStatus();
 }
@@ -125,7 +131,7 @@ QVariant BookMarkManager::data(const QModelIndex &index, int role) const
     if (role == BookMarkManager::LineText)
         return bookMark->lineText();
     if (role == BookMarkManager::Note)
-        return bookMark->note();
+        return bookMark->lineText();
     if (role == Qt::ToolTipRole)
         return QDir::toNativeSeparators(bookMark->fileName());
     return QVariant();
@@ -163,7 +169,6 @@ void BookMarkManager::updateBookmark(BookMark *bookmark)
         return;
 
     dataChanged(index(idx, 0, QModelIndex()), index(idx, 2, QModelIndex()));
-    saveBookmarks();
 }
 
 void BookMarkManager::updateBookmarkFileName(BookMark *bookmark, const QString &oldFileName)
@@ -239,7 +244,6 @@ void BookMarkManager::deleteBookmark(BookMark *bookmark)
         selectionModel()->setCurrentIndex(selectionModel()->currentIndex(), QItemSelectionModel::Select | QItemSelectionModel::Clear);
 
     updateActionStatus();
-    saveBookmarks();
 }
 
 BookMark *BookMarkManager::bookmarkForIndex(const QModelIndex &index) const
@@ -401,8 +405,6 @@ void BookMarkManager::moveUp()
     QModelIndex bottomRight = current.sibling(current.row(), 2);
     dataChanged(topLeft, bottomRight);
     selectionModel()->setCurrentIndex(current.sibling(row, 0), QItemSelectionModel::Select | QItemSelectionModel::Clear);
-
-    saveBookmarks();
 }
 
 void BookMarkManager::moveDown()
@@ -422,8 +424,6 @@ void BookMarkManager::moveDown()
     QModelIndex bottomRight = current.sibling(row, 2);
      dataChanged(topLeft, bottomRight);
     selectionModel()->setCurrentIndex(current.sibling(row, 0), QItemSelectionModel::Select | QItemSelectionModel::Clear);
-
-    saveBookmarks();
 }
 
 /* Returns the bookmark at the given file and line number, or 0 if no such bookmark exists. */
@@ -465,7 +465,6 @@ void BookMarkManager::addBookmark(BookMark *bookmark, bool userset)
     endInsertRows();
     if (userset) {
         updateActionStatus();
-        saveBookmarks();
     }
     selectionModel()->setCurrentIndex(index(m_bookmarksList.size()-1 , 0, QModelIndex()), QItemSelectionModel::Select | QItemSelectionModel::Clear);
 
@@ -488,7 +487,7 @@ void BookMarkManager::addBookmark(const QString &s)
         if (!filePath.isEmpty() && !findBookmark(filePath, lineNumber)) {
             BookMark *b = new BookMark(lineNumber, this);
             b->updateFileName(filePath);
-            b->setNote(note);
+            b->setLineText(note);
             addBookmark(b, false);
         }
     } else {
@@ -504,18 +503,7 @@ QString BookMarkManager::bookmarkToString(const BookMark *b)
     const QLatin1Char noteDelimiter('\t');
     return colon + b->fileName() +
            colon + QString::number(b->lineNumber()) +
-           noteDelimiter + b->note();
-}
-
-/* Saves the bookmarks to the session settings. */
-void BookMarkManager::saveBookmarks()
-{
-    QStringList list;
-            foreach (const BookMark *bookmark, m_bookmarksList)
-            list << bookmarkToString(bookmark);
-
-    // TODO save list value;
-//    SessionManager::setValue(QLatin1String("Bookmarks"), list);
+           noteDelimiter + b->lineText();
 }
 
 void BookMarkManager::operateTooltip(QWidget *widget, const QPoint &pos, BookMark *mark)
@@ -523,24 +511,12 @@ void BookMarkManager::operateTooltip(QWidget *widget, const QPoint &pos, BookMar
     if (!mark)
         return;
 
-    if (mark->note().isEmpty()) {
+    if (mark->lineText().isEmpty()) {
         QToolTip::hideText();
     }
     else {
-        QToolTip::showText(pos, mark->note(), widget);
+        QToolTip::showText(pos, mark->lineText(), widget);
     }
-}
-
-/* Loads the bookmarks from the session settings. */
-void BookMarkManager::loadBookmarks()
-{
-    removeAllBookmarks();
-    // TODO load Bookmark
-//    const QStringList &list = SessionManager::value(QLatin1String("Bookmarks")).toStringList();
-//            foreach (const QString &bookmarkString, list)
-//            addBookmark(bookmarkString);
-
-    updateActionStatus();
 }
 
 //void BookMarkManager::handleBookmarkTooltipRequest(IEditor *editor, const QPoint &pos, int line)
@@ -564,6 +540,37 @@ QList<BookMark *> BookMarkManager::getBookMarks(QString fileName) {
         return m_bookmarksMap.value(path)->values(fi.fileName());
     }
     return QList<BookMark *>();
+}
+
+void BookMarkManager::onProjectOpened(QStringList args) {
+    QString cfgPath = ProjectInfo::current()->getConfigPath();
+    Configuration cfg(cfgPath);
+
+    removeAllBookmarks();
+
+    auto markstring = cfg.getString("TextMark", "BookMark");
+    const QStringList &list = markstring.split("$$", QString::SkipEmptyParts);
+
+            foreach (const QString &bookmarkString, list)
+            addBookmark(bookmarkString);
+}
+
+void BookMarkManager::onProjectClosed() {
+    QString cfgPath = ProjectInfo::last()->getConfigPath();
+    Configuration cfg (cfgPath);
+
+    QString markstring;
+    foreach (const BookMark *bookmark, m_bookmarksList) {
+            markstring += bookmarkToString(bookmark);
+            markstring += "$$";
+        }
+    if(!markstring.isEmpty()) {
+        markstring.chop(2);
+    }
+
+    cfg.setString("TextMark", "BookMark", markstring);
+    removeAllBookmarks();
+
 }
 
 BookMarkView::BookMarkView(QWidget *parent) : QListView(parent) {

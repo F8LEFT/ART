@@ -27,19 +27,16 @@ public:
     void move(int line);
     void updateBlock(const QTextBlock &block);
     void updateFileName(const QString &fileName);
-    void setNote(const QString &note);
-    void updateNote(const QString &note);
     void removedFromEditor();
 
     QString lineText() const;
-    QString note() const;
+    void setLineText(const QString& line);
 
     void paintMark(QPainter *painter, const QRect &rect, const QPalette &palette) const;
     QSize sizeHint();
 private:
     BookMarkManager *m_manager;
     QString m_lineText;
-    QString m_note;
 
     int m_fontWidth;
     int m_fontHeight;

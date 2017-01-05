@@ -54,6 +54,8 @@ public slots:
     void selectAll();
     void find(QStringList args);
     void gotoLine(QStringList args);
+    void toggleBreakPoint();
+    void toggleBookMark();
 
     void onProjectOpened(QStringList args);
     void onProjectClosed ();

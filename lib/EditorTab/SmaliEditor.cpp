@@ -35,6 +35,7 @@ bool SmaliEditor::openFile(const QString &fileName, int iLine)
         return false;
     }
     reloadSmaliData();
+    readBreakMark();
     return true;
 }
 
@@ -102,6 +103,14 @@ void SmaliEditor::setFoldableArea(int startLine, int endLine, int type) {
 
 void SmaliEditor::toggleBreakpoint() {
     BreakPointManager::instance()->toggleBreakpoint(m_filePath, currentLine());
+}
+
+void SmaliEditor::readBreakMark() {
+    auto bookmarks = BreakPointManager::instance()->getBreakPoints(m_filePath);
+    TextMarks marks;
+    for(auto bookmark: bookmarks) {
+        updateTextMark(bookmark, true);
+    }
 }
 
 SmaliSideBar::SmaliSideBar(SmaliEditor *editor)

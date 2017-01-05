@@ -62,25 +62,9 @@ void BreakPoint::updateFileName(const QString &fileName)
     m_manager->updateBreakpointFileName(this, oldFileName);
 }
 
-void BreakPoint::setNote(const QString &note)
-{
-    m_note = note;
-}
-
-void BreakPoint::updateNote(const QString &note)
-{
-    setNote(note);
-    m_manager->updateBreakpoint(this);
-}
-
 QString BreakPoint::lineText() const
 {
     return m_lineText;
-}
-
-QString BreakPoint::note() const
-{
-    return m_note;
 }
 
 void BreakPoint::paintMark(QPainter *painter, const QRect &rect,
@@ -100,4 +84,8 @@ void BreakPoint::paintMark(QPainter *painter, const QRect &rect,
 
 QSize BreakPoint::sizeHint() {
     return QSize(0, m_fontHeight * 2 + 5);
+}
+
+void BreakPoint::setLineText(const QString &line) {
+    m_lineText = line;
 }

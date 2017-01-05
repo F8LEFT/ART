@@ -6,7 +6,7 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-#include "BreakPoint/BreakPointManager.h"
+#include <BreakPoint/BreakPointManager.h>
 #include "BreakPointDelegate.h"
 
 #include <utils/ScriptEngine.h>
@@ -18,6 +18,8 @@
 #include <QDir>
 #include <QToolTip>
 #include <QDebug>
+#include <utils/ProjectInfo.h>
+#include <utils/Configuration.h>
 
 
 //BreakPointManager::BreakPointManager(QObject *parent)
@@ -55,6 +57,9 @@ BreakPointManager::BreakPointManager() :
 
 //    connect(SessionManager::instance(), &SessionManager::sessionLoaded,
 //            this, &BreakPointManager::loadBreakpoints);
+    auto* script = ScriptEngine::instance();
+    connect(script, &ScriptEngine::projectOpened, this, &BreakPointManager::onProjectOpened);
+    connect(script, &ScriptEngine::projectClosed, this, &BreakPointManager::onProjectClosed);
 
     updateActionStatus();
 }
@@ -125,7 +130,7 @@ QVariant BreakPointManager::data(const QModelIndex &index, int role) const
     if (role == BreakPointManager::LineText)
         return bookMark->lineText();
     if (role == BreakPointManager::Note)
-        return bookMark->note();
+        return bookMark->lineText();
     if (role == Qt::ToolTipRole)
         return QDir::toNativeSeparators(bookMark->fileName());
     return QVariant();
@@ -488,7 +493,7 @@ void BreakPointManager::addBreakpoint(const QString &s)
         if (!filePath.isEmpty() && !findBreakpoint(filePath, lineNumber)) {
             BreakPoint *b = new BreakPoint(lineNumber, this);
             b->updateFileName(filePath);
-            b->setNote(note);
+            b->setLineText(note);
             addBreakpoint(b, false);
         }
     } else {
@@ -497,14 +502,14 @@ void BreakPointManager::addBreakpoint(const QString &s)
 }
 
 /* Puts the breakpoint in a string for storing it in the settings. */
-QString BreakPointManager::bookmarkToString(const BreakPoint *b)
+QString BreakPointManager::breakpointToString(const BreakPoint *b)
 {
     const QLatin1Char colon(':');
     // Using \t as delimiter because any another symbol can be a part of note.
     const QLatin1Char noteDelimiter('\t');
     return colon + b->fileName() +
            colon + QString::number(b->lineNumber()) +
-           noteDelimiter + b->note();
+           noteDelimiter + b->lineText();
 }
 
 /* Saves the bookmarks to the session settings. */
@@ -512,7 +517,7 @@ void BreakPointManager::saveBreakpoints()
 {
     QStringList list;
             foreach (const BreakPoint *breakpoint, m_breakpointsList)
-            list << bookmarkToString(breakpoint);
+            list << breakpointToString(breakpoint);
 
     // TODO save list value;
 //    SessionManager::setValue(QLatin1String("Breakpoints"), list);
@@ -523,11 +528,11 @@ void BreakPointManager::operateTooltip(QWidget *widget, const QPoint &pos, Break
     if (!mark)
         return;
 
-    if (mark->note().isEmpty()) {
+    if (mark->lineText().isEmpty()) {
         QToolTip::hideText();
     }
     else {
-        QToolTip::showText(pos, mark->note(), widget);
+        QToolTip::showText(pos, mark->lineText(), widget);
     }
 }
 
@@ -564,6 +569,38 @@ QList<BreakPoint *> BreakPointManager::getBreakPoints(QString fileName) {
         return m_breakpointsMap.value(path)->values(fi.fileName());
     }
     return QList<BreakPoint *>();
+}
+
+
+void BreakPointManager::onProjectOpened(QStringList args) {
+    QString cfgPath = ProjectInfo::current()->getConfigPath();
+    Configuration cfg(cfgPath);
+
+    removeAllBreakpoints();
+
+    auto markstring = cfg.getString("TextMark", "BreakMark");
+    const QStringList &list = markstring.split("$$", QString::SkipEmptyParts);
+
+            foreach (const QString &bookmarkString, list)
+            addBreakpoint(bookmarkString);
+}
+
+void BreakPointManager::onProjectClosed() {
+    QString cfgPath = ProjectInfo::last()->getConfigPath();
+    Configuration cfg (cfgPath);
+
+    QString markstring;
+            foreach (const BreakPoint *bookmark, m_breakpointsList) {
+            markstring += breakpointToString(bookmark);
+            markstring += "$$";
+        }
+    if(!markstring.isEmpty()) {
+        markstring.chop(2);
+    }
+
+    cfg.setString("TextMark", "BreakMark", markstring);
+
+    removeAllBreakpoints();
 }
 
 BreakPointView::BreakPointView(QWidget *parent) : QListView(parent) {

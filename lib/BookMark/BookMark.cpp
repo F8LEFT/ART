@@ -62,26 +62,11 @@ void BookMark::updateFileName(const QString &fileName)
     m_manager->updateBookmarkFileName(this, oldFileName);
 }
 
-void BookMark::setNote(const QString &note)
-{
-    m_note = note;
-}
-
-void BookMark::updateNote(const QString &note)
-{
-    setNote(note);
-    m_manager->updateBookmark(this);
-}
-
 QString BookMark::lineText() const
 {
     return m_lineText;
 }
 
-QString BookMark::note() const
-{
-    return m_note;
-}
 
 void BookMark::paintMark(QPainter *painter, const QRect &rect,
                          const QPalette &palette) const {
@@ -100,4 +85,8 @@ void BookMark::paintMark(QPainter *painter, const QRect &rect,
 
 QSize BookMark::sizeHint() {
     return QSize(0, m_fontHeight * 2 + 5);
+}
+
+void BookMark::setLineText(const QString& line) {
+    m_lineText = line;
 }

@@ -54,6 +54,8 @@ private:
     void setAnnotationFold(SmaliParser::AnnotationContext* annotation);
     void setFoldableArea(int startLine, int endLine, int type);
 
+    void readBreakMark();
+
 private:
     SmaliHighlight *m_highlighter;
     QSharedPointer<SmaliFile> m_smalidata;

@@ -82,9 +82,12 @@ signals:
     void currentIndexChanged(const QModelIndex &);
 
     void updateBookMark(BookMark* bookmark, bool isAdd);
+
+public slots:
+    void onProjectOpened(QStringList args);
+    void onProjectClosed ();
 private:
     void updateActionStatus();
-    void loadBookmarks();
 
 //    void documentPrevNext(bool next);
 
@@ -94,7 +97,6 @@ private:
     void addBookmarkToMap(BookMark *bookmark);
     bool removeBookmarkFromMap(BookMark *bookmark, const QString &fileName = QString());
     static QString bookmarkToString(const BookMark *b);
-    void saveBookmarks();
     void operateTooltip(QWidget *widget, const QPoint &pos, BookMark *mark);
 
     typedef QMultiMap<QString, BookMark *> FileNameBookmarksMap;

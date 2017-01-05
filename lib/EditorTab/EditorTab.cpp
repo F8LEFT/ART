@@ -234,6 +234,23 @@ void EditorTab::gotoLine(QStringList args)
     }
 }
 
+void EditorTab::toggleBreakPoint() {
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    SmaliEditor* editor = qobject_cast<SmaliEditor*>(e->editor());
+    if(editor != nullptr) {
+        editor->toggleBreakpoint();
+    }
+}
+
+void EditorTab::toggleBookMark() {
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->editor()->toggleBookmark();
+}
+
 bool EditorTab::saveFile(QString filePath)
 {
     int idx = ui->mDocumentCombo->findData(filePath);
@@ -301,4 +318,6 @@ void EditorTab::onTextMarkUpdate(TextMark *mark, bool isAdd) {
         p->editor()->updateTextMark(mark, isAdd);
     }
 }
+
+
 

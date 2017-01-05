@@ -82,6 +82,9 @@ signals:
     void currentIndexChanged(const QModelIndex &);
 
     void updateBreakPoint(BreakPoint* breakpoint, bool isAdd);
+public slots:
+    void onProjectOpened(QStringList args);
+    void onProjectClosed ();
 private:
     void updateActionStatus();
     void loadBreakpoints();
@@ -93,7 +96,7 @@ private:
     void addBreakpoint(const QString &s);
     void addBreakpointToMap(BreakPoint *breakpoint);
     bool removeBreakpointFromMap(BreakPoint *breakpoint, const QString &fileName = QString());
-    static QString bookmarkToString(const BreakPoint *b);
+    static QString breakpointToString(const BreakPoint *b);
     void saveBreakpoints();
     void operateTooltip(QWidget *widget, const QPoint &pos, BreakPoint *mark);
 
