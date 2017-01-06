@@ -24,7 +24,7 @@
 using namespace std;
 
 void testANRLR() {
-    std::string file = "D:\\F8Tool\\Crack\\decompile\\AndroidKiller_v1.3.1\\projects\\cm2(Fibonacci)\\Project\\smali\\com\\ctf\\WestWorld\\MainActivity.smali";
+    std::string file = "F:\\Huairou\\4.Unpack\\Sample1\\com\\ali\\mobisecenhance\\StubApplication.smali";
 
 
     antlr4::ANTLRFileStream input(file);
@@ -58,15 +58,15 @@ int main() {
     testANRLR();
 //    SmaliFile file("/home/f8left/CodeSrc/ART/res/Loader$ForceLoadContentObserver.smali");
 //    file.print();
-//    auto m_smalidata = new SmaliFile("D:\\F8Tool\\Crack\\decompile\\AndroidKiller_v1.3.1\\projects\\cm2(Fibonacci)\\Project\\smali\\com\\ctf\\WestWorld\\MainActivity.smali");
-//
-//    auto tokens = m_smalidata->m_tokens;
-//    for(auto& token : tokens->getTokens()) {
-//        cout << token->getLine() << ", " << token->getText() << endl;
-//    }
-//
+    auto m_smalidata = new SmaliFile("F:\\Huairou\\4.Unpack\\Sample1\\com\\ali\\mobisecenhance\\StubApplication.smali");
+
+    auto tokens = m_smalidata->m_tokens;
+    for(auto& token : tokens->getTokens()) {
+        cout << token->getLine() << ", " << token->getText() << endl;
+    }
+
 //    auto root = m_smalidata->m_smali;
-//
+
 //    // for foldable
 //    auto annotations = root->annotation();
 //    for(auto &annotation: annotations) {

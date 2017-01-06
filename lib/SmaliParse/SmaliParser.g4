@@ -141,24 +141,29 @@ method
 
 statements_and_directives
   locals [
-     bool hasRegistersDirective
+     bool hasRegistersDirective,
+     int pCodeIdx
   ]
-  : {
-      $hasRegistersDirective = false;
-    }
-    ( ordered_method_item
+  @init
+  { $hasRegistersDirective = false;
+    $pCodeIdx = 0;
+  }
+  : ( ordered_method_item { $ordered_method_item.codeIdx = $pCodeIdx; $pCodeIdx += $ordered_method_item.width; }
     | registers_directive
-    | catch_directive
-    | catchall_directive
+    | catch_directive { $catch_directive.codeIdx = $pCodeIdx; }
+    | catchall_directive { $catchall_directive.codeIdx = $pCodeIdx; }
     | parameter_directive
     | annotation
     )*
     ;
 
 /* Method items whose order/location is important */
-ordered_method_item
+ordered_method_item returns[int width, int codeIdx]
+  @init
+  {  $width = 0;
+     $codeIdx = 0;}
   : label
-  | instruction
+  | instruction { $width = $instruction.width; }
   | debug_directive;
 
 registers_directive
@@ -358,10 +363,12 @@ register_range
 verification_error_reference
   : CLASS_DESCRIPTOR | field_reference | method_reference;
 
-catch_directive
+catch_directive  returns[int codeIdx]
+  @init {  $codeIdx = 0;}
   : CATCH_DIRECTIVE nonvoid_type_descriptor OPEN_BRACE from=label_ref DOTDOT to=label_ref CLOSE_BRACE goal=label_ref;
 
-catchall_directive
+catchall_directive returns[int codeIdx]
+  @init { $codeIdx = 0;}
   : CATCHALL_DIRECTIVE OPEN_BRACE from=label_ref DOTDOT to=label_ref CLOSE_BRACE goal=label_ref;
 
 /*When there are annotations immediately after a parameter definition, we don't know whether they are parameter annotations
@@ -421,53 +428,54 @@ instruction_format31i
 
 
 
-instruction
-  : insn_format10t
-  | insn_format10x
-  | insn_format10x_odex
-  | insn_format11n
-  | insn_format11x
-  | insn_format12x
-  | insn_format20bc
-  | insn_format20t
-  | insn_format21c_field
-  | insn_format21c_field_odex
-  | insn_format21c_string
-  | insn_format21c_type
-  | insn_format21ih
-  | insn_format21lh
-  | insn_format21s
-  | insn_format21t
-  | insn_format22b
-  | insn_format22c_field
-  | insn_format22c_field_odex
-  | insn_format22c_type
-  | insn_format22cs_field
-  | insn_format22s
-  | insn_format22t
-  | insn_format22x
-  | insn_format23x
-  | insn_format30t
-  | insn_format31c
-  | insn_format31i
-  | insn_format31t
-  | insn_format32x
-  | insn_format35c_method
-  | insn_format35c_type
-  | insn_format35c_method_odex
-  | insn_format35mi_method
-  | insn_format35ms_method
-  | insn_format3rc_method
-  | insn_format3rc_method_odex
-  | insn_format3rc_type
-  | insn_format3rmi_method
-  | insn_format3rms_method
-  | insn_format45cc_method
-  | insn_format4rcc_method
-  | insn_format51l
-  | insn_array_data_directive
-  | insn_packed_switch_directive
-  | insn_sparse_switch_directive;
+instruction  returns[int width]
+  : insn_format10t { $width = 1; }
+  | insn_format10x { $width = 1; }
+  | insn_format10x_odex { $width = 1; }
+  | insn_format11n { $width = 1; }
+  | insn_format11x { $width = 1; }
+  | insn_format12x { $width = 1; }
+  | insn_format20bc { $width = 2; }
+  | insn_format20t { $width = 2; }
+  | insn_format21c_field { $width = 2; }
+  | insn_format21c_field_odex { $width = 2; }
+  | insn_format21c_string { $width = 2; }
+  | insn_format21c_type { $width = 2; }
+  | insn_format21ih { $width = 2; }
+  | insn_format21lh { $width = 2; }
+  | insn_format21s { $width = 2; }
+  | insn_format21t { $width = 2; }
+  | insn_format22b { $width = 2; }
+  | insn_format22c_field { $width = 2; }
+  | insn_format22c_field_odex { $width = 2; }
+  | insn_format22c_type { $width = 2; }
+  | insn_format22cs_field { $width = 2; }
+  | insn_format22s { $width = 2; }
+  | insn_format22t { $width = 2; }
+  | insn_format22x { $width = 2; }
+  | insn_format23x { $width = 2; }
+  | insn_format30t { $width = 3; }
+  | insn_format31c { $width = 3; }
+  | insn_format31i { $width = 3; }
+  | insn_format31t { $width = 3; }
+  | insn_format32x { $width = 3; }
+  | insn_format35c_method { $width = 3; }
+  | insn_format35c_type { $width = 3; }
+  | insn_format35c_method_odex { $width = 3; }
+  | insn_format35mi_method { $width = 3; }
+  | insn_format35ms_method { $width = 3; }
+  | insn_format3rc_method { $width = 3; }
+  | insn_format3rc_method_odex { $width = 3; }
+  | insn_format3rc_type { $width = 3; }
+  | insn_format3rmi_method { $width = 3; }
+  | insn_format3rms_method { $width = 3; }
+  | insn_format45cc_method { $width = 4; }
+  | insn_format4rcc_method { $width = 4; }
+  | insn_format51l { $width = 5; }
+  | insn_array_data_directive { $width = 0; }
+  | insn_packed_switch_directive { $width = 0; }
+  | insn_sparse_switch_directive { $width = 0; }
+  ;
 
 insn_format10t
   : //e.g. goto endloop:
