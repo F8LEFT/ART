@@ -20,6 +20,7 @@
 #include <EditorTab/EditorTab.h>
 #include <ProjectTab/ProjectTab.h>
 #include <Debugger/Debugger.h>
+#include <SmaliAnalysis/SmaliTree.h>
 
 #include <QMainWindow>
 #include <QCloseEvent>
@@ -162,6 +163,8 @@ private:
     // Tab Widget
     ProjectTab* mProjectTab;
     EditorTab* mEditorTab;
+    SmaliTree* mSmaliTree;
+
 
     MHTabWidget* mTabWidget;
     QVector<QWidget*> mWidgetList;

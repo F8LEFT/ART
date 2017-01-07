@@ -26,5 +26,10 @@
         <file>images/ProjectTab.png</file>
         <file>images/breakpoint.png</file>
         <file>images/environment.png</file>
+        <file>images/class.png</file>
+        <file>images/field.png</file>
+        <file>images/method.png</file>
+        <file>images/treeOpen.png</file>
+        <file>images/sourceFolder.png</file>
     </qresource>
 </RCC>

@@ -123,8 +123,10 @@ void ProjectTab::openProject (QString projectName)
     pinfo->config().m_packageName = mPackageName;
     pinfo->config().m_activityEntryName = mActivityEntryName;
 
-//    auto analysis = new SmaliAnalysis(this);
-//    analysis->addSmaliFolder (mSmaliDirectory);
+    auto analysis = SmaliAnalysis::instance();
+    for(auto& src: mSmaliDirectory) {
+        analysis->addSourcePath(src);
+    }
 
     cmdexec("ProjectOpened", projectName);
 }
@@ -136,11 +138,12 @@ void ProjectTab::closeProject()
     mHasProject = false;
     cmdmsg ()->addCmdMsg ("closing project " + mProjectName);
 
+
+
+    auto analysis = SmaliAnalysis::instance ();
+    analysis->clear();
+
     ProjectInfo::closeProject();
-
-//    auto analysis = SmaliAnalysis::instance ();
-//    delete analysis;
-
     cmdexec("ProjectClosed");
 }
 

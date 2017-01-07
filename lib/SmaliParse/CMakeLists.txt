@@ -38,7 +38,7 @@ if((${CMAKE_CURRENT_SOURCE_DIR}/SmaliLexer.g4 IS_NEWER_THAN ${CMAKE_CURRENT_SOUR
 endif()
 
 
-set(SmaliParse_src InvalidToken.cpp LiteralTools.cpp SmaliFile.cpp ${smali-GENERATED_SRC})
+set(SmaliParse_src InvalidToken.cpp LiteralTools.cpp ${smali-GENERATED_SRC})
 
 ADD_LIBRARY(SmaliParse STATIC ${SmaliParse_src})
 if(GENRATEANTLR)

@@ -149,7 +149,7 @@ statements_and_directives
     $pCodeIdx = 0;
   }
   : ( ordered_method_item { $ordered_method_item.codeIdx = $pCodeIdx; $pCodeIdx += $ordered_method_item.width; }
-    | registers_directive
+    | registers_directive { $hasRegistersDirective = true; }
     | catch_directive { $catch_directive.codeIdx = $pCodeIdx; }
     | catchall_directive { $catchall_directive.codeIdx = $pCodeIdx; }
     | parameter_directive
@@ -167,8 +167,10 @@ ordered_method_item returns[int width, int codeIdx]
   | debug_directive;
 
 registers_directive
+  locals [ bool isRegister ]
+  @init{ $isRegister = false; }
   : (
-      directive=REGISTERS_DIRECTIVE regCount=integral_literal
+      directive=REGISTERS_DIRECTIVE regCount=integral_literal { $isRegister = true; }
     | directive=LOCALS_DIRECTIVE regCount2=integral_literal
     )
     {

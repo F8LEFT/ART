@@ -453,12 +453,16 @@ void MainWindow::setupCenterWindows()
     mProjectTab->setWindowTitle(tr("Project"));
     mEditorTab = new EditorTab(this);
     mEditorTab->setWindowTitle (tr ("Editor"));
+    mSmaliTree = new SmaliTree(this);
+    mSmaliTree->setWindowTitle(tr("Smali"));
 
     // init Tab widget
     mWidgetList.push_back(mProjectTab);
     mWidgetNativeNameList.push_back("ProjectTab");
     mWidgetList.push_back (mEditorTab);
     mWidgetNativeNameList.push_back ("EditorTab");
+    mWidgetList.push_back(mSmaliTree);
+    mWidgetNativeNameList.push_back("SmaliTab");
     loadTabOrder();
 }
 

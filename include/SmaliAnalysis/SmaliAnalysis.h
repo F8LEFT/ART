@@ -17,61 +17,82 @@
 #define PROJECT_SMALIANALYSIS_H
 
 
+#include "SmaliFile.h"
+
 #include <QMap>
 #include <QObject>
 #include <QDir>
 #include <QSharedPointer>
+#include <QStringList>
 #include <QThread>
+#include <QAbstractItemModel>
+#include <QStandardItemModel>
 
-class SmaliAnalysis : public QObject
+class SmaliTreeItem;
+
+class SmaliAnalysis : public QStandardItemModel
 {
     Q_OBJECT
-//signals:
-//    void analysisFinished();
-//    void analysisUpdated(const QString &filePath,
-//                         const QSharedPointer<Analysis::SmaliClass>&);
 
 public:
-    SmaliAnalysis(QObject* parent = 0);
+    static SmaliAnalysis* instance();
+    QStringList sources() { return m_sourceDir; }
+
+    void addSourcePath(QString source);
+    void clear();
+    // interface for ItemModel
+
+private:
+    void addSmaliFileinToTree(QString filepath);
+    void removeSmaliFromTree(QString filepath);
+    void removeAllSmaliTree();
+
+signals:
+    void fileAnalysisFinished(QString filePath);
+
+private slots:
+    void onFileAnalysisFinished(SmaliFile* file);
+
+public:
+    QSharedPointer<SmaliFile> getSmaliFile(QString filepath);
+
+    QStandardItem * findChildByFullPath(QString filepath, bool gen = false);
+    QStandardItem * findChild(QStandardItem *parent, QString name, bool gen = false);
+private:
+    SmaliAnalysis();
     ~SmaliAnalysis ();
 
-    static SmaliAnalysis* mPtr;
-    static SmaliAnalysis* instance();
+    void addSmaliFileinToMap(SmaliFile* smaliFile);
+    bool removeSmaliFileFromMap(QString fileName);
+    void removeAllSmaliFile();
 
-    bool addSmaliFolder(QStringList dirs);
+    typedef QMultiMap<QString, QSharedPointer<SmaliFile>> FileNameDatasMap;
+    typedef QMap<QString, FileNameDatasMap *> DirectoryFileDatasMap;
 
-//private slots:
-//    void onFileAnalysisFinished(QString filePath, Analysis::SmaliClass* cla);
-//    void onAllAnalysisFinished();
-//
-//public:
-//    StringPool mStringPool;
-//    QMap<QString, QSharedPointer<Analysis::SmaliClass>> mAllClass;
-//
-//    bool mInit = false;
+    DirectoryFileDatasMap m_filenamesMap;
+
+    QStringList m_sourceDir;
+
+    QIcon m_dirIcon;
+    QIcon m_classIcon;
+    QIcon m_fieldIcon;
+    QIcon m_methodIcon;
 };
 
-//class SmaliAnalysisThread: public QThread
-//{
-//Q_OBJECT
-//public:
-//    SmaliAnalysisThread(QObject *parent = Q_NULLPTR);
-//
-//    void setSearchDir(QStringList d);
-//    void addSearchDir(QString d);
-//    void setStringPool(StringPool* sp);
-//signals:
-//    void fileAnalysisFinished(QString filePath, Analysis::SmaliClass* cla);
-//    void allAnalysisFinished();
-//protected:
-//    void run();
-//
-//private:
-//    QStringList mDirs;
-//    StringPool* mStringPool;
-//};
+class SmaliAnalysisThread: public QThread
+{
+Q_OBJECT
+public:
+    SmaliAnalysisThread(QString path, QObject *parent = Q_NULLPTR);
 
-// return ClassName
-//QString parseFile(QString filePath, StringPool* sp, Analysis::SmaliClass* sc);
+signals:
+    void fileAnalysisFinished(SmaliFile* file);
+protected:
+    void run();
+    void parseFile(QString path);
+    void parseDirectory(QString path);
+private:
+    QString m_src;
+};
 
 #endif //PROJECT_SMALIANALYSIS_H

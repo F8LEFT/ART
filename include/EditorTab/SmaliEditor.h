@@ -17,7 +17,7 @@
 
 #include "TextEditor.h"
 
-#include "SmaliFile.h"
+#include "../../lib/SmaliAnalysis/SmaliFile.h"
 
 
 #include <SyntaxHighlighter>
