@@ -75,6 +75,7 @@ EditorTab::EditorTab(QWidget *parent) :
                     updateEditorMsg(file);
                 }
             });
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &EditorTab::reloadFile);
 }
 
 EditorTab::~EditorTab()
@@ -367,6 +368,14 @@ void EditorTab::methodIndexChanged(int index) {
     if(e == nullptr)
         return;
     e->editor()->gotoLine (line);
+}
+
+void EditorTab::reloadFile(QString filePath) {
+    int iComIdx = ui->mDocumentCombo->findData(filePath);
+    if (iComIdx != -1) {
+        TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(iComIdx);
+        p->reload(1500);
+    }
 }
 
 

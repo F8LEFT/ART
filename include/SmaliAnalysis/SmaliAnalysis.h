@@ -27,6 +27,7 @@
 #include <QThread>
 #include <QAbstractItemModel>
 #include <QStandardItemModel>
+#include <QFileSystemWatcher>
 
 class SmaliTreeItem;
 
@@ -43,6 +44,7 @@ public:
     QStringList sources() { return m_sourceDir; }
 
     void addSourcePath(QString source);
+    void startFileParseThread(QString path);
     void clear();
     // interface for ItemModel
 
@@ -70,7 +72,7 @@ private:
     bool removeSmaliFileFromMap(QString fileName);
     void removeAllSmaliFile();
 
-    typedef QMultiMap<QString, QSharedPointer<SmaliFile>> FileNameDatasMap;
+    typedef QMap<QString, QSharedPointer<SmaliFile>> FileNameDatasMap;
     typedef QMap<QString, FileNameDatasMap *> DirectoryFileDatasMap;
 
     DirectoryFileDatasMap m_filenamesMap;
@@ -81,6 +83,8 @@ private:
     QIcon m_classIcon;
     QIcon m_fieldIcon;
     QIcon m_methodIcon;
+
+    QFileSystemWatcher m_fileWatcher;
 };
 
 class SmaliAnalysisThread: public QThread

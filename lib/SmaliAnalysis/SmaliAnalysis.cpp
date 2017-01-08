@@ -40,6 +40,10 @@ SmaliAnalysis::SmaliAnalysis()
       m_methodIcon(":/images/method.png")
 {
     invisibleRootItem()->setColumnCount(2);
+
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, [this](QString path) {
+        startFileParseThread(path);
+    });
 }
 
 SmaliAnalysis::~SmaliAnalysis() {
@@ -48,7 +52,11 @@ SmaliAnalysis::~SmaliAnalysis() {
 void SmaliAnalysis::addSourcePath(QString source) {
     m_sourceDir << source;
 
-    SmaliAnalysisThread* thread = new SmaliAnalysisThread(source, this);
+    startFileParseThread(source);
+}
+
+void SmaliAnalysis::startFileParseThread(QString path) {
+    SmaliAnalysisThread* thread = new SmaliAnalysisThread(path, this);
     connect(thread, &SmaliAnalysisThread::fileAnalysisFinished, this, &SmaliAnalysis::onFileAnalysisFinished);
     thread->start();
 }
@@ -74,10 +82,13 @@ void SmaliAnalysis::addSmaliFileinToMap(SmaliFile *smaliFile) {
         m_filenamesMap.insert(path, new FileNameDatasMap());
     m_filenamesMap.value(path)->insert(fi.fileName(), QSharedPointer<SmaliFile>(smaliFile));
 
+    m_fileWatcher.addPath(smaliFile->sourceFile());
 
 }
 
 bool SmaliAnalysis::removeSmaliFileFromMap(QString fileName) {
+    m_fileWatcher.removePath(fileName);
+
     bool found = false;
     const QFileInfo fi(fileName);
     if (auto files = m_filenamesMap.value(fi.path())) {
@@ -91,6 +102,8 @@ bool SmaliAnalysis::removeSmaliFileFromMap(QString fileName) {
 }
 
 void SmaliAnalysis::removeAllSmaliFile() {
+    m_fileWatcher.removePaths(m_fileWatcher.files());
+
     auto end = m_filenamesMap.constEnd();
     for (auto it = m_filenamesMap.constBegin(); it != end; ++it) {
         FileNameDatasMap *files = it.value();
@@ -198,6 +211,8 @@ void SmaliAnalysis::removeAllSmaliTree() {
     auto root = invisibleRootItem();
     root->removeRows(0, root->rowCount());
 }
+
+
 
 SmaliAnalysisThread::SmaliAnalysisThread (QString path, QObject *parent)
         : QThread (parent)

@@ -60,13 +60,6 @@ TextEditorWidget::TextEditorWidget(QWidget *parent) :
     connect(mFindWidget, SIGNAL(closeWidget()),
             this, SLOT(onFindClose ()));
 
-
-    mFileWatcher = new QFileSystemWatcher(this);
-    connect(mFileWatcher, &QFileSystemWatcher::fileChanged, [this](QString path) {
-        qDebug() << "File watcher file changed " << path;
-        mFileReloadTimer->start (1500);
-    });
-
     mFindWidget->hide ();
     loadFromConfig();
 
@@ -97,7 +90,6 @@ bool TextEditorWidget::openFile(QString filePath, int iLine)
 
     connect(mFileEdit, &QPlainTextEdit::textChanged, this, &TextEditorWidget::textChanged);
 
-    mFileWatcher->addPath(filePath);
     mFindWidget->setFilePath(filePath);
 
     // setup editor layout
@@ -235,5 +227,9 @@ void TextEditorWidget::highlightWord (const QString &subString,QTextDocument::Fi
                                  options & (~QTextDocument::FindBackward));
     }
     mFileEdit->setExtraSelections(extraSelections);
+}
+
+void TextEditorWidget::reload(int delay) {
+    mFileReloadTimer->start(delay);
 }
 

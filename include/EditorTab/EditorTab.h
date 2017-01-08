@@ -16,6 +16,7 @@
 #include "TextMark.h"
 
 #include <QWidget>
+#include <QFileSystemWatcher>
 
 namespace Ui {
 class EditorTab;
@@ -32,7 +33,7 @@ public:
     bool openFile(QString filePath, int iLine = 1);
     bool closeFile(QString filePath);
     bool saveFile(QString filePath);
-
+    void reloadFile(QString filePath);
 public slots:
     void documentCloseClick(bool );
 
@@ -72,6 +73,8 @@ private:
 
     QIcon m_fieldIcon;
     QIcon m_methodIcon;
+
+    QFileSystemWatcher m_fileWatcher;
 };
 
 #endif // EDITORTAB_H

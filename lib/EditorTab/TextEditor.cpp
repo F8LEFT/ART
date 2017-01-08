@@ -74,6 +74,7 @@ bool TextEditor::openFile(const QString &fileName, int iLine)
     setDocumentTitle(fileName);
     m_filePath = fileName;
     setPlainText(QString::fromUtf8(f.readAll()));
+    gotoLine(iLine, 0, false);
 
     readBookMark();
     return true;
@@ -331,7 +332,7 @@ bool TextEditor::saveFile() {
 
 bool TextEditor::reload()
 {
-    return false;
+    return openFile(m_filePath, currentLine());
 }
 
 UserBlockExtraData *TextEditor::blockData(QTextBlock &block) {

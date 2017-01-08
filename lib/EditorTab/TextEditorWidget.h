@@ -41,6 +41,7 @@ public:
     bool openFile(QString filePath, int iLine = 1);
     bool saveFile();
     bool reload();
+    void reload(int delay);
     void closeFile();
 
     QString getFilePath() {return mFileEdit->documentTitle();}
@@ -73,8 +74,6 @@ protected:
     QSyntaxHighlighter* mHighlighter;
 
     FindWidget* mFindWidget;
-
-    QFileSystemWatcher* mFileWatcher;
 
     int mLine;
 
