@@ -9,7 +9,7 @@
 
 #include "SmaliFileListener.h"
 
-#include "SmaliFile.h"
+#include "SmaliAnalysis/SmaliFile.h"
 #include "LiteralTools.h"
 
 SmaliFileListener::SmaliFileListener(SmaliFile *filedata) {

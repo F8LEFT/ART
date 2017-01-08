@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "SmaliField.h"
+#include "SmaliAnalysis/SmaliField.h"
 
 #define NUM_FLAGS   18
 

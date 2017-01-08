@@ -6,7 +6,7 @@
 // V3 License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-#include "SmaliMethod.h"
+#include "SmaliAnalysis/SmaliMethod.h"
 #define NUM_FLAGS   18
 
 QString SmaliMethod::buildAccessFlag() {
@@ -72,6 +72,17 @@ u4 SmaliMethod::getAccessFlag(QString flags) {
         }
     }
 
+    return rel;
+}
+
+QString SmaliMethod::buildProto() {
+    QString rel;
+    rel.append('(');
+    for(auto &param: m_params) {
+        rel.append(param);
+    }
+    rel.append(')');
+    rel.append(m_ret);
     return rel;
 }
 

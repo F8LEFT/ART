@@ -20,6 +20,7 @@
 #include <utils/ScriptEngine.h>
 #include <utils/ProjectInfo.h>
 #include <utils/Configuration.h>
+#include <SmaliAnalysis/SmaliAnalysis.h>
 
 #include <QStackedWidget>
 #include <QFile>
@@ -30,11 +31,16 @@
 
 EditorTab::EditorTab(QWidget *parent) :
         QWidget(parent),
-        ui(new Ui::EditorTab)
+        ui(new Ui::EditorTab),
+        m_fieldIcon(":/images/field.png"),
+        m_methodIcon(":/images/method.png")
 {
     ui->setupUi(this);
     connect(ui->mCloseButton, SIGNAL(clicked(bool)),
             this, SLOT(documentCloseClick(bool)));
+
+    connect(ui->mDocumentCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(documentIndxChanged(int)));
+    connect(ui->mMethodCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(methodIndexChanged(int)));
 
     ScriptEngine* script = ScriptEngine::instance();
     connect(script, SIGNAL(saveAllFile(QStringList)), this, SLOT(saveAll()));
@@ -62,6 +68,13 @@ EditorTab::EditorTab(QWidget *parent) :
     connect(bookmarkManager, &BookMarkManager::updateBookMark, this, &EditorTab::onTextMarkUpdate);
     auto breakpointManager = BreakPointManager::instance();
     connect(breakpointManager, &BreakPointManager::updateBreakPoint, this, &EditorTab::onTextMarkUpdate);
+    auto smalianalysis = SmaliAnalysis::instance();
+    connect(smalianalysis, &SmaliAnalysis::fileAnalysisFinished,
+            [this](const QString &file) {
+                if(ui->mDocumentCombo->currentData().toString() == file) {
+                    updateEditorMsg(file);
+                }
+            });
 }
 
 EditorTab::~EditorTab()
@@ -317,6 +330,43 @@ void EditorTab::onTextMarkUpdate(TextMark *mark, bool isAdd) {
         TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(iComIdx);
         p->editor()->updateTextMark(mark, isAdd);
     }
+}
+
+void EditorTab::documentIndxChanged(int index) {
+    if(index == -1) {
+        ui->mMethodCombo->clear();
+        return;
+    }
+    ui->mEditStackedWidget->setCurrentIndex(index);
+    updateEditorMsg(ui->mDocumentCombo->currentData().toString());
+}
+
+void EditorTab::updateEditorMsg(QString file) {
+    ui->mMethodCombo->clear();
+    auto smalianalysis = SmaliAnalysis::instance();
+    auto filedata = smalianalysis->getSmaliFile(file);
+    if(filedata.isNull()) {
+        return;
+    }
+    for(auto i = 0, count = filedata->fieldCount(); i < count; i++) {
+        auto field = filedata->field(i);
+        ui->mMethodCombo->addItem(m_fieldIcon, field->m_name, field->m_line);
+    }
+    for(auto i = 0, count = filedata->methodCount(); i < count; i++) {
+        auto method = filedata->method(i);
+        ui->mMethodCombo->addItem(m_methodIcon, method->m_name, method->m_startline);
+    }
+}
+
+void EditorTab::methodIndexChanged(int index) {
+    if(index == -1) {
+        return;
+    }
+    auto line = ui->mMethodCombo->currentData().toInt();
+    TextEditorWidget* e = (TextEditorWidget*)ui->mEditStackedWidget->currentWidget();
+    if(e == nullptr)
+        return;
+    e->editor()->gotoLine (line);
 }
 
 

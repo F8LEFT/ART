@@ -33,7 +33,11 @@ class SmaliTreeItem;
 class SmaliAnalysis : public QStandardItemModel
 {
     Q_OBJECT
-
+public:
+    enum ItemRole {
+        Source = Qt::UserRole,
+        Line,
+    };
 public:
     static SmaliAnalysis* instance();
     QStringList sources() { return m_sourceDir; }
@@ -48,7 +52,7 @@ private:
     void removeAllSmaliTree();
 
 signals:
-    void fileAnalysisFinished(QString filePath);
+    void fileAnalysisFinished(const QString &filePath);
 
 private slots:
     void onFileAnalysisFinished(SmaliFile* file);

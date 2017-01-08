@@ -309,6 +309,7 @@ void TextEditor::gotoLine(int line, int column, bool centerLine) {
             ensureCursorVisible();
         }
     }
+    setFocus();
     raise();
 }
 

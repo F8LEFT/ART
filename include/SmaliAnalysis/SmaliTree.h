@@ -27,6 +27,9 @@ public:
     SmaliTree(QWidget* parent = nullptr);
     ~SmaliTree();
 
+protected slots:
+    void onItemDoubleClicked(const QModelIndex &index);
+
 private:
     SmaliAnalysis* m_smaliData;
 };

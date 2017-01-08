@@ -128,22 +128,5 @@
  <resources>
   <include location="../../ART.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mDocumentCombo</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>mEditStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>110</x>
-     <y>22</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>372</x>
-     <y>255</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

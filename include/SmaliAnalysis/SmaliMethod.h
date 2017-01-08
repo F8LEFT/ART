@@ -33,6 +33,7 @@ struct SmaliMethod {
     int m_startline = -1;         // defination in source file
     int m_endline = -1;
 
+    QString buildProto();
     QString buildAccessFlag();
     static QString buildAccessFlag(u4 flags);
     static u4 getAccessFlag(QString flags);

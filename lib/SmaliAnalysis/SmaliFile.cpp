@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "SmaliFile.h"
+#include "SmaliAnalysis/SmaliFile.h"
 
 #include "SmaliFileListener.h"
 

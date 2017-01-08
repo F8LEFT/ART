@@ -39,6 +39,7 @@ SmaliAnalysis::SmaliAnalysis()
       m_fieldIcon(":/images/field.png"),
       m_methodIcon(":/images/method.png")
 {
+    invisibleRootItem()->setColumnCount(2);
 }
 
 SmaliAnalysis::~SmaliAnalysis() {
@@ -79,17 +80,8 @@ void SmaliAnalysis::addSmaliFileinToMap(SmaliFile *smaliFile) {
 bool SmaliAnalysis::removeSmaliFileFromMap(QString fileName) {
     bool found = false;
     const QFileInfo fi(fileName);
-    if (FileNameDatasMap *files = m_filenamesMap.value(fi.path())) {
-        FileNameDatasMap::iterator i = files->begin();
-        auto iEnd = files->end();
-        while (i != iEnd) {
-            if (i.value()->sourceFile() == fileName) {
-                files->erase(i);
-                found = true;
-                break;
-            }
-            ++i;
-        }
+    if (auto files = m_filenamesMap.value(fi.path())) {
+        files->remove(fi.fileName());
         if (files->count() <= 0) {
             m_filenamesMap.remove(fi.path());
             delete files;
@@ -97,81 +89,6 @@ bool SmaliAnalysis::removeSmaliFileFromMap(QString fileName) {
     }
     return found;
 }
-
-// SmaliAnalysisThread
-//
-//int SmaliAnalysis::columnCount(const QModelIndex &parent) const
-//{
-//    if (parent.isValid())
-//        return static_cast<SmaliTreeItem*>(parent.internalPointer())->columnCount();
-//    else
-//        return rootItem->columnCount();
-//}
-//
-//QVariant SmaliAnalysis::data(const QModelIndex &index, int role) const
-//{
-//    if (!index.isValid())
-//        return QVariant();
-//
-//    SmaliTreeItem *item = static_cast<SmaliTreeItem*>(index.internalPointer());
-//    return item->data(index, role);
-//}
-//
-//Qt::ItemFlags SmaliAnalysis::flags(const QModelIndex &index) const
-//{
-//    if (!index.isValid())
-//        return 0;
-//
-//    return QAbstractItemModel::flags(index);
-//}
-//
-//QModelIndex SmaliAnalysis::index(int row, int column, const QModelIndex &parent)
-//const
-//{
-//    if (!hasIndex(row, column, parent))
-//        return QModelIndex();
-//
-//    SmaliTreeItem *parentItem;
-//
-//    if (!parent.isValid())
-//        parentItem = rootItem;
-//    else
-//        parentItem = static_cast<SmaliTreeItem*>(parent.internalPointer());
-//
-//    SmaliTreeItem *childItem = parentItem->child(row);
-//    if (childItem)
-//        return createIndex(row, column, childItem);
-//    else
-//        return QModelIndex();
-//}
-//
-//QModelIndex SmaliAnalysis::parent(const QModelIndex &index) const
-//{
-//    if (!index.isValid())
-//        return QModelIndex();
-//
-//    SmaliTreeItem *childItem = static_cast<SmaliTreeItem*>(index.internalPointer());
-//    SmaliTreeItem *parentItem = childItem->parentItem();
-//
-//    if (parentItem == rootItem)
-//        return QModelIndex();
-//
-//    return createIndex(parentItem->row(), 0, parentItem);
-//}
-//
-//int SmaliAnalysis::rowCount(const QModelIndex &parent) const
-//{
-//    SmaliTreeItem *parentItem;
-//    if (parent.column() > 0)
-//        return 0;
-//
-//    if (!parent.isValid())
-//        parentItem = rootItem;
-//    else
-//        parentItem = static_cast<SmaliTreeItem*>(parent.internalPointer());
-//
-//    return parentItem->childCount();
-//}
 
 void SmaliAnalysis::removeAllSmaliFile() {
     auto end = m_filenamesMap.constEnd();
@@ -192,30 +109,34 @@ void SmaliAnalysis::addSmaliFileinToTree(QString filepath) {
     auto parent = findChildByFullPath(fi.absolutePath(), true);
     auto child = findChild(parent, fi.baseName(), true);
     child->setIcon(m_classIcon);
+    child->setData(filedata->sourceFile(), ItemRole::Source);
     child->removeRows(0, child->rowCount());
 
     for(auto i = 0, count = filedata->fieldCount(); i < count; i++) {
         auto field = filedata->field(i);
         auto item = new QStandardItem(m_fieldIcon, field->m_name);
         item->setEditable(false);
-        child->appendRow(item);
+        item->setData(field->m_line, ItemRole::Line);
+        auto type = new QStandardItem(field->m_class);
+        type->setEditable(false);
+        child->appendRow(QList<QStandardItem*>() << item << type);
     }
+
     for(auto i = 0, count = filedata->methodCount(); i < count; i++) {
         auto method = filedata->method(i);
         auto item = new QStandardItem(m_methodIcon, method->m_name);
         item->setEditable(false);
-        child->appendRow(item);
+        item->setData(method->m_startline, ItemRole::Line);
+        auto type = new QStandardItem(method->buildProto());
+        type->setEditable(false);
+        child->appendRow(QList<QStandardItem*>() << item << type);
     }
 }
 
 QSharedPointer<SmaliFile> SmaliAnalysis::getSmaliFile(QString filepath) {
     const QFileInfo fi(filepath);
-    if (FileNameDatasMap *files = m_filenamesMap.value(fi.path())) {
-        FileNameDatasMap::iterator i = files->begin();
-        auto iEnd = files->end();
-        while (i != iEnd) {
-            return i.value();
-        }
+    if (auto files = m_filenamesMap.value(fi.path())) {
+        return files->value(fi.fileName());
     }
     return QSharedPointer<SmaliFile>();
 }

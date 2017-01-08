@@ -61,8 +61,17 @@ public slots:
     void onProjectClosed ();
 
     void onTextMarkUpdate(TextMark* mark, bool isAdd);
+
+private slots:
+    void documentIndxChanged(int index);
+    void methodIndexChanged(int index);
 private:
+    void updateEditorMsg(QString file);
+
     Ui::EditorTab *ui;
+
+    QIcon m_fieldIcon;
+    QIcon m_methodIcon;
 };
 
 #endif // EDITORTAB_H
