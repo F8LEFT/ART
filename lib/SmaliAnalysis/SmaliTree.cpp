@@ -42,14 +42,26 @@ void SmaliTree::onItemDoubleClicked(const QModelIndex &index) {
     if(item == nullptr) {
         return;
     }
-    auto line = item->data(SmaliAnalysis::ItemRole::Line);
-    if(!line.isValid()) {
-        return;
+    {
+        // check wether is class role
+        auto source  = item->parent()->data(SmaliAnalysis::ItemRole::Source);
+        if(source.isValid()) {
+            QStringList args;
+            args<< source.toString();
+            cmdexec("OpenFile", args, CmdMsg::script, true, false);
+            return;
+        }
     }
-    auto source = item->parent()->data(SmaliAnalysis::ItemRole::Source);
-
-    QStringList args;
-    args<< source.toString()
-        << QString::number(line.toInt());
-    cmdexec("OpenFile", args, CmdMsg::script, true, false);
+    {
+        // check wether is field role
+        auto line = item->data(SmaliAnalysis::ItemRole::Line);
+        if(line.isValid()) {
+            auto source = item->parent()->data(SmaliAnalysis::ItemRole::Source);
+            QStringList args;
+            args<< source.toString()
+                << QString::number(line.toInt());
+            cmdexec("OpenFile", args, CmdMsg::script, true, false);
+            return;
+        }
+    }
 }
