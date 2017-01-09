@@ -391,13 +391,13 @@ void DebugHandler::dbgGetClassBySignature(const QString &classSignature,
 
     auto request = JDWP::VirtualMachine::ClassesBySignature::buildReq(classSignature.toLocal8Bit(), mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
-    connect(package.data(), &ReqestPackage::onReply, [this, classSignature, callback](JDWP::Request *request,QByteArray& reply) {
+    connect(package.data(), &ReqestPackage::onReply,
+        [this, classSignature, callback](JDWP::Request *request,QByteArray& reply) {
         JDWP::VirtualMachine::ClassesBySignature signature((uint8_t*)reply.data(), reply.length());
-        // class has not been loaded, need to wait for loading.
         if(signature.mSize == 0) {
-
-            waitForClassPrepared(jniSigToJavaSig(classSignature), [this, callback](JDWP::Composite::ReflectedType::EventClassPrepare* prepare) {
-                // classInfo has been recorded in DebugHandler::handleCommand
+            // class has not been loaded, need to wait for loading.
+            waitForClassPrepared(jniSigToJavaSig(classSignature),
+                [this, callback](JDWP::Composite::ReflectedType::EventClassPrepare* prepare) {
                 callback(mLoadedClassInfo[prepare->mTypeId]);
             });
             return;
@@ -428,7 +428,7 @@ void DebugHandler::waitForClassPrepared(QString javaSignature, Func callback) {
     JDWP::JdwpEventMod mMatch;
     mMatch.modKind = JDWP::JdwpModKind::MK_CLASS_MATCH;
     auto matchClass = javaSignature.toLatin1();
-    mMatch.classMatch.classPattern = matchClass.data(); // TODO how to store javaSinature?
+    mMatch.classMatch.classPattern = matchClass.data();
     mod.push_back(mMatch);
 
     JDWP::JdwpEventMod mCount;
@@ -443,6 +443,7 @@ void DebugHandler::waitForClassPrepared(QString javaSignature, Func callback) {
               auto package = QSharedPointer<CommandPackage>(new CommandPackage(modPad, JDWP::JdwpSuspendPolicy::SP_ALL));
               connect(package.data(), &CommandPackage::onClassPrepare,
                   [this, requestId, callback](JDWP::Composite::ReflectedType::EventClassPrepare* prepare, JDWP::JdwpSuspendPolicy  policy, bool *clear) {
+                      // classInfo has been recorded in DebugHandler::handleCommand
                       dbgEventRequestClear(JDWP::JdwpEventKind::EK_CLASS_PREPARE, requestId);
                       callback(prepare);
                       *clear = true;

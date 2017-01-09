@@ -352,11 +352,17 @@ void EditorTab::updateEditorMsg(QString file) {
     }
     for(auto i = 0, count = filedata->fieldCount(); i < count; i++) {
         auto field = filedata->field(i);
-        ui->mMethodCombo->addItem(m_fieldIcon, field->m_name, field->m_line);
+        QString description = field->m_name;
+        description.append(' ');
+        description.append(field->m_class);
+        ui->mMethodCombo->addItem(m_fieldIcon, description, field->m_line);
     }
     for(auto i = 0, count = filedata->methodCount(); i < count; i++) {
         auto method = filedata->method(i);
-        ui->mMethodCombo->addItem(m_methodIcon, method->m_name, method->m_startline);
+        QString description = method->m_name;
+        description.append(' ');
+        description.append(method->buildProto());
+        ui->mMethodCombo->addItem(m_methodIcon, description, method->m_startline);
     }
 }
 
