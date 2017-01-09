@@ -25,7 +25,8 @@ Debugger::Debugger(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Debugger),
     m_lastHost("localhost"),
-    m_lastPort(8700)
+    m_lastPort(8700),
+    m_bindJdwp(false)
 {
     ui->setupUi(this);
 
@@ -76,7 +77,7 @@ void Debugger::startNewTarget(QStringList args)
     }
     auto& target = args.front();
 
-    ChooseProcess chooseProcess(m_lastHost, m_lastPort, target);
+    ChooseProcess chooseProcess(m_lastHost, m_lastPort, target, m_bindJdwp, nullptr);
     if(chooseProcess.exec() != QDialog::Accepted
         || !chooseProcess.isValid()) {
         return;
@@ -84,8 +85,10 @@ void Debugger::startNewTarget(QStringList args)
 
     m_lastHost = chooseProcess.getHostname();
     m_lastPort = chooseProcess.getPort();
+    m_bindJdwp = chooseProcess.bindJdwp();
 
-    mSocket->startConnection(m_lastHost, m_lastPort, chooseProcess.getTargetPid());
+    mSocket->startConnection(m_lastHost, m_lastPort,
+                             chooseProcess.getTargetPid(), m_bindJdwp);
 }
 
 void Debugger::stopCurrentTarget()

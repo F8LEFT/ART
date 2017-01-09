@@ -104,6 +104,9 @@ private:
 private:
     void breakPointHit(JDWP::JdwpSuspendPolicy  policy,
                        JDWP::Composite::ReflectedType::EventLocationEvent*event);
+
+    void stopOnProcessEntryPoint();
+    void setAllBreakpoint();
 private:
     DebugSocket* mSocket;
     QMap<int, QSharedPointer<ReqestPackage>> mRequestMap;
@@ -183,7 +186,6 @@ public:
 
 
 
-QString jniSigToJavaSig(QString sig);
-QByteArray jniSigToJavaSig(QByteArray sig);
+
 
 #endif //ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H

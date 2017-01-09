@@ -38,7 +38,7 @@ class DebugSocket: public QThread
 public:
     DebugSocket(QObject *parent = 0);
 
-    void startConnection(const QString &hostName, int port, int pid);
+    void startConnection(const QString &hostName, int port, int pid, bool bindJdwp);
 
     void run() Q_DECL_OVERRIDE;
 
@@ -76,6 +76,7 @@ private:
     QString mHostName;
     quint16 mPort;
     int mPid;
+    bool mBindJdwp;
     QMutex mMutex;
     QAtomicInteger<bool> mQuit;
 

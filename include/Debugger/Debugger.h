@@ -70,7 +70,7 @@ private:
 
     QString m_lastHost;
     int m_lastPort;
-
+    bool m_bindJdwp;
 };
 
 #endif // DEBUGGER_H

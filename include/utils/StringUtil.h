@@ -58,4 +58,9 @@ QString GetCfgsPath(const QString& expend = QString());
 
 QString GetSystemType();
 
+QString jniSigToJavaSig(QString sig);
+QByteArray jniSigToJavaSig(QByteArray sig);
+QString javaSigToJniSig(QString sig);
+QByteArray javaSigToJniSig(QByteArray sig);
+
 #endif //PROJECT_STRINGUTIL_H_H

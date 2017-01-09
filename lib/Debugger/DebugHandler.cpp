@@ -9,12 +9,16 @@
 #include "DebugHandler.h"
 
 #include "DebugSocket.h"
-
-#include <QDebug>
+#include <Jdwp/JdwpHeader.h>
+#include <utils/ProjectInfo.h>
 #include <utils/CmdMsgUtil.h>
 #include <Jdwp/jdwp.h>
+
+#include <QDebug>
 #include <QTimer>
-#include <Jdwp/JdwpHeader.h>
+#include <SmaliAnalysis/SmaliAnalysis.h>
+#include <utils/StringUtil.h>
+
 
 DebugHandler::DebugHandler(QObject *parent, DebugSocket* socket)
         : QObject(parent)
@@ -224,7 +228,8 @@ void DebugHandler::onSocketConnected()
 //                           [this](JDWP::JdwpEventKind eventkind, uint32_t requestId) {});
 //    }
     // suspend and set breakpoint to process entry point
-    dbgSetBreakPoint("Lcom/example/ring/myapplication/MainActivity;", "onCreate", "(Landroid/os/Bundle;)V", 0);
+    stopOnProcessEntryPoint();
+    setAllBreakpoint();
 
     QTimer::singleShot(10000, [this]() {
         // wait for classloading finished and breakpoint set
@@ -524,6 +529,53 @@ void DebugHandler::breakPointHit(JDWP::JdwpSuspendPolicy  policy,
     });
 }
 
+void DebugHandler::stopOnProcessEntryPoint() {
+    auto config = ProjectInfo::current();
+    QString className, methodName, methodSig;
+    bool found = false;
+    if(config->config().m_applicationName != "Landroid/app/Application;") {
+        // try to set breakpoint in application entry point
+        auto filedata = SmaliAnalysis::instance()->getSmaliFileBySig(config->config().m_applicationName);
+        if(!filedata.isNull()) {
+            auto method = filedata->method("attachBaseContext", "(Landroid/content/Context;)V");
+            if(method != nullptr && method->m_accessflag & ACC_NATIVE) {
+                method = nullptr;
+            }
+            if(method == nullptr) {
+                method = filedata->method("onCreate", "()V");
+                if(method != nullptr && method->m_accessflag & ACC_NATIVE) {
+                    method = nullptr;
+                }
+            }
+            if(method != nullptr) {
+                className = filedata->name();
+                methodName = method->m_name;
+                methodSig = method->buildProto();
+                found = true;
+            }
+        }
+    }
+    if(!found) {
+        // try to set breakpoint to activity entrypoint.
+        auto filedata = SmaliAnalysis::instance()->getSmaliFileBySig(config->config().m_activityEntryName);
+        if(!filedata.isNull()) {
+            auto method = filedata->method("onCreate", "(Landroid/os/Bundle;)V");
+            if(method != nullptr && !(method->m_accessflag & ACC_NATIVE)) {
+                className = filedata->name();
+                methodName = method->m_name;
+                methodSig = method->buildProto();
+                found = true;
+            }
+        }
+    }
+    if(found) {
+        dbgSetBreakPoint(className, methodName, methodSig, 0);
+    }
+}
+
+void DebugHandler::setAllBreakpoint() {
+
+}
 
 
 ReqestPackage::ReqestPackage(QByteArray& data,  QObject *parent)
@@ -724,20 +776,3 @@ CommandPackage::~CommandPackage() {
 }
 
 
-QByteArray jniSigToJavaSig(QByteArray sig) {
-    if(!sig.startsWith('L') && !sig.endsWith(';')) {
-        return sig;
-    }
-    sig = sig.mid(1, sig.length() - 2);
-    sig.replace('/', '.');
-    return sig;
-}
-
-QString jniSigToJavaSig(QString sig) {
-    if(!sig.startsWith('L') && !sig.endsWith(';')) {
-        return sig;
-    }
-    sig = sig.mid(1, sig.length() - 2);
-    sig.replace('/', '.');
-    return sig;
-}

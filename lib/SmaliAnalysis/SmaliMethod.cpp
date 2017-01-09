@@ -86,3 +86,8 @@ QString SmaliMethod::buildProto() {
     return rel;
 }
 
+bool SmaliMethod::equal(QString name, QVector<QString> params) {
+    return name == m_name && params == m_params;
+}
+
+

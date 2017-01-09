@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDirIterator>
 #include <QDir>
+#include <utils/StringUtil.h>
 
 using namespace std;
 
@@ -80,14 +81,17 @@ void SmaliAnalysis::addSmaliFileinToMap(SmaliFile *smaliFile) {
     const QString &path = fi.path();
     if (!m_filenamesMap.contains(path))
         m_filenamesMap.insert(path, new FileNameDatasMap());
-    m_filenamesMap.value(path)->insert(fi.fileName(), QSharedPointer<SmaliFile>(smaliFile));
+    QSharedPointer<SmaliFile> filedata(smaliFile);
+    m_filenamesMap.value(path)->insert(fi.fileName(), filedata);
+    m_classnamesMap.insert(filedata->name(), filedata);
 
     m_fileWatcher.addPath(smaliFile->sourceFile());
-
 }
 
 bool SmaliAnalysis::removeSmaliFileFromMap(QString fileName) {
     m_fileWatcher.removePath(fileName);
+
+    auto filedata = getSmaliFile(fileName);
 
     bool found = false;
     const QFileInfo fi(fileName);
@@ -97,7 +101,9 @@ bool SmaliAnalysis::removeSmaliFileFromMap(QString fileName) {
             m_filenamesMap.remove(fi.path());
             delete files;
         }
+        found = true;
     }
+    m_classnamesMap.remove(filedata->name());
     return found;
 }
 
@@ -110,6 +116,7 @@ void SmaliAnalysis::removeAllSmaliFile() {
         delete files;
     }
     m_filenamesMap.clear();
+    m_classnamesMap.clear();
 }
 
 void SmaliAnalysis::addSmaliFileinToTree(QString filepath) {
@@ -155,15 +162,17 @@ QSharedPointer<SmaliFile> SmaliAnalysis::getSmaliFile(QString filepath) {
 }
 
 QStandardItem *SmaliAnalysis::findChildByFullPath(QString filepath, bool gen) {
-    QString projectroot = QFileInfo(ProjectInfo::current()->getSourcePath()).absoluteFilePath();
     QDir dir(filepath);
     QStringList midpaths;
-    while(dir.absolutePath() != projectroot) {
+    while(!m_sourceDir.contains(dir.absolutePath())) {
         midpaths << dir.dirName();
-        dir.cdUp();
-    }
-    if(dir.absolutePath() != projectroot) {
-        return nullptr;
+        if(!dir.cdUp()) {
+            if(gen) {
+                return new QStandardItem(m_dirIcon, filepath);
+            } else {
+                return nullptr;
+            }
+        }
     }
     auto parent = invisibleRootItem();
     for(auto it = midpaths.rbegin(), itEnd = midpaths.rend(); it != itEnd; it ++) {
@@ -212,6 +221,10 @@ void SmaliAnalysis::removeAllSmaliTree() {
     root->removeRows(0, root->rowCount());
 }
 
+QSharedPointer<SmaliFile> SmaliAnalysis::getSmaliFileBySig(QString sig) {
+    sig = javaSigToJniSig(sig);
+    return m_classnamesMap.value(sig);
+}
 
 
 SmaliAnalysisThread::SmaliAnalysisThread (QString path, QObject *parent)

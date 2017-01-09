@@ -34,8 +34,7 @@ DebugSocket::~DebugSocket ()
     mSocketEvent->deleteLater();
 }
 
-void DebugSocket::startConnection (const QString &hostName, int port,
-                                    int pid)
+void DebugSocket::startConnection(const QString &hostName, int port, int pid, bool bindJdwp)
 {
     QMutexLocker locker(&mMutex);
     if(isRunning ())
@@ -43,6 +42,7 @@ void DebugSocket::startConnection (const QString &hostName, int port,
     mHostName = hostName;
     mPort = port;
     mPid = pid;
+    mBindJdwp = bindJdwp;
     start ();
 }
 
@@ -58,18 +58,21 @@ void DebugSocket::stopConnection ()
 
 void DebugSocket::run ()
 {
-//    bool bindSuccess = false;
-//    for(auto trytime = 0; trytime < 3; trytime++) {
-//        bindSuccess = tryBindJdwp();
-//        if(bindSuccess) {
-//            break;
-//        }
-//        sleep(3);
-//    }
-//    if(!bindSuccess) {
-//         error(-1, tr("Unable to open debug port."));
-//        return;
-//    }
+    if(mBindJdwp) {
+        bool bindSuccess = false;
+        for(auto trytime = 0; trytime < 3; trytime++) {
+            bindSuccess = tryBindJdwp();
+            if(bindSuccess) {
+                break;
+            }
+            sleep(3);
+        }
+        if(!bindSuccess) {
+            error(-1, tr("Unable to bind jdwp port."));
+            return;
+        }
+    }
+
     mSocket = new QTcpSocket();
     connect(mSocket, &QTcpSocket::disconnected, this, &DebugSocket::onDisconnected);
 
@@ -186,11 +189,11 @@ bool DebugSocket::tryBindJdwp()
     QStringList bindResult = adbUtil.execute(prefix + "forward --list");
 
     QString bindCheck = bindConfig;
-    foreach(const QString& s, bindResult) {
-            if(bindResult.contains(s)) {
-                return true;
-            }
+    for(auto& s: bindResult) {
+        if(bindResult.contains(s)) {
+            return true;
         }
+    }
     return false;
 }
 

@@ -37,6 +37,8 @@ struct SmaliMethod {
     QString buildAccessFlag();
     static QString buildAccessFlag(u4 flags);
     static u4 getAccessFlag(QString flags);
+
+    bool equal(QString name, QVector<QString> params);
 };
 
 

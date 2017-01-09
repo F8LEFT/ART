@@ -44,7 +44,7 @@ void SmaliTree::onItemDoubleClicked(const QModelIndex &index) {
     }
     {
         // check wether is class role
-        auto source  = item->parent()->data(SmaliAnalysis::ItemRole::Source);
+        auto source  = item->data(SmaliAnalysis::ItemRole::Source);
         if(source.isValid()) {
             QStringList args;
             args<< source.toString();

@@ -121,6 +121,7 @@ void ProjectTab::openProject (QString projectName)
 
     readProjectInfo();
     pinfo->config().m_packageName = mPackageName;
+    pinfo->config().m_applicationName = mApplicationName;
     pinfo->config().m_activityEntryName = mActivityEntryName;
 
     auto analysis = SmaliAnalysis::instance();

@@ -12,8 +12,8 @@ class ChooseProcess : public QDialog
     Q_OBJECT
 
 public:
-    explicit ChooseProcess(const QString& host = "localhost", int port = 8100,
-                           const QString& filter = QString(), QWidget *parent = 0);
+    explicit ChooseProcess(const QString &host, int port, const QString &filter,
+                               bool bindJdwp, QWidget *parent);
     ~ChooseProcess();
 
     // configuration
@@ -26,6 +26,7 @@ public:
 
     bool isValid() { return m_pid != 0 && m_port != 0 && !m_host.isEmpty(); }
 
+    bool bindJdwp() { return m_bindJdwp; }
 protected :
     void accept();
 
@@ -38,6 +39,7 @@ private:
     int m_pid;
     QString m_host;
     int m_port;
+    bool m_bindJdwp;
 };
 
 #endif // CHOOSEPROCESS_H

@@ -5,8 +5,8 @@
 #include <utils/ProjectInfo.h>
 #include <utils/Configuration.h>
 
-ChooseProcess::ChooseProcess(const QString& host, int port,
-                             const QString& filter, QWidget *parent) :
+ChooseProcess::ChooseProcess(const QString &host, int port, const QString &filter,
+                             bool bindJdwp, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ChooseProcess)
 {
@@ -15,6 +15,7 @@ ChooseProcess::ChooseProcess(const QString& host, int port,
     m_host = host;
     m_port = port;
     m_pid = 0;
+    m_bindJdwp = bindJdwp;
 
     // setup header view
     QStringList headername;
@@ -52,6 +53,7 @@ ChooseProcess::ChooseProcess(const QString& host, int port,
     connect(ui->mTableWidget, &QTableWidget::itemDoubleClicked, this, &ChooseProcess::accept);
 
     ui->mFilterEdit->setText(filter);
+    ui->mJdwpBindCheck->setChecked(m_bindJdwp);
 }
 
 ChooseProcess::~ChooseProcess()
@@ -65,6 +67,7 @@ void ChooseProcess::accept() {
     if(ui->mTableWidget->currentRow() >= 0) {
         m_pid = ui->mTableWidget->item(ui->mTableWidget->currentRow(), 0)->text().toUInt();
     }
+    m_bindJdwp = ui->mJdwpBindCheck->isChecked();
     QDialog::accept();
 }
 

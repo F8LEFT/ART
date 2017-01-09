@@ -84,10 +84,14 @@ void SmaliFileListener::exitField(SmaliParser::FieldContext *ctx) {
 }
 
 void SmaliFileListener::enterSmali_file(SmaliParser::Smali_fileContext *ctx) {
+    m_smali->m_isValid = ctx->isValid;
+    if(!m_smali->m_isValid) {
+        return;
+    }
+    m_smali->m_name = QString::fromStdString(ctx->class_spec(0)->className);
 }
 
 void SmaliFileListener::exitSmali_file(SmaliParser::Smali_fileContext *ctx) {
-    m_smali->m_isValid = ctx->isValid;
 }
 
 

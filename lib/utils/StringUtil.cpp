@@ -76,6 +76,40 @@ QString GetSystemType ()
 #endif
 }
 
+QByteArray jniSigToJavaSig(QByteArray sig) {
+    if(!sig.startsWith('L') && !sig.endsWith(';')) {
+        return sig;
+    }
+    sig = sig.mid(1, sig.length() - 2);
+    sig.replace('/', '.');
+    return sig;
+}
 
+QString jniSigToJavaSig(QString sig) {
+    if(!sig.startsWith('L') && !sig.endsWith(';')) {
+        return sig;
+    }
+    sig = sig.mid(1, sig.length() - 2);
+    sig.replace('/', '.');
+    return sig;
+}
+
+QString javaSigToJniSig(QString sig) {
+    if(sig.startsWith('L') && sig.endsWith(';')) {
+        return sig;
+    }
+    sig.replace('.', '/');
+    sig.push_front('L'); sig.push_back(';');
+    return sig;
+}
+
+QByteArray javaSigToJniSig(QByteArray sig) {
+    if(sig.startsWith('L') && sig.endsWith(';')) {
+        return sig;
+    }
+    sig.replace('.', '/');
+    sig.push_front('L'); sig.push_back(';');
+    return sig;
+}
 
 

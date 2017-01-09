@@ -13,4 +13,4 @@ set_source_files_properties(
 )
 
 add_library(${TARGET_NAME} STATIC ${GUI_SRCS} ${JDWPSRC})
-target_link_libraries(${TARGET_NAME} utils Qt5::WebSockets Qt5::Widgets)
+target_link_libraries(${TARGET_NAME} utils SmaliAnalysis Qt5::WebSockets Qt5::Widgets)

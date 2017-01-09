@@ -60,7 +60,11 @@ private slots:
     void onFileAnalysisFinished(SmaliFile* file);
 
 public:
+    // get SmaliFile data with full path
     QSharedPointer<SmaliFile> getSmaliFile(QString filepath);
+    // get SmaliFile data with signature like Ljava/lang/Object;
+    // or java.lang.Object
+    QSharedPointer<SmaliFile> getSmaliFileBySig(QString sig);
 
     QStandardItem * findChildByFullPath(QString filepath, bool gen = false);
     QStandardItem * findChild(QStandardItem *parent, QString name, bool gen = false);
@@ -76,6 +80,7 @@ private:
     typedef QMap<QString, FileNameDatasMap *> DirectoryFileDatasMap;
 
     DirectoryFileDatasMap m_filenamesMap;
+    QMap<QString, QSharedPointer<SmaliFile>> m_classnamesMap;
 
     QStringList m_sourceDir;
 

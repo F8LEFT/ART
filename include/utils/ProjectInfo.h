@@ -30,6 +30,7 @@ public:
         QString m_decompileCmd;
 
         QString m_packageName;
+        QString m_applicationName;
         QString m_activityEntryName;
     };
 private:

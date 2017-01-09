@@ -40,10 +40,13 @@ public:
     static u4 getAccessFlag(QString flags);
 
     bool isValid() { return m_isValid; }
+    QString name() { return m_name; }
     int fieldCount() { return m_fields.size(); }
     SmaliField* field(int i) { return i < fieldCount() ? m_fields[i]: nullptr; }
+    SmaliField* field(QString name);
     int methodCount() { return m_methods.size(); }
     SmaliMethod* method(int i) { return i < methodCount()? m_methods[i]: nullptr; }
+    SmaliMethod* method(QString name, QString sig);
 private:
     QString m_filepath;
     bool m_isValid = false;

@@ -114,6 +114,24 @@ u4 SmaliFile::getAccessFlag(QString flags) {
     return rel;
 }
 
+SmaliField *SmaliFile::field(QString name) {
+    for(auto &field: m_fields) {
+        if(field->m_name == name) {
+            return field;
+        }
+    }
+    return nullptr;
+}
+
+SmaliMethod *SmaliFile::method(QString name, QString sig) {
+    for(auto &method: m_methods) {
+        if(method->m_name == name && method->buildProto() == sig) {
+            return method;
+        }
+    }
+    return nullptr;
+}
+
 //void SmaliFile::print() {
 //    if(!m_smali->isValid)
 //        cout << "smali file is not valid!!!" << endl;

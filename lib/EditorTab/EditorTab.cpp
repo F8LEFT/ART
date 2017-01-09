@@ -347,6 +347,7 @@ void EditorTab::updateEditorMsg(QString file) {
     auto smalianalysis = SmaliAnalysis::instance();
     auto filedata = smalianalysis->getSmaliFile(file);
     if(filedata.isNull()) {
+        smalianalysis->startFileParseThread(file);
         return;
     }
     for(auto i = 0, count = filedata->fieldCount(); i < count; i++) {
