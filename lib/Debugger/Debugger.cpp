@@ -11,15 +11,16 @@
 #include "ui_Debugger.h"
 
 #include "DebugSocket.h"
+#include "FrameListView.h"
 
 #include "utils/Configuration.h"
 #include "utils/ScriptEngine.h"
 #include <utils/CmdMsgUtil.h>
+#include <Jdwp/JdwpHandler.h>
+#include <ChooseProcess.h>
 
 #include <QHostAddress>
 #include <QDebug>
-#include <Jdwp/JdwpHandler.h>
-#include <ChooseProcess.h>
 
 Debugger::Debugger(QWidget *parent) :
     QWidget(parent),
@@ -30,6 +31,8 @@ Debugger::Debugger(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_frameListView = FrameListView::instance();
+    ui->mFrameLayout->addWidget(m_frameListView);
     // script
     auto* script = ScriptEngine::instance();
     connect(script, &ScriptEngine::debugStart, this, &Debugger::startNewTarget);
@@ -39,7 +42,6 @@ Debugger::Debugger(QWidget *parent) :
     mSocket->mDbgHandler = mDbgHandler;
 
     loadFromConfig();
-
     setupHandleMap();
 }
 

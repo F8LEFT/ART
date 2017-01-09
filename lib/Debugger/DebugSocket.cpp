@@ -79,7 +79,7 @@ void DebugSocket::run ()
     mSocket->connectToHost (mHostName, mPort);
 
     if(!mSocket->waitForConnected ()) {
-         error (mSocket->error (), mSocket->errorString ());
+        error (mSocket->error (), mSocket->errorString ());
         return;
     }
     if(!tryHandshake ()) {

@@ -19,24 +19,21 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QVBoxLayout" name="mFrameLayout">
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Frams</string>
+          <string>Frames</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QComboBox" name="mThreadCombo"/>
        </item>
-       <item>
-        <widget class="QListView" name="mThreadFrameList"/>
-       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QLabel" name="label_3">
@@ -50,7 +47,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QLabel" name="label_4">

@@ -17,6 +17,10 @@
 
 #include "JdwpReader.h"
 #include <QVector>
+#include "JdwpReader.h"
+#include "jdwp.h"
+#include <vector>
+
 /* JDWP Command
  * cmd  cmdset  name
  *
@@ -147,10 +151,7 @@
  * 199  1       DDM.Chunk
  * */
 
-#include "JdwpReader.h"
-#include "jdwp.h"
-#include <vector>
-//#include <jerror.h>
+
 
 namespace JDWP {
     namespace VirtualMachine {

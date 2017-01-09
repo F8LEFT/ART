@@ -36,6 +36,8 @@ public:
     DebugHandler(QObject* parent = Q_NULLPTR, DebugSocket* socket = Q_NULLPTR);
     ~DebugHandler();
 
+public:
+    void updateThreadFrame(JDWP::ObjectId threadId);
 
 public:
     // Debugger interfaces
@@ -72,8 +74,9 @@ public:
     // Func(JDWP::ThreadReference::Frames)
     template <typename Func>
     void dbgThreadReferenceFrames(JDWP::ObjectId thread_id, Func callback);
-    void dbgReferenceTypeSignatureWithGeneric(JDWP::RefTypeId refTypeId);
-    void dbgReferenceTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId);
+    // Func(QByteArray signature, QByteArray signatureWithGeneric)
+    template <typename Func>
+    void dbgReferenceTypeSignatureWithGeneric(JDWP::RefTypeId refTypeId, Func callback);
 
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 

@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QSharedPointer>
 
+class FrameListView;
 namespace Ui {
 class Debugger;
 }
@@ -54,8 +55,6 @@ public slots:
     void dbgOnResume();
 
     // for debug option
-
-
 private:
 
 public slots:
@@ -71,6 +70,8 @@ private:
     QString m_lastHost;
     int m_lastPort;
     bool m_bindJdwp;
+
+    FrameListView* m_frameListView;
 };
 
 #endif // DEBUGGER_H

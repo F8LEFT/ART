@@ -21,33 +21,6 @@
 #include <utils/ProjectInfo.h>
 #include <utils/Configuration.h>
 
-
-//BookMarkManager::BookMarkManager(QObject *parent)
-//    :QObject(parent)
-//{
-//    ScriptEngine* script = ScriptEngine::instance();
-//
-//    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-//    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed()));
-//}
-//
-//void BookMarkManager::onProjectOpened (QStringList args)
-//{
-//
-//}
-//
-//void BookMarkManager::onProjectClosed()
-//{
-//    for(auto it = mBookMap.begin(), itEnd = mBookMap.end(); it != itEnd; it++) {
-//        for(auto fileMap = it.value ().begin (), fileMapEnd = it.value ().end ();
-//                fileMap != fileMapEnd; fileMap++) {
-//            delBookMark(fileMap.value());
-//        }
-//        it->clear ();
-//    }
-//    mBookMap.clear();
-//}
-
 BookMarkManager::BookMarkManager() :
         m_bookmarkIcon(QPixmap(":/images/bookmark.png")),
         m_selectionModel(new QItemSelectionModel(this, this))

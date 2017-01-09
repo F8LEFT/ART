@@ -9,15 +9,18 @@
 #include "DebugHandler.h"
 
 #include "DebugSocket.h"
-#include <Jdwp/JdwpHeader.h>
+#include "FrameListView.h"
+
+#include <SmaliAnalysis/SmaliAnalysis.h>
+
 #include <utils/ProjectInfo.h>
 #include <utils/CmdMsgUtil.h>
+#include <utils/StringUtil.h>
 #include <Jdwp/jdwp.h>
+#include <Jdwp/JdwpHeader.h>
 
 #include <QDebug>
 #include <QTimer>
-#include <SmaliAnalysis/SmaliAnalysis.h>
-#include <utils/StringUtil.h>
 
 
 DebugHandler::DebugHandler(QObject *parent, DebugSocket* socket)
@@ -458,41 +461,19 @@ void DebugHandler::dbgThreadReferenceFrames(
         if(frames.mFrameCount == 0) {
             return;
         }
-        qDebug() << "ThreadReference::Frames";
-        for(auto &frame: frames.mFrames) {
-            qDebug() << frame.location.class_id << frame.location.method_id;
-            // TODO get FrameInformation
-            dbgReferenceTypeSignatureWithGeneric(frame.location.class_id);
-//            dbgReferenceTypeMethodsWithGeneric(frame.location.class_id);
-        }
         callback(frames.mFrames);
     });
     sendNewRequest (package);
 }
 
 
-void DebugHandler::dbgReferenceTypeSignatureWithGeneric(JDWP::RefTypeId refTypeId) {
+template <typename Func>
+void DebugHandler::dbgReferenceTypeSignatureWithGeneric(JDWP::RefTypeId refTypeId, Func callback) {
     auto request = JDWP::ReferenceType::SignatureWithGeneric::buildReq(refTypeId, mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
-    connect(package.data(), &ReqestPackage::onReply, [this, refTypeId](JDWP::Request *request,QByteArray& reply) {
+    connect(package.data(), &ReqestPackage::onReply, [this, refTypeId, callback](JDWP::Request *request,QByteArray& reply) {
         JDWP::ReferenceType::SignatureWithGeneric signature((uint8_t*)reply.data(), reply.length());
-        qDebug() << "ReferenceType::SignatureWithGeneric" << refTypeId << signature.mSignature;
-    });
-    sendNewRequest (package);
-}
-
-void DebugHandler::dbgReferenceTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId) {
-    auto request = JDWP::ReferenceType::MethodsWithGeneric::buildReq(refTypeId, mSockId++);
-    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
-    connect(package.data(), &ReqestPackage::onReply, [this, refTypeId](JDWP::Request *request,QByteArray& reply) {
-        JDWP::ReferenceType::MethodsWithGeneric signature((uint8_t*)reply.data(), reply.length());
-        for(auto &info: signature.mMethods) {
-            qDebug() << "MethodId" << info.mMethodId
-                     << "Name" << info.mName
-                     << "Signature" << info.mSignature
-                     << "GenericSignature" << info.mGenericSignature
-                     << "Flags" << info.mFlags;
-        }
+        callback(signature.mSignature, signature.mSignatureGeneric);
     });
     sendNewRequest (package);
 }
@@ -511,22 +492,23 @@ void DebugHandler::breakPointHit(JDWP::JdwpSuspendPolicy  policy,
         return;
     }
     auto threadId = event->mThreadId;
-    auto location = event->mLocation;
-    dbgGetRefTypeMethodsWithGeneric(location.class_id, [this, threadId, location](QVector<JDWP::MethodInfo> methods){
-        if(mLoadedClassInfo.contains(location.class_id)) {
-            auto &info = mLoadedClassInfo[location.class_id];
-            qDebug() << "Stop at class " << info.mDescriptor;
-        }
-        for(auto method: methods) {
-            if(method.mMethodId != location.method_id) {
-                continue;
-            }
-            qDebug() << "Stop at method " << method.mSignature << "dex_pc" << location.dex_pc;
-        }
-        dbgThreadReferenceFrames(threadId, [this](QVector<JDWP::ThreadReference::Frames::Frame>& frames) {
-            qDebug() << "FrameRef callback";
-        });
-    });
+    updateThreadFrame(threadId);
+//    auto location = event->mLocation;
+//    dbgGetRefTypeMethodsWithGeneric(location.class_id, [this, threadId, location](QVector<JDWP::MethodInfo> methods){
+//        if(mLoadedClassInfo.contains(location.class_id)) {
+//            auto &info = mLoadedClassInfo[location.class_id];
+//            qDebug() << "Stop at class " << info.mDescriptor;
+//        }
+//        for(auto method: methods) {
+//            if(method.mMethodId != location.method_id) {
+//                continue;
+//            }
+//            qDebug() << "Stop at method " << method.mSignature << "dex_pc" << location.dex_pc;
+//        }
+//        dbgThreadReferenceFrames(threadId, [this](QVector<JDWP::ThreadReference::Frames::Frame>& frames) {
+//            qDebug() << "FrameRef callback";
+//        });
+//    });
 }
 
 void DebugHandler::stopOnProcessEntryPoint() {
@@ -575,6 +557,36 @@ void DebugHandler::stopOnProcessEntryPoint() {
 
 void DebugHandler::setAllBreakpoint() {
 
+}
+
+void DebugHandler::updateThreadFrame(JDWP::ObjectId threadId) {
+    auto *model = FrameListView::instance()->showModel(threadId);
+    dbgThreadReferenceFrames(threadId,
+        [this, model](QVector<JDWP::ThreadReference::Frames::Frame>& frames) {
+        model->removeAllFramedatas();
+        for(auto &frame: frames) {
+            auto data = new FrameListModel::FrameData;
+            data->frame_id = frame.frame_id;
+            data->location = frame.location;
+            model->addFrameData(data);
+            dbgReferenceTypeSignatureWithGeneric(frame.location.class_id,
+                [this, model, data](QByteArray sig, QByteArray sigGen) {
+                data->classSig = sig;
+                model->updateFrameData(data);
+            });
+            dbgGetRefTypeMethodsWithGeneric(frame.location.class_id,
+                [this, model, data](QVector<JDWP::MethodInfo> methods){
+                for(auto method: methods) {
+                    if(method.mMethodId != data->location.method_id) {
+                        continue;
+                    }
+                    data->methodName = method.mName;
+                    data->methodSig = method.mSignature;
+                    model->updateFrameData(data);
+                }
+            });
+        }
+    });
 }
 
 
