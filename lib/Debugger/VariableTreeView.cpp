@@ -9,9 +9,9 @@
 #include "VariableTreeView.h"
 
 // VariableTreeItem
-VariableTreeItem::VariableTreeItem(const JDWP::JValue &data)
+VariableTreeItem::VariableTreeItem(const QString &name, const JDWP::JValue &data)
+    : m_fieldName(name), m_data(data)
 {
-    m_data = data;
 }
 
 VariableTreeItem::~VariableTreeItem()
@@ -109,6 +109,20 @@ QString VariableTreeItem::value() const {
             break;
     }
     return rel;
+}
+
+VariableTreeItem *VariableTreeItem::findchild(const QString& name) {
+    return findchild(this, name);
+}
+
+VariableTreeItem *VariableTreeItem::findchild(QStandardItem *parent, const QString& name) {
+    for(auto i = 0, count = parent->rowCount(); i < count; i++) {
+        auto child = (VariableTreeItem *)parent->child(i, 0);
+        if(child->m_fieldName == name) {
+            return child;
+        }
+    }
+    return nullptr;
 }
 
 

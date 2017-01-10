@@ -586,30 +586,30 @@ void DebugHandler::setAllBreakpoint() {
 
 void DebugHandler::updateThreadFrame(JDWP::ObjectId threadId) {
     auto *model = FrameListView::instance()->showModel(threadId);
-    dbgThreadReferenceFrames(threadId,
-        [this, model](QVector<JDWP::ThreadReference::Frames::Frame>& frames) {
+    dbgThreadReferenceFrames(threadId, [this, model]
+            (QVector<JDWP::ThreadReference::Frames::Frame>& frames) {
         model->removeAllFramedatas();
         for(auto &frame: frames) {
             auto data = new FrameListModel::FrameData;
             data->frame_id = frame.frame_id;
             data->location = frame.location;
             model->addFrameData(data);
-            dbgReferenceTypeSignatureWithGeneric(frame.location.class_id,
-                [this, model, data](QByteArray sig, QByteArray sigGen) {
+            dbgReferenceTypeSignatureWithGeneric(frame.location.class_id, [this, model, data]
+                    (QByteArray sig, QByteArray sigGen) {
                 data->classSig = sig;
                 model->updateFrameData(data);
             });
             dbgReferenctTypeMethodsWithGeneric(frame.location.class_id, [this, model, data]
                     (QVector<JDWP::MethodInfo> methods) {
                 for (auto method: methods) {
-                    if (method.mMethodId !=
-                        data->location.method_id) {
+                    if (method.mMethodId != data->location.method_id) {
                         continue;
                     }
                     data->methodName = method.mName;
                     data->methodSig = method.mSignature;
-                    model->updateFrameData(
-                            data);
+                    data->methodFlag = method.mFlags;
+                    model->updateFrameData(data);
+                    break;
                 }
             });
         }
@@ -619,23 +619,49 @@ void DebugHandler::updateThreadFrame(JDWP::ObjectId threadId) {
 void DebugHandler::dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameData *frame) {
     qDebug() << "dumpFrameInformation " << threadId << frame->display();
 
-    // Debug : just get p0 value and try to show in variables
-    QVector<JDWP::StackFrame::StackFrameData> frames;
-    frames.push_back({0, JDWP::JdwpTag::JT_OBJECT});
+    auto model = VariableModel::instance();
+    model->clear();
 
-
-    auto request = JDWP::StackFrame::GetValues::buildReq(threadId, frame->frame_id, frames, mSockId++);
-    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
-    connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
-        JDWP::StackFrame::GetValues value((uint8_t*)reply.data(), reply.length());
-
-        auto model = VariableModel::instance();
-        model->clear();
+    if(!(frame->methodFlag & ACC_NATIVE)) {
         auto root = model->invisibleRootItem();
+        auto item = new VariableTreeItem("this");
+        root->appendRow(item);
+        auto request = JDWP::StackFrame::ThisObject::buildReq(threadId, frame->frame_id, mSockId++);
+        auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+        connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
+            JDWP::StackFrame::ThisObject value((uint8_t*)reply.data(), reply.length());
 
-        for(auto& val: value.mSlots) {
-            auto item = new VariableTreeItem(val);
-            root->appendRow(item);
+            auto model = VariableModel::instance();
+            auto root = model->invisibleRootItem();
+            auto item = VariableTreeItem::findchild(root, "this");
+            if(item == nullptr) {
+                return;
+            }
+            item->m_data = value.mObject;
+            model->itemChanged(item);
+        });
+        sendNewRequest (package);
+    }
+    // TODO get local register value if source exist
+//    QVector<JDWP::StackFrame::StackFrameData> frames;
+//    bool hasSource = false;
+
+
+//    frames.push_back({0, JDWP::JdwpTag::JT_OBJECT});
+//
+//
+//    auto request = JDWP::StackFrame::GetValues::buildReq(threadId, frame->frame_id, frames, mSockId++);
+//    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+//    connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
+//        JDWP::StackFrame::GetValues value((uint8_t*)reply.data(), reply.length());
+//
+//        auto model = VariableModel::instance();
+//        model->clear();
+//        auto root = model->invisibleRootItem();
+//
+//        for(auto& val: value.mSlots) {
+//            auto item = new VariableTreeItem("thisChild", val);
+//            root->appendRow(item);
 
 //            switch (val.L) {
 //                // TODO dump object information
@@ -652,9 +678,9 @@ void DebugHandler::dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameD
 //                    qDebug() << val.tag << val.L;
 //                    break;
 //            }
-        }
-    });
-    sendNewRequest (package);
+//        }
+//    });
+//    sendNewRequest (package);
 }
 
 template<typename Func>

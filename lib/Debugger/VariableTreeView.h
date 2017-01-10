@@ -22,12 +22,16 @@
 
 struct VariableTreeItem: public QStandardItem {
 public:
-    explicit VariableTreeItem(const JDWP::JValue &data);
+    explicit VariableTreeItem(const QString &name,
+                              const JDWP::JValue &data = JDWP::JValue());
     ~VariableTreeItem();
 
     QVariant data(int role = Qt::UserRole + 1) const;
     QString display() const;
     QString value() const;
+
+    VariableTreeItem* findchild(const QString& name);
+    static VariableTreeItem* findchild(QStandardItem* parent, const QString& name);
 
     QString m_fieldName;
     JDWP::JValue m_data;

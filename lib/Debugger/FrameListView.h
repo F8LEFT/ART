@@ -33,6 +33,7 @@ public:
         QByteArray classSig;
         QByteArray methodName;
         QByteArray methodSig;
+        uint32_t methodFlag;
 
         QString description;
 
