@@ -43,6 +43,8 @@ public:
     FrameListModel(QObject* parent = nullptr);
     ~FrameListModel();
 
+    QItemSelectionModel *selectionModel() const { return m_selectionModel; }
+
 //    void setFramedatas(QList<JDWP::FrameId > frames);
     void addFrameData(FrameData *frameData);
     void deleteFramedata(FrameData *frameData);
@@ -63,8 +65,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
-
-
+    QItemSelectionModel *m_selectionModel;
     QList<FrameData *> m_framedataList;
 };
 
@@ -79,8 +80,15 @@ public:
     // shelect the itemmodel with threadid
     // this method will create FrameListModel if threadId is not exist;
     FrameListModel* showModel(JDWP::ObjectId threadId);
+
+signals:
+    void frameItemClicked(JDWP::ObjectId threadId, FrameListModel::FrameData* frame);
+
+private slots:
+    void itemActived(const QModelIndex &index);
 private:
     QMap<JDWP::ObjectId, FrameListModel*> m_frameModelsMap; // map for threadId, frames
+    JDWP::ObjectId m_currentThreadId = 0;
 };
 
 

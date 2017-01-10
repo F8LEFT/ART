@@ -148,6 +148,10 @@ namespace JDWP {
             auto w = GetTagWidth(tag);
             memcpy(V, p, w);
         }
+        JValue(JDWP::JdwpTag tag) {
+            this->tag = tag;
+            V = nullptr;
+        }
     };
 
     struct ClassInfo {

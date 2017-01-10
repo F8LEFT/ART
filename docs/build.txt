@@ -11,7 +11,7 @@ mkdir build
 
 cd build
 
-export $PATH=/directory/to/qmake:/path/to/java:$PATH
+export PATH=/directory/to/qmake:/path/to/java:$PATH
 
 cmake -DCMAKE_BUILD_TYPE=STRING=Release  --build ..
 

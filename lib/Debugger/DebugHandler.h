@@ -15,6 +15,8 @@
 #ifndef ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H
 #define ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H
 
+#include "FrameListView.h"
+
 #include <Jdwp/jdwp.h>
 #include <Jdwp/Request.h>
 #include <Jdwp/JdwpHandler.h>
@@ -37,6 +39,13 @@ public:
     ~DebugHandler();
 
 public:
+    enum DebugStatus {
+        NotActive,
+        Active,
+        Run,
+        Stop,
+        Step,
+    };
     void updateThreadFrame(JDWP::ObjectId threadId);
 
 public:
@@ -59,8 +68,11 @@ public:
 
     // Func(QVector<JDWP::MethodInfo> methods)
     template  <typename Func>
-    void dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId,
-                                         Func callback);
+    void dbgReferenctTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId,
+                                            Func callback);
+    // Func(QVector<JDWP::FieldInfo>)
+    template <typename Func>
+    void dbgReferenceTypeFieldsWithGeneric(JDWP::RefTypeId refTypeId, Func callback);
 
     // Func(JDWP::ClassInfo classinfo)
     template <typename Func>
@@ -77,6 +89,13 @@ public:
     // Func(QByteArray signature, QByteArray signatureWithGeneric)
     template <typename Func>
     void dbgReferenceTypeSignatureWithGeneric(JDWP::RefTypeId refTypeId, Func callback);
+
+
+
+    // Func(JdwpTypeTag tag, RefTypeId mTypeId)
+    template <typename Func>
+    void dbgObjectReferenceReferenceType(JDWP::ObjectId objectId, Func callback);
+
 
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
@@ -97,6 +116,9 @@ private slots:
     void onSocketDisconnected();
 
     void onJDWPRequest(QByteArray data);
+
+public slots:
+    void dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameData* frame);
 
 private:
     void handleReply(JDWP::Request &reply);
@@ -120,7 +142,9 @@ public:
     QMultiMap<QString, JDWP::RefTypeId> mLoadedClassRef;
     QMap<JDWP::RefTypeId, JDWP::ClassInfo> mLoadedClassInfo;
     QMap<JDWP::RefTypeId, QVector<JDWP::MethodInfo>> mLoadedMethodsInfo;    // map to ClassId, methodinfo
+    QMap<JDWP::RefTypeId, QVector<JDWP::FieldInfo>> mLoadedFieldsInfo;      // map to ClassId, fieldinfo
 
+    DebugStatus mDebugStatus;
 };
 
 struct RequestExtraBreakPoint{

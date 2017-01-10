@@ -10,6 +10,8 @@
 #include <SmaliAnalysis/SmaliAnalysis.h>
 #include <utils/StringUtil.h>
 
+#include <QDebug>
+
 QString FrameListModel::FrameData::display() {
     return description;
 }
@@ -43,11 +45,7 @@ void FrameListModel::FrameData::update() {
     if(sourceLine != -1) {
         description.append(QString::number(sourceLine));
     } else {
-        if(location.dex_pc == (size_t)-1) {
-            description.append("-1");
-        } else {
-            description.append(QString::number(location.dex_pc));
-        }
+        description.append(QString::number((qlonglong)location.dex_pc));
     }
     description.append(", ");
     if(classSig.isEmpty()) {
@@ -70,7 +68,8 @@ void FrameListModel::FrameData::update() {
 }
 
 FrameListModel::FrameListModel(QObject* parent)
-    : QAbstractListModel(parent)
+    : QAbstractListModel(parent),
+      m_selectionModel(new QItemSelectionModel(this, this))
 {
 }
 
@@ -113,7 +112,7 @@ QVariant FrameListModel::data(const QModelIndex &index, int role) const {
             if (framedata->hasSource) {
                 return QVariant(QBrush(Qt::white));
             } else {
-                return QVariant(QBrush(Qt::yellow));
+                return QVariant(QBrush(QColor::fromRgb(0xffffe4)));
             }
         case Qt::ForegroundRole:
             if (framedata->hasSource) {
@@ -164,7 +163,12 @@ void FrameListModel::deleteFramedata(FrameData *frameData)
     delete frameData;
 
     m_framedataList.removeAt(idx);
+
     endRemoveRows();
+
+    if (selectionModel()->currentIndex().isValid())
+        selectionModel()->setCurrentIndex(selectionModel()->currentIndex(), QItemSelectionModel::Select | QItemSelectionModel::Clear);
+
 }
 
 FrameListModel::FrameData *FrameListModel::framedataForIndex(const QModelIndex &index) const
@@ -194,6 +198,10 @@ void FrameListModel::addFrameData(FrameData *frameData)
     beginInsertRows(QModelIndex(), m_framedataList.size(), m_framedataList.size());
     m_framedataList.append(frameData);
     endInsertRows();
+
+    if(!selectionModel()->currentIndex().isValid()) {
+        selectionModel()->setCurrentIndex(index(0 , 0, QModelIndex()), QItemSelectionModel::Select | QItemSelectionModel::Clear);
+    }
 }
 
 //void FrameListModel::setFramedatas(QList<JDWP::FrameId> frames) {
@@ -214,7 +222,9 @@ QList<FrameListModel::FrameData *> FrameListModel::getFrameDatas() {
 
 FrameListView::FrameListView(QWidget *parent)
         : QListView(parent) {
+    setObjectName("FrameListView");
 
+    connect(this, &FrameListView::clicked, this, &FrameListView::itemActived);
 }
 
 FrameListView::~FrameListView() {
@@ -229,7 +239,16 @@ FrameListModel *FrameListView::showModel(JDWP::ObjectId threadId) {
         model = new FrameListModel(this);
         m_frameModelsMap[threadId] = model;
     }
+    auto prevModel = m_frameModelsMap.value(m_currentThreadId);
+    if(prevModel != nullptr) {
+        disconnect(prevModel->selectionModel(), &QItemSelectionModel::currentColumnChanged,
+                   this, &FrameListView::itemActived);
+
+    }
+    m_currentThreadId = threadId;
     setModel(model);
+    connect(model->selectionModel(), &QItemSelectionModel::currentColumnChanged,
+            this, &FrameListView::itemActived);
     return model;
 }
 
@@ -239,6 +258,18 @@ FrameListView *FrameListView::instance() {
         mPtr = new FrameListView;
     }
     return mPtr;
+}
+
+void FrameListView::itemActived(const QModelIndex &index) {
+    auto model = m_frameModelsMap[m_currentThreadId];
+    if(model == nullptr) {
+        return;
+    }
+    auto frame = model->framedataForIndex(index);
+    if(frame == nullptr) {
+        return;
+    }
+    frameItemClicked(m_currentThreadId, frame);
 }
 
 

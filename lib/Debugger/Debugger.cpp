@@ -12,6 +12,7 @@
 
 #include "DebugSocket.h"
 #include "FrameListView.h"
+#include "VariableTreeView.h"
 
 #include "utils/Configuration.h"
 #include "utils/ScriptEngine.h"
@@ -33,6 +34,9 @@ Debugger::Debugger(QWidget *parent) :
 
     m_frameListView = FrameListView::instance();
     ui->mFrameLayout->addWidget(m_frameListView);
+    m_variableTreeView = new VariableTreeView(this);
+    ui->mVariableLayout->addWidget(m_variableTreeView);
+
     // script
     auto* script = ScriptEngine::instance();
     connect(script, &ScriptEngine::debugStart, this, &Debugger::startNewTarget);

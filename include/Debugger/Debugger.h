@@ -21,6 +21,7 @@
 #include <QSharedPointer>
 
 class FrameListView;
+class VariableTreeView;
 namespace Ui {
 class Debugger;
 }
@@ -72,6 +73,7 @@ private:
     bool m_bindJdwp;
 
     FrameListView* m_frameListView;
+    VariableTreeView *m_variableTreeView;
 };
 
 #endif // DEBUGGER_H

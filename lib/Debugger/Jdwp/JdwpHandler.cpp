@@ -1739,20 +1739,18 @@ StackFrame::GetValues::GetValues (const uint8_t *bytes,uint32_t available)
     }
 }
 
-QByteArray StackFrame::GetValues::buildReq (
-        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &fslots,
-        const std::vector<JdwpTag> &reqSig,int id)
+QByteArray StackFrame::GetValues::buildReq (ObjectId thread_id,FrameId frame_id,
+                                            const QVector<StackFrameData>& frames,
+                                            int id)
 {
-    if(fslots.size () != reqSig.size ())
-        return "";
     QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
-    int count = fslots.size ();
+    int count = frames.size ();
     Write4 (rel, count);
     for(auto i = 0; i < count; i++) {
-        Write4 (rel, fslots[i]);
-        Write1 (rel, reqSig[i]);
+        Write4 (rel, frames[i].slot);
+        Write1 (rel, frames[i].val.tag);
     }
     return BuildReq (id, set_, cmd, rel);
 }
@@ -1762,21 +1760,19 @@ StackFrame::SetValues::SetValues (const uint8_t *bytes,uint32_t available)
 {
 }
 
-QByteArray StackFrame::SetValues::buildReq (
-        ObjectId thread_id,FrameId frame_id,const std::vector<uint32_t> &fslots,
-        const std::vector<JValue> &reqSig,int id)
+QByteArray StackFrame::SetValues::buildReq (ObjectId thread_id,FrameId frame_id,
+                                            const QVector<StackFrameData>& frames,
+                                            int id)
 {
-    if(fslots.size () != reqSig.size ())
-        return "";
     QByteArray rel;
     WriteThreadId (rel, thread_id);
     WriteFrameId (rel, frame_id);
-    int count = fslots.size ();
+    int count = frames.size ();
     Write4 (rel, count);
     for(auto i = 0; i < count; i++) {
-        Write4 (rel, fslots[i]);
-        Write1 (rel, reqSig[i].tag);
-        WriteValue (rel, reqSig[i].L, GetTagWidth (reqSig[i].tag));
+        Write4 (rel, frames[i].slot);
+        Write1 (rel, frames[i].val.tag);
+        WriteValue (rel, frames[i].val.L, GetTagWidth (frames[i].val.tag));
     }
     return BuildReq (id, set_, cmd, rel);
 }

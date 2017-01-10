@@ -10,6 +10,7 @@
 
 #include "DebugSocket.h"
 #include "FrameListView.h"
+#include "VariableTreeView.h"
 
 #include <SmaliAnalysis/SmaliAnalysis.h>
 
@@ -24,7 +25,7 @@
 
 
 DebugHandler::DebugHandler(QObject *parent, DebugSocket* socket)
-        : QObject(parent)
+        : QObject(parent), mDebugStatus(NotActive)
 {
     mSocket = socket;
 
@@ -39,6 +40,8 @@ DebugHandler::DebugHandler(QObject *parent, DebugSocket* socket)
     connect(this, SIGNAL(sendBuffer(QByteArray)), mSocket->mSocketEvent, SLOT(onWrite(QByteArray)));
 
     connect(this, &DebugHandler::stopCurrentTarget, mSocket->mSocketEvent, &DebugSocketEvent::onStop);
+
+    connect(FrameListView::instance(), &FrameListView::frameItemClicked, this, &DebugHandler::dumpFrameInfo);
 
     mCommandVector.resize(CommandPackage::EventGroup::Unknown + 1);
 }
@@ -204,6 +207,7 @@ void DebugHandler::onSocketConnected()
                         QString::number(mSocket->port ()));
     mSockId = 1;
     mRequestMap.clear ();
+    mDebugStatus = Active;
 
     // Init
     // get all loaded class information
@@ -251,6 +255,7 @@ void DebugHandler::onSocketDisconnected()
     mLoadedClassRef.clear();
     mLoadedClassInfo.clear();
     mLoadedMethodsInfo.clear();
+    mLoadedFieldsInfo.clear();
 }
 
 // -------------------for debug interface----------------------
@@ -293,6 +298,7 @@ void DebugHandler::dbgResume()
     auto request = JDWP::VirtualMachine::Resume::buildReq (mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
     connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
+        mDebugStatus = Run;
         dbgOnResume();
     });
     sendNewRequest (package);
@@ -305,24 +311,39 @@ void DebugHandler::dbgSetBreakPoint(const QString &classSignature,
     QSharedPointer<RequestExtraBreakPoint> extra(new RequestExtraBreakPoint(
             classSignature, methodName, methodSign, codeIdx));
     dbgGetClassBySignature(classSignature, [this, extra](JDWP::ClassInfo classinfo) {
-        dbgGetRefTypeMethodsWithGeneric(classinfo.mTypeId, [this, extra, classinfo](QVector<JDWP::MethodInfo> methods) {
-            for(auto &method: methods) {
-                if(method.mName != extra->mMethodName || method.mSignature != extra->mMethodSign) {
-                    continue;
-                }
-                qDebug() << "set BreakPoint to " << extra->mClassSignature << extra->mMethodName
-                         << extra->mMethodSign << extra->mCodeIdx;
-                std::vector<JDWP::JdwpEventMod> mod;
-                JDWP::JdwpEventMod bpMod;
-                bpMod.modKind = JDWP::MK_LOCATION_ONLY;
-                bpMod.locationOnly.loc = JDWP::JdwpLocation{
-                        JDWP::TT_CLASS, classinfo.mTypeId, method.mMethodId, extra->mCodeIdx};
-                mod.push_back(bpMod);
-                dbgEventRequestSet(JDWP::EK_BREAKPOINT, JDWP::SP_ALL, mod,
-                                   [this](JDWP::JdwpEventKind eventkind, uint32_t requestId) {});
-                break;
-            }
-        });
+        dbgReferenctTypeMethodsWithGeneric(classinfo.mTypeId,
+                                           [this, extra, classinfo](
+                                                   QVector<JDWP::MethodInfo> methods) {
+                                               for (auto &method: methods) {
+                                                   if (method.mName !=
+                                                       extra->mMethodName ||
+                                                       method.mSignature !=
+                                                       extra->mMethodSign) {
+                                                       continue;
+                                                   }
+                                                   qDebug()
+                                                           << "set BreakPoint to "
+                                                           << extra->mClassSignature
+                                                           << extra->mMethodName
+                                                           << extra->mMethodSign
+                                                           << extra->mCodeIdx;
+                                                   std::vector<JDWP::JdwpEventMod> mod;
+                                                   JDWP::JdwpEventMod bpMod;
+                                                   bpMod.modKind = JDWP::MK_LOCATION_ONLY;
+                                                   bpMod.locationOnly.loc = JDWP::JdwpLocation{
+                                                           JDWP::TT_CLASS,
+                                                           classinfo.mTypeId,
+                                                           method.mMethodId,
+                                                           extra->mCodeIdx};
+                                                   mod.push_back(bpMod);
+                                                   dbgEventRequestSet(
+                                                           JDWP::EK_BREAKPOINT,
+                                                           JDWP::SP_ALL, mod,
+                                                           [this](JDWP::JdwpEventKind eventkind,
+                                                                  uint32_t requestId) {});
+                                                   break;
+                                               }
+                                           });
     });
 }
 
@@ -352,8 +373,8 @@ void DebugHandler::dbgEventRequestClear(JDWP::JdwpEventKind kind, uint32_t reque
 }
 
 template  <typename Func>
-void DebugHandler::dbgGetRefTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId,
-                                                   Func callback) {
+void DebugHandler::dbgReferenctTypeMethodsWithGeneric(JDWP::RefTypeId refTypeId,
+                                                      Func callback) {
     if(mLoadedMethodsInfo.contains(refTypeId)) {
         callback(mLoadedMethodsInfo[refTypeId]);
         return;
@@ -396,7 +417,7 @@ void DebugHandler::dbgGetClassBySignature(const QString &classSignature,
         JDWP::VirtualMachine::ClassesBySignature signature((uint8_t*)reply.data(), reply.length());
         if(signature.mSize == 0) {
             // class has not been loaded, need to wait for loading.
-            waitForClassPrepared(jniSigToJavaSig(classSignature),
+            waitForClassPrepared(classSignature,
                 [this, callback](JDWP::Composite::ReflectedType::EventClassPrepare* prepare) {
                 callback(mLoadedClassInfo[prepare->mTypeId]);
             });
@@ -427,7 +448,7 @@ void DebugHandler::waitForClassPrepared(QString javaSignature, Func callback) {
 
     JDWP::JdwpEventMod mMatch;
     mMatch.modKind = JDWP::JdwpModKind::MK_CLASS_MATCH;
-    auto matchClass = javaSignature.toLatin1();
+    auto matchClass = jniSigToJavaSig(javaSignature).toLatin1();
     mMatch.classMatch.classPattern = matchClass.data();
     mod.push_back(mMatch);
 
@@ -494,6 +515,7 @@ void DebugHandler::breakPointHit(JDWP::JdwpSuspendPolicy  policy,
     }
     auto threadId = event->mThreadId;
     updateThreadFrame(threadId);
+    // TODO record stop state, and active threadId, if frame has been clicked, try to get frame variables.
 //    auto location = event->mLocation;
 //    dbgGetRefTypeMethodsWithGeneric(location.class_id, [this, threadId, location](QVector<JDWP::MethodInfo> methods){
 //        if(mLoadedClassInfo.contains(location.class_id)) {
@@ -552,7 +574,9 @@ void DebugHandler::stopOnProcessEntryPoint() {
         }
     }
     if(found) {
-        dbgSetBreakPoint(className, methodName, methodSig, 0);
+        waitForClassPrepared(className, [this, className, methodName, methodSig](JDWP::Composite::ReflectedType::EventClassPrepare* prepare) {
+            dbgSetBreakPoint(className, methodName, methodSig, 0);
+        });
     }
 }
 
@@ -575,19 +599,105 @@ void DebugHandler::updateThreadFrame(JDWP::ObjectId threadId) {
                 data->classSig = sig;
                 model->updateFrameData(data);
             });
-            dbgGetRefTypeMethodsWithGeneric(frame.location.class_id,
-                [this, model, data](QVector<JDWP::MethodInfo> methods){
-                for(auto method: methods) {
-                    if(method.mMethodId != data->location.method_id) {
+            dbgReferenctTypeMethodsWithGeneric(frame.location.class_id, [this, model, data]
+                    (QVector<JDWP::MethodInfo> methods) {
+                for (auto method: methods) {
+                    if (method.mMethodId !=
+                        data->location.method_id) {
                         continue;
                     }
                     data->methodName = method.mName;
                     data->methodSig = method.mSignature;
-                    model->updateFrameData(data);
+                    model->updateFrameData(
+                            data);
                 }
             });
         }
     });
+}
+
+void DebugHandler::dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameData *frame) {
+    qDebug() << "dumpFrameInformation " << threadId << frame->display();
+
+    // Debug : just get p0 value and try to show in variables
+    QVector<JDWP::StackFrame::StackFrameData> frames;
+    frames.push_back({0, JDWP::JdwpTag::JT_OBJECT});
+
+
+    auto request = JDWP::StackFrame::GetValues::buildReq(threadId, frame->frame_id, frames, mSockId++);
+    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+    connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
+        JDWP::StackFrame::GetValues value((uint8_t*)reply.data(), reply.length());
+
+        auto model = VariableModel::instance();
+        model->clear();
+        auto root = model->invisibleRootItem();
+
+        for(auto& val: value.mSlots) {
+            auto item = new VariableTreeItem(val);
+            root->appendRow(item);
+
+//            switch (val.L) {
+//                // TODO dump object information
+//                case JDWP::JdwpTag::JT_OBJECT:
+//                    dbgObjectReferenceReferenceType(val.L,
+//                          [this](JDWP::JdwpTypeTag tag, JDWP::RefTypeId mTypeId) {
+//                              dbgReferenceTypeFieldsWithGeneric(mTypeId, [this]
+//                                      (QVector<JDWP::FieldInfo> fields) {
+//
+//                              });
+//                          });
+//                    break;
+//                default:
+//                    qDebug() << val.tag << val.L;
+//                    break;
+//            }
+        }
+    });
+    sendNewRequest (package);
+}
+
+template<typename Func>
+void DebugHandler::dbgObjectReferenceReferenceType(JDWP::ObjectId objectId,
+                                                   Func callback) {
+
+    auto request = JDWP::ObjectReference::ReferenceType::buildReq(objectId, mSockId++);
+    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+    connect(package.data(), &ReqestPackage::onReply, [this, callback](JDWP::Request *request,QByteArray& reply) {
+        JDWP::ObjectReference::ReferenceType referenceType((uint8_t*)reply.data(), reply.length());
+        callback(referenceType.tag, referenceType.mTypeId);
+    });
+    sendNewRequest (package);
+}
+
+template<typename Func>
+void DebugHandler::dbgReferenceTypeFieldsWithGeneric(JDWP::RefTypeId refTypeId,
+                                                     Func callback) {
+    if(mLoadedFieldsInfo.contains(refTypeId)) {
+        callback(mLoadedFieldsInfo[refTypeId]);
+        return;
+    }
+
+    auto request = JDWP::ReferenceType::FieldsWithGeneric::buildReq(refTypeId, mSockId++);
+    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+    connect(package.data(), &ReqestPackage::onReply, [this, refTypeId, callback]
+            (JDWP::Request *request,QByteArray& reply) {
+        qDebug() << "ReferenceType::FieldsWithGeneric: ";
+        JDWP::ReferenceType::FieldsWithGeneric signature((uint8_t*)reply.data(), reply.length());;
+        if(signature.mSize == 0) {
+            return;
+        }
+        for(auto& info: signature.mFields) {
+            qDebug() << "FieldId" << info.mFieldId
+                     << "Name" << info.mName
+                     << "Descriptor" << info.mDescriptor
+                     << "GenericSignature" << info.mGenericSignature
+                     << "Flags" << info.mFlags;
+        }
+        mLoadedFieldsInfo[refTypeId] = signature.mFields;
+        callback(signature.mFields);
+    });
+    sendNewRequest (package);
 }
 
 

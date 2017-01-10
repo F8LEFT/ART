@@ -484,7 +484,7 @@ namespace JDWP {
         struct FieldsWithGeneric : public JdwpReader {
             FieldsWithGeneric(const uint8_t* bytes, uint32_t available);
             uint32_t mSize;
-            std::vector<FieldInfo> mFields;
+            QVector<FieldInfo> mFields;
 
             static QByteArray buildReq(RefTypeId refTypeId, int id = 0);
             const static uint8_t cmd = 14;
@@ -1060,25 +1060,32 @@ namespace JDWP {
     {
         const static uint8_t set_ = 16;
 
+        struct StackFrameData {
+            uint32_t slot;
+            JValue val;
+        };
+
         struct GetValues : public JdwpReader {
+
             GetValues(const uint8_t* bytes, uint32_t available);
 
             uint32_t mSlotCount;
             std::vector<JValue> mSlots;
 
             static QByteArray buildReq (ObjectId thread_id,FrameId frame_id,
-                                         const std::vector<uint32_t> &fslots,
-                                         const std::vector<JdwpTag> &reqSig,int id = 0);
+                                        const QVector<StackFrameData>& frames,
+                                        int id = 0);
 
             const static uint8_t cmd = 1;
         };
 
         struct SetValues : public JdwpReader {
+
             SetValues(const uint8_t* bytes, uint32_t available);
 
             static QByteArray buildReq(ObjectId thread_id, FrameId frame_id,
-                            const std::vector<uint32_t > &fslots,
-                             const std::vector<JValue> &reqSig, int id = 0);
+                                       const QVector<StackFrameData>& frames,
+                                       int id = 0);
 
             const static uint8_t cmd = 2;
         };

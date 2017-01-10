@@ -34,16 +34,13 @@
       </layout>
      </widget>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="mVariableLayout">
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
           <string>Variables</string>
          </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QTreeView" name="mVariableTree"/>
        </item>
       </layout>
      </widget>

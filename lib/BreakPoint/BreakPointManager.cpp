@@ -21,42 +21,10 @@
 #include <utils/ProjectInfo.h>
 #include <utils/Configuration.h>
 
-
-//BreakPointManager::BreakPointManager(QObject *parent)
-//    :QObject(parent)
-//{
-//    ScriptEngine* script = ScriptEngine::instance();
-//
-//    connect(script, SIGNAL(projectOpened(QStringList)), this, SLOT(onProjectOpened(QStringList)));
-//    connect(script, SIGNAL(projectClosed(QStringList)), this, SLOT(onProjectClosed()));
-//}
-//
-//void BreakPointManager::onProjectOpened (QStringList args)
-//{
-//
-//}
-//
-//void BreakPointManager::onProjectClosed()
-//{
-//    for(auto it = mBookMap.begin(), itEnd = mBookMap.end(); it != itEnd; it++) {
-//        for(auto fileMap = it.value ().begin (), fileMapEnd = it.value ().end ();
-//                fileMap != fileMapEnd; fileMap++) {
-//            delBreakPoint(fileMap.value());
-//        }
-//        it->clear ();
-//    }
-//    mBookMap.clear();
-//}
-
 BreakPointManager::BreakPointManager() :
         m_breakpointIcon(QPixmap(":/images/breakpoint.png")),
         m_selectionModel(new QItemSelectionModel(this, this))
 {
-//    connect(ICore::instance(), &ICore::contextChanged,
-//            this, &BreakPointManager::updateActionStatus);
-
-//    connect(SessionManager::instance(), &SessionManager::sessionLoaded,
-//            this, &BreakPointManager::loadBreakpoints);
     auto* script = ScriptEngine::instance();
     connect(script, &ScriptEngine::projectOpened, this, &BreakPointManager::onProjectOpened);
     connect(script, &ScriptEngine::projectClosed, this, &BreakPointManager::onProjectClosed);
