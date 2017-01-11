@@ -223,8 +223,7 @@ QList<FrameListModel::FrameData *> FrameListModel::getFrameDatas() {
 FrameListView::FrameListView(QWidget *parent)
         : QListView(parent) {
     setObjectName("FrameListView");
-
-    connect(this, &FrameListView::clicked, this, &FrameListView::itemActived);
+    connect(this, &FrameListView::activated, this, &FrameListView::itemClicked);
 }
 
 FrameListView::~FrameListView() {
@@ -241,14 +240,15 @@ FrameListModel *FrameListView::showModel(JDWP::ObjectId threadId) {
     }
     auto prevModel = m_frameModelsMap.value(m_currentThreadId);
     if(prevModel != nullptr) {
-        disconnect(prevModel->selectionModel(), &QItemSelectionModel::currentColumnChanged,
+        disconnect(prevModel->selectionModel(), &QItemSelectionModel::currentChanged,
                    this, &FrameListView::itemActived);
 
     }
     m_currentThreadId = threadId;
     setModel(model);
-    connect(model->selectionModel(), &QItemSelectionModel::currentColumnChanged,
+    connect(model->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &FrameListView::itemActived);
+
     return model;
 }
 
@@ -261,15 +261,27 @@ FrameListView *FrameListView::instance() {
 }
 
 void FrameListView::itemActived(const QModelIndex &index) {
-    auto model = m_frameModelsMap[m_currentThreadId];
-    if(model == nullptr) {
+    auto curmodel = (FrameListModel*)model();
+    if(curmodel == nullptr) {
         return;
     }
-    auto frame = model->framedataForIndex(index);
+    auto frame = curmodel->framedataForIndex(index);
     if(frame == nullptr) {
         return;
     }
     frameItemClicked(m_currentThreadId, frame);
+}
+
+void FrameListView::itemClicked(const QModelIndex &index) {
+    auto curmodel = (FrameListModel*)model();
+    if(curmodel == nullptr) {
+        return;
+    }
+    auto selecmodel = curmodel->selectionModel();
+    if(selecmodel->currentIndex() == index) {
+        return;
+    }
+    selecmodel->setCurrentIndex(index, QItemSelectionModel::Select | QItemSelectionModel::Clear);
 }
 
 

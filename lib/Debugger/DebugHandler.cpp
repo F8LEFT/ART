@@ -620,7 +620,7 @@ void DebugHandler::dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameD
                 return;
             }
             item->setValue(value.mObject);
-            dumpObjectItemValue(item);
+            dumpFieldItemValue(item);
         });
         sendNewRequest (package);
     }
@@ -701,9 +701,6 @@ void DebugHandler::dbgReferenceTypeFieldsWithGeneric(JDWP::RefTypeId refTypeId,
 }
 
 void DebugHandler::dumpObjectItemValue(VariableTreeItem *item) {
-    if(item == nullptr || item->value().tag != JDWP::JT_OBJECT || item->value().L == 0) {
-        return;
-    }
     dbgObjectReferenceReferenceType(item->value().L, [this, item]
             (JDWP::JdwpTypeTag tag, JDWP::RefTypeId mTypeId) {
         dbgReferenceTypeFieldsWithGeneric(mTypeId, [this, item, mTypeId]
@@ -790,6 +787,96 @@ void DebugHandler::dbgObjectReferenceGetValues(JDWP::RefTypeId objectId,
     sendNewRequest (package);
 }
 
+void DebugHandler::dumpStringItemValue(VariableTreeItem *item) {
+    dbgStringReferenceValue(item->value().s, [this, item](const QByteArray& array) {
+        item->setJTStringValue(array);
+    });
+}
+
+template<typename Func>
+void DebugHandler::dbgStringReferenceValue(JDWP::ObjectId objectId, Func callback) {
+    auto request = JDWP::StringReference::Value::buildReq(objectId, mSockId++);
+    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+    connect(package.data(), &ReqestPackage::onReply, [this, callback]
+            (JDWP::Request *request,QByteArray& reply) {
+        JDWP::StringReference::Value value((uint8_t*)reply.data(), reply.length());
+        callback(value.mStr);
+    });
+    sendNewRequest (package);
+}
+
+
+
+
+void DebugHandler::dumpFieldItemValue(VariableTreeItem *item) {
+    if(item == nullptr || item->value().L == 0) {
+        return;
+    }
+    switch (item->value().tag) {
+        case JDWP::JdwpTag::JT_OBJECT:
+            dumpObjectItemValue(item);
+            break;
+        case JDWP::JdwpTag::JT_STRING:
+            dumpStringItemValue(item);
+            break;
+        case JDWP::JdwpTag::JT_ARRAY:
+            dumpArrayItemValue(item);
+            break;
+        default:
+            break;
+    }
+}
+
+void DebugHandler::dumpArrayItemValue(VariableTreeItem *item) {
+    dbgArrayReferenceLength(item->value().a, [this, item](int length) {
+        if(length == 0) {
+            return;
+        }
+        dbgArrayReferenceGetValues(item->value().a, 0, length, [this, item]
+                (const QVector<JDWP::JValue>& values){
+            for(auto i = 0, count = values.count(); i < count; i++) {
+                auto child = (VariableTreeItem*)item->child(i, 0);
+                if(child == nullptr) {
+                    child = new VariableTreeItem("");
+                    auto type = item->objectType();
+                    child->setObjectType(type.right(type.length() - 1));
+                    item->appendRow(child);
+
+                }
+                child->setValue(values[i]);
+            }
+            if(item->rowCount() != values.count()) {
+                item->removeRows(values.count(), item->rowCount() - values.count());
+            }
+        });
+    });
+}
+
+template<typename Func>
+void DebugHandler::dbgArrayReferenceLength(JDWP::ObjectId objectId, Func callback) {
+    auto request = JDWP::ArrayReference::Length::buildReq(objectId, mSockId++);
+    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+    connect(package.data(), &ReqestPackage::onReply, [this, callback]
+            (JDWP::Request *request,QByteArray& reply) {
+        JDWP::ArrayReference::Length arrlen((uint8_t*)reply.data(), reply.length());
+        callback(arrlen.mLength);
+    });
+    sendNewRequest (package);
+}
+
+template<typename Func>
+void DebugHandler::dbgArrayReferenceGetValues(JDWP::ObjectId array_id,
+                                              uint32_t offset, uint32_t length,
+                                              Func callback) {
+    auto request = JDWP::ArrayReference::GetValues::buildReq(array_id, offset, length, mSockId++);
+    auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
+    connect(package.data(), &ReqestPackage::onReply, [this, callback]
+            (JDWP::Request *request,QByteArray& reply) {
+        JDWP::ArrayReference::GetValues values((uint8_t*)reply.data(), reply.length());
+        callback(values.mElements);
+    });
+    sendNewRequest (package);
+}
 
 ReqestPackage::ReqestPackage(QByteArray& data,  QObject *parent)
         : QObject(parent),

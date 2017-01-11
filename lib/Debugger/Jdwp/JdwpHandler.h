@@ -989,7 +989,7 @@ namespace JDWP {
 
             JdwpTag mTag;
             int mCount;
-            std::vector<JValue> mElements;
+            QVector<JValue> mElements;
 
 
             static QByteArray buildReq(ObjectId array_id, uint32_t offset,

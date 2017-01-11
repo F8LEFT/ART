@@ -38,11 +38,16 @@ public:
     void setValue(JDWP::JValue value);
 
     void setObjectType(QString type);
+    QString objectType() { return m_classType; }
+    void setJTStringValue(const QString & str) { m_StringValue = str; }
 private:
     QString m_fieldName;
     QString m_objectType;
     JDWP::JValue m_value;
     bool m_updated;
+
+    QString m_classType;    // for JT_OBJECT type
+    QString m_StringValue;  // for JT_STRING type
 };
 
 class VariableModel: public QStandardItemModel {
@@ -52,8 +57,11 @@ public:
     explicit VariableModel(QObject *parent = 0);
     ~VariableModel();
 
+    QItemSelectionModel *selectionModel() const { return m_selectionModel; }
+
     static VariableModel* instance();
 private:
+    QItemSelectionModel *m_selectionModel;
 };
 
 class VariableTreeView: public QTreeView {

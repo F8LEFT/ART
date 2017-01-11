@@ -50,6 +50,9 @@ QString VariableTreeItem::display() const {
     if(m_value.tag == JDWP::JT_BYTE) {
         val.push_front('\'');
         val.push_back('\'');
+    } else if (m_value.tag == JDWP::JT_STRING) {
+        val.push_back('\"');
+        val.push_front('\"');
     }
     rel.append(val);
     return rel;
@@ -97,8 +100,11 @@ QString VariableTreeItem::valueString() const {
             }
             break;
         case JDWP::JT_STRING:
-            rel.append("STRING@");
-            rel.append(QString::number(m_value.s));
+            if(m_value.s == 0) {
+                rel.append("null");
+            } else {
+                rel.append(m_StringValue);
+            }
             break;
         case JDWP::JT_THREAD:
             rel.append("THREAD@");
@@ -144,6 +150,7 @@ VariableTreeItem *VariableTreeItem::findchild(QStandardItem *parent, const QStri
 }
 
 void VariableTreeItem::setObjectType(QString type) {
+    m_classType = type;
     auto sig = jniSigToJavaSig(type);
     auto index = sig.lastIndexOf('.');
     if(index != -1) {
@@ -155,7 +162,8 @@ void VariableTreeItem::setObjectType(QString type) {
 
 // VariableModel
 VariableModel::VariableModel(QObject *parent)
-        : QStandardItemModel(parent)
+        : QStandardItemModel(parent),
+          m_selectionModel(new QItemSelectionModel(this, this))
 {
 }
 

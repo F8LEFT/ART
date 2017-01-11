@@ -107,6 +107,18 @@ public:
     template <typename Func>
     void dbgObjectReferenceReferenceType(JDWP::ObjectId objectId, Func callback);
 
+    // Func(const QByteArray& str)
+    template <typename Func>
+    void dbgStringReferenceValue(JDWP::ObjectId objectId, Func callback);
+
+    // Func(int length)
+    template <typename Func>
+    void dbgArrayReferenceLength(JDWP::ObjectId objectId, Func callback);
+    // Func(const QVector<JDWP::JValue>& values)
+    template <typename Func>
+    void dbgArrayReferenceGetValues(JDWP::ObjectId array_id, uint32_t offset,
+                                    uint32_t length, Func callback);
+
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
 signals:
@@ -129,8 +141,8 @@ private slots:
 
 public slots:
     void dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameData* frame);
-    void dumpObjectItemValue(VariableTreeItem* item);
 
+    void dumpFieldItemValue(VariableTreeItem* item);
 private:
     void handleReply(JDWP::Request &reply);
     void handleCommand(JDWP::Request & reply);
@@ -143,6 +155,10 @@ private:
 
     void stopOnProcessEntryPoint();
     void setAllBreakpoint();
+
+    void dumpObjectItemValue(VariableTreeItem* item);
+    void dumpArrayItemValue(VariableTreeItem *item);
+    void dumpStringItemValue(VariableTreeItem* item);
 private:
     DebugSocket* mSocket;
     QMap<int, QSharedPointer<ReqestPackage>> mRequestMap;

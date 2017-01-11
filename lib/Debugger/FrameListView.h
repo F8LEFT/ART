@@ -87,6 +87,7 @@ signals:
 
 private slots:
     void itemActived(const QModelIndex &index);
+    void itemClicked(const QModelIndex &index);
 private:
     QMap<JDWP::ObjectId, FrameListModel*> m_frameModelsMap; // map for threadId, frames
     JDWP::ObjectId m_currentThreadId = 0;
