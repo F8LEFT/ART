@@ -20,11 +20,7 @@ VariableTreeItem::~VariableTreeItem()
 }
 
 void VariableTreeItem::setValue(JDWP::JValue value) {
-    if(m_value == value) {
-        m_updated = true;
-    } else {
-        m_updated = false;
-    }
+    m_updated = m_value == value;
     m_value = value;
 }
 
@@ -178,6 +174,7 @@ VariableModel *VariableModel::instance() {
 VariableTreeView::VariableTreeView(QWidget *parent)
         : QTreeView(parent)
 {
+    setHeaderHidden(true);
     setObjectName("VariableTree");
 
     auto smodel = VariableModel::instance();

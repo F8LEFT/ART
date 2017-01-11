@@ -319,6 +319,9 @@ int TextEditor::currentLine() {
 }
 
 bool TextEditor::saveFile() {
+    if(!document()->isModified()) {
+        return true;
+    }
     QFile file(m_filePath);
     if (!file.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
         return false;
@@ -327,6 +330,7 @@ bool TextEditor::saveFile() {
     out<<toPlainText();
     out.flush();
     file.close();
+    document()->setModified(false);
     return true;
 }
 

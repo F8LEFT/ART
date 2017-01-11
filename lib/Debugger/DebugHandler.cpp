@@ -620,7 +620,6 @@ void DebugHandler::dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameD
                 return;
             }
             item->setValue(value.mObject);
-//            model->itemChanged(item);
             dumpObjectItemValue(item);
         });
         sendNewRequest (package);
@@ -709,8 +708,10 @@ void DebugHandler::dumpObjectItemValue(VariableTreeItem *item) {
             (JDWP::JdwpTypeTag tag, JDWP::RefTypeId mTypeId) {
         dbgReferenceTypeFieldsWithGeneric(mTypeId, [this, item, mTypeId]
                 (const QVector<JDWP::FieldInfo>& fields) {
-            QVector<JDWP::FieldId> staticFields;
-            QVector<JDWP::FieldId> instanceFields;
+            QVector<JDWP::FieldInfo> staticFields;
+            QVector<JDWP::FieldId> staticFieldIds;
+            QVector<JDWP::FieldInfo> instanceFields;
+            QVector<JDWP::FieldId> instanceFieldIds;
             for(auto &field: fields) {
                 auto child = item->findchild(field.mDescriptor);
                 if(child == nullptr) {
@@ -718,21 +719,24 @@ void DebugHandler::dumpObjectItemValue(VariableTreeItem *item) {
                     child->setObjectType(field.mDescriptor);
                     item->appendRow(child);
                 }
-                if(field.mFlags & ACC_NATIVE) {
-                    staticFields.push_back(field.mFieldId);
+                if(field.mFlags & ACC_STATIC) {
+                    staticFields.push_back(field);
+                    staticFieldIds.push_back(field.mFieldId);
                 } else {
-                    instanceFields.push_back(field.mFieldId);
+                    instanceFields.push_back(field);
+                    instanceFieldIds.push_back(field.mFieldId);
                 }
             }
             if(staticFields.size()) {
-                dbgReferenceTypeGetValues(mTypeId, staticFields, [this, item, fields]
+                dbgReferenceTypeGetValues(mTypeId, staticFieldIds, [this, item, staticFields]
                         (const QVector<JDWP::JValue>& values) {
-                    auto itField = fields.begin(), itFieldEnd = fields.end();
+                    auto itField = staticFields.begin(), itFieldEnd = staticFields.end();
                     auto itValue = values.begin(), itValueEnd = values.end();
                     while(itField != itFieldEnd && itValue != itValueEnd) {
                         auto child = item->findchild(itField->mName);
                         if(child == nullptr) {
                             Q_ASSERT(false && "field not found? item not initiliaze?");
+                            continue;
                         }
                         child->setValue(*itValue);
                         itField++; itValue++;
@@ -741,14 +745,15 @@ void DebugHandler::dumpObjectItemValue(VariableTreeItem *item) {
             }
 
             if(instanceFields.size()) {
-                dbgObjectReferenceGetValues(item->value().L, instanceFields, [this, item, fields]
+                dbgObjectReferenceGetValues(item->value().L, instanceFieldIds, [this, item, instanceFields]
                         (const QVector<JDWP::JValue>& values) {
-                    auto itField = fields.begin(), itFieldEnd = fields.end();
+                    auto itField = instanceFields.begin(), itFieldEnd = instanceFields.end();
                     auto itValue = values.begin(), itValueEnd = values.end();
                     while(itField != itFieldEnd && itValue != itValueEnd) {
                         auto child = item->findchild(itField->mName);
                         if(child == nullptr) {
                             Q_ASSERT(false && "field not found? item not initiliaze?");
+                            continue;
                         }
                         child->setValue(*itValue);
                         itField++; itValue++;
