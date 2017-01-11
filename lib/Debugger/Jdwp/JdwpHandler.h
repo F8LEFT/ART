@@ -417,11 +417,12 @@ namespace JDWP {
 
         struct GetValues : public JdwpReader {
             GetValues(const uint8_t* bytes, uint32_t available);
-            bool isPrimateTag;
 
-            JValue mValue;
-            static QByteArray buildReq(RefTypeId refTypeId, int32_t field_count,
-                                const std::vector<FieldId > &fieldids, int id = 0);
+            uint32_t mSize;
+            QVector<JValue> mValue;
+
+            static QByteArray buildReq(RefTypeId refTypeId,
+                                const QVector<FieldId > &fieldids, int id = 0);
             const static uint8_t cmd = 6;
         };
 
@@ -699,9 +700,10 @@ namespace JDWP {
 
         struct GetValues : public JdwpReader {
             GetValues(const uint8_t* bytes, uint32_t available);
-            JValue mValue;
+            uint32_t mSize;
+            QVector<JValue> mValue;
 
-            static QByteArray buildReq(ObjectId object_id, const std::vector<FieldId > &fields,
+            static QByteArray buildReq(ObjectId object_id, const QVector<FieldId > &fields,
                                         int id = 0);
             const static uint8_t cmd = 2;
         };

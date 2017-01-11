@@ -16,6 +16,7 @@
 #define ANDROIDREVERSETOOLKIT_DEBUGHANDLER_H
 
 #include "FrameListView.h"
+#include "VariableTreeView.h"
 
 #include <Jdwp/jdwp.h>
 #include <Jdwp/Request.h>
@@ -90,12 +91,21 @@ public:
     template <typename Func>
     void dbgReferenceTypeSignatureWithGeneric(JDWP::RefTypeId refTypeId, Func callback);
 
+    // Func(const QVector<JDWP::JValue>& values)
+    // get static field value
+    template <typename Func>
+    void dbgReferenceTypeGetValues(JDWP::RefTypeId refTypeId,
+                                   const QVector<JDWP::FieldId > &fieldids, Func callback);
+    // Func(const QVector<JDWP::JValue>& values)
+    // get static field value
+    template <typename Func>
+    void dbgObjectReferenceGetValues(JDWP::RefTypeId objectId,
+                                   const QVector<JDWP::FieldId > &fieldids, Func callback);
 
 
     // Func(JdwpTypeTag tag, RefTypeId mTypeId)
     template <typename Func>
     void dbgObjectReferenceReferenceType(JDWP::ObjectId objectId, Func callback);
-
 
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
@@ -119,6 +129,7 @@ private slots:
 
 public slots:
     void dumpFrameInfo(JDWP::ObjectId threadId, FrameListModel::FrameData* frame);
+    void dumpObjectItemValue(VariableTreeItem* item);
 
 private:
     void handleReply(JDWP::Request &reply);

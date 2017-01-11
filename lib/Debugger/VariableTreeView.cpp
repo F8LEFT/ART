@@ -7,10 +7,11 @@
 //
 //===----------------------------------------------------------------------===//
 #include "VariableTreeView.h"
+#include <utils/StringUtil.h>
 
 // VariableTreeItem
 VariableTreeItem::VariableTreeItem(const QString &name, const JDWP::JValue &data)
-    : m_fieldName(name), m_data(data)
+    : m_fieldName(name), m_value(data), m_updated(false)
 {
 }
 
@@ -18,12 +19,28 @@ VariableTreeItem::~VariableTreeItem()
 {
 }
 
+void VariableTreeItem::setValue(JDWP::JValue value) {
+    if(m_value == value) {
+        m_updated = true;
+    } else {
+        m_updated = false;
+    }
+    m_value = value;
+}
+
+
 QVariant VariableTreeItem::data(int role) const {
     switch (role) {
         case Qt::DisplayRole:
             return display();
         case Qt::EditRole:
-            return value();
+            return valueString();
+        case Qt::ForegroundRole:
+            if(m_updated) {
+                return QBrush(QColor(Qt::red));
+            } else {
+                return QBrush(QColor(Qt::black));
+            }
         default:
             break;
     }
@@ -33,8 +50,8 @@ QVariant VariableTreeItem::data(int role) const {
 QString VariableTreeItem::display() const {
     QString rel = m_fieldName;
     rel.append(" = ");
-    auto val = value();
-    if(m_data.tag == JDWP::JT_BYTE) {
+    auto val = valueString();
+    if(m_value.tag == JDWP::JT_BYTE) {
         val.push_front('\'');
         val.push_back('\'');
     }
@@ -42,67 +59,72 @@ QString VariableTreeItem::display() const {
     return rel;
 }
 
-QString VariableTreeItem::value() const {
+QString VariableTreeItem::valueString() const {
     QString rel;
-    switch (m_data.tag) {
+    switch (m_value.tag) {
         case JDWP::JT_VOID:
             rel = "null";
             break;
         case JDWP::JT_BYTE:
-            rel.append(QByteArray((char*)&m_data.B, 1).toHex());
+            rel.append(QByteArray((char*)&m_value.B, 1).toHex());
             break;
         case JDWP::JT_BOOLEAN:
-            if(m_data.Z) {
+            if(m_value.Z) {
                 rel = "true";
             } else {
                 rel = "false";
             }
             break;
         case JDWP::JT_CHAR:
-            rel.append(QString().setUtf16((ushort*) &m_data.C, 1));
+            rel.append(QString().setUtf16((ushort*) &m_value.C, 1));
             break;
         case JDWP::JT_SHORT:
-            rel.append(QString::number(m_data.S));
+            rel.append(QString::number(m_value.S));
             break;
         case JDWP::JT_FLOAT:
-            rel.append(QString::number(m_data.F));
+            rel.append(QString::number(m_value.F));
             break;
         case JDWP::JT_INT:
-            rel.append(QString::number(m_data.I));
+            rel.append(QString::number(m_value.I));
             break;
         case JDWP::JT_ARRAY:
             rel.append("ARRAY@");
-            rel.append(QString::number(m_data.a));
+            rel.append(QString::number(m_value.a));
             break;
         case JDWP::JT_OBJECT:
-            rel.append("OBJECT@");
-            rel.append(QString::number(m_data.L));
+            rel.append(m_objectType);
+            rel.append("@");
+            if(m_value.L == 0) {
+                rel.append("null");
+            } else {
+                rel.append(QString::number(m_value.L));
+            }
             break;
         case JDWP::JT_STRING:
             rel.append("STRING@");
-            rel.append(QString::number(m_data.s));
+            rel.append(QString::number(m_value.s));
             break;
         case JDWP::JT_THREAD:
             rel.append("THREAD@");
-            rel.append(QString::number(m_data.t));
+            rel.append(QString::number(m_value.t));
             break;
         case JDWP::JT_THREAD_GROUP:
             rel.append("THREADGROUP@");
-            rel.append(QString::number(m_data.g));
+            rel.append(QString::number(m_value.g));
             break;
         case JDWP::JT_CLASS_LOADER:
             rel.append("CLASSLOADER@");
-            rel.append(QString::number(m_data.l));
+            rel.append(QString::number(m_value.l));
             break;
         case JDWP::JT_CLASS_OBJECT:
             rel.append("CLASSOBJECT@");
-            rel.append(QString::number(m_data.c));
+            rel.append(QString::number(m_value.c));
             break;
         case JDWP::JT_DOUBLE:
-            rel.append(QString::number(m_data.D));
+            rel.append(QString::number(m_value.D));
             break;
         case JDWP::JT_LONG:
-            rel.append(QString::number(m_data.J));
+            rel.append(QString::number(m_value.J));
             break;
         default:
             rel.append("IVNALID");
@@ -125,6 +147,15 @@ VariableTreeItem *VariableTreeItem::findchild(QStandardItem *parent, const QStri
     return nullptr;
 }
 
+void VariableTreeItem::setObjectType(QString type) {
+    auto sig = jniSigToJavaSig(type);
+    auto index = sig.lastIndexOf('.');
+    if(index != -1) {
+        m_objectType = sig.right(sig.length() - index - 1);
+    } else {
+        m_objectType = type;
+    }
+}
 
 // VariableModel
 VariableModel::VariableModel(QObject *parent)
@@ -149,8 +180,18 @@ VariableTreeView::VariableTreeView(QWidget *parent)
 {
     setObjectName("VariableTree");
 
-    auto model = VariableModel::instance();
-    setModel(model);
+    auto smodel = VariableModel::instance();
+    setModel(smodel);
+
+    connect(this, &VariableTreeView::expanded, [this](const QModelIndex &index) {
+        auto smodel = (VariableModel*)model();
+        auto item = (VariableTreeItem*)smodel->itemFromIndex(index);
+        if(item != nullptr) {
+            if(item->value().tag == JDWP::JdwpTag::JT_OBJECT) {
+                itemExpanded(item);
+            }
+        }
+    });
 }
 
 VariableTreeView::~VariableTreeView() {

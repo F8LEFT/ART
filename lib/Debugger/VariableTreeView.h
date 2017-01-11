@@ -28,13 +28,21 @@ public:
 
     QVariant data(int role = Qt::UserRole + 1) const;
     QString display() const;
-    QString value() const;
+    QString valueString() const;
 
     VariableTreeItem* findchild(const QString& name);
     static VariableTreeItem* findchild(QStandardItem* parent, const QString& name);
 
+    QString name() { return m_fieldName; }
+    JDWP::JValue &value() { return m_value; }
+    void setValue(JDWP::JValue value);
+
+    void setObjectType(QString type);
+private:
     QString m_fieldName;
-    JDWP::JValue m_data;
+    QString m_objectType;
+    JDWP::JValue m_value;
+    bool m_updated;
 };
 
 class VariableModel: public QStandardItemModel {
@@ -54,6 +62,8 @@ public:
     VariableTreeView(QWidget* parent = nullptr);
     ~VariableTreeView();
 
+signals:
+    void itemExpanded(VariableTreeItem* item);
 protected slots:
 //    void onItemDoubleClicked(const QModelIndex &index);
 

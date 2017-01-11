@@ -45,6 +45,15 @@ Debugger::Debugger(QWidget *parent) :
     mDbgHandler = new DebugHandler(this, mSocket);
     mSocket->mDbgHandler = mDbgHandler;
 
+    connect(m_variableTreeView, &VariableTreeView::itemExpanded, [this](VariableTreeItem* parent) {
+        for(auto i = 0, count = parent->columnCount(); i < count; i++) {
+            auto child = (VariableTreeItem*)parent->child(i, 0);
+            if(child->value().tag == JDWP::JdwpTag::JT_OBJECT) {
+                this->mDbgHandler->dumpObjectItemValue(child);
+            }
+        }
+    });
+
     loadFromConfig();
     setupHandleMap();
 }

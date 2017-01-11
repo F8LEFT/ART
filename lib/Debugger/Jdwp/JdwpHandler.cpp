@@ -595,20 +595,20 @@ ReferenceType::GetValues::GetValues (
         const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)
 {
-    JdwpTag tag = (JdwpTag)Read1 ();
-    isPrimateTag = IsPrimitiveTag (tag);
-    mValue.tag = tag;
-    auto len = GetTagWidth (tag);
-    mValue.L = ReadValue (len);
+    mSize = Read4();
+    mValue.resize(mSize);
+    for(auto &val: mValue) {
+        val.tag = (JdwpTag)Read1 ();
+        val.L = ReadValue (GetTagWidth (val.tag));
+    }
 }
 
-QByteArray ReferenceType::GetValues::buildReq (
-        RefTypeId refTypeId,int32_t field_count,
-        const std::vector<FieldId> &fieldids,int id)
+QByteArray ReferenceType::GetValues::buildReq (RefTypeId refTypeId,
+        const QVector<FieldId> &fieldids,int id)
 {
     QByteArray rel;
     WriteRefTypeId (rel, refTypeId);
-    Write4 (rel, field_count);
+    Write4 (rel, fieldids.size());
     for(auto it = fieldids.begin (), itEnd = fieldids.end ();
         it != itEnd; it++) {
         WriteFieldId (rel, *it);
@@ -1055,12 +1055,16 @@ ObjectReference::GetValues::GetValues (
         const uint8_t *bytes,uint32_t available)
         : JdwpReader (bytes,available)
 {
-    mValue.tag = (JdwpTag)Read1 ();
-    mValue.L = ReadValue (GetTagWidth (mValue.tag));
+    mSize = Read4();
+    mValue.resize(mSize);
+    for(auto &val: mValue) {
+        val.tag = (JdwpTag)Read1 ();
+        val.L = ReadValue (GetTagWidth (val.tag));
+    }
 }
 
 QByteArray ObjectReference::GetValues::buildReq (
-        ObjectId object_id,const std::vector<FieldId > &fields,int id)
+        ObjectId object_id,const QVector<FieldId > &fields,int id)
 {
     QByteArray rel;
     WriteObjectId (rel, object_id);

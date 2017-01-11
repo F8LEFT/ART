@@ -74,3 +74,4 @@ JDWP::JdwpEventModPad::JdwpEventModPad(JDWP::JdwpEventMod mod) {
 
 JDWP::JdwpEventModPad::~JdwpEventModPad() {
 }
+

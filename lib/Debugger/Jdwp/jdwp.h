@@ -152,6 +152,21 @@ namespace JDWP {
             this->tag = tag;
             V = nullptr;
         }
+        bool operator == (const JValue& other) {
+            if(this->tag != other.tag) {
+                return false;
+            }
+            auto w = GetTagWidth(tag);
+            auto s1 = this->L, s2 = other.L;
+            while(w != 0) {
+                if((s1 & 0xff) != (s2 & 0xff)) {
+                    return false;
+                }
+                s1 >>= 4; s2 >>= 4;
+                w--;
+            }
+            return true;
+        }
     };
 
     struct ClassInfo {
