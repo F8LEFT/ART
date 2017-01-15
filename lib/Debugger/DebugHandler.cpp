@@ -238,11 +238,6 @@ void DebugHandler::onSocketConnected()
     // suspend and set breakpoint to process entry point
     stopOnProcessEntryPoint();
     setAllBreakpoint();
-
-    QTimer::singleShot(10000, [this]() {
-        // wait for classloading finished and breakpoint set
-        dbgVirtualMachineResume();
-    });
 }
 
 void DebugHandler::onSocketDisconnected()
@@ -557,6 +552,15 @@ void DebugHandler::stopOnProcessEntryPoint() {
     if(found) {
         waitForClassPrepared(className, [this, className, methodName, methodSig](JDWP::Composite::ReflectedType::EventClassPrepare* prepare) {
             dbgSetBreakPoint(className, methodName, methodSig, 0);
+            QTimer::singleShot(1000, [this]() {
+                // wait for classloading finished and breakpoint set
+                dbgVirtualMachineResume();
+            });
+        });
+    } else {
+        QTimer::singleShot(1000, [this]() {
+            // wait for classloading finished and breakpoint set
+            dbgVirtualMachineResume();
         });
     }
 }
