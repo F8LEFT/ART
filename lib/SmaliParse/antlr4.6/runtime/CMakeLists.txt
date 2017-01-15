@@ -37,3 +37,13 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
   set(disabled_compile_warnings "${disabled_compile_warnings} -Wno-multichar")
 endif()
+
+set_target_properties(antlr4_shared
+        PROPERTIES VERSION   ${ANTLR_VERSION}
+        SOVERSION ${ANTLR_VERSION}
+        COMPILE_FLAGS "${disabled_compile_warnings} ${extra_share_compile_flags}")
+
+set_target_properties(antlr4_static
+        PROPERTIES VERSION   ${ANTLR_VERSION}
+        SOVERSION ${ANTLR_VERSION}
+        COMPILE_FLAGS "${disabled_compile_warnings} ${extra_static_compile_flags}")

@@ -297,8 +297,6 @@ private:
     bool sendNewRequest(QSharedPointer<ReqestPackage>& req);
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
-    void setItemValue(VariableTreeItem *parent, const JDWP::FieldInfo* fieldInfo,
-                      const JDWP::JValue* value);
 private:
     void breakPointHit(JDWP::JdwpSuspendPolicy  policy,
                        JDWP::Composite::ReflectedType::EventLocationEvent*event);
@@ -311,6 +309,8 @@ private:
     void dumpStringItemValue(VariableTreeItem* item);
 
     void dumpObjectValueWithRef(VariableTreeItem* item);
+    void setItemValue(VariableTreeItem *parent, const JDWP::FieldInfo* fieldInfo,
+                      const JDWP::JValue* value);
 private:
     DebugSocket* mSocket;
     QMap<int, QSharedPointer<ReqestPackage>> mRequestMap;
