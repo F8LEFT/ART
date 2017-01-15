@@ -18,6 +18,7 @@ SmaliFileListener::SmaliFileListener(SmaliFile *filedata) {
 
 void SmaliFileListener::enterMethod(SmaliParser::MethodContext *ctx) {
     auto method = new SmaliMethod;
+    m_smali->m_methods.push_back(method);
 
     method->m_startline = ctx->METHOD_DIRECTIVE()->getSymbol()->getLine();
     method->m_endline = ctx->END_METHOD_DIRECTIVE()->getSymbol()->getLine();
@@ -33,7 +34,11 @@ void SmaliFileListener::enterMethod(SmaliParser::MethodContext *ctx) {
         }
         method->m_ret = QString::fromStdString(proto->type_descriptor()->getText());
     }
+    if(method->m_accessflag && ACC_NATIVE) {
+        return;
+    }
 
+    // get method instruction information
     if(method->m_accessflag && ACC_STATIC) {
         method->m_paramRegisterCount = method->m_params.size();
     } else {
@@ -58,7 +63,6 @@ void SmaliFileListener::enterMethod(SmaliParser::MethodContext *ctx) {
     // TODO get method item codeIdx
 
 
-    m_smali->m_methods.push_back(method);
 }
 
 void SmaliFileListener::exitMethod(SmaliParser::MethodContext *ctx) {

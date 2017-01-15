@@ -119,6 +119,14 @@ public:
     void dbgArrayReferenceGetValues(JDWP::ObjectId array_id, uint32_t offset,
                                     uint32_t length, Func callback);
 
+    // Func(JDWP::RefTypeId refId)
+    template <typename Func>
+    void dbgClassTypeSuperclass(JDWP::RefTypeId refTypeId, Func callback);
+
+    // Func(JDWP::ObjectId object)
+    template <typename Func>
+    void dbgReferenceTypeClassObject(JDWP::RefTypeId refTypeId, Func callback);
+
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
 signals:
@@ -159,6 +167,8 @@ private:
     void dumpObjectItemValue(VariableTreeItem* item);
     void dumpArrayItemValue(VariableTreeItem *item);
     void dumpStringItemValue(VariableTreeItem* item);
+
+    void dumpObjectValueWithRef(VariableTreeItem* item);
 private:
     DebugSocket* mSocket;
     QMap<int, QSharedPointer<ReqestPackage>> mRequestMap;

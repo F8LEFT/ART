@@ -39,14 +39,19 @@ public:
 
     void setObjectType(QString type);
     QString objectType() { return m_classType; }
+    void setRefTypeId(JDWP::RefTypeId refId) { m_refType = refId; }
+    JDWP::RefTypeId refTypeId() { return m_refType; }
     void setJTStringValue(const QString & str) { m_StringValue = str; }
+    QString JTStringValue() { return m_StringValue; }
 private:
     QString m_fieldName;
     QString m_objectType;
     JDWP::JValue m_value;
-    bool m_updated;
+    bool m_updated = false;
 
     QString m_classType;    // for JT_OBJECT type
+    JDWP::RefTypeId m_refType = 0;  // for JT_OBJECT type(reference)
+
     QString m_StringValue;  // for JT_STRING type
 };
 
