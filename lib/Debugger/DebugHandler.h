@@ -297,6 +297,8 @@ private:
     bool sendNewRequest(QSharedPointer<ReqestPackage>& req);
     void setCommandPackage(JDWP::JdwpEventKind eventkind, QSharedPointer<CommandPackage>& package);
 
+    void setItemValue(VariableTreeItem *parent, const JDWP::FieldInfo* fieldInfo,
+                      const JDWP::JValue* value);
 private:
     void breakPointHit(JDWP::JdwpSuspendPolicy  policy,
                        JDWP::Composite::ReflectedType::EventLocationEvent*event);

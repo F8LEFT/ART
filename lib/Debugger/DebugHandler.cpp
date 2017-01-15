@@ -862,12 +862,6 @@ void DebugHandler::dumpObjectValueWithRef(VariableTreeItem *item) {
             QVector<JDWP::FieldInfo> instanceFields;
             QVector<JDWP::FieldId> instanceFieldIds;
             for(auto &field: fields) {
-                auto child = item->findchild(field.mDescriptor);
-                if(child == nullptr) {
-                    child = new VariableTreeItem(field.mName);
-                    child->setObjectType(field.mDescriptor);
-                    item->appendRow(child);
-                }
                 if(field.mFlags & ACC_STATIC) {
                     staticFields.push_back(field);
                     staticFieldIds.push_back(field.mFieldId);
@@ -882,14 +876,8 @@ void DebugHandler::dumpObjectValueWithRef(VariableTreeItem *item) {
                     auto itField = staticFields.begin(), itFieldEnd = staticFields.end();
                     auto itValue = values.begin(), itValueEnd = values.end();
                     while(itField != itFieldEnd && itValue != itValueEnd) {
-                        auto child = item->findchild(itField->mName);
-                        if(child == nullptr) {
-                            qDebug() << "field not found? item not initiliaze?";
-                            continue;
-                        }
-                        child->setValue(*itValue);
+                        setItemValue(item, itField, itValue);
                         itField++; itValue++;
-
                     }
                 });
             }
@@ -900,12 +888,7 @@ void DebugHandler::dumpObjectValueWithRef(VariableTreeItem *item) {
                     auto itField = instanceFields.begin(), itFieldEnd = instanceFields.end();
                     auto itValue = values.begin(), itValueEnd = values.end();
                     while(itField != itFieldEnd && itValue != itValueEnd) {
-                        auto child = item->findchild(itField->mName);
-                        if(child == nullptr) {
-                            qDebug() << "field not found? item not initiliaze?";
-                            continue;
-                        }
-                        child->setValue(*itValue);
+                        setItemValue(item, itField, itValue);
                         itField++; itValue++;
                     }
                 });
@@ -938,6 +921,18 @@ void DebugHandler::dbgReferenceTypeClassObject(JDWP::RefTypeId refTypeId, Func c
         callback(classObject.mClassId);
     });
     sendNewRequest (package);
+}
+
+void DebugHandler::setItemValue(VariableTreeItem *parent,
+                                const JDWP::FieldInfo *fieldInfo,
+                                const JDWP::JValue *value) {
+    auto child = parent->findchild(fieldInfo->mName);
+    if(child == nullptr) {
+        child = new VariableTreeItem(fieldInfo->mName);
+        child->setObjectType(fieldInfo->mDescriptor);
+        parent->appendRow(child);
+    }
+    child->setValue(*value);
 }
 
 ReqestPackage::ReqestPackage(QByteArray& data,  QObject *parent)
