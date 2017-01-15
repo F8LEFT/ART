@@ -212,7 +212,7 @@ void DebugHandler::onSocketConnected()
 
     // Init
     // get all loaded class information
-    dbgAllClassesWithGeneric();
+    dbgVirtualMachineAllClassesWithGeneric();
     dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_PREPARE, JDWP::JdwpSuspendPolicy::SP_NONE, std::vector<JDWP::JdwpEventMod>(),
                        [this](JDWP::JdwpEventKind eventkind, uint32_t requestId) {});
     dbgEventRequestSet(JDWP::JdwpEventKind::EK_CLASS_UNLOAD, JDWP::JdwpSuspendPolicy::SP_NONE, std::vector<JDWP::JdwpEventMod>(),
@@ -241,7 +241,7 @@ void DebugHandler::onSocketConnected()
 
     QTimer::singleShot(10000, [this]() {
         // wait for classloading finished and breakpoint set
-        dbgResume();
+        dbgVirtualMachineResume();
     });
 }
 
@@ -260,7 +260,7 @@ void DebugHandler::onSocketDisconnected()
 }
 
 // -------------------for debug interface----------------------
-void DebugHandler::dbgVersion() {
+void DebugHandler::dbgVirtualMachineVersion() {
     auto request = JDWP::VirtualMachine::Version::buildReq (mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
     connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
@@ -272,7 +272,7 @@ void DebugHandler::dbgVersion() {
     sendNewRequest (package);
 }
 
-void DebugHandler::dbgAllClassesWithGeneric() {
+void DebugHandler::dbgVirtualMachineAllClassesWithGeneric() {
     auto request = JDWP::VirtualMachine::AllClassesWithGeneric::buildReq (mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
     connect(package.data(), &ReqestPackage::onReply, [this](JDWP::Request *request,QByteArray& reply) {
@@ -294,7 +294,7 @@ void DebugHandler::dbgAllClassesWithGeneric() {
     sendNewRequest (package);
 }
 
-void DebugHandler::dbgResume()
+void DebugHandler::dbgVirtualMachineResume()
 {
     auto request = JDWP::VirtualMachine::Resume::buildReq (mSockId++);
     auto package = QSharedPointer<ReqestPackage>(new ReqestPackage(request));
@@ -880,7 +880,7 @@ void DebugHandler::dumpObjectValueWithRef(VariableTreeItem *item) {
                     while(itField != itFieldEnd && itValue != itValueEnd) {
                         auto child = item->findchild(itField->mName);
                         if(child == nullptr) {
-                            Q_ASSERT(false && "field not found? item not initiliaze?");
+                            qDebug() << "field not found? item not initiliaze?";
                             continue;
                         }
                         child->setValue(*itValue);
@@ -898,7 +898,7 @@ void DebugHandler::dumpObjectValueWithRef(VariableTreeItem *item) {
                     while(itField != itFieldEnd && itValue != itValueEnd) {
                         auto child = item->findchild(itField->mName);
                         if(child == nullptr) {
-                            Q_ASSERT(false && "field not found? item not initiliaze?");
+                            qDebug() << "field not found? item not initiliaze?";
                             continue;
                         }
                         child->setValue(*itValue);

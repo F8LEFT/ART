@@ -115,7 +115,7 @@ void Debugger::stopCurrentTarget()
 // for debug command
 void Debugger::dbgResume() {
     if(isDebugging()) {
-        mDbgHandler->dbgResume();
+        mDbgHandler->dbgVirtualMachineResume();
     }
 }
 
