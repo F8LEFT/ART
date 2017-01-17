@@ -60,7 +60,8 @@ void SmaliFileListener::enterMethod(SmaliParser::MethodContext *ctx) {
     }
 
 //    auto orderctx = statectx->ordered_method_item();
-    // TODO get method item codeIdx
+    // TODO get method item codeIdx and lineIdx
+    // TODO get localRegister type with codeIdx(lineIdx)
 
 
 }

@@ -20,6 +20,12 @@
 #include <QStringList>
 #include <QMap>
 #include <QVector>
+#include <QList>
+
+struct SmaliInstruction {
+    int m_codeidx;
+    int m_line;
+};
 
 struct SmaliMethod {
     QString m_name;
@@ -32,6 +38,8 @@ struct SmaliMethod {
 
     int m_startline = -1;         // defination in source file
     int m_endline = -1;
+
+    QList<SmaliInstruction> m_instructions;
 
     QString buildProto();
     QString buildAccessFlag();

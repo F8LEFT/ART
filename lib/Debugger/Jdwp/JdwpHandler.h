@@ -1072,7 +1072,7 @@ namespace JDWP {
             GetValues(const uint8_t* bytes, uint32_t available);
 
             uint32_t mSlotCount;
-            std::vector<JValue> mSlots;
+            QVector<JValue> mSlots;
 
             static QByteArray buildReq (ObjectId thread_id,FrameId frame_id,
                                         const QVector<StackFrameData>& frames,
