@@ -17,7 +17,6 @@
 VariableTreeItem::VariableTreeItem(const QString &name)
     : m_fieldName(name), m_updated(false)
 {
-    setSelectable(true);
 }
 
 VariableTreeItem::VariableTreeItem(int index)
@@ -28,32 +27,26 @@ VariableTreeItem::VariableTreeItem(int index)
 
 VariableTreeItem::~VariableTreeItem()
 {
+    qDeleteAll(m_childItems);
+    m_childItems.clear();
 }
 
 void VariableTreeItem::setValue(JDWP::JValue value) {
     m_updated = m_inited ? m_value == value : false;
     m_inited = true;
     m_value = value;
-    setEditable(isEditable());
 }
 
 
 QVariant VariableTreeItem::data(int role) const {
-//    switch (role) {
-//        case Qt::DisplayRole:
-//            return display();
-//        case Qt::EditRole:
-//            return valueString();
-//        case Qt::ForegroundRole:
-//            if(m_updated) {
-//                return QBrush(QColor(Qt::red));
-//            } else {
-//                return QBrush(QColor(Qt::black));
-//            }
-//        default:
-//            break;
-//    }
-    return QStandardItem::data(role);
+    switch(role) {
+        case ItemRole::Item :
+            return QVariant::fromValue<VariableTreeItem*>((VariableTreeItem*)this);
+        default:
+            break;
+    }
+    return QVariant();
+
 }
 
 QString VariableTreeItem::display() const {
@@ -152,9 +145,9 @@ VariableTreeItem *VariableTreeItem::findchild(const QString& name) {
     return findchild(this, name);
 }
 
-VariableTreeItem *VariableTreeItem::findchild(QStandardItem *parent, const QString& name) {
+VariableTreeItem *VariableTreeItem::findchild(VariableTreeItem *parent, const QString& name) {
     for(auto i = 0, count = parent->rowCount(); i < count; i++) {
-        auto child = (VariableTreeItem *)parent->child(i, 0);
+        auto child = parent->child(i, 0);
         if(child->m_fieldName == name) {
             return child;
         }
@@ -330,24 +323,191 @@ bool VariableTreeItem::isEditable() const {
     }
 }
 
+Qt::ItemFlags VariableTreeItem::flags() const {
+    Qt::ItemFlags flag = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if(isEditable()) {
+        flag |= Qt::ItemIsEditable;
+    }
+    return flag;
+}
+
+VariableTreeItem *VariableTreeItem::child(int row, int column) const {
+    if(row < rowCount()) {
+        return m_childItems.at(row);
+    }
+    return nullptr;
+}
+
+int VariableTreeItem::rowCount() const {
+    return m_childItems.size();
+}
+
+int VariableTreeItem::columnCount() const {
+    return 1;
+}
+
+void VariableTreeItem::appendRow(VariableTreeItem *item) {
+    m_model->appendRow(this, item);
+}
+
+void VariableTreeItem::removeRows(int row, int count) {
+    m_model->removeRows(this, row, count);
+}
+
+int VariableTreeItem::row() const {
+    if (m_parentItem)
+        return m_parentItem->m_childItems.indexOf(const_cast<VariableTreeItem*>(this));
+
+    return 0;
+}
+
 // VariableModel
 VariableModel::VariableModel(QObject *parent)
-        : QStandardItemModel(parent),
+        : QAbstractItemModel(parent),
           m_selectionModel(new QItemSelectionModel(this, this))
 {
+    m_rootItem = new VariableTreeItem("");
+    m_rootItem->m_model = this;
 }
 
 VariableModel::~VariableModel()
 {
+    m_rootItem = new VariableTreeItem("");
 }
 
 VariableModel *VariableModel::instance() {
     static VariableModel* mPtr = nullptr;
     if(mPtr == nullptr) {
-        mPtr = new VariableModel;
+        mPtr = new VariableModel();
     }
     return mPtr;
 }
+
+QVariant VariableModel::data(const QModelIndex &index, int role) const {
+    if (!index.isValid())
+        return QVariant();
+
+    VariableTreeItem *item = itemFromIndex(index);
+
+    return item->data(role);
+}
+
+Qt::ItemFlags VariableModel::flags(const QModelIndex &index) const {
+    auto item = itemFromIndex(index);
+    if(item == nullptr) {
+        return QAbstractItemModel::flags(index);
+    }
+    return item->flags();
+}
+
+QModelIndex VariableModel::index(int row, int column, const QModelIndex &parent) const {
+    if (!hasIndex(row, column, parent))
+        return QModelIndex();
+    VariableTreeItem *parentItem;
+
+    if (!parent.isValid())
+        parentItem = invisibleRootItem();
+    else
+        parentItem = itemFromIndex(parent);
+
+    VariableTreeItem *childItem = parentItem->child(row);
+    if (childItem)
+        return indexFromItem(childItem);
+    else
+        return QModelIndex();
+}
+
+int VariableModel::rowCount(const QModelIndex &parent) const {
+    VariableTreeItem *parentItem;
+    if (parent.column() > 0)
+        return 0;
+
+    if (!parent.isValid())
+        parentItem = invisibleRootItem();
+    else
+        parentItem = itemFromIndex(parent);
+
+    return parentItem->rowCount();
+}
+
+int VariableModel::columnCount(const QModelIndex &parent) const {
+    if (parent.isValid())
+        return itemFromIndex(parent)->columnCount();
+    else
+        return invisibleRootItem()->columnCount();
+}
+
+QModelIndex VariableModel::parent(const QModelIndex &child) const {
+    if (!child.isValid())
+        return QModelIndex();
+
+    auto childItem = itemFromIndex(child);
+    auto parentItem = childItem->m_parentItem;
+
+    if (parentItem == m_rootItem)
+        return QModelIndex();
+
+    return indexFromItem(parentItem);
+}
+
+VariableTreeItem *VariableModel::itemFromIndex(const QModelIndex &index) const {
+    if(!index.isValid()) {
+        return nullptr;
+    }
+    auto item = static_cast<VariableTreeItem*>(index.internalPointer());
+    return item;
+}
+
+QModelIndex VariableModel::indexFromItem(const VariableTreeItem *item) const {
+    if(item == nullptr) {
+        return QModelIndex();
+    }
+    return createIndex(item->row(), 0, (VariableTreeItem *)item);
+}
+
+void VariableModel::clear() {
+    beginResetModel();
+    delete m_rootItem;
+    m_rootItem = new VariableTreeItem("");
+    m_rootItem->m_model = this;
+    endResetModel();
+}
+
+bool VariableModel::appendRow(VariableTreeItem *parent, VariableTreeItem *item) {
+    if(item == nullptr || parent == nullptr) {
+        return false;
+    }
+
+    beginInsertRows(indexFromItem(parent), parent->rowCount(), parent->rowCount());
+    item->m_parentItem = parent;
+    item->m_model = this;
+    parent->m_childItems.append(item);
+    endInsertRows();
+    return true;
+}
+
+bool VariableModel::removeRows(VariableTreeItem *parent, int row, int count) {
+    if(parent == nullptr) {
+        return false;
+    }
+    auto rowCount = parent->rowCount();
+    auto rowRemoveStart = row < rowCount? row: rowCount;
+    auto rowRemoveCount = rowCount - rowRemoveStart;
+    rowRemoveCount = rowRemoveCount < count ? rowRemoveCount: count;
+    if(rowRemoveCount <= 0) {
+        return false;
+    }
+    beginRemoveRows(indexFromItem(parent), rowRemoveStart, rowRemoveCount);
+    while(rowRemoveCount > 0) {
+        auto item = parent->m_childItems.takeLast();
+        delete item;
+        rowRemoveCount --;
+    }
+    endRemoveRows();
+    return true;
+}
+
+
 
 VariableTreeView::VariableTreeView(QWidget *parent)
         : QTreeView(parent)
@@ -361,7 +521,7 @@ VariableTreeView::VariableTreeView(QWidget *parent)
 
     connect(this, &VariableTreeView::expanded, [this](const QModelIndex &index) {
         auto smodel = (VariableModel*)model();
-        auto item = (VariableTreeItem*)smodel->itemFromIndex(index);
+        auto item = smodel->itemFromIndex(index);
         if(item != nullptr) {
             if(item->value().tag == JDWP::JdwpTag::JT_OBJECT) {
                 itemExpanded(item);

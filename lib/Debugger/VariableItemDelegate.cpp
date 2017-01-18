@@ -15,30 +15,28 @@
 
 void VariableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                                const QModelIndex &index) const {
-    auto sitem = VariableModel::instance()->itemFromIndex(index);
-    if(sitem == nullptr) {
+    if (index.data(VariableTreeItem::ItemRole::Item).canConvert<VariableTreeItem*>()) {
+        VariableTreeItem* item = index.data(VariableTreeItem::ItemRole::Item).value<VariableTreeItem*>();
 
-    }
-    auto item = (VariableTreeItem *)(sitem);
-    if(item == nullptr) {
+        if (option.state & QStyle::State_Selected)
+            painter->fillRect(option.rect, option.palette.highlight());
+        item->paintItem(painter, option.rect, option.palette);
+    } else {
         QStyledItemDelegate::paint(painter, option, index);
-        return;
     }
-    item->paintItem(painter, option.rect, option.palette);
 }
 
 QWidget *VariableItemDelegate::createEditor(QWidget *parent,
                                             const QStyleOptionViewItem &option,
                                             const QModelIndex &index) const {
-    auto sitem = VariableModel::instance()->itemFromIndex(index);
-    if(sitem == nullptr) {
+    if (index.data(VariableTreeItem::ItemRole::Item).canConvert<VariableTreeItem*>()) {
+        VariableTreeItem* item = index.data(VariableTreeItem::ItemRole::Item).value<VariableTreeItem*>();
+        auto editor = new VariableEditor(item, parent);
+        connect(editor, &VariableEditor::returnPressed, this, &VariableItemDelegate::commitAndCloseEditor);
+        return editor;
+    } else {
         return QStyledItemDelegate::createEditor(parent, option, index);
     }
-    auto item = (VariableTreeItem *)(sitem);
-    auto editor = new VariableEditor(item, parent);
-    connect(editor, &VariableEditor::returnPressed, this, &VariableItemDelegate::commitAndCloseEditor);
-    editor->setText("editext");
-    return editor;
 }
 
 void VariableItemDelegate::commitAndCloseEditor()
