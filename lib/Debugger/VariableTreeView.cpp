@@ -27,14 +27,14 @@ VariableTreeItem::VariableTreeItem(int index)
 
 VariableTreeItem::~VariableTreeItem()
 {
-    qDeleteAll(m_childItems);
-    m_childItems.clear();
 }
 
 void VariableTreeItem::setValue(JDWP::JValue value) {
     m_updated = m_inited ? m_value == value : false;
     m_inited = true;
     m_value = value;
+
+    setEditable(isEditable());
 }
 
 
@@ -47,118 +47,27 @@ QVariant VariableTreeItem::data(int role) const {
         default:
             break;
     }
-    return QVariant();
+    return QStandardItem::data(role);
 }
 
 
-bool VariableTreeItem::setData(const QVariant &value, int role) {
+void VariableTreeItem::setData(const QVariant &value, int role) {
     if(role != Qt::EditRole) {
-        return false;
+        QStandardItem::setData(value, role);
+        return;
     }
 
-    return applyEditValue(value.toString());
-}
-
-QString VariableTreeItem::display() const {
-    QString rel = m_fieldName;
-    rel.append(" = ");
-    auto val = valueString();
-    if(m_value.tag == JDWP::JT_BYTE) {
-        val.push_front('\'');
-        val.push_back('\'');
-    } else if (m_value.tag == JDWP::JT_STRING) {
-        val.push_back('\"');
-        val.push_front('\"');
-    }
-    rel.append(val);
-    return rel;
-}
-
-QString VariableTreeItem::valueString() const {
-    QString rel;
-    switch (m_value.tag) {
-        case JDWP::JT_VOID:
-            rel = "null";
-            break;
-        case JDWP::JT_BYTE:
-            rel.append(QByteArray((char*)&m_value.B, 1).toHex());
-            break;
-        case JDWP::JT_BOOLEAN:
-            if(m_value.Z) {
-                rel = "true";
-            } else {
-                rel = "false";
-            }
-            break;
-        case JDWP::JT_CHAR:
-            rel.append(QString().setUtf16((ushort*) &m_value.C, 1));
-            break;
-        case JDWP::JT_SHORT:
-            rel.append(QString::number(m_value.S));
-            break;
-        case JDWP::JT_FLOAT:
-            rel.append(QString::number(m_value.F));
-            break;
-        case JDWP::JT_INT:
-            rel.append(QString::number(m_value.I));
-            break;
-        case JDWP::JT_ARRAY:
-            rel.append("ARRAY@");
-            rel.append(QString::number(m_value.a));
-            break;
-        case JDWP::JT_OBJECT:
-            rel.append(m_objectType);
-            rel.append("@");
-            if(m_value.L == 0) {
-                rel.append("null");
-            } else {
-                rel.append(QString::number(m_value.L));
-            }
-            break;
-        case JDWP::JT_STRING:
-            if(m_value.s == 0) {
-                rel.append("null");
-            } else {
-                rel.append(m_StringValue);
-            }
-            break;
-        case JDWP::JT_THREAD:
-            rel.append("THREAD@");
-            rel.append(QString::number(m_value.t));
-            break;
-        case JDWP::JT_THREAD_GROUP:
-            rel.append("THREADGROUP@");
-            rel.append(QString::number(m_value.g));
-            break;
-        case JDWP::JT_CLASS_LOADER:
-            rel.append("CLASSLOADER@");
-            rel.append(QString::number(m_value.l));
-            break;
-        case JDWP::JT_CLASS_OBJECT:
-            rel.append("CLASSOBJECT@");
-            rel.append(QString::number(m_value.c));
-            break;
-        case JDWP::JT_DOUBLE:
-            rel.append(QString::number(m_value.D));
-            break;
-        case JDWP::JT_LONG:
-            rel.append(QString::number(m_value.J));
-            break;
-        default:
-            rel.append("IVNALID");
-            break;
-    }
-    return rel;
+    applyEditValue(value.toString());
 }
 
 VariableTreeItem *VariableTreeItem::findchild(const QString& name) {
     return findchild(this, name);
 }
 
-VariableTreeItem *VariableTreeItem::findchild(VariableTreeItem *parent, const QString& name) {
+VariableTreeItem *VariableTreeItem::findchild(QStandardItem *parent, const QString& name) {
     for(auto i = 0, count = parent->rowCount(); i < count; i++) {
-        auto child = parent->child(i, 0);
-        if(child->m_fieldName == name) {
+        auto child = (VariableTreeItem *)(parent->child(i, 0));
+        if(child != nullptr && child->m_fieldName == name) {
             return child;
         }
     }
@@ -334,57 +243,15 @@ bool VariableTreeItem::isEditable() const {
     }
 }
 
-Qt::ItemFlags VariableTreeItem::flags() const {
-    Qt::ItemFlags flag = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    if(isEditable()) {
-        flag |= Qt::ItemIsEditable;
-    }
-    return flag;
-}
-
-VariableTreeItem *VariableTreeItem::child(int row, int column) const {
-    if(row < rowCount()) {
-        return m_childItems.at(row);
-    }
-    return nullptr;
-}
-
-int VariableTreeItem::rowCount() const {
-    return m_childItems.size();
-}
-
-int VariableTreeItem::columnCount() const {
-    return 1;
-}
-
-void VariableTreeItem::appendRow(VariableTreeItem *item) {
-    m_model->appendRow(this, item);
-}
-
-void VariableTreeItem::removeRows(int row, int count) {
-    m_model->removeRows(this, row, count);
-}
-
-int VariableTreeItem::row() const {
-    if (m_parentItem)
-        return m_parentItem->m_childItems.indexOf(const_cast<VariableTreeItem*>(this));
-
-    return 0;
-}
-
-
 // VariableModel
 VariableModel::VariableModel(QObject *parent)
-        : QAbstractItemModel(parent),
+        : QStandardItemModel(parent),
           m_selectionModel(new QItemSelectionModel(this, this))
 {
-    m_rootItem = new VariableTreeItem("");
-    m_rootItem->m_model = this;
 }
 
 VariableModel::~VariableModel()
 {
-    m_rootItem = new VariableTreeItem("");
 }
 
 VariableModel *VariableModel::instance() {
@@ -394,141 +261,6 @@ VariableModel *VariableModel::instance() {
     }
     return mPtr;
 }
-
-QVariant VariableModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid())
-        return QVariant();
-
-    VariableTreeItem *item = itemFromIndex(index);
-
-    return item->data(role);
-}
-
-bool VariableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-    if (!index.isValid())
-        return false;
-
-    VariableTreeItem *item = itemFromIndex(index);
-
-    return item->setData(value, role);
-}
-
-Qt::ItemFlags VariableModel::flags(const QModelIndex &index) const {
-    auto item = itemFromIndex(index);
-    if(item == nullptr) {
-        return QAbstractItemModel::flags(index);
-    }
-    return item->flags();
-}
-
-QModelIndex VariableModel::index(int row, int column, const QModelIndex &parent) const {
-    if (!hasIndex(row, column, parent))
-        return QModelIndex();
-    VariableTreeItem *parentItem;
-
-    if (!parent.isValid())
-        parentItem = invisibleRootItem();
-    else
-        parentItem = itemFromIndex(parent);
-
-    VariableTreeItem *childItem = parentItem->child(row);
-    if (childItem)
-        return indexFromItem(childItem);
-    else
-        return QModelIndex();
-}
-
-int VariableModel::rowCount(const QModelIndex &parent) const {
-    VariableTreeItem *parentItem;
-    if (parent.column() > 0)
-        return 0;
-
-    if (!parent.isValid())
-        parentItem = invisibleRootItem();
-    else
-        parentItem = itemFromIndex(parent);
-
-    return parentItem->rowCount();
-}
-
-int VariableModel::columnCount(const QModelIndex &parent) const {
-    if (parent.isValid())
-        return itemFromIndex(parent)->columnCount();
-    else
-        return invisibleRootItem()->columnCount();
-}
-
-QModelIndex VariableModel::parent(const QModelIndex &child) const {
-    if (!child.isValid())
-        return QModelIndex();
-
-    auto childItem = itemFromIndex(child);
-    auto parentItem = childItem->m_parentItem;
-
-    if (parentItem == m_rootItem)
-        return QModelIndex();
-
-    return indexFromItem(parentItem);
-}
-
-VariableTreeItem *VariableModel::itemFromIndex(const QModelIndex &index) const {
-    if(!index.isValid()) {
-        return nullptr;
-    }
-    auto item = static_cast<VariableTreeItem*>(index.internalPointer());
-    return item;
-}
-
-QModelIndex VariableModel::indexFromItem(const VariableTreeItem *item) const {
-    if(item == nullptr) {
-        return QModelIndex();
-    }
-    return createIndex(item->row(), 0, (VariableTreeItem *)item);
-}
-
-void VariableModel::clear() {
-    beginResetModel();
-    delete m_rootItem;
-    m_rootItem = new VariableTreeItem("");
-    m_rootItem->m_model = this;
-    endResetModel();
-}
-
-bool VariableModel::appendRow(VariableTreeItem *parent, VariableTreeItem *item) {
-    if(item == nullptr || parent == nullptr) {
-        return false;
-    }
-
-    beginInsertRows(indexFromItem(parent), parent->rowCount(), parent->rowCount());
-    item->m_parentItem = parent;
-    item->m_model = this;
-    parent->m_childItems.append(item);
-    endInsertRows();
-    return true;
-}
-
-bool VariableModel::removeRows(VariableTreeItem *parent, int row, int count) {
-    if(parent == nullptr) {
-        return false;
-    }
-    auto rowCount = parent->rowCount();
-    auto rowRemoveStart = row < rowCount? row: rowCount;
-    auto rowRemoveCount = rowCount - rowRemoveStart;
-    rowRemoveCount = rowRemoveCount < count ? rowRemoveCount: count;
-    if(rowRemoveCount <= 0) {
-        return false;
-    }
-    beginRemoveRows(indexFromItem(parent), rowRemoveStart, rowRemoveCount);
-    while(rowRemoveCount > 0) {
-        auto item = parent->m_childItems.takeLast();
-        delete item;
-        rowRemoveCount --;
-    }
-    endRemoveRows();
-    return true;
-}
-
-
 
 
 VariableTreeView::VariableTreeView(QWidget *parent)
@@ -543,7 +275,7 @@ VariableTreeView::VariableTreeView(QWidget *parent)
 
     connect(this, &VariableTreeView::expanded, [this](const QModelIndex &index) {
         auto smodel = (VariableModel*)model();
-        auto item = smodel->itemFromIndex(index);
+        auto item = (VariableTreeItem*)(smodel->itemFromIndex(index));
         if(item != nullptr) {
             if(item->value().tag == JDWP::JdwpTag::JT_OBJECT) {
                 itemExpanded(item);

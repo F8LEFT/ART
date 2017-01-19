@@ -16,12 +16,13 @@
 
 #include "Jdwp/jdwp.h"
 
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QTreeView>
-#include <QAbstractItemModel>
 
 class VariableModel;
 
-struct VariableTreeItem {
+struct VariableTreeItem: public QStandardItem {
 public:
     VariableTreeItem(const QString &name); // for normal field
     VariableTreeItem(int index);           // for array
@@ -32,12 +33,10 @@ public:
     };
 
     QVariant data(int role = Qt::UserRole + 1) const;
-    bool setData(const QVariant &value, int role);
-    QString display() const;
-    QString valueString() const;
+    void setData(const QVariant &value, int role = Qt::UserRole + 1);
 
     VariableTreeItem* findchild(const QString& name);
-    static VariableTreeItem* findchild(VariableTreeItem* parent, const QString& name);
+    static VariableTreeItem* findchild(QStandardItem* parent, const QString& name);
 
     QString name() { return m_fieldName; }
     JDWP::JValue &value() { return m_value; }
@@ -76,63 +75,27 @@ private:
     QString m_StringValue;  // this field is used for JT_STRING type
 
     // support for tree model
-public:
-    Qt::ItemFlags flags() const;
 
-    VariableTreeItem *child(int row, int column = 0) const;
-    int rowCount() const;
-    int columnCount() const;
-    void appendRow(VariableTreeItem *item);
-    void removeRows(int row, int count);
-
-    int row() const;
-
-    VariableModel *model() const { return m_model; }
-private:
-    QList<VariableTreeItem*> m_childItems;
-    VariableTreeItem *m_parentItem = nullptr;
-    VariableModel *m_model = nullptr;
-
-    friend class VariableModel;
 };
 
 Q_DECLARE_METATYPE(VariableTreeItem*)
 
 
-class VariableModel: public QAbstractItemModel {
+class VariableModel: public QStandardItemModel {
     Q_OBJECT
 
 public:
     explicit VariableModel(QObject *parent = 0);
     ~VariableModel();
 
-    // the model function
-    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
-    Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-//    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
-    QModelIndex parent(const QModelIndex &child) const;
 
     QItemSelectionModel *selectionModel() const { return m_selectionModel; }
 
     static VariableModel* instance();
 
-public:
-    bool appendRow(VariableTreeItem *parent, VariableTreeItem *item);
-    bool removeRows(VariableTreeItem *parent, int row, int count);
-
-    VariableTreeItem* invisibleRootItem() const { return m_rootItem; };
-    VariableTreeItem *itemFromIndex(const QModelIndex &index) const;
-    QModelIndex indexFromItem(const VariableTreeItem *item) const;
-    void clear();
 private:
     QItemSelectionModel *m_selectionModel;
 
-    VariableTreeItem* m_rootItem;
 
 };
 
