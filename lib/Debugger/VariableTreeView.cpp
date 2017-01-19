@@ -42,11 +42,21 @@ QVariant VariableTreeItem::data(int role) const {
     switch(role) {
         case ItemRole::Item :
             return QVariant::fromValue<VariableTreeItem*>((VariableTreeItem*)this);
+        case Qt::EditRole:
+            return getEditValue();
         default:
             break;
     }
     return QVariant();
+}
 
+
+bool VariableTreeItem::setData(const QVariant &value, int role) {
+    if(role != Qt::EditRole) {
+        return false;
+    }
+
+    return applyEditValue(value.toString());
 }
 
 QString VariableTreeItem::display() const {
@@ -258,8 +268,9 @@ void VariableTreeItem::paintItem(QPainter *painter, const QRect &rect,
     painter->restore();
 }
 
-void VariableTreeItem::applyEditValue(const QString &val) {
+bool VariableTreeItem::applyEditValue(const QString &val) {
     // TODO apply value changed to remote vm
+    return true;
 }
 
 QString VariableTreeItem::getEditValue() const {
@@ -361,6 +372,7 @@ int VariableTreeItem::row() const {
     return 0;
 }
 
+
 // VariableModel
 VariableModel::VariableModel(QObject *parent)
         : QAbstractItemModel(parent),
@@ -390,6 +402,15 @@ QVariant VariableModel::data(const QModelIndex &index, int role) const {
     VariableTreeItem *item = itemFromIndex(index);
 
     return item->data(role);
+}
+
+bool VariableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+    if (!index.isValid())
+        return false;
+
+    VariableTreeItem *item = itemFromIndex(index);
+
+    return item->setData(value, role);
 }
 
 Qt::ItemFlags VariableModel::flags(const QModelIndex &index) const {
@@ -506,6 +527,7 @@ bool VariableModel::removeRows(VariableTreeItem *parent, int row, int count) {
     endRemoveRows();
     return true;
 }
+
 
 
 

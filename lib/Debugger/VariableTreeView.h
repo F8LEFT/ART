@@ -32,6 +32,7 @@ public:
     };
 
     QVariant data(int role = Qt::UserRole + 1) const;
+    bool setData(const QVariant &value, int role);
     QString display() const;
     QString valueString() const;
 
@@ -56,7 +57,7 @@ public:
 
     // show item value
     void paintItem(QPainter *painter, const QRect &rect, const QPalette &palette) const;
-    void applyEditValue(const QString &val);
+    bool applyEditValue(const QString &val);
     QString getEditValue() const;
     bool isEditable() const;
 private:
@@ -107,6 +108,7 @@ public:
 
     // the model function
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;

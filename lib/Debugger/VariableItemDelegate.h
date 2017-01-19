@@ -17,16 +17,6 @@
 #include <QLineEdit>
 #include <QStyledItemDelegate>
 
-class VariableTreeItem;
-
-class VariableEditor: public QLineEdit {
-    Q_OBJECT
-public:
-    VariableEditor(VariableTreeItem* item, QWidget *parent = Q_NULLPTR);
-private:
-    VariableTreeItem* m_item;
-};
-
 class VariableItemDelegate: public QStyledItemDelegate {
     Q_OBJECT
 
@@ -35,11 +25,6 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const Q_DECL_OVERRIDE;
-
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const Q_DECL_OVERRIDE;
-private slots:
-    void commitAndCloseEditor();
 };
 
 
