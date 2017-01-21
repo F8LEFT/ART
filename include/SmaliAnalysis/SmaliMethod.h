@@ -47,6 +47,19 @@ struct SmaliMethod {
     static u4 getAccessFlag(QString flags);
 
     bool equal(QString name, QVector<QString> params);
+    /**
+     * get the codeidx for target line. If failed, -1 is returned.
+     * @param line
+     * @return
+     */
+    int getCodeIdxForSourceLocation(int line);
+
+    /**
+     * get the source file location from codeIdx. If failed, -1 is retured
+     * @param codeIdx
+     * @return
+     */
+    int getSourceLocationForCodeIdx(int codeIdx);
 };
 
 

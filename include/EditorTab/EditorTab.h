@@ -67,7 +67,7 @@ private slots:
     void documentIndxChanged(int index);
     void methodIndexChanged(int index);
 private:
-    void updateEditorMsg(QString file);
+    void updateSmaliEditorMsg(QString file);
 
     Ui::EditorTab *ui;
 

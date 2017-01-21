@@ -147,42 +147,42 @@ void TextEditor::sidebarPaintEvent(QPaintEvent *event)
     const auto foldingMarkerSize = fontMetrics().lineSpacing();
 
     while (block.isValid() && top <= event->rect().bottom()) {
-        if (block.isVisible() && bottom >= event->rect().top()) {
-            const auto number = QString::number(blockNumber + 1);
-            painter.setPen(m_theme.editorColor(
-                    (blockNumber == currentBlockNumber) ? KSyntaxHighlighting::Theme::CurrentLineNumber
-                                                        : KSyntaxHighlighting::Theme::LineNumbers));
-            painter.drawText(0, top, m_sideBar->width() - 2 - foldingMarkerSize, fontMetrics().height(), Qt::AlignRight, number);
-        }
-
-        // marks
-        auto userdata = blockData(block);
-        for(auto mark: userdata->m_marks) {
-            mark->paint(&painter, QRect(0, top, foldingMarkerSize, foldingMarkerSize));
-        }
-
-        // folding marker
-        if (block.isVisible() && isFoldable(block)) {
-            QPolygonF polygon;
-            if (isFolded(block)) {
-                polygon << QPointF(foldingMarkerSize * 0.4, foldingMarkerSize * 0.25);
-                polygon << QPointF(foldingMarkerSize * 0.4, foldingMarkerSize * 0.75);
-                polygon << QPointF(foldingMarkerSize * 0.8, foldingMarkerSize * 0.5);
-            } else {
-                polygon << QPointF(foldingMarkerSize * 0.25, foldingMarkerSize * 0.4);
-                polygon << QPointF(foldingMarkerSize * 0.75, foldingMarkerSize * 0.4);
-                polygon << QPointF(foldingMarkerSize * 0.5, foldingMarkerSize * 0.8);
+        if(block.isVisible()) {
+            if(bottom >= event->rect().top()) {
+                const auto number = QString::number(blockNumber + 1);
+                painter.setPen(m_theme.editorColor(
+                        (blockNumber == currentBlockNumber) ? KSyntaxHighlighting::Theme::CurrentLineNumber
+                                                            : KSyntaxHighlighting::Theme::LineNumbers));
+                painter.drawText(0, top, m_sideBar->width() - 2 - foldingMarkerSize, fontMetrics().height(), Qt::AlignRight, number);
             }
-            painter.save();
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(QColor(m_theme.editorColor(KSyntaxHighlighting::Theme::CodeFolding)));
-            painter.translate(m_sideBar->width() - foldingMarkerSize, top);
-            painter.drawPolygon(polygon);
-            painter.restore();
+
+            // marks
+            auto userdata = blockData(block);
+            for(auto mark: userdata->m_marks) {
+                mark->paint(&painter, QRect(0, top, foldingMarkerSize, foldingMarkerSize));
+            }
+
+            // folding marker
+            if(isFoldable(block)) {
+                QPolygonF polygon;
+                if (isFolded(block)) {
+                    polygon << QPointF(foldingMarkerSize * 0.4, foldingMarkerSize * 0.25);
+                    polygon << QPointF(foldingMarkerSize * 0.4, foldingMarkerSize * 0.75);
+                    polygon << QPointF(foldingMarkerSize * 0.8, foldingMarkerSize * 0.5);
+                } else {
+                    polygon << QPointF(foldingMarkerSize * 0.25, foldingMarkerSize * 0.4);
+                    polygon << QPointF(foldingMarkerSize * 0.75, foldingMarkerSize * 0.4);
+                    polygon << QPointF(foldingMarkerSize * 0.5, foldingMarkerSize * 0.8);
+                }
+                painter.save();
+                painter.setRenderHint(QPainter::Antialiasing);
+                painter.setPen(Qt::NoPen);
+                painter.setBrush(QColor(m_theme.editorColor(KSyntaxHighlighting::Theme::CodeFolding)));
+                painter.translate(m_sideBar->width() - foldingMarkerSize, top);
+                painter.drawPolygon(polygon);
+                painter.restore();
+            }
         }
-
-
 
         block = block.next();
         top = bottom;

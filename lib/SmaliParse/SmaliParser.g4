@@ -81,8 +81,7 @@ options {
 smali_file
   locals [bool hasClassSpec, bool hasSuperSpec, bool hasSourceSpec, bool isValid]
   @init
-  { $hasClassSpec = $hasSuperSpec = $hasSourceSpec = false;
-    $isValid = true;
+  { $hasClassSpec = $hasSuperSpec = $hasSourceSpec = $isValid = false;
   }
   :
   ( {!$hasClassSpec}? class_spec {$hasClassSpec = true;}
@@ -95,13 +94,9 @@ smali_file
   )+
   EOF
   {
-    if (!$hasClassSpec) {
-        $isValid = false;
-    }
-
-    if (!$hasSuperSpec) {
-      if ($class_spec.className == "Ljava/lang/Object;") {
-        $isValid = false;
+    if($hasClassSpec) {
+      if($hasSuperSpec && $class_spec.className != "Ljava/lang/Object;") {
+        $isValid = true;
       }
     }
   }

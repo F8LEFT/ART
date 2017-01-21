@@ -59,11 +59,19 @@ void SmaliFileListener::enterMethod(SmaliParser::MethodContext *ctx) {
         }
     }
 
-//    auto orderctx = statectx->ordered_method_item();
-    // TODO get method item codeIdx and lineIdx
     // TODO get localRegister type with codeIdx(lineIdx)
-
-
+    auto orderctx = statectx->ordered_method_item();
+    for(auto &order: orderctx) {
+        auto insctx = order->instruction();
+        // only collect instruction information
+        if(insctx == nullptr) {
+            continue;
+        }
+        SmaliInstruction instruction;
+        instruction.m_line = order->start->getLine();
+        instruction.m_codeidx = order->codeIdx;
+        method->m_instructions.push_back(instruction);
+    }
 }
 
 void SmaliFileListener::exitMethod(SmaliParser::MethodContext *ctx) {

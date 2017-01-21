@@ -90,4 +90,28 @@ bool SmaliMethod::equal(QString name, QVector<QString> params) {
     return name == m_name && params == m_params;
 }
 
+int SmaliMethod::getCodeIdxForSourceLocation(int line) {
+    if(line < m_startline) {
+        return -1;
+    }
+    for(auto &instruction: m_instructions) {
+        if(line <= instruction.m_line) {
+            return instruction.m_codeidx;
+        }
+    }
+    return -1;
+}
+
+int SmaliMethod::getSourceLocationForCodeIdx(int codeIdx) {
+    if(codeIdx < 0) {
+        return -1;
+    }
+    for(auto &instruction: m_instructions) {
+        if(codeIdx < instruction.m_codeidx) {
+            return instruction.m_line;
+        }
+    }
+    return -1;
+}
+
 

@@ -34,7 +34,6 @@ bool SmaliEditor::openFile(const QString &fileName, int iLine)
     if(!TextEditor::openFile(fileName, 1)) {
         return false;
     }
-    reloadSmaliData();
     readBreakMark();
     return true;
 }
@@ -48,6 +47,16 @@ void SmaliEditor::setTheme(const KSyntaxHighlighting::Theme &theme)
 
 bool SmaliEditor::isFoldable(const QTextBlock &block) const
 {
+    if(m_smalidata.isNull()) {
+        return false;
+    }
+    auto line = block.firstLineNumber() + 1;
+    for(auto i = 0, count = m_smalidata->methodCount(); i < count; i++) {
+        auto method = m_smalidata->method(i);
+        if(method->m_startline == line) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -63,6 +72,28 @@ bool SmaliEditor::isFolded(const QTextBlock &block) const
 
 QTextBlock SmaliEditor::findFoldingRegionEnd(const QTextBlock &startBlock) const
 {
+    if(m_smalidata.isNull()) {
+        return QTextBlock();
+    }
+
+    auto line = startBlock.firstLineNumber() + 1;
+    int endLine = -1;
+    for(auto i = 0, count = m_smalidata->methodCount(); i < count; i++) {
+        auto method = m_smalidata->method(i);
+        if(method->m_startline == line) {
+            endLine = method->m_endline;
+            break;
+        }
+    }
+    if(endLine != -1) {
+        auto block = startBlock;
+        while(block.isValid()) {
+            if(block.firstLineNumber()+1 >= endLine) {
+                return block;
+            }
+            block = block.next();
+        }
+    }
     return QTextBlock();
 }
 
@@ -70,36 +101,6 @@ void SmaliEditor::sidebarPaintEvent(QPaintEvent *event)
 {
     TextEditor::sidebarPaintEvent(event);
 }
-
-void SmaliEditor::reloadSmaliData() {
-    // TODO parse data in another thread
-//    m_smalidata.reset(new SmaliFile("", toPlainText().toStdString()));
-//
-//    auto root = m_smalidata->m_smali;
-//
-//    // for foldable
-//    auto annotations = root->annotation();
-//    for(auto &annotation: annotations) {
-//        setAnnotationFold(annotation);
-//    }
-//    auto methods = root->method();
-//    for(auto& method: methods) {
-//        auto startLine = method->METHOD_DIRECTIVE()->getSymbol()->getLine() - 1;
-//        auto endLine = method->END_METHOD_DIRECTIVE()->getSymbol()->getLine() - 1;
-//        setFoldableArea(startLine, endLine, SmaliParser::METHOD_DIRECTIVE);
-//    }
-}
-
-void SmaliEditor::setAnnotationFold(SmaliParser::AnnotationContext *annotation) {
-    auto startLine = annotation->ANNOTATION_DIRECTIVE()->getSymbol()->getLine() - 1;
-    auto endLine = annotation->END_ANNOTATION_DIRECTIVE()->getSymbol()->getLine() - 1;
-    setFoldableArea(startLine, endLine, SmaliParser::ANNOTATION_DIRECTIVE);
-}
-
-void SmaliEditor::setFoldableArea(int startLine, int endLine, int type) {
-
-}
-
 
 void SmaliEditor::toggleBreakpoint() {
     BreakPointManager::instance()->toggleBreakpoint(m_filePath, currentLine());

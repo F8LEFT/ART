@@ -24,7 +24,7 @@
 using namespace std;
 
 void testANRLR() {
-    std::string file = "/home/f8left/CodeSrc/ART/res/crackme/com/bradzhao/crackme/MainActivity.smali";
+    std::string file = "F:\\CodeSrc\\ART\\README.md";
 
 
     antlr4::ANTLRFileStream input(file);

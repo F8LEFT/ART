@@ -72,7 +72,7 @@ EditorTab::EditorTab(QWidget *parent) :
     connect(smalianalysis, &SmaliAnalysis::fileAnalysisFinished,
             [this](const QString &file) {
                 if(ui->mDocumentCombo->currentData().toString() == file) {
-                    updateEditorMsg(file);
+                    updateSmaliEditorMsg(file);
                 }
             });
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &EditorTab::reloadFile);
@@ -339,17 +339,21 @@ void EditorTab::documentIndxChanged(int index) {
         return;
     }
     ui->mEditStackedWidget->setCurrentIndex(index);
-    updateEditorMsg(ui->mDocumentCombo->currentData().toString());
+    updateSmaliEditorMsg(ui->mDocumentCombo->currentData().toString());
 }
 
-void EditorTab::updateEditorMsg(QString file) {
+void EditorTab::updateSmaliEditorMsg(QString file) {
     ui->mMethodCombo->clear();
+    if(!file.endsWith(".smali", Qt::CaseInsensitive)) {
+        return;
+    }
     auto smalianalysis = SmaliAnalysis::instance();
     auto filedata = smalianalysis->getSmaliFile(file);
     if(filedata.isNull()) {
         smalianalysis->startFileParseThread(file);
         return;
     }
+    // update method combo
     for(auto i = 0, count = filedata->fieldCount(); i < count; i++) {
         auto field = filedata->field(i);
         QString description = field->m_name;
@@ -363,6 +367,12 @@ void EditorTab::updateEditorMsg(QString file) {
         description.append(' ');
         description.append(method->buildProto());
         ui->mMethodCombo->addItem(m_methodIcon, description, method->m_startline);
+    }
+    // update smali editor
+    int iComIdx = ui->mDocumentCombo->currentIndex();
+    if (iComIdx != -1) {
+        TextEditorWidget* p = (TextEditorWidget*)ui->mEditStackedWidget->widget(iComIdx);
+        ((SmaliEditor*)p->editor())->setSmaliData(filedata);
     }
 }
 

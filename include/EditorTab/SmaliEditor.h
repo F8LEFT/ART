@@ -38,22 +38,17 @@ public:
     bool openFile(const QString &fileName, int iLine = 1);
 
     void setTheme(const KSyntaxHighlighting::Theme &theme);
-
-    void reloadSmaliData();
-
 public:
     void sidebarPaintEvent(QPaintEvent *event);
-
 
     bool isFoldable(const QTextBlock &block) const;
     bool isFolded(const QTextBlock &block) const;
     QTextBlock findFoldingRegionEnd(const QTextBlock &startBlock) const;
 
     void toggleBreakpoint();
-private:
-    void setAnnotationFold(SmaliParser::AnnotationContext* annotation);
-    void setFoldableArea(int startLine, int endLine, int type);
 
+    void setSmaliData(QSharedPointer<SmaliFile> smalidata) { m_smalidata = smalidata; }
+private:
     void readBreakMark();
 
 private:
