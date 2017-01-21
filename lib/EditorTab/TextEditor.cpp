@@ -353,6 +353,7 @@ UserBlockExtraData *TextEditor::blockData(QTextBlock &block) {
 
 void TextEditor::toggleBookmark() {
     BookMarkManager::instance()->toggleBookmark(m_filePath, currentLine());
+    m_sideBarUpdateTimer.start(500);
 }
 
 void TextEditor::keyPressEvent(QKeyEvent *e) {

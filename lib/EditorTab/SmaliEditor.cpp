@@ -104,6 +104,7 @@ void SmaliEditor::sidebarPaintEvent(QPaintEvent *event)
 
 void SmaliEditor::toggleBreakpoint() {
     BreakPointManager::instance()->toggleBreakpoint(m_filePath, currentLine());
+    m_sideBarUpdateTimer.start(500);
 }
 
 void SmaliEditor::readBreakMark() {
